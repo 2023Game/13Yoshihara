@@ -78,6 +78,9 @@ void CApplication::Update()
 	glVertex3f(v1.X(), v1.Y(), v1.Z());
 	glVertex3f(v2.X(), v2.Y(), v2.Z());
 
+	//描画終了
+	glEnd();
+
 	//三角形クラスのインスタンス作成
 	CTriangle t0;
 	//法線と頂点の設定
@@ -95,7 +98,4 @@ void CApplication::Update()
 	t2.Vertex(CVector(0.0f, -0.5f, 1.0f), CVector(0.0f, 0.5f, 1.0f), CVector(0.0f, 0.0f, 2.0f));
 	t2.Normal(CVector(1.0f, 0.0f, 0.0f));
 	t2.Render();
-
-	//描画終了
-	glEnd();
 }
