@@ -1,4 +1,5 @@
 #pragma once
+#include "CVector.h"
 #include "CRectangle.h"
 #include "CTexture.h"
 #include "CCharacter.h"
@@ -17,6 +18,7 @@
 class CApplication
 {
 private:
+	CVector mEye; //カメラの視点
 	CSound mSoundBgm;	//BGM
 	CSound mSoundOver;	//ゲームオーバー
 	CGame* mpGame;
