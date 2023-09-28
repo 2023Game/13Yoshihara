@@ -1,4 +1,5 @@
 #pragma once
+#include "CModel.h"
 #include "CVector.h"
 #include "CRectangle.h"
 #include "CTexture.h"
@@ -18,6 +19,7 @@
 class CApplication
 {
 private:
+	CModel mModel; //モデルクラスのインスタンス作成
 	CVector mEye; //カメラの視点
 	CSound mSoundBgm;	//BGM
 	CSound mSoundOver;	//ゲームオーバー

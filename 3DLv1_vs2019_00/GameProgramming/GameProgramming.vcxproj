@@ -21,6 +21,7 @@
     <ClCompile Include="src\CEnemy2.cpp" />
     <ClCompile Include="src\CFont.cpp" />
     <ClCompile Include="src\CGame.cpp" />
+    <ClCompile Include="src\CModel.cpp" />
     <ClCompile Include="src\CPlayer.cpp" />
     <ClCompile Include="src\CPlayer2.cpp" />
     <ClCompile Include="src\CPoint.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="src\CSound.cpp" />
     <ClCompile Include="src\CTexture.cpp" />
     <ClCompile Include="src\CInput.cpp" />
+    <ClCompile Include="src\CTriangle.cpp" />
     <ClCompile Include="src\CUi.cpp" />
     <ClCompile Include="src\CVector.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -44,6 +46,7 @@
     <ClInclude Include="src\CFont.h" />
     <ClInclude Include="src\CGame.h" />
     <ClInclude Include="src\CMiss.h" />
+    <ClInclude Include="src\CModel.h" />
     <ClInclude Include="src\CPlayer.h" />
     <ClInclude Include="src\CPlayer2.h" />
     <ClInclude Include="src\CPoint.h" />
@@ -54,6 +57,7 @@
     <ClInclude Include="src\CUi.h" />
     <ClInclude Include="src\CVector.h" />
     <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\CTriangle.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8802AF2F-2920-4700-89F2-CA6778727283}</ProjectGuid>
