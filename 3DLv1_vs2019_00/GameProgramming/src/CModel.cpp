@@ -12,6 +12,7 @@ void CModel::Render()
 		mTriangles[i].Render();
 	}
 }
+
 //文字列s1と文字列s2の比較
 //s1とs2が等しければ0を
 // 等しくなければ0以外を返す
@@ -27,6 +28,7 @@ int strcmp(const char* s1, const char* s2)
 	//同じなら引いて0
 	return s1[i] - s2[i];
 }
+
 //モデルファイルの入力
 //Load(モデルファイル名,マテリアルファイル名)
 void CModel::Load(char* obj, char* mtl)
@@ -38,6 +40,8 @@ void CModel::Load(char* obj, char* mtl)
 	char buf[ 256 ];
 	//頂点データの保存(CVector型)
 	std::vector<CVector>vertex;
+	//法線データの保存
+	std::vector<CVector>normal;
 
 	//ファイルのオープン
 	//fopen(ファイル名,モード)
@@ -94,6 +98,13 @@ void CModel::Load(char* obj, char* mtl)
 			//atof(文字列)　文字列からfloat型の値を返す
 			vertex.push_back(CVector(atof(str[1]), atof(str[2]), atof(str[3])));
 		}
+		//先頭がvnの時、頂点をnomalに追加する
+		else if (strcmp(str[0], "vn") == 0)
+		{
+			//可変長配列normalに追加
+			normal.push_back(CVector(atof(str[1]), atof(str[2]), atof(str[3])));
+
+		}
 		//先頭がfの時、三角形を作成して追加する
 		else if (strcmp(str[0], "f") == 0)
 		{
@@ -106,7 +117,8 @@ void CModel::Load(char* obj, char* mtl)
 			//三角形作成
 			CTriangle t;
 			t.Vertex(vertex[v[0] - 1], vertex[v[1] - 1], vertex[v[2] - 1]);
-			//可変長配列mTriangles二三角形を追加
+			t.Normal(normal[n[0] - 1], normal[n[1] - 1], normal[n[2] - 1]);
+			//可変長配列mTrianglesに三角形を追加
 			mTriangles.push_back(t);
 		}
 	}
