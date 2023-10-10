@@ -19,6 +19,7 @@
 class CApplication
 {
 private:
+	CModel mBackGround;//背景モデル
 	CModel mModel; //モデルクラスのインスタンス作成
 	CVector mEye; //カメラの視点
 	CSound mSoundBgm;	//BGM
