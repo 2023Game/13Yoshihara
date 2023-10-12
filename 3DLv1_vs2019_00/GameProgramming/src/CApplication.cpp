@@ -3,7 +3,7 @@
 //OpenGL
 #include "glut.h"
 #include "CVector.h"
-#include "CTriangle.h"
+#include "CTriangle.h""
 
 //ÉNÉâÉXÇÃstaticïœêî
 CTexture CApplication::mTexture;
@@ -32,6 +32,9 @@ void CApplication::Start()
 	mModel.Load(MODEL_OBJ);
 
 	mBackGround.Load(MODEL_BACKGROUND);
+
+	CMatrix matrix;
+	matrix.Print();
 }
 
 void CApplication::Update()
