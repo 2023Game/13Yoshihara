@@ -41,3 +41,19 @@ CMatrix CMatrix::Identity()
 	//‚±‚Ìs—ñ‚ğ•Ô‚·
 	return *this;
 }
+
+//Šg‘åk¬s—ñ‚Ìì¬
+//Scale(”{—¦X,”{—¦Y,”{—¦Z)
+CMatrix CMatrix::Scale(float sx, float sy, float sz)
+{
+	mM[0][0] = mM[0][0] * sx;
+	mM[1][1] = mM[1][1] * sy;
+	mM[2][2] = mM[2][2] * sz;
+	//‚±‚Ìs—ñ‚ğ•Ô‚·
+	return *this;
+}
+
+float CMatrix::M(int r, int c)const
+{
+	return mM[r][c];
+}
