@@ -46,9 +46,9 @@ CMatrix CMatrix::Identity()
 //Scale(î{ó¶X,î{ó¶Y,î{ó¶Z)
 CMatrix CMatrix::Scale(float sx, float sy, float sz)
 {
-	mM[0][0] = mM[0][0] * sx;
-	mM[1][1] = mM[1][1] * sy;
-	mM[2][2] = mM[2][2] * sz;
+	mM[0][0] = sx;
+	mM[1][1] = sy;
+	mM[2][2] = sz;
 	//Ç±ÇÃçsóÒÇï‘Ç∑
 	return *this;
 }
