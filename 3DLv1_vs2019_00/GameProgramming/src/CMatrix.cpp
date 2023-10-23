@@ -117,3 +117,19 @@ void CMatrix::M(int row, int col, float value)
 {
 	mM[row][col] = value;
 }
+
+//*演算子のオーバーロード
+//CMatrix * CMatrixの演算結果を返す
+const CMatrix CMatrix::operator*(const CMatrix& m)const
+{
+	CMatrix t;
+	for (int j = 0; j < 4; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			t.mM[j][i] = mM[j][0] * m.mM[0][i] + mM[j][1] * m.mM[1][i] + mM[j][2] * m.mM[2][i] + mM[j][3] * m.mM[3][i];
+		}
+	}
+
+	return t;
+}
