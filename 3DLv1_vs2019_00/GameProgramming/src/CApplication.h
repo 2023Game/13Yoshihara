@@ -1,4 +1,7 @@
 #pragma once
+#include "CCharacter3.h"
+#include "CTransform.h"
+#include "CTriangle.h"
 #include "CMatrix.h"
 #include "CModel.h"
 #include "CVector.h"
@@ -20,6 +23,8 @@
 class CApplication
 {
 private:
+	CCharacter3 mPlayer;
+	CCharacter3 mCharacter;
 	CModel mBackGround;//背景モデル
 	CModel mModel; //モデルクラスのインスタンス作成
 	CVector mEye; //カメラの視点
