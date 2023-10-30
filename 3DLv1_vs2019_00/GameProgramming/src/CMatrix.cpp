@@ -133,3 +133,8 @@ const CMatrix CMatrix::operator*(const CMatrix& m)const
 
 	return t;
 }
+
+float* CMatrix::M() const
+{
+	return (float*)mM[0];
+}
