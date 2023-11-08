@@ -15,6 +15,13 @@ CPlayer::CPlayer(const CVector& pos, const CVector& rot, const CVector& scale)
 //更新処理
 void CPlayer::Update()
 {
+	//スペースキー入力で弾発射
+	if (mInput.Key(VK_SPACE))
+	{
+		bullet.Set(0.1f, 1.5f);
+		bullet.Position(CVector(0.0f, 0.0f, 10.0f) * mMatrix);
+		bullet.Rotation(mRotation);
+	}         
 	//Sキー入力で下向き
 	if (mInput.Key('S'))
 	{
@@ -50,4 +57,5 @@ void CPlayer::Update()
 
 	//変換行列の更新
 	CTransform::Update();
+
 }
