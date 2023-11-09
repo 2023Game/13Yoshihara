@@ -16,6 +16,7 @@
 #include "CMiss.h"
 #include <vector>
 #include "CCharacterManager.h"
+#include "CTaskManager.h"
 
 #include "CGame.h"
 #include "CSound.h"
@@ -32,6 +33,7 @@ private:
 	CSound mSoundOver;	//ゲームオーバー
 	CGame* mpGame;
 	static CCharacterManager mCharacterManager;
+	static CTaskManager mTaskManager;
 	enum class EState
 	{
 		ESTART,	//ゲーム開始
@@ -51,6 +53,7 @@ private:
 	//CCharacterのポインタの可変長配列
 //	std::vector<CCharacter*> mCharacters;
 public:
+	static CTaskManager* TaskManager();
 	static CCharacterManager* CharacterManager();
 	static CTexture* Texture();
 	//最初に一度だけ実行するプログラム
