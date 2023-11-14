@@ -25,7 +25,7 @@ class CApplication
 {
 private:
 	CPlayer mPlayer;
-	CCharacter3 mCharacter;
+	//CCharacter3 mCharacter;
 	CModel mBackGround;//背景モデル
 	CModel mModel; //モデルクラスのインスタンス作成
 	CVector mEye; //カメラの視点
