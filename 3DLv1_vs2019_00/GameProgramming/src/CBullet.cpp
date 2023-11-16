@@ -4,6 +4,7 @@
 
 CBullet::CBullet()
 	:mLife(50)
+	, mCollider(this, &mMatrix, CVector(0.0f, 0.0f, 0.0f), 0.1f)
 {}
 
 //幅と奥行きの設定
@@ -43,6 +44,8 @@ void CBullet::Render()
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
 	//三角形描画
 	mT.Render(mMatrix);
+	//コライダの描画
+	mCollider.Render();
 }
 
 
