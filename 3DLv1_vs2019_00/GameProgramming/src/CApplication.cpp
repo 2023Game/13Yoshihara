@@ -7,7 +7,7 @@
 //クラスのstatic変数
 CTexture CApplication::mTexture;
 CCharacterManager CApplication::mCharacterManager;
-CTaskManager CApplication::mTaskManager;
+//CTaskManager CApplication::mTaskManager;
 
 //背景モデルデータの指定
 #define MODEL_BACKGROUND "res\\sky.obj","res\\sky.mtl"
@@ -16,10 +16,10 @@ CTaskManager CApplication::mTaskManager;
 #define SOUND_BGM "res\\mario.wav" //BGM音声ファイル
 #define SOUND_OVER "res\\mdai.wav" //ゲームオーバー音声ファイル
 
-CTaskManager* CApplication::TaskManager()
+/*CTaskManager* CApplication::TaskManager()
 {
 	return &mTaskManager;
-}
+}*/
 CCharacterManager* CApplication::CharacterManager()
 {
 	return &mCharacterManager;
@@ -59,7 +59,7 @@ void CApplication::Start()
 void CApplication::Update()
 {	
 	//タスクマネージャの更新
-	mTaskManager.Update();
+	CTaskManager::Instance()->Update();
 
 	//頂点1,頂点2,頂点3,法線データの作成
 	CVector v0, v1, v2, n;
@@ -116,7 +116,9 @@ void CApplication::Update()
 
 
 	//タスクリストの削除
-	mTaskManager.Delete();
+	CTaskManager::Instance()->Delete();
 	//タスクマネージャの描画
-	mTaskManager.Render();
+	CTaskManager::Instance()->Render();
+
+	CCollisionManager::Instance()->Render();
 }

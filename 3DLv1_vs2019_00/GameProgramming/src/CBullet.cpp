@@ -45,7 +45,7 @@ void CBullet::Render()
 	//三角形描画
 	mT.Render(mMatrix);
 	//コライダの描画
-	mCollider.Render();
+	//mCollider.Render();
 }
 
 
