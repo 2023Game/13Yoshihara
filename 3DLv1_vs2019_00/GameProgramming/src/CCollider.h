@@ -2,6 +2,7 @@
 #define CCOLLIDER_H
 //キャラクタクラスのインクルード
 #include "CCharacter3.h"
+class CCollisionManager;
 
 /*
 コライダクラス
@@ -9,7 +10,12 @@
 */
 class CCollider :public CTransform, public CTask
 {
+	friend CCollisionManager;
 public:
+	//衝突判定
+	//Collision(コライダ1,コライダ2)
+	//return:true(衝突している)false(衝突していない)
+	static bool Collision(CCollider* m, CCollider* o);
 	//デストラクタ
 	~CCollider();
 	//コンストラクタ

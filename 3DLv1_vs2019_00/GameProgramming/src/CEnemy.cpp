@@ -26,3 +26,15 @@ void CEnemy::Update()
 	//位置を移動
 	mPosition = mPosition + VELOCITY * mMatrixRotate;
 }
+
+//衝突処理
+//Collision(コライダ1,コライダ2)
+void CEnemy::Collision(CCollider* m, CCollider* o)
+{
+	//コライダのmとoが衝突しているか判定
+	if (CCollider::Collision(m, o))
+	{
+		//衝突しているときは無効にする
+		mEnabled = false;
+	}
+}
