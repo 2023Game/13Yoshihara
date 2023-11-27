@@ -8,6 +8,7 @@
 CTexture CApplication::mTexture;
 CCharacterManager CApplication::mCharacterManager;
 //CTaskManager CApplication::mTaskManager;
+CMatrix CApplication::mModelViewInverse;
 
 //背景モデルデータの指定
 #define MODEL_BACKGROUND "res\\sky.obj","res\\sky.mtl"
@@ -16,6 +17,10 @@ CCharacterManager CApplication::mCharacterManager;
 #define SOUND_BGM "res\\mario.wav" //BGM音声ファイル
 #define SOUND_OVER "res\\mdai.wav" //ゲームオーバー音声ファイル
 
+const CMatrix& CApplication::ModelViewInverse()
+{
+	return mModelViewInverse;
+}
 /*CTaskManager* CApplication::TaskManager()
 {
 	return &mTaskManager;
@@ -54,6 +59,9 @@ void CApplication::Start()
 	//敵機のインスタンス作成
 	new CEnemy(&mModelC5, CVector(30.0f, 10.0f, -130.0f),
 		CVector(), CVector(0.1f, 0.1f, 0.1f));
+
+	//ビルボードの生成
+	new CBillBoard(CVector(-6.0f, 3.0f, -10.0f), 1.0f, 1.0f);
 }
 
 void CApplication::Update()
@@ -113,7 +121,13 @@ void CApplication::Update()
 	u = CVector(0.0f, 1.0f, 0.0f) * mPlayer.MatrixRotate();
 	//カメラの設定
 	gluLookAt(e.X(), e.Y(), e.Z(), c.X(), c.Y(), c.Z(), u.X(), u.Y(), u.Z());
-
+	//モデルビュー行列の取得
+	glGetFloatv(GL_MODELVIEW_MATRIX, mModelViewInverse.M());
+	//逆行列の取得
+	mModelViewInverse = mModelViewInverse.Transpose();
+	mModelViewInverse.M(0, 3, 0);
+	mModelViewInverse.M(1, 3, 0);
+	mModelViewInverse.M(2, 3, 0);
 	mBackGround.Render();
 
 

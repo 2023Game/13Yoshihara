@@ -18,6 +18,7 @@
 #include "CCharacterManager.h"
 #include "CTaskManager.h"
 #include "CCollisionManager.h"
+#include "CBillBoard.h"
 
 #include "CGame.h"
 #include "CSound.h"
@@ -25,6 +26,8 @@
 class CApplication
 {
 private:
+	//モデルビューの逆行列
+	static CMatrix mModelViewInverse;
 	CModel mModelC5;//C5モデル
 	CPlayer mPlayer;
 	//CCharacter3 mCharacter;
@@ -55,6 +58,8 @@ private:
 	//CCharacterのポインタの可変長配列
 //	std::vector<CCharacter*> mCharacters;
 public:
+	//モデルビュー行列の取得
+	static const CMatrix& ModelViewInverse();
 	//static CTaskManager* TaskManager();
 	static CCharacterManager* CharacterManager();
 	static CTexture* Texture();

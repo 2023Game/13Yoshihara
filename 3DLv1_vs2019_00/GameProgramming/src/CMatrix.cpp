@@ -138,3 +138,19 @@ float* CMatrix::M() const
 {
 	return (float*)mM[0];
 }
+
+CMatrix CMatrix::Transpose() const
+{
+	CMatrix tmp;//返却用のCMatrixインスタンスを作成
+
+	//tmpの二次元配列に、逆行列を代入
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			//2次元配列のj行i列目の値を代入する
+			tmp.mM[i][j] = mM[j][i];
+		}
+	}
+	return tmp;//代入されたtmpを返す
+}
