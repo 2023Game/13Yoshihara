@@ -34,7 +34,8 @@ void CEnemy::Collision(CCollider* m, CCollider* o)
 	//コライダのmとoが衝突しているか判定
 	if (CCollider::Collision(m, o))
 	{
-		//衝突しているときは無効にする
-		mEnabled = false;
+		//エフェクト生成
+		new CEffect(o->Parent()->Position(), 1.0f, 1.0f, "exp.tga", 4, 4, 2);
+		//mEnabled = false;
 	}
 }

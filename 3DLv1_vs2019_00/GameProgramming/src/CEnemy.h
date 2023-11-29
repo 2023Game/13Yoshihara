@@ -4,6 +4,8 @@
 #include "CCharacter3.h"
 //コライダクラスのインクルード
 #include "CCollider.h"
+//エフェクトクラスのインクルード
+#include "CEffect.h"
 /*
 エネミークラス
 キャラクタクラスを継承
