@@ -19,6 +19,7 @@
 #include "CTaskManager.h"
 #include "CCollisionManager.h"
 #include "CBillBoard.h"
+#include "CColliderTriangle.h"
 
 #include "CGame.h"
 #include "CSound.h"
@@ -26,6 +27,9 @@
 class CApplication
 {
 private:
+	//三角コライダの作成
+	CColliderTriangle mColliderTriangle;
+	CColliderTriangle mColliderTriangle2;
 	//モデルビューの逆行列
 	static CMatrix mModelViewInverse;
 	CModel mModelC5;//C5モデル
