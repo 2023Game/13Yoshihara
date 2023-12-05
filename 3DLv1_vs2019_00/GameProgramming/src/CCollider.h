@@ -40,7 +40,7 @@ public:
 	//描画
 	void Render();	
 	//mTypeの値を返す
-	CCollider::EType CCollider::Type();
+	CCollider::EType Type();
 protected:
 	EType mType;//コライダタイプ
 	//頂点
