@@ -37,16 +37,6 @@ CTexture* CApplication::Texture()
 
 void CApplication::Start()
 {
-	//三角コライダの確認
-	mColliderTriangle.Set(nullptr, nullptr
-		, CVector(-50.0f, 0.0f, -50.0f)
-		, CVector(-50.0f, 0.0f, 50.0f)
-		, CVector(50.0f, 0.0f, -50.0f));
-	mColliderTriangle2.Set(nullptr, nullptr
-		, CVector(50.0f, 0.0f, 50.0f)
-		, CVector(50.0f, 0.0f, -50.0f)
-		, CVector(-50.0f, 0.0f, 50.0f));
-
 	mEye = CVector(1.0f, 2.0f, 3.0f);
 
 	mModel.Load(MODEL_OBJ);
@@ -72,6 +62,10 @@ void CApplication::Start()
 
 	//ビルボードの生成
 	new CBillBoard(CVector(-6.0f, 3.0f, -10.0f), 1.0f, 1.0f);
+
+	//背景モデルから三角コライダを生成
+    //親インスタンスと親行列はなし
+	mColliderMesh.Set(nullptr, nullptr, &mBackGround);
 }
 
 void CApplication::Update()
