@@ -13,6 +13,8 @@ class CCollider;
 class CCharacter3 :public CTransform ,public CTask
 {
 public:
+	//コンストラクタ
+	CCharacter3(int priority);
 	//衝突処理
 	virtual void Collision(CCollider* m, CCollider* o) {}
 	//コンストラクタ
