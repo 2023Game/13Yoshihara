@@ -17,6 +17,18 @@ CMatrix CApplication::mModelViewInverse;
 #define SOUND_BGM "res\\mario.wav" //BGM音声ファイル
 #define SOUND_OVER "res\\mdai.wav" //ゲームオーバー音声ファイル
 
+CUi* CApplication::spUi = nullptr;
+
+CUi* CApplication::Ui()
+{
+	return spUi;//インスタンスのポインタを返す
+}
+
+CApplication::~CApplication()
+{
+	delete spUi;//インスタンスUiの削除
+}
+
 const CMatrix& CApplication::ModelViewInverse()
 {
 	return mModelViewInverse;
@@ -37,6 +49,8 @@ CTexture* CApplication::Texture()
 
 void CApplication::Start()
 {
+	spUi = new CUi();//UIクラスの生成
+
 	mEye = CVector(1.0f, 2.0f, 3.0f);
 
 	mModel.Load(MODEL_OBJ);
@@ -66,6 +80,7 @@ void CApplication::Start()
 	//背景モデルから三角コライダを生成
     //親インスタンスと親行列はなし
 	mColliderMesh.Set(nullptr, nullptr, &mBackGround);
+
 }
 
 void CApplication::Update()
@@ -142,4 +157,7 @@ void CApplication::Update()
 	CTaskManager::Instance()->Render();
 
 	CCollisionManager::Instance()->Render();
+
+	spUi->Render();//UIの描画
 }
+
