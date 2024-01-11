@@ -10,6 +10,7 @@
 #include "CCharacter.h"
 #include "CBullet.h"
 #include "CEnemy.h"
+#include "CEnemy3.h"
 #include "CPlayer.h"
 #include "CInput.h"
 #include "CFont.h"
@@ -28,7 +29,6 @@
 class CApplication
 {
 private:
-
 	static CUi* spUi;//Uiクラスのポインタ
 	//モデルからコライダを生成
 	CColliderMesh mColliderMesh;
