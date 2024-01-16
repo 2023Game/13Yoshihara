@@ -7,6 +7,13 @@
 #define ROTATION_YV CVector(0.0f,1.0f,0.0f)//回転速度
 #define VELOCITY CVector(0.0f,0.0f,0.1f)//移動速度
 
+CPlayer* CPlayer::spInstance = nullptr;
+
+CPlayer* CPlayer::Instance()
+{
+	return spInstance;
+}
+
 
 //CPlayer(位置,回転,スケール)
 CPlayer::CPlayer(const CVector& pos, const CVector& rot, const CVector& scale)
@@ -74,6 +81,8 @@ CPlayer::CPlayer()
 	, mLine2(this, &mMatrix, CVector(0.0f, 5.0f, -8.0f), CVector(0.0f, -3.0f, -8.0f))
 	, mLine3(this, &mMatrix, CVector(9.0f, 0.0f, -8.0f), CVector(-9.0f, 0.0f, -8.0f))
 {
+	//インスタンスの設定
+	spInstance = this;
 }
 
 void CPlayer::Collision(CCollider* m, CCollider* o)

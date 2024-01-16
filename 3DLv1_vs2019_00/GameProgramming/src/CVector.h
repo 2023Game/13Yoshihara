@@ -2,6 +2,7 @@
 #ifndef CVECTOR_H
 #define CVECTOR_H
 #include "CMatrix.h"
+
 /*
 ベクトルクラス
 ベクトルデータを扱います
