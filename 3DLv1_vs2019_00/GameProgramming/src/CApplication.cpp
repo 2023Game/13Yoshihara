@@ -6,7 +6,6 @@
 
 //クラスのstatic変数
 CTexture CApplication::mTexture;
-//CTaskManager CApplication::mTaskManager;
 CMatrix CApplication::mModelViewInverse;
 
 //背景モデルデータの指定
@@ -32,10 +31,6 @@ const CMatrix& CApplication::ModelViewInverse()
 {
 	return mModelViewInverse;
 }
-/*CTaskManager* CApplication::TaskManager()
-{
-	return &mTaskManager;
-}*/
 
 CTexture* CApplication::Texture()
 {
@@ -44,6 +39,8 @@ CTexture* CApplication::Texture()
 
 void CApplication::Start()
 {
+	//3Dモデルファイルの読み込み
+	mModelX.Load(MODEL_FILE);
 	mFont.Load("FontG.png", 1, 4096 / 64);
 }
 

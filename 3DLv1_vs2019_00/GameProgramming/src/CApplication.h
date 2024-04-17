@@ -19,23 +19,21 @@
 #include "CColliderTriangle.h"
 #include "CColliderMesh.h"
 #include "CUi.h"
+#include "CModelX.h"
 
 #include "CSound.h"
 
 class CApplication
 {
 private:
+	CModelX mModelX;
 	static CUi* spUi;//Uiクラスのポインタ
 	//モデルからコライダを生成
 	CColliderMesh mColliderMesh;
-	//三角コライダの作成
-	//CColliderTriangle mColliderTriangle;
-	//CColliderTriangle mColliderTriangle2;
 	//モデルビューの逆行列
 	static CMatrix mModelViewInverse;
 	CModel mModelC5;//C5モデル
 	CPlayer mPlayer;
-	//CCharacter3 mCharacter;
 	CModel mBackGround;//背景モデル
 	CModel mModel; //モデルクラスのインスタンス作成
 	CVector mEye; //カメラの視点
@@ -50,21 +48,16 @@ private:
 		EOVER,	//ゲームオーバー
 	};
 	EState mState;
-//	CCharacter mRectangle;
 	CPlayer* mpPlayer;
 	static CTexture mTexture;
 	CEnemy* mpEnemy;
-//	CBullet* mpBullet;
 	CInput mInput;
 	CFont mFont;
-	//CCharacterのポインタの可変長配列
-//	std::vector<CCharacter*> mCharacters;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
 	//モデルビュー行列の取得
 	static const CMatrix& ModelViewInverse();
-	//static CTaskManager* TaskManager();
 	static CTexture* Texture();
 	//最初に一度だけ実行するプログラム
 	void Start();
