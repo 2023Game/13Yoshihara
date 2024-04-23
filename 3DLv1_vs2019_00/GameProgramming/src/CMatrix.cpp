@@ -170,3 +170,9 @@ CVector CMatrix::VectorY() const
 {
 	return CVector(mM[1][0], mM[1][1], mM[1][2]);
 }
+
+
+int CMatrix::Size()
+{
+	return sizeof(mM) / sizeof(float);
+}

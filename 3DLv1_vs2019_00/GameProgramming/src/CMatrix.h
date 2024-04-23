@@ -49,6 +49,8 @@ public:
 	CMatrix();
 	//単位行列の作成
 	CMatrix Identity();
+	//要素数の取得
+	int Size();
 private:
 	//4×4の行列データを設定
 	float mM[4][4];

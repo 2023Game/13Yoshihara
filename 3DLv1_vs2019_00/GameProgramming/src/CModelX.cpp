@@ -199,6 +199,16 @@ CModelXFrame::CModelXFrame(CModelX* model)
 			//フレームを作成し、子フレームの配列に追加
 			mChild.push_back(new CModelXFrame(model));
 		}
+		//FrameTransformMatrixの場合、float型に変えて、4x4の行列に追加する
+		else if (strcmp(model->mToken, "FrameTransformMatrix") == 0)
+		{
+			model->GetToken();// {
+			for (int i = 0; i < mTransformMatrix.Size(); i++)
+			{
+				mTransformMatrix.M()[i] = atof(model->GetToken());
+			}
+			model->GetToken();// }
+		}
 		else
 		{
 			//上記以外の要素は読み飛ばす
@@ -208,6 +218,7 @@ CModelXFrame::CModelXFrame(CModelX* model)
 	//デバッグバージョンのみ有効
     #ifdef _DEBUG
 	    printf("%s\n", mpName);
+		mTransformMatrix.Print();
     #endif
 }
 
