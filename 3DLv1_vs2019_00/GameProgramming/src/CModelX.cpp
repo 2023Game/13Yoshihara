@@ -161,6 +161,13 @@ void CModelX::SkipNode()
 	}
 }
 
+//mTokenのポインタを返す
+char* CModelX::Token()
+{
+	return mToken;
+}
+
+
 /*
 CModelXFrame
 model:CModelXインスタンスへのポインタ
@@ -171,6 +178,7 @@ model:CModelXインスタンスへのポインタ
 CModelXFrame::CModelXFrame(CModelX* model)
 	:mpName(nullptr)
 	, mIndex(0)
+	, mpMesh(nullptr)
 {
 	//現在のフレーム配列の要素数を取得し設定する
 	mIndex = model->mFrame.size();
@@ -209,6 +217,12 @@ CModelXFrame::CModelXFrame(CModelX* model)
 			}
 			model->GetToken();// }
 		}
+		//Meshの場合CMeshを作成
+		else if (strcmp(model->mToken, "Mesh") == 0)
+		{
+			mpMesh = new CMesh();
+			mpMesh->Init(model);
+		}
 		else
 		{
 			//上記以外の要素は読み飛ばす
@@ -232,4 +246,61 @@ CModelXFrame::~CModelXFrame()
 	}
 	//名前のエリア解放する
 	SAFE_DELETE_ARRAY(mpName);
+
+	//mpMeshがnullptr以外ならインスタンスを削除
+	if (mpMesh != nullptr)
+	{
+		delete mpMesh;
+	}
+}
+
+
+//CMeshのコンストラクタ
+CMesh::CMesh()
+	:mVertexNum(0)
+	, mpVertex(nullptr)
+{
+
+}
+
+//CMeshのデストラクタ
+CMesh::~CMesh()
+{
+	SAFE_DELETE_ARRAY(mpVertex);
+}
+
+
+/*
+Init
+Meshのデータを取り込む
+*/
+void CMesh::Init(CModelX* model)
+{
+	model->GetToken(); // { or 名前
+	if (!strchr(model->Token(), '{'))
+	{
+		//名前の場合、次が{
+		model->GetToken(); // {
+	}
+
+	//頂点数の取得
+	mVertexNum = atoi(model->GetToken());
+	//頂点数分エリア確保
+	mpVertex = new CVector[mVertexNum];
+	//頂点数分データを取り込む
+	for (int i = 0; i < mVertexNum; i++)
+	{
+		mpVertex[i].X(atof(model->GetToken()));
+		mpVertex[i].Y(atof(model->GetToken()));
+		mpVertex[i].Z(atof(model->GetToken()));
+	}
+	//デバッグバージョンのみ有効
+#ifdef _DEBUG
+	printf("VertexNum:%d\n", mVertexNum);
+	for (int i = 0; i < mVertexNum; i++)
+	{
+		printf("%10f %10f %10f\n", mpVertex[i].X(), mpVertex[i].Y(), mpVertex[i].Z());
+	}
+
+#endif
 }

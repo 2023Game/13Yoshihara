@@ -3,8 +3,10 @@
 
 #include <vector>    //vectorクラスのインクルード（動的配列）
 #include "CMatrix.h" //マトリクスクラスのインクルード
+#include "CVector.h" //Vectorクラスのインクルード
 class CModelX;      //CModelXクラスの宣言
 class CModelXFrame; //CModelXFrameクラスの宣言
+class CMesh;        //CMeshクラスの宣言
 
 #define MODEL_FILE "res\\sample.blend.x"
 
@@ -25,6 +27,8 @@ public:
 	CModelX();
 	//ファイル読み込み
 	void Load(char* file);
+	//mTokenのポインタを返す
+	char* Token();
 
 private:
 	std::vector<CModelXFrame*> mFrame;//フレームの配列
@@ -34,6 +38,7 @@ private:
 	char mToken[1024]; //取り出した単語の領域
 };
 
+//Frameクラス
 class CModelXFrame {
 	friend CModelX;
 public:
@@ -46,6 +51,22 @@ private:
 	CMatrix mTransformMatrix;//変換行列
 	char* mpName;//フレーム名前
 	int mIndex; //フレーム番号
+	CMesh* mpMesh; //Meshデータ
 };
+
+//CMeshクラスの定義
+class CMesh {
+public:
+	//コンストラクタ
+	CMesh();
+	//デストラクタ
+	~CMesh();
+	//読み込み処理
+	void Init(CModelX* model);
+private:
+	int mVertexNum;   //頂点数
+	CVector* mpVertex;//頂点データ
+};
+
 #endif
 
