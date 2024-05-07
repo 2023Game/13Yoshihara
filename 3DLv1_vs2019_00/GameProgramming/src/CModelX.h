@@ -68,6 +68,8 @@ private:
 	CVector* mpVertex;//頂点データ
 	int mFaceNum; //面数
 	int* mpVertexIndex; //面を構成する頂点インデックス
+	int mNormalNum; //法線数
+	CVector* mpNormal; //法線ベクトル
 };
 
 #endif
