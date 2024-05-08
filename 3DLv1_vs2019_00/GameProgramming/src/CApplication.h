@@ -26,6 +26,7 @@
 class CApplication
 {
 private:
+	CMatrix mMatrix;
 	CModelX mModelX;
 	static CUi* spUi;//Uiクラスのポインタ
 	//モデルからコライダを生成

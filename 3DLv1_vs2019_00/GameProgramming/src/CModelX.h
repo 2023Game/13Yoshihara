@@ -19,12 +19,13 @@ Xファイル形式の3Dモデルデータをプログラムで認識する
 class CModelX {
 	friend CModelXFrame;
 public:
+	CModelX();
 	~CModelX();
+	void Render();
 	//ノードの読み飛ばし
 	void SkipNode();
 	//単語の取り出し
 	char* GetToken();
-	CModelX();
 	//ファイル読み込み
 	void Load(char* file);
 	//mTokenのポインタを返す
@@ -46,6 +47,8 @@ public:
 	CModelXFrame(CModelX* model);
 	//デストラクタ
 	~CModelXFrame();
+	//描画
+	void Render();
 private:
 	std::vector<CModelXFrame*> mChild;//子フレームの配列
 	CMatrix mTransformMatrix;//変換行列
@@ -61,6 +64,8 @@ public:
 	CMesh();
 	//デストラクタ
 	~CMesh();
+	//描画
+	void Render();
 	//読み込み処理
 	void Init(CModelX* model);
 private:
