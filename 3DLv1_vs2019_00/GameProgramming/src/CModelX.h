@@ -7,6 +7,7 @@
 class CModelX;      //CModelXクラスの宣言
 class CModelXFrame; //CModelXFrameクラスの宣言
 class CMesh;        //CMeshクラスの宣言
+class CMaterial;    //CMaterialクラスの宣言
 
 #define MODEL_FILE "res\\sample.blend.x"
 
@@ -30,7 +31,8 @@ public:
 	void Load(char* file);
 	//mTokenのポインタを返す
 	char* Token();
-
+	//トークンが無くなったらtrue
+	bool EOT();
 private:
 	std::vector<CModelXFrame*> mFrame;//フレームの配列
 	//cが区切り文字ならtrueを返す
@@ -75,6 +77,10 @@ private:
 	int* mpVertexIndex; //面を構成する頂点インデックス
 	int mNormalNum; //法線数
 	CVector* mpNormal; //法線ベクトル
+	int mMaterialNum;//マテリアル数
+	int mMaterialIndexNum;//マテリアル番号数（面数）
+	int* mpMaterialIndex;//マテリアル番号
+	std::vector<CMaterial*> mMaterial;//マテリアルデータ
 };
 
 #endif
