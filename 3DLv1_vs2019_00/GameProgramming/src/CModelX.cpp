@@ -199,6 +199,25 @@ bool CModelX::EOT()
 		return false;
 }
 
+//フレーム名に該当するフレームのアドレスを返す
+CModelXFrame* CModelX::FindFrame(char* name)
+{
+	//イテレータ作成
+	std::vector<CModelXFrame*>::iterator itr;
+	//先頭から最後まで繰り返す
+	for (itr = mFrame.begin(); itr != mFrame.end(); itr++)
+	{
+		//名前が一致したか？
+		if (strcmp(name, (*itr)->mpName) == 0)
+		{
+			//一致したらそのアドレスを返す
+			return *itr;
+		}
+	}
+	//一致するフレームがない場合はnullptrを返す
+	return nullptr;
+}
+
 
 /*
 CModelXFrame
@@ -262,7 +281,7 @@ CModelXFrame::CModelXFrame(CModelX* model)
 		}
 	}
 	//デバッグバージョンのみ有効
-    #ifdef _DEBUG
+    #ifdef DEBUG
 	    printf("%s\n", mpName);
 		mTransformMatrix.Print();
     #endif
@@ -294,6 +313,12 @@ void CModelXFrame::Render()
 {
 	if (mpMesh != nullptr)
 		mpMesh->Render();
+}
+
+//mIndexを返す
+int CModelXFrame::Index()
+{
+	return mIndex;
 }
 
 
@@ -470,7 +495,7 @@ void CMesh::Init(CModelX* model)
 	}
 
 	//デバッグバージョンのみ有効
-#ifdef _DEBUG
+#ifdef DEBUG
 	printf("VertexNum:%d\n", mVertexNum);
 	for (int i = 0; i < mVertexNum; i++)
 	{
@@ -527,7 +552,7 @@ CSkinWeights::CSkinWeights(CModelX* model)
 	}
 	model->GetToken(); //}
 
-#ifdef _DEBUG
+#ifdef DEBUG
 	printf("SkinWeights %s\n", mpFrameName);
 	for (int i = 0; i < mIndexNum; i++)
 		printf("%d %f\n", mpIndex[i], mpWeight[i]);
@@ -558,11 +583,11 @@ CAnimationSet::CAnimationSet(CModelX* model)
 		if (strchr(model->Token(), '}'))break;
 		if (strcmp(model->Token(), "Animation") == 0)
 		{
-			//とりあえず読み飛ばし
-			model->SkipNode();
+			//Animation要素読み込み
+			mAnimation.push_back(new CAnimation(model));
 		}
 	}
-#ifdef _DEBUG
+#ifdef DEBUG
 	printf("AnimationSet:%s\n", mpName);
 #endif
 }
@@ -570,4 +595,50 @@ CAnimationSet::CAnimationSet(CModelX* model)
 CAnimationSet::~CAnimationSet()
 {
 	SAFE_DELETE_ARRAY(mpName);
+	//アニメーション要素の削除
+	for (size_t i = 0; i < mAnimation.size(); i++)
+	{
+		delete mAnimation[i];
+	}
+}
+
+CAnimation::CAnimation(CModelX* model)
+	: mpFrameName(nullptr)
+	, mFrameIndex(0)
+{
+	model->GetToken();// { or Animation Name
+	if (strchr(model->Token(), '{'))
+	{
+		model->GetToken();//  {
+	}
+	else
+	{
+		model->GetToken(); // {
+		model->GetToken(); // {
+	}
+
+	model->GetToken();//FrameName
+	mpFrameName = new char[strlen(model->Token()) + 1];
+	strcpy(mpFrameName, model->Token());
+	mFrameIndex = model->FindFrame(model->Token())->Index();
+	model->GetToken(); // }
+
+	while (!model->EOT())
+	{
+		model->GetToken(); // } AnimationKey
+		if (strchr(model->Token(), '}'))break;
+		if (strcmp(model->Token(), "AnimationKey") == 0)
+		{
+			model->SkipNode();
+		}
+	}
+
+#ifdef _DEBUG
+	printf("Animation:%s\n", mpFrameName);
+#endif
+}
+
+CAnimation::~CAnimation()
+{
+	SAFE_DELETE_ARRAY(mpFrameName);
 }
