@@ -51,6 +51,8 @@ public:
 	CMatrix Identity();
 	//要素数の取得
 	int Size();
+	//クオータニオンで回転行列を設定する
+	CMatrix Quaternion(float x, float y, float z, float w);
 private:
 	//4×4の行列データを設定
 	float mM[4][4];

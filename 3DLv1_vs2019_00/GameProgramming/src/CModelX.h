@@ -10,12 +10,15 @@ class CMesh;        //CMeshクラスの宣言
 class CMaterial;    //CMaterialクラスの宣言
 class CSkinWeights; //CSkinWeightsクラスの宣言
 class CAnimationSet;//CAnimationSetクラスの宣言
-class CAnimation; //CAnimationクラスの宣言
+class CAnimation;   //CAnimationクラスの宣言
+class CAnimationKey;//CAnimationKeyクラスの宣言
 
 #define MODEL_FILE "res\\sample.blend.x"
 
 //領域解放をマクロ化
 #define SAFE_DELETE_ARRAY(a){if(a) delete[] a; a = nullptr;}
+//配列のサイズ取得をマクロ化
+#define ARRAY_SIZE(a)(sizeof(a)/sizeof(a[0]))
 /*
 CModelX
 Xファイル形式の3Dモデルデータをプログラムで認識する
@@ -134,6 +137,19 @@ public:
 private:
 	char* mpFrameName;//フレーム名
 	int mFrameIndex;//フレーム番号
+	int mKeyNum; //キー数（時間数）
+	CAnimationKey* mpKey;//キーの配列
+};
+
+//アニメーションキークラス
+class CAnimationKey {
+	friend CAnimation;
+	friend CAnimationSet;
+private:
+	//時間
+	float mTime;
+	//行列
+	CMatrix mMatrix;
 };
 #endif
 
