@@ -135,6 +135,46 @@ const CMatrix CMatrix::operator*(const CMatrix& m)const
 	return t;
 }
 
+//CMatrix * float‚Ì‰‰ŽZŒ‹‰Ê‚ð•Ô‚·
+CMatrix CMatrix::operator*(const float& x) const
+{
+	CMatrix t;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			t.mM[i][j] = mM[i][j] * x;
+		}
+	}
+	return t;
+}
+
+//CMatrix1 + CMatrix2‚Ì‰‰ŽZŒ‹‰Ê‚ð•Ô‚·
+CMatrix CMatrix::operator+(const CMatrix& m) const
+{
+	CMatrix t;
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			t.mM[i][j] = mM[i][j] + m.mM[i][j];
+		}
+	}
+	return t;
+}
+
+//CMatrix1 += CMatrix2‚Ì‰‰ŽZ‚ðs‚¤
+void CMatrix::operator+=(const CMatrix& m)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			mM[i][j] += m.mM[i][j];
+		}
+	}
+}
+
 float* CMatrix::M() const
 {
 	return (float*)mM[0];
