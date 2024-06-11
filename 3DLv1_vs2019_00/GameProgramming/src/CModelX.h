@@ -43,6 +43,8 @@ public:
 	bool EOT();
 	//フレーム名に該当するフレームのアドレスを返す
 	std::vector<CAnimationSet*>& AnimationSet();
+	//mFrameの参照を返す
+	std::vector<CModelXFrame*>& Frames();
 	CModelXFrame* FindFrame(char* name);
 	//フレームの変換行列を更新する
 	void AnimateFrame();
@@ -69,12 +71,15 @@ public:
 	void Render();
 	//mIndexを返す
 	int Index();
+	//合成行列の作成
+	void AnimateCombined(CMatrix* parent);
 private:
 	std::vector<CModelXFrame*> mChild;//子フレームの配列
 	CMatrix mTransformMatrix;//変換行列
 	char* mpName;//フレーム名前
 	int mIndex; //フレーム番号
 	CMesh* mpMesh; //Meshデータ
+	CMatrix mCombinedMatrix;//合成行列
 };
 
 //CMeshクラスの定義

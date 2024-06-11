@@ -204,6 +204,11 @@ std::vector<CAnimationSet*>& CModelX::AnimationSet()
 	return mAnimationSet;
 }
 
+std::vector<CModelXFrame*>& CModelX::Frames()
+{
+	return mFrame;
+}
+
 //フレーム名に該当するフレームのアドレスを返す
 CModelXFrame* CModelX::FindFrame(char* name)
 {
@@ -254,7 +259,7 @@ void CModelX::AnimateFrame()
 		if (animSet->mWeight == 0)continue;
 		animSet->AnimateMatrix(this);
 	}
-#ifdef _DEBUG
+#ifdef DEBUG
 	for (size_t i = 0; i < mFrame.size(); i++)
 	{
 		printf("Frame:%s\n", mFrame[i]->mpName);
@@ -364,6 +369,22 @@ void CModelXFrame::Render()
 int CModelXFrame::Index()
 {
 	return mIndex;
+}
+
+//合成行列の作成
+void CModelXFrame::AnimateCombined(CMatrix* parent)
+{
+	//自分の変換行列に、親からの変換行列をかける
+	mCombinedMatrix = mTransformMatrix * (*parent);
+	//子フレームの合成行列を作成する
+	for (size_t i = 0; i < mChild.size(); i++)
+	{
+		mChild[i]->AnimateCombined(&mCombinedMatrix);
+	}
+#ifdef _DEBUG
+		printf("Frame:%s\n", mpName);
+		mCombinedMatrix.Print();
+#endif
 }
 
 
