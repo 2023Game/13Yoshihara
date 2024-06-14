@@ -23,6 +23,13 @@ float CVector::Z() const
 {
 	return mZ;
 }
+//+=演算子のオーバーロード
+void CVector::operator+=(const CVector& v)
+{
+	mX += v.mX;
+	mY += v.mY;
+	mZ += v.mZ;
+}
 
 CVector::CVector()
 	:mX(0.0f)
