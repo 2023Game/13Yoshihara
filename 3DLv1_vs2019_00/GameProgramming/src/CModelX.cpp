@@ -410,7 +410,7 @@ void CModelXFrame::AnimateCombined(CMatrix* parent)
 	{
 		mChild[i]->AnimateCombined(&mCombinedMatrix);
 	}
-#ifdef _DEBUG
+#ifdef DEBUG
 		printf("Frame:%s\n", mpName);
 		mCombinedMatrix.Print();
 #endif
