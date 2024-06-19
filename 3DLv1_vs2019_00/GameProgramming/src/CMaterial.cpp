@@ -36,6 +36,8 @@ CMaterial::CMaterial()
 CMaterial::CMaterial(CModelX* model)
 	:mpTextureFilename(nullptr)
 {
+	//CModelX‚Éƒ}ƒeƒŠƒAƒ‹‚ð’Ç‰Á‚·‚é
+	model->Material().push_back(this);
 	model->GetToken();// { ? Name
 	if (strcmp(model->Token(), "{") != 0)
 	{
