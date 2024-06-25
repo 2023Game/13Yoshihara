@@ -122,6 +122,8 @@ private:
 	std::vector<CSkinWeights*> mSkinWeights;//スキンウェイト
 	CVector* mpAnimateVertex;//アニメーション用頂点
 	CVector* mpAnimateNormal;//アニメーション用法線
+	//テクスチャ座標データ
+	float* mpTextureCoords;
 };
 
 //スキンウェイトクラス
