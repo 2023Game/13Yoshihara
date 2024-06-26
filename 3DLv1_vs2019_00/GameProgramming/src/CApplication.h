@@ -20,6 +20,7 @@
 #include "CColliderMesh.h"
 #include "CUi.h"
 #include "CModelX.h"
+#include "CXCharacter.h"
 
 #include "CSound.h"
 
@@ -54,6 +55,9 @@ private:
 	CEnemy* mpEnemy;
 	CInput mInput;
 	CFont mFont;
+
+	//キャラクタのインスタンス
+	CXCharacter mCharacter;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
