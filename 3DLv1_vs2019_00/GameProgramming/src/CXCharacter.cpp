@@ -1,5 +1,19 @@
 #include "CXCharacter.h"
 
+CXCharacter::CXCharacter()
+{
+	mScale = CVector(1.0f, 1.0f, 1.0f);
+}
+
+//更新
+void CXCharacter::Update()
+{
+	//変換行列の更新
+	CTransform::Update();
+	//アニメーションを更新
+	Update(mMatrix);
+}
+
 //初期化処理
 void CXCharacter::Init(CModelX* model)
 {

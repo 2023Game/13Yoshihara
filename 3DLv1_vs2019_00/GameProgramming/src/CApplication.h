@@ -21,6 +21,7 @@
 #include "CUi.h"
 #include "CModelX.h"
 #include "CXCharacter.h"
+#include "CXPlayer.h"
 
 #include "CSound.h"
 
@@ -57,7 +58,7 @@ private:
 	CFont mFont;
 
 	//キャラクタのインスタンス
-	CXCharacter mCharacter;
+	CXPlayer mXPlayer;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
