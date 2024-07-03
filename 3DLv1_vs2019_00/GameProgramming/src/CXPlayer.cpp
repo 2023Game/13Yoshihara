@@ -2,24 +2,51 @@
 
 void CXPlayer::Update()
 {
-	//前移動
-	if (mInput.Key('W'))
+	if (AnimationIndex() == 3)
 	{
-		ChangeAnimation(1, true, 60);
-		mPosition += CVector(0.0f, 0.0f, 0.1f) * mMatrixRotate;
+		if (IsAnimationFinished())
+		{
+			ChangeAnimation(4, false, 30);
+		}
 	}
-	else
+	if (AnimationIndex() == 4)
 	{
-		ChangeAnimation(0, true, 60);
+		if (IsAnimationFinished())
+		{
+			ChangeAnimation(0, true, 60);
+		}
 	}
-	if (mInput.Key('A'))
+	if (AnimationIndex() != 3 && AnimationIndex() != 4)
 	{
-		mRotation += CVector(0.0f, 2.0f, 0.0f);
+		//前移動
+		if (mInput.Key('W'))
+		{
+			ChangeAnimation(1, true, 60);
+			mPosition += CVector(0.0f, 0.0f, 0.1f) * mMatrixRotate;
+		}
+		//待機
+		else
+		{
+			ChangeAnimation(0, true, 60);
+		}
+		//左移動
+		if (mInput.Key('A'))
+		{
+			mRotation += CVector(0.0f, 2.0f, 0.0f);
+		}
+		//右移動
+		if (mInput.Key('D'))
+		{
+			mRotation += CVector(0.0f, -2.0f, 0.0f);
+		}
+
+		//攻撃
+		if (mInput.Key(VK_SPACE))
+		{
+			ChangeAnimation(3, false, 30);
+		}
 	}
-	if (mInput.Key('D'))
-	{
-		mRotation += CVector(0.0f, -2.0f, 0.0f);
-	}
+	
 
 	CXCharacter::Update();
 }
