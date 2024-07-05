@@ -52,6 +52,8 @@ public:
 	void SetSkinWeightFrameIndex();
 	//頂点にアニメーションを適用
 	void AnimateVertex();
+	//指定した合成行列を使って計算
+	void AnimateVertex(CMatrix*);
 	//マテリアルの検索
 	CMaterial* FindMaterial(char* name);
 	//マテリアル配列の取得
@@ -108,6 +110,8 @@ public:
 	void SetSkinWeightFrameIndex(CModelX* model);
 	//頂点にアニメーション適用
 	void AnimateVertex(CModelX* model);
+	//指定した合成行列を使って計算
+	void AnimateVertex(CMatrix*);
 private:
 	int mVertexNum;   //頂点数
 	CVector* mpVertex;//頂点データ

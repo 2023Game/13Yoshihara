@@ -9,6 +9,10 @@ class CXCharacter : public CCharacter3
 {
 public:
 	CXCharacter();
+	virtual ~CXCharacter()
+	{
+		SAFE_DELETE_ARRAY(mpCombinedMatrix);
+	}
 	//更新処理
 	void Update();
 	//初期化処理
@@ -29,5 +33,6 @@ protected:
 	bool mAnimationLoopFlg;//true:アニメーションを繰り返す
 	float mAnimationFrame;//アニメーションの再生フレーム
 	float mAnimationFrameSize;//アニメーションの再生フレーム数
+	CMatrix* mpCombinedMatrix;//合成行列退避
 };
 #endif

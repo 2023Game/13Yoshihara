@@ -22,6 +22,7 @@
 #include "CModelX.h"
 #include "CXCharacter.h"
 #include "CXPlayer.h"
+#include "CXEnemy.h"
 
 #include "CSound.h"
 
@@ -59,12 +60,16 @@ private:
 
 	//キャラクタのインスタンス
 	CXPlayer mXPlayer;
+	//敵のインスタンス
+	CXEnemy mXEnemy;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
 	//モデルビュー行列の取得
 	static const CMatrix& ModelViewInverse();
 	static CTexture* Texture();
+	//初期設定
+	void Init();
 	//最初に一度だけ実行するプログラム
 	void Start();
 	//繰り返し実行するプログラム
