@@ -50,6 +50,8 @@ public:
 	void Render();	
 	//mTypeの値を返す
 	CCollider::EType Type();
+	//mpMatrixを設定する
+	void Matrix(CMatrix* m);
 protected:
 	EType mType;//コライダタイプ
 	//頂点

@@ -154,6 +154,11 @@ CCollider::EType CCollider::Type()
 	return mType;
 }
 
+void CCollider::Matrix(CMatrix* m)
+{
+	mpMatrix = m;
+}
+
 //CollisionTriangleSphere(三角コライダ,球コライダ,調整値)
 //return:true(衝突している)false(衝突していない)
 //調整値:衝突しない位置まで戻す値
