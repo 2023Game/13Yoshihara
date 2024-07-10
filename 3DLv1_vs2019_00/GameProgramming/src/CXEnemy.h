@@ -11,6 +11,8 @@ public:
 	CXEnemy();
 	//合成行列の設定
 	void Init(CModelX* model);
+	//衝突処理
+	void Collision(CCollider* m, CCollider* o);
 private:
 	//コライダの宣言
 	CCollider mColSphereHead;//頭

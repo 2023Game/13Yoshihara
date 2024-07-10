@@ -11,6 +11,11 @@ void CCharacter3::Render()
 {
 	mpModel->Render(mMatrix);
 }
+//キャラクタのタグを返す
+CCharacter3::ETag CCharacter3::Tag()
+{
+	return mTag;
+}
 
 CCharacter3::~CCharacter3()
 {

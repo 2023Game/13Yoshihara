@@ -9,9 +9,10 @@ CCollider::~CCollider()
 }
 
 CCollider::CCollider(CCharacter3* parent, CMatrix* matrix,
-	const CVector& position, float radius)
+	const CVector& position, float radius, ETag tag)
 	: CCollider()
 {
+	mTag = tag;//タグの設定
 	//親決定
 	mpParent = parent;
 	//親行列設定
@@ -64,6 +65,11 @@ bool CCollider::Collision(CCollider* m, CCollider* o)
 	}
 	//衝突していない
 	return false;
+}
+
+CCollider::ETag CCollider::Tag()
+{
+	return mTag;
 }
 
 //デフォルトコンストラクタ

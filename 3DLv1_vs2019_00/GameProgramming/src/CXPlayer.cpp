@@ -4,8 +4,10 @@
 CXPlayer::CXPlayer()
 	: mColSphereHead(this, nullptr, CVector(0.0f, 5.0f, -3.0f), 0.5f)
 	, mColSphereBody(this, nullptr, CVector(), 0.5f)
-	, mColSphereSword(this, nullptr, CVector(-10.0f, 10.0f, 50.0f), 0.3f)
+	, mColSphereSword(this, nullptr, CVector(-10.0f, 10.0f, 50.0f), 0.3f, CCollider::ETag::ESWORD)
 {
+	//タグにプレイヤーを設定する
+	mTag = ETag::EPLAYER;
 }
 
 void CXPlayer::Update()
