@@ -62,6 +62,7 @@ private:
 	CXPlayer mXPlayer;
 	//敵のインスタンス
 	CXEnemy mXEnemy;
+	CModelX mKnight;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得

@@ -41,7 +41,7 @@ CTexture* CApplication::Texture()
 void CApplication::Init()
 {
 	//敵の初期設定
-	mXEnemy.Init(&mModelX);
+	mXEnemy.Init(&mKnight);
 	//敵の配置
 	mXEnemy.Position(CVector(7.0f, 0.0f, 0.0f));
 }
@@ -50,6 +50,7 @@ void CApplication::Start()
 {
 	//3Dモデルファイルの読み込み
 	mModelX.Load(MODEL_FILE);
+	mKnight.Load(KNIGHT_MODEL);
 	//キャラクターにモデルを設定
 	mXPlayer.Init(&mModelX);
 	//初期設定

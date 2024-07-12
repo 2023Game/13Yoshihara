@@ -14,6 +14,7 @@ class CAnimation;   //CAnimationクラスの宣言
 class CAnimationKey;//CAnimationKeyクラスの宣言
 
 #define MODEL_FILE "res\\ラグナ.x" //入力ファイル名
+#define KNIGHT_MODEL "res\\knight\\knight_low.X"
 
 //領域解放をマクロ化
 #define SAFE_DELETE_ARRAY(a){if(a) delete[] a; a = nullptr;}
@@ -74,6 +75,7 @@ class CModelXFrame {
 	friend CAnimationSet;
 	friend CAnimation;
 public:
+	CModelXFrame();
 	//コンストラクタ
 	CModelXFrame(CModelX* model);
 	//デストラクタ
