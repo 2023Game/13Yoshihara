@@ -4,13 +4,49 @@
 #include "glut.h"
 #include <ctype.h> //isspace関数の宣言
 #include "CMaterial.h"
+
+//アニメーションを抜き出す
+void CModelX::SeparateAnimationSet(int idx, int start, int end, char* name)
+{
+	CAnimationSet* anim = mAnimationSet[idx];//分割するアニメーションセットを確定
+	CAnimationSet* as = new CAnimationSet();//アニメーションセットの生成
+	as->mpName = new char[strlen(name) + 1];
+	strcpy(as->mpName, name);
+	as->mMaxTime = end - start;
+	//既存のアニメーション分繰り返し
+	for (size_t i = 0; i < anim->mAnimation.size(); i++)
+	{
+		CAnimation* animation = new CAnimation();//アニメーションの生成
+		animation->mpFrameName = new char[strlen(anim->mAnimation[i]->mpFrameName) + 1];
+		strcpy(animation->mpFrameName, anim->mAnimation[i]->mpFrameName);
+		animation->mFrameIndex = anim->mAnimation[i]->mFrameIndex;
+		animation->mKeyNum = end - start + 1;
+		animation->mpKey = new CAnimationKey[animation->mKeyNum];//アニメーションキーの生成
+		animation->mKeyNum = 0;
+		for (int j = start; j <= end && j < anim->mAnimation[i]->mKeyNum; j++)
+		{
+			if (j < anim->mAnimation[i]->mKeyNum)
+			{
+				animation->mpKey[animation->mKeyNum] = anim->mAnimation[i]->mpKey[j];
+			}
+			else
+			{
+				animation->mpKey[animation->mKeyNum] =
+					anim->mAnimation[i]->mpKey[anim->mAnimation[i]->mKeyNum - 1];
+			}
+			animation->mpKey[animation->mKeyNum].mTime = animation->mKeyNum++;
+		}//animationキーのコピー
+		as->mAnimation.push_back(animation);//アニメーションの追加
+	}
+	mAnimationSet.push_back(as);//アニメーションセットの追加
+}
+
 /*
 IsDelimiter(c)
 cが\t\r\nスペースなどの空白文字
 または,;"などの文字であれば
 区切り文字としてtrueを返す
 */
-
 bool CModelX::IsDelimiter(char c)
 {
 	//0より小さいならfalse
@@ -874,6 +910,10 @@ CSkinWeights::~CSkinWeights()
 	SAFE_DELETE_ARRAY(mpWeight);
 }
 
+CAnimationSet::CAnimationSet()
+{
+}
+
 CAnimationSet::CAnimationSet(CModelX* model)
 	: mpName(nullptr)
 	, mTime(0)
@@ -985,6 +1025,10 @@ float CAnimationSet::Time()
 float CAnimationSet::MaxTime()
 {
 	return mMaxTime;
+}
+
+CAnimation::CAnimation()
+{
 }
 
 CAnimation::CAnimation(CModelX* model)

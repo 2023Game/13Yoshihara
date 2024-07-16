@@ -59,6 +59,14 @@ public:
 	CMaterial* FindMaterial(char* name);
 	//マテリアル配列の取得
 	std::vector<CMaterial*>& Material();
+	/// <summary>
+	/// アニメーションを抜き出す
+	/// </summary>
+	/// <param name="idx">分割したいアニメーションセットの番号</param>
+	/// <param name="start">分割したいアニメーションの開始時間</param>
+	/// <param name="end">分割したいアニメーションの終了時間</param>
+	/// <param name="name">追加するアニメーションセットの名前</param>
+	void SeparateAnimationSet(int idx, int start, int end, char* name);
 private:
 	std::vector<CModelXFrame*> mFrame;//フレームの配列
 	std::vector<CAnimationSet*> mAnimationSet;//アニメーションセットの配列
@@ -74,6 +82,7 @@ class CModelXFrame {
 	friend CModelX;
 	friend CAnimationSet;
 	friend CAnimation;
+	friend CAnimationKey;
 public:
 	CModelXFrame();
 	//コンストラクタ
@@ -154,6 +163,7 @@ private:
 class CAnimationSet {
 	friend CModelX;
 public:
+	CAnimationSet();
 	CAnimationSet(CModelX* model);
 	~CAnimationSet();
 	void Time(float time);//時間の設定
@@ -179,6 +189,7 @@ class CAnimation {
 	friend CModelX;
 	friend CAnimationSet;
 public:
+	CAnimation();
 	CAnimation(CModelX* model);
 	~CAnimation();
 private:
@@ -190,6 +201,7 @@ private:
 
 //アニメーションキークラス
 class CAnimationKey {
+	friend CModelX;
 	friend CAnimation;
 	friend CAnimationSet;
 private:
