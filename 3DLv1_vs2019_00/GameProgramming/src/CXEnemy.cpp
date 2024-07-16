@@ -40,7 +40,7 @@ void CXEnemy::Collision(CCollider* m, CCollider* o)
 			if (m->Collision(m, o) == true)
 			{
 				//30フレームかけてダウンし、繰り返さない
-				ChangeAnimation(11, false, 30);
+				ChangeAnimation(11, false, 100);
 			}
 		}
 	}
