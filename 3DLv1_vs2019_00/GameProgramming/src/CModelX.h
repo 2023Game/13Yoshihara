@@ -67,6 +67,10 @@ public:
 	/// <param name="end">分割したいアニメーションの終了時間</param>
 	/// <param name="name">追加するアニメーションセットの名前</param>
 	void SeparateAnimationSet(int idx, int start, int end, char* name);
+	//読み込み済みか判定
+	bool IsLoaded();
+	//アニメーションセットの追加
+	void AddAnimationSet(const char* file);
 private:
 	std::vector<CModelXFrame*> mFrame;//フレームの配列
 	std::vector<CAnimationSet*> mAnimationSet;//アニメーションセットの配列
@@ -75,6 +79,7 @@ private:
 	bool IsDelimiter(char c);
 	char* mpPointer;   //読み込み位置
 	char mToken[1024]; //取り出した単語の領域
+	bool mLoaded;	//読み込み済みかどうか
 };
 
 //Frameクラス

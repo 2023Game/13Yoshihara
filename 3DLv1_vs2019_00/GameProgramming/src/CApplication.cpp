@@ -40,6 +40,10 @@ CTexture* CApplication::Texture()
 //初期設定
 void CApplication::Init()
 {
+}
+
+void CApplication::Start()
+{
 	//3Dモデルファイルの読み込み
 	mModelX.Load(MODEL_FILE);
 	mKnight.Load(KNIGHT_MODEL);
@@ -58,17 +62,15 @@ void CApplication::Init()
 	//キャラクターにモデルを設定
 	mXPlayer.Init(&mModelX);
 	//敵の初期設定
-	mXEnemy.Init(&mKnight);	
+	mXEnemy.Init(&mKnight);
 	//敵の配置
 	mXEnemy.Position(CVector(7.0f, 0.0f, 0.0f));
 	//敵のアニメーションを待機に変更
 	mXEnemy.ChangeAnimation(2, true, 200);
-}
-
-void CApplication::Start()
-{
-	//初期設定
-	Init();
+	//CPaladinの作成
+	mpPaladin = new CPaladin();
+	mpPaladin->Position(CVector(-1.0f, 0.0, 5.0f));
+	mpPaladin->ChangeAnimation(1, true, 100);
 	mFont.Load("FontG.png", 1, 4096 / 64);
 }
 
@@ -78,6 +80,8 @@ void CApplication::Update()
 	mXPlayer.Update();
 	//敵の更新
 	mXEnemy.Update();
+	//パラディンの更新
+	mpPaladin->Update();
 
 	//カメラのパラメータを作成する
 	CVector  e, c, u;//視点、注視点、上方向
@@ -124,6 +128,8 @@ void CApplication::Update()
 	mXPlayer.Render();
 	//敵描画
 	mXEnemy.Render();
+	//パラディンの更新
+	mpPaladin->Render();
 
 	//コライダの描画
 	CCollisionManager::Instance()->Render();

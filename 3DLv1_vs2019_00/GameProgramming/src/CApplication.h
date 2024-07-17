@@ -23,6 +23,7 @@
 #include "CXCharacter.h"
 #include "CXPlayer.h"
 #include "CXEnemy.h"
+#include "CPaladin.h"
 
 #include "CSound.h"
 
@@ -63,6 +64,7 @@ private:
 	//敵のインスタンス
 	CXEnemy mXEnemy;
 	CModelX mKnight;
+	CPaladin* mpPaladin;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
