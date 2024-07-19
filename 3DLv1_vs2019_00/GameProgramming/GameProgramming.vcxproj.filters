@@ -130,6 +130,12 @@
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
     <ClCompile Include="src\CPaladin.cpp">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CShader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CMyShader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -234,6 +240,12 @@
       <Filter>ソース ファイル\Character</Filter>
     </ClInclude>
     <ClInclude Include="src\CPaladin.h">
+      <Filter>ソース ファイル\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CShader.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CMyShader.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>

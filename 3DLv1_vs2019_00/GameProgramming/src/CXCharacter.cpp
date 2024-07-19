@@ -109,8 +109,7 @@ void CXCharacter::Update(CMatrix& matrix)
 void CXCharacter::Render()
 {
 	//頂点にアニメーションを適用する
-	mpModel->AnimateVertex(mpCombinedMatrix);
-	mpModel->Render();
+	mpModel->RenderShader(mpCombinedMatrix);
 }
 
 //アニメーション終了判定

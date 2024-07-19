@@ -3,6 +3,7 @@
 #define MATERIAL_NAME_LEN 64//名前の長さ
 
 #include "CTexture.h"
+#include "CMyShader.h"
 class CModelX;
 /*
 マテリアルクラス
@@ -10,6 +11,7 @@ class CModelX;
 */
 class CMaterial
 {
+	friend CMyShader;
 public:
 	//頂点数の設定
 	//VertexNum(頂点数)
