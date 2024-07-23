@@ -24,6 +24,7 @@
 #include "CXPlayer.h"
 #include "CXEnemy.h"
 #include "CPaladin.h"
+#include "CActionCamera.h"
 
 #include "CSound.h"
 
@@ -65,6 +66,8 @@ private:
 	CXEnemy mXEnemy;
 	CModelX mKnight;
 	CPaladin* mpPaladin;
+	//CActionCamera
+	CActionCamera mActionCamera;
 public:
 	~CApplication();
 	static CUi* Ui();//UIクラスのインスタンスを取得
