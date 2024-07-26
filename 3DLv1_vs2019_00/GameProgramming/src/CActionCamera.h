@@ -20,6 +20,11 @@ public:
 	void Update();
 	//カメラ適用
 	void Render();
+	//カメラのX軸取得
+	CVector VectorX();
+	//カメラのZ軸取得
+	CVector VectorZ();
+
 private:
 	//インスタンス
 	static CActionCamera* spInstance;
