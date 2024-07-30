@@ -53,6 +53,29 @@ public:
 	void X(float f);
 	void Y(float f);
 	void Z(float f);
+
+	//点と線の最短距離を求める
+	float CalcPointLineDist(const CVector& p, const CVector& s, const CVector& e, CVector* mp, float* t);
+	//2線間の最短距離を返す
+	float CalcLineLineDist(
+		const CVector& s1,//始点1
+		const CVector& e1,//終点1
+		const CVector& s2,//始点2
+		const CVector& e2,//終点2
+		CVector* mp1,//交点1
+		CVector* mp2,//交点2
+		float* t1,//比率1
+		float* t2//比率2
+	);
+	//0~1の間にクランプ(値を強制的にある範囲内にすること)
+	void clamp0to1(float& v);
+	//2線分間の最短距離
+	float CalcSegmentSegmentDist(
+		const CVector& s1, const CVector& e1,//線分1
+		const CVector& s2, const CVector& e2,//線分2
+		CVector* mp1,//最短線の端点1（始点や終点になることもある）
+		CVector* mp2//最短線の端点2（支店や終点になることもある）
+	);
 private:
 	//3D各軸での値を設定
 	float mX, mY, mZ;

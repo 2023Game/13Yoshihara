@@ -154,6 +154,22 @@ bool CCollider::CollisionTriangleLine(CCollider* t, CCollider* l, CVector* a)
 	}
 	return true;
 }
+//カプセルコライダ同士の衝突判定
+bool CCollider::CollisionCapsuleCapsule(CCollider* m, CCollider* o, CVector* adjust)
+{
+	CVector mp1, mp2;
+	float radius = m->mRadius + o->mRadius;
+
+	*adjust = CVector();
+	if (adjust->CalcSegmentSegmentDist(m->V(0), m->V(1), o->V(0), o->V(1), &mp1, &mp2) < radius)
+	{
+		*adjust = mp1 - mp2;
+		float len = radius - adjust->Length();
+		*adjust = adjust->Normalize() * len;
+		return true;
+	}
+	return false;
+}
 
 CCollider::EType CCollider::Type()
 {
@@ -163,6 +179,11 @@ CCollider::EType CCollider::Type()
 void CCollider::Matrix(CMatrix* m)
 {
 	mpMatrix = m;
+}
+
+const CVector& CCollider::V(int i)
+{
+	return mV[i];
 }
 
 //CollisionTriangleSphere(三角コライダ,球コライダ,調整値)

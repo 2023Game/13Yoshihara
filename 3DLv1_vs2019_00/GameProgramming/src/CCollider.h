@@ -25,12 +25,15 @@ public:
 	//return:true(衝突している)false(衝突していない)
 	//調整値:衝突しない位置まで戻す値
 	static bool CollisionTriangleLine(CCollider* triangle, CCollider* line, CVector* adjust);
+	//カプセルコライダとカプセルコライダの衝突判定
+	static bool CollisionCapsuleCapsule(CCollider* m, CCollider* o, CVector* adjust);
 	//コライダタイプ
 	enum class EType
 	{
 		ESPHERE,//球コライダ
 		ETRIANGLE,//三角コライダ
 		ELINE,//線分コライダ
+		ECAPSULE,//カプセルコライダ
 	};
 	//コライダタグ
 	enum class ETag
@@ -59,6 +62,8 @@ public:
 	CCollider::EType Type();
 	//mpMatrixを設定する
 	void Matrix(CMatrix* m);
+	//mV[i]の値を返す
+	const CVector& V(int i);
 protected:
 	EType mType;//コライダタイプ
 	ETag mTag;//コライダタグ
