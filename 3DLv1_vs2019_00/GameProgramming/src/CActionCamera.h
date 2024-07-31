@@ -24,6 +24,8 @@ public:
 	CVector VectorX();
 	//カメラのZ軸取得
 	CVector VectorZ();
+	//ワールド座標をスクリーン座標へ変換する
+	bool WorldToScreen(CVector* screen, const CVector& world);
 
 private:
 	//インスタンス
@@ -38,5 +40,9 @@ private:
 	CMatrix mModelView;
 	//入力クラス
 	CInput mInput;
+
+	int mScreenWidth;//幅
+	int mScreenHeight;//高さ
+	CMatrix mProjection;//プロジェクション行列
 };
 #endif

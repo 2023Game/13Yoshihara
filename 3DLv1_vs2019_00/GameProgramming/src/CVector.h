@@ -25,7 +25,7 @@ public:
 	//ベクトルの長さを返す
 	float Length() const;
 	//CVector*CMatrixの結果をCVectorで返す
-	CVector operator*(const CMatrix& m);
+	CVector operator*(const CMatrix& m)const;
 	//-演算子のオーバーロード
 	//CVector - CVectorの演算結果を返す
 	CVector operator-(const CVector& v)const;
