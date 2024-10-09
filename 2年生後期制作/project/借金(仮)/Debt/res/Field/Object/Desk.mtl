@@ -1,0 +1,24 @@
+# Blender 4.1.0 MTL File: '机と椅子.blend'
+# www.blender.org
+
+newmtl red
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Fabric026_1K-PNG/Fabric026_1K-PNG_Color.png
+map_Ns Fabric026_1K-PNG/Fabric026_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Fabric026_1K-PNG/Fabric026_1K-PNG_NormalGL.png
+
+newmtl wood
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
+map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png

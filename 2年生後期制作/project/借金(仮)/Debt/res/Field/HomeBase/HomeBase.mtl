@@ -1,0 +1,68 @@
+# Blender 4.1.0 MTL File: '拠点.blend'
+# www.blender.org
+
+newmtl ガラス
+Ns 360.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl ライト
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Plastic010_1K-PNG/Plastic010_1K-PNG_Color.png
+map_Ns Plastic010_1K-PNG/Plastic010_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic010_1K-PNG/Plastic010_1K-PNG_NormalGL.png
+
+newmtl ライト枠
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Plastic006_1K-PNG/Plastic006_1K-PNG_Color.png
+map_Ns Plastic006_1K-PNG/Plastic006_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic006_1K-PNG/Plastic006_1K-PNG_NormalGL.png
+
+newmtl 壁
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Color.png
+map_Ns PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_NormalGL.png
+
+newmtl 床
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Color.png
+map_Ns WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_NormalGL.png
+
+newmtl 窓枠
+Ka 0.566929 0.566929 0.566929
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
+map_Ns Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
+map_refl Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
+map_Bump -bm 1.000000 Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png

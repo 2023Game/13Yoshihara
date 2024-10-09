@@ -32,7 +32,7 @@ void CGameScene::Load()
 	//ここでゲーム中に必要な
 	//リソースの読み込みやクラスの生成を行う
 
-	CResourceManager::Load<CModel>("Field", "Field\\field.obj");
+	CResourceManager::Load<CModel>("Field", "Field\\Field.obj");
 	CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>("FieldCylinder", "Field\\Object\\cylinder.obj");
 	CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
@@ -40,6 +40,15 @@ void CGameScene::Load()
 	CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
 	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
+
+	CResourceManager::Load<CModel>("HomeBase", "Field\\HomeBase\\HomeBase.obj");
+	CResourceManager::Load<CModel>("Bed", "Field\\Object\\Bed.obj");
+	CResourceManager::Load<CModel>("Chair", "Field\\Object\\Chair.obj");
+	CResourceManager::Load<CModel>("Computer", "Field\\Object\\Computer.obj");
+	CResourceManager::Load<CModel>("Desk", "Field\\Object\\Desk.obj");
+	CResourceManager::Load<CModel>("Door", "Field\\Object\\Door.obj");
+	CResourceManager::Load<CModel>("DustBox", "Field\\Object\\DustBox.obj");
+	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);

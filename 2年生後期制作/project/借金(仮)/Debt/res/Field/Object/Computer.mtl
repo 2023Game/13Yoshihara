@@ -1,0 +1,36 @@
+# Blender 4.1.0 MTL File: 'パソコン.blend'
+# www.blender.org
+
+newmtl 液晶
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Metal032_1K-PNG/Metal032_1K-PNG_Color.png
+map_Ns Metal032_1K-PNG/Metal032_1K-PNG_Roughness.png
+map_refl Metal032_1K-PNG/Metal032_1K-PNG_Metalness.png
+map_Bump -bm 1.000000 Metal032_1K-PNG/Metal032_1K-PNG_NormalGL.png
+
+newmtl 白
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Plastic010_1K-PNG/Plastic010_1K-PNG_Color.png
+map_Ns Plastic010_1K-PNG/Plastic010_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic010_1K-PNG/Plastic010_1K-PNG_NormalGL.png
+
+newmtl 黒
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Plastic006_1K-PNG/Plastic006_1K-PNG_Color.png
+map_Ns Plastic006_1K-PNG/Plastic006_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic006_1K-PNG/Plastic006_1K-PNG_NormalGL.png

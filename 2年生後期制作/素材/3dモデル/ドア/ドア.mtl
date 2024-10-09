@@ -8,9 +8,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/Downloads/Wood023_1K-PNG/Wood023_1K-PNG_Color.png
-map_Ns C:/Users/yuji/Downloads/Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/Downloads/Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
+map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood023_1K-PNG/Wood023_1K-PNG_Color.png
+map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
 
 newmtl ドアノブ
 Ka 0.566929 0.566929 0.566929
@@ -19,10 +19,10 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/yuji/Downloads/Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
-map_Ns C:/Users/yuji/Downloads/Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
-map_refl C:/Users/yuji/Downloads/Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
-map_Bump -bm 1.000000 C:/Users/yuji/Downloads/Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png
+map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
+map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
+map_refl C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
+map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png
 
 newmtl ドア枠
 Ka 1.000000 1.000000 1.000000
@@ -31,6 +31,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/Downloads/Wood029_1K-PNG/Wood029_1K-PNG_Color.png
-map_Ns C:/Users/yuji/Downloads/Wood029_1K-PNG/Wood029_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/Downloads/Wood029_1K-PNG/Wood029_1K-PNG_NormalGL.png
+map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood029_1K-PNG/Wood029_1K-PNG_Color.png
+map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood029_1K-PNG/Wood029_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Wood029_1K-PNG/Wood029_1K-PNG_NormalGL.png

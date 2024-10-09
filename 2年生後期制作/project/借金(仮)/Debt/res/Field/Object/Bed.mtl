@@ -1,0 +1,35 @@
+# Blender 4.1.0 MTL File: 'ベッド.blend'
+# www.blender.org
+
+newmtl wood
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
+map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
+
+newmtl 掛け布団
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Fabric056_1K-PNG/Fabric056_1K-PNG_Color.png
+map_Ns Fabric056_1K-PNG/Fabric056_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Fabric056_1K-PNG/Fabric056_1K-PNG_NormalGL.png
+
+newmtl 白
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd Fabric019_1K-PNG/Fabric019_1K-PNG_Color.png
+map_Ns Fabric019_1K-PNG/Fabric019_1K-PNG_Roughness.png
+map_d Fabric019_1K-PNG/Fabric019_1K-PNG_Opacity.png
+map_Bump -bm 1.000000 Fabric019_1K-PNG/Fabric019_1K-PNG_NormalGL.png

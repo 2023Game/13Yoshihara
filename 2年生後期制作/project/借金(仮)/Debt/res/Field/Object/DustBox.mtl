@@ -1,0 +1,24 @@
+# Blender 4.1.0 MTL File: 'DustBox.blend'
+# www.blender.org
+
+newmtl 箱
+Ka 0.500000 0.500000 0.500000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Plastic018B_1K-PNG/Plastic018B_1K-PNG_Color.png
+map_Ns Plastic018B_1K-PNG/Plastic018B_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic018B_1K-PNG/Plastic018B_1K-PNG_NormalGL.png
+
+newmtl 蓋
+Ka 0.500000 0.500000 0.500000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd Plastic008_1K-PNG/Plastic008_1K-PNG_Color.png
+map_Ns Plastic008_1K-PNG/Plastic008_1K-PNG_Roughness.png
+map_Bump -bm 1.000000 Plastic008_1K-PNG/Plastic008_1K-PNG_NormalGL.png
