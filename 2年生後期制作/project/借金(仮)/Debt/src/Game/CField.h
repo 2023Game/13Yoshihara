@@ -17,8 +17,13 @@ private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
 
-	CModel* mpCubeModel;
-	CModel* mpCylinderModel;
+	CModel* mpBed;
+	CModel* mpChair;
+	CModel* mpComputer;
+	CModel* mpDesk;
+	CModel* mpDoor;
+	CModel* mpDustBox;
+	CModel* mpRack;
 
 	TexAnimData mEffectAnimData;
 };

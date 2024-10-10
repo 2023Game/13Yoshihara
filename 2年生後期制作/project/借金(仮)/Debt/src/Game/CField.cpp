@@ -8,7 +8,7 @@ CField::CField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
 	, mEffectAnimData(1, 11, true, 11, 0.03f)
 {
-	mpModel = CResourceManager::Get<CModel>("Field");
+	mpModel = CResourceManager::Get<CModel>("HomeBase");
 
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
 
@@ -26,72 +26,77 @@ CField::~CField()
 
 void CField::CreateFieldObjects()
 {
-	mpCubeModel = CResourceManager::Get<CModel>("FieldCube");
-	mpCylinderModel = CResourceManager::Get<CModel>("FieldCylinder");
+	mpBed = CResourceManager::Get<CModel>("Bed");
+	mpChair = CResourceManager::Get<CModel>("Chair");
+	mpComputer = CResourceManager::Get<CModel>("Computer");
+	mpDesk = CResourceManager::Get<CModel>("Desk");
+	mpDoor = CResourceManager::Get<CModel>("Door");
+	mpDustBox = CResourceManager::Get<CModel>("DustBox");
+	mpRack = CResourceManager::Get<CModel>("Rack");
 
-	new CMoveFloor
+	/*new CMoveFloor
 	(
-		mpCubeModel,
+		mpBed,
 		CVector(0.0f, 10.0f, -50.0f), CVector(1.0f, 1.0f, 1.0f),
 		CVector(50.0f, 0.0f, 0.0f), 10.0f
 	);
 	new CRotateFloor
 	(
-		mpCylinderModel,
+		mpChair,
 		CVector(-40.0f, 15.0f, 20.0f), CVector(1.0f, 1.0f, 1.0f),
 		1.0f
-	);
+	);*/
 
-	// ìÆÇ©Ç»Ç¢è∞á@
-	new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(20.0f, 10.0f, 0.0f), CVector(0.5f, 1.0f, 0.25f),
-		CVector(0.0f, 0.0f, 0.0f), 5.0f
-	);
-	// ìÆÇ≠è∞á@
-	new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(60.0f, 20.0f, 0.0f), CVector(0.25f, 1.0f, 0.25f),
-		CVector(20.0f, 0.0f, 0.0f), 5.0f
-	);
-	// ìÆÇ©Ç»Ç¢è∞áA
-	new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(100.0f, 20.0f, 0.0f), CVector(0.25f, 1.0f, 0.25f),
-		CVector(0.0f, 0.0f, 0.0f), 5.0f
-	);
-	// âÒì]Ç∑ÇÈè∞á@
-	new CRotateFloor
-	(
-		mpCubeModel,
-		CVector(135.0f, 20.0f, 0.0f), CVector(1.0f, 1.0f, 0.25f),
-		0.5f
-	);
-	// ìÆÇ©Ç»Ç¢è∞áA
-	new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(135.0f, 20.0f, -35.0f), CVector(0.25f, 1.0f, 0.25f),
-		CVector(0.0f, 0.0f, 0.0f), 5.0f
-	);
-	// ìÆÇ©Ç»Ç¢è∞áA
-	new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(135.0f, 70.0f, -52.5f), CVector(0.25f, 1.0f, 0.25f),
-		CVector(0.0f, 50.0f, 0.0f), 5.0f
-	);
-	// ìÆÇ©Ç»Ç¢è∞áBÅiç‚ìπÅj
-	CMoveFloor* mf = new CMoveFloor
-	(
-		mpCubeModel,
-		CVector(0.0f, 20.0f, 200.5f), CVector(4.0f, 1.0f, 2.0f),
-		CVector(0.0f, 0.0f, 0.0f), 5.0f
-	);
-	mf->Rotate(0.0f, 0.0f, 30.0f);
+	//// ìÆÇ©Ç»Ç¢è∞á@
+	//new CMoveFloor
+	//(
+	//	mpComputer,
+	//	CVector(20.0f, 10.0f, 0.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
+	//);
+	//// ìÆÇ≠è∞á@
+	//new CMoveFloor
+	//(
+	//	mpDesk,
+	//	CVector(60.0f, 20.0f, 0.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
+	//);
+	//// ìÆÇ©Ç»Ç¢è∞áA
+	//new CMoveFloor
+	//(
+	//	mpDustBox,
+	//	CVector(100.0f, 20.0f, 0.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
+	//);
+	//// âÒì]Ç∑ÇÈè∞á@
+	//new CRotateFloor
+	//(
+	//	mpRack,
+	//	CVector(135.0f, 20.0f, 0.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	0.0f
+	//);
+	//// ìÆÇ©Ç»Ç¢è∞áA
+	//new CMoveFloor
+	//(
+	//	mpDoor,
+	//	CVector(135.0f, 20.0f, -35.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
+	//);
+	//// ìÆÇ©Ç»Ç¢è∞áA
+	//new CMoveFloor
+	//(
+	//	mpDesk,
+	//	CVector(135.0f, 70.0f, -52.5f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 50.0f, 0.0f), 5.0f
+	//);
+	//// ìÆÇ©Ç»Ç¢è∞áBÅiç‚ìπÅj
+	//CMoveFloor* mf = new CMoveFloor
+	//(
+	//	mpChair,
+	//	CVector(0.0f, 20.0f, 200.5f), CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
+	//);
+	//mf->Rotate(0.0f, 0.0f, 30.0f);
 
 	// ìdåÇÉGÉtÉFÉNÉg
 	CLineEffect* le = new CLineEffect(ETag::eField);
