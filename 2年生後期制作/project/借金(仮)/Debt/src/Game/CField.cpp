@@ -4,11 +4,14 @@
 #include "CRotateFloor.h"
 #include "CLineEffect.h"
 
+#define Scale_XYZ CVector(0.5f,0.5f,0.5f)
+
 CField::CField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
 	, mEffectAnimData(1, 11, true, 11, 0.03f)
 {
 	mpModel = CResourceManager::Get<CModel>("HomeBase");
+	Scale(Scale_XYZ);
 
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
 

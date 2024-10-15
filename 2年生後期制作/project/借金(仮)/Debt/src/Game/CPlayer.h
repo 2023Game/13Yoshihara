@@ -36,12 +36,13 @@ public:
 	// 描画
 	void Render();
 
+	//mIsInteractの値を設定する
+	void SetInteract(bool interact);
+	//mIsInteractの値を返す
+	bool GetInteract();
 private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec() const;
-
-	//インタラクト
-	void Interact();
 
 	// 待機状態
 	void UpdateIdle();
@@ -120,6 +121,9 @@ private:
 	CSound* mpSlashSE;
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
+
+	bool mIsInteract;//インタラクトしているかどうか
+	bool mIsInteractObject;//インタラクトオブジェクトに当たっているか
 
 	// 火炎放射エフェクト
 	CFlamethrower* mpFlamethrower;

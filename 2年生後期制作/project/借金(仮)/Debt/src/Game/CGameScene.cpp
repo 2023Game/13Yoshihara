@@ -70,7 +70,7 @@ void CGameScene::Load()
 	CVector atPos = player->Position() + CVector(0.0f, 10.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 0.0f, 40.0f),
+		atPos + CVector(0.0f, 0.0f, 15.0f),
 		atPos
 	);
 

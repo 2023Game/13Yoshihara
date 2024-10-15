@@ -651,9 +651,5 @@
     <ClInclude Include="src\Game\CInteractObject.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Debt.rc" />
   </ItemGroup>
 </Project>

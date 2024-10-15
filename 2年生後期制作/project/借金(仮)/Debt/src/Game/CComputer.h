@@ -1,10 +1,11 @@
 #pragma once
-#include "CRideableObject.h"
+#include "CInteractObject.h"
 #include "CModel.h"
 #include "CColliderMesh.h"
 #include "CColliderSphere.h"
+class CGameMenu;
 
-class CComputer : public CRideableObject
+class CComputer : public CInteractObject
 {
 public:
 	/// <summary>
@@ -24,4 +25,5 @@ public:
 private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
+	CGameMenu* mpJobMenu;
 };

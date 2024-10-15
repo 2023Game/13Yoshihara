@@ -41,6 +41,7 @@ CPlayer::CPlayer()
 	, mState(EState::eIdle)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
+	, mIsInteractObject(false)
 	, mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -126,7 +127,12 @@ void CPlayer::UpdateIdle()
 		// Fキーでインタラクト
 		else if (CInput::PushKey('F'))
 		{
-			mState = EState::eInteract;
+			//Interactオブジェクトのインタラクト範囲内なら
+			if (mIsInteractObject = true)
+			{
+				SetInteract(true);
+				mState = EState::eInteract;
+			}	
 		}
 	}
 }
@@ -214,9 +220,13 @@ void CPlayer::UpdateJumpEnd()
 	}
 }
 
+// インタラクト中
 void CPlayer::UpdateInteract()
 {
-	if(CInput::PushKey())
+	if (GetInteract() == false)
+	{
+		mState = EState::eIdle;
+	}
 }
 
 // キーの入力情報から移動ベクトルを求める
@@ -255,11 +265,6 @@ CVector CPlayer::CalcMoveVec() const
 	}
 
 	return move;
-}
-
-void CPlayer::Interact()
-{
-
 }
 
 // 移動の更新処理
@@ -440,6 +445,7 @@ void CPlayer::Update()
 	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
+	mIsInteractObject = false;
 
 	CDebugPrint::Print("FPS:%f\n", Time::FPS());
 }
@@ -493,6 +499,11 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				}
 			}
 		}
+		//衝突した相手がインタラクトオブジェクトの場合
+		else if (other->Layer() == ELayer::eInteract)
+		{
+			mIsInteractObject = true;
+		}
 	}
 }
 
@@ -500,4 +511,15 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CPlayer::Render()
 {
 	CXCharacter::Render();
+}
+
+//mIsInteractの値を設定
+void CPlayer::SetInteract(bool interact)
+{
+	mIsInteract = interact;
+}
+//mIsInteractの値を返す
+bool CPlayer::GetInteract()
+{
+	return mIsInteract;
 }

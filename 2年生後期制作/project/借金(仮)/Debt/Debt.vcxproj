@@ -102,7 +102,6 @@
     <ClCompile Include="src\Test\CMeasure.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="src\BaseSystem\BGMData.h" />
     <ClInclude Include="src\BaseSystem\CBGMManager.h" />
     <ClInclude Include="src\BaseSystem\CBillBoard.h" />
@@ -200,9 +199,6 @@
     <ClInclude Include="src\Test\CColSphere.h" />
     <ClInclude Include="src\Test\CColTriangle.h" />
     <ClInclude Include="src\Test\CMeasure.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Debt.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8802AF2F-2920-4700-89F2-CA6778727283}</ProjectGuid>
