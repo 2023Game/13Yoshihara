@@ -1,213 +1,132 @@
 # Blender 4.1.0 MTL File: '拠点.blend'
 # www.blender.org
 
-newmtl red.003
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Fabric026_1K-PNG/Fabric026_1K-PNG_Color.png
-map_Ns Fabric026_1K-PNG/Fabric026_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Fabric026_1K-PNG/Fabric026_1K-PNG_NormalGL.png
-
-newmtl wood.009
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
-map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
-
-newmtl wood.010
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
-map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
-
-newmtl wood.011
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
-map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
-
-newmtl wood.012
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood091B_1K-PNG/Wood091B_1K-PNG_Color.png
-map_Ns Wood091B_1K-PNG/Wood091B_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood091B_1K-PNG/Wood091B_1K-PNG_NormalGL.png
-
-newmtl wood.013
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood023_1K-PNG/Wood023_1K-PNG_Color.png
-map_Ns Wood023_1K-PNG/Wood023_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood023_1K-PNG/Wood023_1K-PNG_NormalGL.png
-
-newmtl ガラス
+newmtl red
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.000000 1.000000 1.000000
+Kd 0.079577 0.079577 0.079577
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
 
-newmtl ドアノブ.001
-Ka 0.566929 0.566929 0.566929
+newmtl wood.001
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.325331 0.121806 0.023874
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl wood.002
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.324997 0.121337 0.023725
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl wood.003
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.324997 0.121337 0.023725
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl wood.004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800655 0.455810 0.184347
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl ガラス
+Ns 1000.000000
+Ka 0.283465 0.283465 0.283465
+Kd 0.974343 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
-map_Ns Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
-map_refl Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
-map_Bump -bm 1.000000 Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png
-
-newmtl ドア枠.002
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Wood029_1K-PNG/Wood029_1K-PNG_Color.png
-map_Ns Wood029_1K-PNG/Wood029_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Wood029_1K-PNG/Wood029_1K-PNG_NormalGL.png
 
 newmtl ライト
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd Plastic013A_1K-PNG/Plastic013A_1K-PNG_Color.png
-map_Ns Plastic013A_1K-PNG/Plastic013A_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Plastic013A_1K-PNG/Plastic013A_1K-PNG_NormalGL.png
 
 newmtl ライト枠
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.076657 0.076657 0.076657
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd Plastic006_1K-PNG/Plastic006_1K-PNG_Color.png
-map_Ns Plastic006_1K-PNG/Plastic006_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Plastic006_1K-PNG/Plastic006_1K-PNG_NormalGL.png
 
 newmtl 壁
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.391916 0.391916 0.391916
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Color.png
-map_Ns PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_NormalGL.png
 
 newmtl 床
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.749879 0.438203 0.226544
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Color.png
-map_Ns WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_NormalGL.png
 
-newmtl 掛け布団.001
+newmtl 掛け布団
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.025772 0.000000 0.800400
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd Fabric056_1K-PNG/Fabric056_1K-PNG_Color.png
-map_Ns Fabric056_1K-PNG/Fabric056_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Fabric056_1K-PNG/Fabric056_1K-PNG_NormalGL.png
 
-newmtl 液晶.002
+newmtl 白
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.665270 0.665270 0.665270
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd Metal032_1K-PNG/Metal032_1K-PNG_Color.png
-map_Ns Metal032_1K-PNG/Metal032_1K-PNG_Roughness.png
-map_refl Metal032_1K-PNG/Metal032_1K-PNG_Metalness.png
-map_Bump -bm 1.000000 Metal032_1K-PNG/Metal032_1K-PNG_NormalGL.png
-
-newmtl 白.004
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-illum 2
-map_Kd Fabric019_1K-PNG/Fabric019_1K-PNG_Color.png
-map_Ns Fabric019_1K-PNG/Fabric019_1K-PNG_Roughness.png
-map_d Fabric019_1K-PNG/Fabric019_1K-PNG_Opacity.png
-map_Bump -bm 1.000000 Fabric019_1K-PNG/Fabric019_1K-PNG_NormalGL.png
-
-newmtl 白.005
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Plastic013A_1K-PNG/Plastic013A_1K-PNG_Color.png
-map_Ns Plastic013A_1K-PNG/Plastic013A_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Plastic013A_1K-PNG/Plastic013A_1K-PNG_NormalGL.png
 
 newmtl 窓枠
+Ns 743.396973
 Ka 0.566929 0.566929 0.566929
+Kd 0.193601 0.193601 0.193601
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
-map_Ns Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
-map_refl Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
-map_Bump -bm 1.000000 Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png
-
-newmtl 黒.002
-Ka 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.500000
-d 1.000000
-illum 2
-map_Kd Plastic006_1K-PNG/Plastic006_1K-PNG_Color.png
-map_Ns Plastic006_1K-PNG/Plastic006_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 Plastic006_1K-PNG/Plastic006_1K-PNG_NormalGL.png

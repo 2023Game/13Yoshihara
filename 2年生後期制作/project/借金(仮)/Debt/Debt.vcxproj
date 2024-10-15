@@ -71,6 +71,7 @@
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
+    <ClCompile Include="src\Game\CComputer.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
     <ClCompile Include="src\Game\CField.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
@@ -80,6 +81,7 @@
     <ClCompile Include="src\Game\CGameMenu.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
+    <ClCompile Include="src\Game\CInteractObject.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CRideabeObject.cpp" />
@@ -100,6 +102,7 @@
     <ClCompile Include="src\Test\CMeasure.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="src\BaseSystem\BGMData.h" />
     <ClInclude Include="src\BaseSystem\CBGMManager.h" />
     <ClInclude Include="src\BaseSystem\CBillBoard.h" />
@@ -169,6 +172,7 @@
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CBullet.h" />
+    <ClInclude Include="src\Game\CComputer.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
     <ClInclude Include="src\Game\CField.h" />
     <ClInclude Include="src\Game\CFlame.h" />
@@ -178,6 +182,7 @@
     <ClInclude Include="src\Game\CGameMenu.h" />
     <ClInclude Include="src\Game\CGameScene.h" />
     <ClInclude Include="src\Game\CImage.h" />
+    <ClInclude Include="src\Game\CInteractObject.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
@@ -195,6 +200,9 @@
     <ClInclude Include="src\Test\CColSphere.h" />
     <ClInclude Include="src\Test\CColTriangle.h" />
     <ClInclude Include="src\Test\CMeasure.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Debt.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8802AF2F-2920-4700-89F2-CA6778727283}</ProjectGuid>

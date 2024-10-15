@@ -40,6 +40,9 @@ private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec() const;
 
+	//インタラクト
+	void Interact();
+
 	// 待機状態
 	void UpdateIdle();
 	// 攻撃
@@ -52,6 +55,8 @@ private:
 	void UpdateJump();
 	// ジャンプ終了
 	void UpdateJumpEnd();
+	// インタラクト中
+	void UpdateInteract();
 
 	// 移動の更新処理
 	void UpdateMove();
@@ -99,6 +104,7 @@ private:
 		eJumpStart,	// ジャンプ開始
 		eJump,		// ジャンプ中
 		eJumpEnd,	// ジャンプ終了
+		eInteract,	//インタラクト中
 	};
 	EState mState;	// プレイヤーの状態
 

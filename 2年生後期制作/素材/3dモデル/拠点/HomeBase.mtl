@@ -1,68 +1,132 @@
 # Blender 4.1.0 MTL File: '拠点.blend'
 # www.blender.org
 
-newmtl ガラス
+newmtl red
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.000000 1.000000 1.000000
+Kd 0.079577 0.079577 0.079577
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
 
-newmtl ライト
+newmtl wood.001
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.325331 0.121806 0.023874
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/project/借金(仮)/Debt/res/Field/Object/Plastic013A_1K-PNG/Plastic013A_1K-PNG_Color.png
-map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/project/借金(仮)/Debt/res/Field/Object/Plastic013A_1K-PNG/Plastic013A_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/project/借金(仮)/Debt/res/Field/Object/Plastic013A_1K-PNG/Plastic013A_1K-PNG_NormalGL.png
 
-newmtl ライト枠
+newmtl wood.002
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.324997 0.121337 0.023725
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Plastic006_1K-PNG/Plastic006_1K-PNG_Color.png
-map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Plastic006_1K-PNG/Plastic006_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Plastic006_1K-PNG/Plastic006_1K-PNG_NormalGL.png
 
-newmtl 壁
+newmtl wood.003
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.324997 0.121337 0.023725
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Color.png
-map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/PaintedPlaster017_1K-PNG/PaintedPlaster017_1K-PNG_NormalGL.png
 
-newmtl 床
+newmtl wood.004
+Ns 250.000000
 Ka 1.000000 1.000000 1.000000
+Kd 0.800655 0.455810 0.184347
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Color.png
-map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_Roughness.png
-map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/WoodFloor051_1K-PNG/WoodFloor051_1K-PNG_NormalGL.png
 
-newmtl 窓枠
-Ka 0.566929 0.566929 0.566929
+newmtl ガラス
+Ns 1000.000000
+Ka 0.283465 0.283465 0.283465
+Kd 0.974343 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 3
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Color.png
-map_Ns C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Roughness.png
-map_refl C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_Metalness.png
-map_Bump -bm 1.000000 C:/Users/yuji/OneDrive/デスクトップ/Git/13Yoshihara/2年生後期制作/素材/テクスチャ/Metal061B_1K-PNG/Metal061B_1K-PNG_NormalGL.png
+
+newmtl ライト
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl ライト枠
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.076657 0.076657 0.076657
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl 壁
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.391916 0.391916 0.391916
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl 床
+Ns 0.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.749879 0.438203 0.226544
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl 掛け布団
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.025772 0.000000 0.800400
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl 白
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.665270 0.665270 0.665270
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+
+newmtl 窓枠
+Ns 743.396973
+Ka 0.566929 0.566929 0.566929
+Kd 0.193601 0.193601 0.193601
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3

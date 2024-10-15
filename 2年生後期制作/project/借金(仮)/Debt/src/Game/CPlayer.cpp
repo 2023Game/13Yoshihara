@@ -123,6 +123,11 @@ void CPlayer::UpdateIdle()
 		{
 			mState = EState::eJumpStart;
 		}
+		// Fキーでインタラクト
+		else if (CInput::PushKey('F'))
+		{
+			mState = EState::eInteract;
+		}
 	}
 }
 
@@ -209,6 +214,11 @@ void CPlayer::UpdateJumpEnd()
 	}
 }
 
+void CPlayer::UpdateInteract()
+{
+	if(CInput::PushKey())
+}
+
 // キーの入力情報から移動ベクトルを求める
 CVector CPlayer::CalcMoveVec() const
 {
@@ -245,6 +255,11 @@ CVector CPlayer::CalcMoveVec() const
 	}
 
 	return move;
+}
+
+void CPlayer::Interact()
+{
+
 }
 
 // 移動の更新処理
@@ -342,6 +357,9 @@ void CPlayer::Update()
 		case EState::eJumpEnd:
 			UpdateJumpEnd();
 			break;
+		// インタラクト中
+		case EState::eInteract:
+			UpdateInteract();
 	}
 
 	// 待機中とジャンプ中は、移動処理を行う
@@ -431,6 +449,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	if (self == mpColliderLine)
 	{
+		//衝突した相手がフィールドオブジェクトの場合
 		if (other->Layer() == ELayer::eField)
 		{
 			// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
