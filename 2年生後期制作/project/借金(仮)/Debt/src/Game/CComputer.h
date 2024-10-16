@@ -14,13 +14,15 @@ public:
 	/// <param name="model">3dモデル</param>
 	/// <param name="pos">座標</param>
 	/// <param name="scale">大きさ</param>
-	CComputer(CModel* model, const CVector& pos, const CVector& scale);
+	/// <param name="rotation">回転</param>
+	CComputer(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation);
 	~CComputer();
 
 	void Update();
 	void Render();
 	//プレイヤーインタラクト時の処理
-	void Interact();
+	void Open();
+	void Close();
 
 private:
 	CModel* mpModel;

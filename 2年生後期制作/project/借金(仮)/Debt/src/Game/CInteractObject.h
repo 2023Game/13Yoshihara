@@ -15,13 +15,7 @@ public:
 	/// <param name="other">衝突した相手のコライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
-	
-	//mIsInteractの値を設定する
-	void SetInteract(bool interact);
-	//mIsInteractの値を返す
-	bool GetInteract();
 
 private:
-	bool mIsInteract;//インタラクトされたかどうか
 	CColliderSphere* mpColliderSphere;
 };

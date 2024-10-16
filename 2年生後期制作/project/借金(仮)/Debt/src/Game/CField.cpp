@@ -3,6 +3,7 @@
 #include "CMoveFloor.h"
 #include "CRotateFloor.h"
 #include "CLineEffect.h"
+#include "CComputer.h"
 
 #define Scale_XYZ CVector(0.5f,0.5f,0.5f)
 
@@ -37,18 +38,19 @@ void CField::CreateFieldObjects()
 	mpDustBox = CResourceManager::Get<CModel>("DustBox");
 	mpRack = CResourceManager::Get<CModel>("Rack");
 
-	/*new CMoveFloor
+	new CComputer
 	(
-		mpBed,
-		CVector(0.0f, 10.0f, -50.0f), CVector(1.0f, 1.0f, 1.0f),
-		CVector(50.0f, 0.0f, 0.0f), 10.0f
+		mpComputer,
+		CVector(20.5f, 7.6f, 10.0f),
+		CVector(1.0f, 1.0f, 1.0f),
+		CVector(0.0f, 180.0f, 0.0f)
 	);
-	new CRotateFloor
-	(
-		mpChair,
-		CVector(-40.0f, 15.0f, 20.0f), CVector(1.0f, 1.0f, 1.0f),
-		1.0f
-	);*/
+	//new CRotateFloor
+	//(
+	//	mpChair,
+	//	CVector(-40.0f, 15.0f, 20.0f), CVector(1.0f, 1.0f, 1.0f),
+	//	1.0f
+	//);
 
 	//// ìÆÇ©Ç»Ç¢è∞á@
 	//new CMoveFloor

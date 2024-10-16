@@ -41,7 +41,6 @@ CPlayer::CPlayer()
 	, mState(EState::eIdle)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
-	, mIsInteractObject(false)
 	, mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -128,9 +127,8 @@ void CPlayer::UpdateIdle()
 		else if (CInput::PushKey('F'))
 		{
 			//Interactオブジェクトのインタラクト範囲内なら
-			if (mIsInteractObject = true)
+			if (GetInteract())
 			{
-				SetInteract(true);
 				mState = EState::eInteract;
 			}	
 		}
@@ -223,7 +221,7 @@ void CPlayer::UpdateJumpEnd()
 // インタラクト中
 void CPlayer::UpdateInteract()
 {
-	if (GetInteract() == false)
+	if (!GetInteract())
 	{
 		mState = EState::eIdle;
 	}
@@ -445,7 +443,6 @@ void CPlayer::Update()
 	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
-	mIsInteractObject = false;
 
 	CDebugPrint::Print("FPS:%f\n", Time::FPS());
 }
@@ -499,10 +496,10 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				}
 			}
 		}
-		//衝突した相手がインタラクトオブジェクトの場合
 		else if (other->Layer() == ELayer::eInteract)
 		{
-			mIsInteractObject = true;
+			//TODO:ぶつかった相手は誰なのか取得
+			other->Owner();
 		}
 	}
 }
@@ -522,4 +519,19 @@ void CPlayer::SetInteract(bool interact)
 bool CPlayer::GetInteract()
 {
 	return mIsInteract;
+}
+
+std::string CPlayer::GetInteractObject()
+{
+	switch (mInteractObject)
+	{
+	case EInteractObject::eComputer:
+		return "eComputer";
+
+	case EInteractObject::eDoor:
+		return "eDoor";
+	
+	default:
+		return "None";
+	}
 }

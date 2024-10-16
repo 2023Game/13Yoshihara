@@ -2,6 +2,7 @@
 //キャラクタクラスのインクルード
 #include "CXCharacter.h"
 #include "CColliderLine.h"
+#include "CColliderCapsule.h"
 #include "CRideableObject.h"
 #include "CSound.h"
 
@@ -40,6 +41,9 @@ public:
 	void SetInteract(bool interact);
 	//mIsInteractの値を返す
 	bool GetInteract();
+
+	//プレイヤーのインタラクトオブジェクトを返す
+	std::string GetInteractObject();
 private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec() const;
@@ -109,6 +113,16 @@ private:
 	};
 	EState mState;	// プレイヤーの状態
 
+	// インタラクト中のオブジェクト
+	enum class EInteractObject
+	{
+		None = -1,
+
+		eComputer,	//パソコン
+		eDoor,		//ドア
+	};
+	EInteractObject mInteractObject;	//インタラクト中のオブジェクト
+
 	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
 
@@ -122,8 +136,7 @@ private:
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
 
-	bool mIsInteract;//インタラクトしているかどうか
-	bool mIsInteractObject;//インタラクトオブジェクトに当たっているか
+	bool mIsInteract;//インタラクト範囲内かどうか
 
 	// 火炎放射エフェクト
 	CFlamethrower* mpFlamethrower;
