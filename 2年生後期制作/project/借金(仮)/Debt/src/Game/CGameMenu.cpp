@@ -92,15 +92,15 @@ void CGameMenu::Decide(int select)
 void CGameMenu::Update()
 {
 	int itemCount = mMenuItems.size();
-	if (CInput::PushKey(VK_UP))
+	if (CInput::PushKey('W'))
 	{
 		mSelectIndex = (mSelectIndex + itemCount - 1) % itemCount;
 	}
-	else if (CInput::PushKey(VK_DOWN))
+	else if (CInput::PushKey('S'))
 	{
 		mSelectIndex = (mSelectIndex + 1) % itemCount;
 	}
-	else if (CInput::PushKey(VK_RETURN))
+	else if (CInput::PushKey(VK_SPACE))
 	{
 		Decide(mSelectIndex);
 	}

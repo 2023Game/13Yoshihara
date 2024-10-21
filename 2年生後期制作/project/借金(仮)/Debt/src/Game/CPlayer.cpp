@@ -41,6 +41,7 @@ CPlayer::CPlayer()
 	, mState(EState::eIdle)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
+	//, mIsInteract(false)
 	, mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
@@ -73,6 +74,9 @@ CPlayer::CPlayer()
 		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
 	);
 	mpColliderLine->SetCollisionLayers({ ELayer::eField });
+
+	mpInteractColliderSphere = new CColliderSphere
+	(this, ELayer::eInteract, 15, true);
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -123,15 +127,15 @@ void CPlayer::UpdateIdle()
 		{
 			mState = EState::eJumpStart;
 		}
-		// Fキーでインタラクト
-		else if (CInput::PushKey('F'))
-		{
-			//Interactオブジェクトのインタラクト範囲内なら
-			if (GetInteract())
-			{
-				mState = EState::eInteract;
-			}	
-		}
+		//// Fキーでインタラクト
+		//else if (CInput::PushKey('F'))
+		//{
+		//	//Interactオブジェクトのインタラクト範囲内なら
+		//	if (GetInteract())
+		//	{
+		//		mState = EState::eInteract;
+		//	}	
+		//}
 	}
 }
 
@@ -218,14 +222,14 @@ void CPlayer::UpdateJumpEnd()
 	}
 }
 
-// インタラクト中
-void CPlayer::UpdateInteract()
-{
-	if (!GetInteract())
-	{
-		mState = EState::eIdle;
-	}
-}
+//// インタラクト中
+//void CPlayer::UpdateInteract()
+//{
+//	if (!GetInteract())
+//	{
+//		mState = EState::eIdle;
+//	}
+//}
 
 // キーの入力情報から移動ベクトルを求める
 CVector CPlayer::CalcMoveVec() const
@@ -360,9 +364,9 @@ void CPlayer::Update()
 		case EState::eJumpEnd:
 			UpdateJumpEnd();
 			break;
-		// インタラクト中
-		case EState::eInteract:
-			UpdateInteract();
+		//// インタラクト中
+		//case EState::eInteract:
+		//	UpdateInteract();
 	}
 
 	// 待機中とジャンプ中は、移動処理を行う
@@ -496,11 +500,6 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				}
 			}
 		}
-		else if (other->Layer() == ELayer::eInteract)
-		{
-			//TODO:ぶつかった相手は誰なのか取得
-			other->Owner();
-		}
 	}
 }
 
@@ -510,28 +509,47 @@ void CPlayer::Render()
 	CXCharacter::Render();
 }
 
-//mIsInteractの値を設定
-void CPlayer::SetInteract(bool interact)
-{
-	mIsInteract = interact;
-}
-//mIsInteractの値を返す
-bool CPlayer::GetInteract()
-{
-	return mIsInteract;
-}
+////mIsInteractの値を設定
+//void CPlayer::SetInteract(bool interact)
+//{
+//	mIsInteract = interact;
+//}
+////mIsInteractの値を返す
+//bool CPlayer::GetInteract()
+//{
+//	return mIsInteract;
+//}
+//
+//void CPlayer::SetInteractObject(std::string interactName)
+//{
+//	if (interactName == "eComputer")
+//	{
+//		mInteractObject = EInteractObject::eComputer;
+//	}
+//	else if (interactName == "eDoor")
+//	{
+//		mInteractObject = EInteractObject::eDoor;
+//	}
+//	else
+//	{
+//		mInteractObject = EInteractObject::None;
+//	}
+//}
+//
+//
+//
+//std::string CPlayer::GetInteractObject()
+//{
+//	switch (mInteractObject)
+//	{
+//	case EInteractObject::eComputer:
+//		return "eComputer";
+//
+//	case EInteractObject::eDoor:
+//		return "eDoor";
+//	
+//	default:
+//		return "None";
+//	}
+//}
 
-std::string CPlayer::GetInteractObject()
-{
-	switch (mInteractObject)
-	{
-	case EInteractObject::eComputer:
-		return "eComputer";
-
-	case EInteractObject::eDoor:
-		return "eDoor";
-	
-	default:
-		return "None";
-	}
-}

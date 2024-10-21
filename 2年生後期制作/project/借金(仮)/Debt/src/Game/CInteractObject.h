@@ -5,8 +5,11 @@
 class CInteractObject : public CRideableObject
 {
 public:
-	CInteractObject();
+	CInteractObject(float radius, std::string objectName);
 	virtual ~CInteractObject();
+
+	// インタラクト判定
+	void Interact();
 	
 	/// <summary>
 	/// 衝突処理
@@ -16,6 +19,9 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-private:
+protected:
 	CColliderSphere* mpColliderSphere;
+	std::string mInteractName;
+	bool mIsInteract;		// インタラクトしているかどうか
+	bool mIsInteractArea;	// インタラクトエリア内かどうか
 };

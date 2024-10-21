@@ -3,6 +3,7 @@
 #include "CXCharacter.h"
 #include "CColliderLine.h"
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "CRideableObject.h"
 #include "CSound.h"
 
@@ -37,13 +38,17 @@ public:
 	// 描画
 	void Render();
 
-	//mIsInteractの値を設定する
-	void SetInteract(bool interact);
-	//mIsInteractの値を返す
-	bool GetInteract();
+	//// mIsInteractの値を設定する
+	//// CInteractObjectで設定
+	//void SetInteract(bool interact);
+	////mIsInteractの値を返す
+	//bool GetInteract();
 
-	//プレイヤーのインタラクトオブジェクトを返す
-	std::string GetInteractObject();
+	//// インタラクトオブジェクトを設定する
+	//// CInteractObjectで設定
+	//void SetInteractObject(std::string interactName);
+	//// プレイヤーのインタラクトオブジェクトを返す
+	//std::string GetInteractObject();
 private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec() const;
@@ -60,8 +65,8 @@ private:
 	void UpdateJump();
 	// ジャンプ終了
 	void UpdateJumpEnd();
-	// インタラクト中
-	void UpdateInteract();
+	//// インタラクト中
+	//void UpdateInteract();
 
 	// 移動の更新処理
 	void UpdateMove();
@@ -109,19 +114,21 @@ private:
 		eJumpStart,	// ジャンプ開始
 		eJump,		// ジャンプ中
 		eJumpEnd,	// ジャンプ終了
-		eInteract,	//インタラクト中
+		//eInteract,	//インタラクト中
 	};
 	EState mState;	// プレイヤーの状態
 
-	// インタラクト中のオブジェクト
-	enum class EInteractObject
-	{
-		None = -1,
+	//// インタラクト中のオブジェクト
+	//enum class EInteractObject
+	//{
+	//	None = -1,
 
-		eComputer,	//パソコン
-		eDoor,		//ドア
-	};
-	EInteractObject mInteractObject;	//インタラクト中のオブジェクト
+	//	eComputer,	//パソコン
+	//	eDoor,		//ドア
+	//};
+	//EInteractObject mInteractObject;	//インタラクト中のオブジェクト
+
+	//bool mIsInteract; // インタラクト範囲内かどうか
 
 	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
@@ -130,13 +137,12 @@ private:
 	CVector mGroundNormal;	// 接地している地面の法線
 
 	CColliderLine* mpColliderLine;
+	CColliderSphere* mpInteractColliderSphere;
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;
 	bool mIsPlayedSlashSE;
 	bool mIsSpawnedSlashEffect;
-
-	bool mIsInteract;//インタラクト範囲内かどうか
 
 	// 火炎放射エフェクト
 	CFlamethrower* mpFlamethrower;

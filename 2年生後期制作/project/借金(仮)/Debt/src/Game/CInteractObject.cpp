@@ -1,22 +1,42 @@
 #include "CInteractObject.h"
-#include "CPlayer.h"
+#include "CInput.h"
 
 //コンストラクタ
-CInteractObject::CInteractObject()
+CInteractObject::CInteractObject(float radius, std::string interactName)
+	: mIsInteract(false)
+	, mIsInteractArea(false)
 {
-	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, 15, true);
+	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
+	mInteractName = interactName;
 }
 
 CInteractObject::~CInteractObject()
 {
 }
 
-//衝突処理
+// インタラクト判定
+void CInteractObject::Interact()
+{
+	// インタラクトエリア内でFキーを押すとmIsInteractをtrue
+	if (mIsInteractArea == true)
+	{
+		if(CInput::PushKey('F'))
+		{
+			mIsInteract = true;
+		}
+	}
+
+	// プレイヤーと衝突してないときはmIsInteractAreaをfalse
+	mIsInteractArea = false;
+}
+
+// 衝突処理
 void CInteractObject::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	//プレイヤーと衝突したとき
-	if (other->Layer() == ELayer::ePlayer)
+	if (other->Layer() == ELayer::eInteract)
 	{
-		CPlayer::Instance()->SetInteract(true);
+		// プレイヤーと衝突しているときはインタラクトエリア内
+		mIsInteractArea = true;
 	}
 }

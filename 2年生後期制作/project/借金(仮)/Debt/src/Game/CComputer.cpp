@@ -1,9 +1,10 @@
 #include "CComputer.h"
 #include "CGameMenu.h"
-#include "CPlayer.h"
+#include "CInput.h"
 
 CComputer::CComputer(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation)
-	: mpModel(model)
+	: CInteractObject(15, "eComputer")
+	, mpModel(model)
 {
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
 	Position(pos);
@@ -25,36 +26,21 @@ CComputer::~CComputer()
 
 void CComputer::Update()
 {
-	//プレイヤーのインタラクトオブジェクトがコンピュータなら
-	if (CPlayer::Instance()->GetInteractObject() == "eComputer")
+	// インタラクト判定
+	CInteractObject::Interact();
+
+	// 仕事選択メニューが開いてなければ、インタラクトされたとき開く
+	if (!mpJobMenu->IsOpened())
 	{
-		Open();
-	}
-	else
-	{
-		Close();
+		if (mIsInteract == true)
+		{
+			mIsInteract = false;
+			mpJobMenu->Open();
+		}
 	}
 }
 
 void CComputer::Render()
 {
 	mpModel->Render(Matrix());
-}
-
-void CComputer::Open()
-{
-	//仕事選択メニューを開いていないなら開く
-	if (!mpJobMenu->IsOpened())
-	{
-		mpJobMenu->Open();
-	}
-}
-
-void CComputer::Close()
-{
-	//仕事選択メニューが開いていたら閉じる
-	if (mpJobMenu->IsOpened())
-	{
-		mpJobMenu->Close();
-	}
 }
