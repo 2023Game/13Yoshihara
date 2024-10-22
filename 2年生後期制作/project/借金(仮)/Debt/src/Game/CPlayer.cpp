@@ -67,16 +67,28 @@ CPlayer::CPlayer()
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle);
 
+	//TODO:カプセルコライダの設定
+	//フィールドとインタラクトオブジェクトだけ衝突判定をする
+	mpColliderCapsule = new CColliderCapsule
+	(
+		this, ELayer::ePlayer,
+		CVector(0.0f, 1.0f, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT-1, 0.0f),
+		1
+	);
+	//フィールドとだけ衝突判定
 	mpColliderLine = new CColliderLine
 	(
-		this, ELayer::eField,
+		this, ELayer::ePlayer,
 		CVector(0.0f, 0.0f, 0.0f),
 		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
 	);
 	mpColliderLine->SetCollisionLayers({ ELayer::eField });
 
-	//mpInteractColliderSphere = new CColliderSphere
-	//(this, ELayer::eInteract, 1, true);
+	//インタラクトオブジェクトとだけ衝突判定
+	mpInteractColliderSphere = new CColliderSphere
+	(this, ELayer::ePlayer, 5, true);
+	mpInteractColliderSphere->SetCollisionLayers({ ELayer::eInteract });
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 

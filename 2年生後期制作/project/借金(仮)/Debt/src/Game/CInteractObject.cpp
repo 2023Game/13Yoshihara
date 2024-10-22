@@ -6,7 +6,9 @@ CInteractObject::CInteractObject(float radius, std::string interactName)
 	: mIsInteract(false)
 	, mIsInteractArea(false)
 {
+	//ƒvƒŒƒCƒ„[‚Æ‚¾‚¯Õ“Ë”»’è‚ð‚·‚é
 	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
+	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
 }
 
 CInteractObject::~CInteractObject()

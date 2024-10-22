@@ -136,8 +136,9 @@ private:
 	bool mIsGrounded;	// 接地しているかどうか
 	CVector mGroundNormal;	// 接地している地面の法線
 
+	CColliderCapsule* mpColliderCapsule;
 	CColliderLine* mpColliderLine;
-	//CColliderSphere* mpInteractColliderSphere;
+	CColliderSphere* mpInteractColliderSphere;
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;
