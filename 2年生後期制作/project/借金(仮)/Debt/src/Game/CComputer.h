@@ -20,9 +20,6 @@ public:
 
 	void Update();
 	void Render();
-	//プレイヤーインタラクト時の処理
-	void Open();
-	void Close();
 
 private:
 	CModel* mpModel;
