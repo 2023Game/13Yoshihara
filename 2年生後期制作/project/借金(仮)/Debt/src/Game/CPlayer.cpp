@@ -75,8 +75,8 @@ CPlayer::CPlayer()
 	);
 	mpColliderLine->SetCollisionLayers({ ELayer::eField });
 
-	mpInteractColliderSphere = new CColliderSphere
-	(this, ELayer::eInteract, 15, true);
+	//mpInteractColliderSphere = new CColliderSphere
+	//(this, ELayer::eInteract, 1, true);
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -321,7 +321,7 @@ void CPlayer::UpdateMotionBlur()
 	System::SetMotionBlur(camDir, width, MOTION_BLUR_COUNT);
 
 	// 残り時間を経過時間分減少させる
-	mMotionBlurRemainTime -= Time::DeltaTime();
+	mMotionBlurRemainTime -= Times::DeltaTime();
 	// 残り時間がなくなれば、
 	if (mMotionBlurRemainTime <= 0.0f)
 	{
@@ -448,7 +448,7 @@ void CPlayer::Update()
 
 	mIsGrounded = false;
 
-	CDebugPrint::Print("FPS:%f\n", Time::FPS());
+	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
 
 // 衝突処理

@@ -21,7 +21,6 @@ public:
 
 protected:
 	CColliderSphere* mpColliderSphere;
-	std::string mInteractName;
 	bool mIsInteract;		// インタラクトしているかどうか
 	bool mIsInteractArea;	// インタラクトエリア内かどうか
 };

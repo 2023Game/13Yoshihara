@@ -137,7 +137,7 @@ private:
 	CVector mGroundNormal;	// Ú’n‚µ‚Ä‚¢‚é’n–Ê‚Ì–@ü
 
 	CColliderLine* mpColliderLine;
-	CColliderSphere* mpInteractColliderSphere;
+	//CColliderSphere* mpInteractColliderSphere;
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;

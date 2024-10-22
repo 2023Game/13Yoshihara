@@ -3,7 +3,7 @@
 #include "CInput.h"
 
 CComputer::CComputer(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation)
-	: CInteractObject(15, "eComputer")
+	: CInteractObject(10, "eComputer")
 	, mpModel(model)
 {
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);

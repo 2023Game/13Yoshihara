@@ -7,7 +7,6 @@ CInteractObject::CInteractObject(float radius, std::string interactName)
 	, mIsInteractArea(false)
 {
 	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
-	mInteractName = interactName;
 }
 
 CInteractObject::~CInteractObject()
@@ -34,7 +33,7 @@ void CInteractObject::Interact()
 void CInteractObject::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	//プレイヤーと衝突したとき
-	if (other->Layer() == ELayer::eInteract)
+	if (other->Layer() == ELayer::ePlayer)
 	{
 		// プレイヤーと衝突しているときはインタラクトエリア内
 		mIsInteractArea = true;
