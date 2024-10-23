@@ -24,6 +24,8 @@ private:
 	CModel* mpDoor;
 	CModel* mpDustBox;
 	CModel* mpRack;
+	
+	CModel* mpCube;
 
 	TexAnimData mEffectAnimData;
 };

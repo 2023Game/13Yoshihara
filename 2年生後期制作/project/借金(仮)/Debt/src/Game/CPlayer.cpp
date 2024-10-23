@@ -27,6 +27,7 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 #define JUMP_SPEED 1.5f
 #define GRAVITY 0.0625f
 #define JUMP_END_Y 1.0f
+#define CAPSULE_RADIUS 2.5f
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -41,6 +42,7 @@ CPlayer::CPlayer()
 	, mState(EState::eIdle)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
+	, mIsWall(false)
 	//, mIsInteract(false)
 	, mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
@@ -67,28 +69,28 @@ CPlayer::CPlayer()
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle);
 
-	//TODO:カプセルコライダの設定
 	//フィールドとインタラクトオブジェクトだけ衝突判定をする
 	mpColliderCapsule = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, 1.0f, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT-1, 0.0f),
-		1
+		CVector(0.0f, CAPSULE_RADIUS, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
+		CAPSULE_RADIUS
 	);
+	mpColliderCapsule->SetCollisionLayers({ ELayer::eField,ELayer::eInteract });
 	//フィールドとだけ衝突判定
-	mpColliderLine = new CColliderLine
-	(
-		this, ELayer::ePlayer,
-		CVector(0.0f, 0.0f, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
-	);
-	mpColliderLine->SetCollisionLayers({ ELayer::eField });
+	//mpColliderLine = new CColliderLine
+	//(
+	//	this, ELayer::ePlayer,
+	//	CVector(0.0f, 0.0f, 0.0f),
+	//	CVector(0.0f, PLAYER_HEIGHT, 0.0f)
+	//);
+	//mpColliderLine->SetCollisionLayers({ ELayer::eField });
 
 	//インタラクトオブジェクトとだけ衝突判定
-	mpInteractColliderSphere = new CColliderSphere
-	(this, ELayer::ePlayer, 5, true);
-	mpInteractColliderSphere->SetCollisionLayers({ ELayer::eInteract });
+	//mpInteractColliderSphere = new CColliderSphere
+	//(this, ELayer::ePlayer, 5, true);
+	//mpInteractColliderSphere->SetCollisionLayers({ ELayer::eInteract });
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -102,10 +104,15 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
-	if (mpColliderLine != nullptr)
+	//if (mpColliderLine != nullptr)
+	//{
+	//	delete mpColliderLine;
+	//	mpColliderLine = nullptr;
+	//}
+	if (mpColliderCapsule != nullptr)
 	{
-		delete mpColliderLine;
-		mpColliderLine = nullptr;
+		delete mpColliderCapsule;
+		mpColliderCapsule = nullptr;
 	}
 }
 
@@ -258,6 +265,7 @@ CVector CPlayer::CalcMoveVec() const
 	// 入力ベクトルの長さで入力されているか判定
 	if (input.LengthSqr() > 0.0f)
 	{
+		// TODO：壁とぶつかっているとき壁がある方向への移動を制限する
 		// 上方向ベクトル(設置している場合は、地面の法線)
 		CVector up = mIsGrounded ? mGroundNormal : CVector::up;
 		// カメラの向きに合わせた移動ベクトルに変換
@@ -459,6 +467,7 @@ void CPlayer::Update()
 	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
+	mIsWall = false;
 
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
@@ -466,23 +475,22 @@ void CPlayer::Update()
 // 衝突処理
 void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	if (self == mpColliderLine)
+	if (self == mpColliderCapsule)
 	{
-		//衝突した相手がフィールドオブジェクトの場合
+		// 衝突した相手がフィールドオブジェクトの場合
 		if (other->Layer() == ELayer::eField)
 		{
-			// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
-			CVector adjust = hit.adjust;
-			adjust.X(0.0f);
-			adjust.Z(0.0f);
+			// 許容範囲
+			const float epsilon = 0.001f;
 
-			Position(Position() + adjust * hit.weight);
+			CVector adjust = hit.adjust;
 
 			// 衝突した地面が床か天井かを内積で判定
 			CVector normal = hit.adjust.Normalized();
 			float dot = CVector::Dot(normal, CVector::up);
-			// 内積の結果がプラスであれば、床と衝突した
-			if (dot >= 0.0f)
+
+			// 内積の結果がepsilon以上なら、床と衝突した
+			if (dot >= epsilon)
 			{
 				// 落下などで床に上から衝突した時（下移動）のみ
 				// 上下の移動速度を0にする
@@ -500,9 +508,13 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				{
 					mpRideObject = other->Owner();
 				}
+
+				// 坂道で滑らないように、押し戻しベクトルのXとZの値を0にする
+				adjust.X(0.0f);
+				adjust.Z(0.0f);
 			}
-			// 内積の結果がマイナスであれば、天井と衝突した
-			else
+			// 内積の結果が-epsilonより小さければ、天井と衝突した
+			else if (dot < -epsilon)
 			{
 				// ジャンプなどで天井に下から衝突した時（上移動）のみ
 				// 上下の移動速度を0にする
@@ -510,7 +522,36 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				{
 					mMoveSpeedY = 0.0f;
 				}
+				
 			}
+			// 床でも天井でもないなら壁に衝突した
+			else
+			{
+				CVector horizontalNormal = normal;
+				horizontalNormal.Y(0.0f); // 水平面の法線
+
+				if (horizontalNormal.LengthSqr() > 0.0f)
+				{
+					horizontalNormal = horizontalNormal.Normalized();
+
+					// 横方向の速度を調整する
+					if (fabs(CVector::Dot(horizontalNormal, mMoveSpeed)) > 0.0f)
+					{
+						mMoveSpeed = CVector(0.0f, 0.0f, 0.0f);
+					}
+				}
+
+				// 壁に接触した
+				mIsWall = true;
+				// 接触した壁の法線を記憶
+				mWallNormal = horizontalNormal;
+
+				// 縦方向の調整値を0にする
+				adjust.Y(0.0f);
+			}
+
+				// 位置の調整
+				Position(Position() + adjust * hit.weight);
 		}
 	}
 }

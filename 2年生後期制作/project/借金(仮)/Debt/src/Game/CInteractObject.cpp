@@ -1,18 +1,30 @@
 #include "CInteractObject.h"
 #include "CInput.h"
 
+#define INTERACT_RADIUS 10.0f
+
 //コンストラクタ
 CInteractObject::CInteractObject(float radius, std::string interactName)
 	: mIsInteract(false)
 	, mIsInteractArea(false)
 {
 	//プレイヤーとだけ衝突判定をする
-	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
+	mpColliderSphere = new CColliderSphere
+	(
+		this, ELayer::eInteract,
+		INTERACT_RADIUS,
+		true
+	);
 	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
 }
 
 CInteractObject::~CInteractObject()
 {
+	if (mpColliderSphere != nullptr)
+	{
+		delete mpColliderSphere;
+		mpColliderSphere = nullptr;
+	}
 }
 
 // インタラクト判定

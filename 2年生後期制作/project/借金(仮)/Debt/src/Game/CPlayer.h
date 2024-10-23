@@ -134,11 +134,13 @@ private:
 	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
 
 	bool mIsGrounded;	// 接地しているかどうか
+	bool mIsWall;		// 壁に接触しているかどうか
 	CVector mGroundNormal;	// 接地している地面の法線
+	CVector mWallNormal;	// 壁に接触している時の法線
 
 	CColliderCapsule* mpColliderCapsule;
 	CColliderLine* mpColliderLine;
-	CColliderSphere* mpInteractColliderSphere;
+	//CColliderSphere* mpInteractColliderSphere;
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;

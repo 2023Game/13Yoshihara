@@ -30,6 +30,7 @@ CField::~CField()
 
 void CField::CreateFieldObjects()
 {
+	mpCube = CResourceManager::Get<CModel>("FieldCube");
 	mpBed = CResourceManager::Get<CModel>("Bed");
 	mpChair = CResourceManager::Get<CModel>("Chair");
 	mpComputer = CResourceManager::Get<CModel>("Computer");
@@ -97,7 +98,7 @@ void CField::CreateFieldObjects()
 	//// ìÆÇ©Ç»Ç¢è∞áBÅiç‚ìπÅj
 	//CMoveFloor* mf = new CMoveFloor
 	//(
-	//	mpChair,
+	//	mpCube,
 	//	CVector(0.0f, 20.0f, 200.5f), CVector(1.0f, 1.0f, 1.0f),
 	//	CVector(0.0f, 0.0f, 0.0f), 5.0f
 	//);
