@@ -129,6 +129,11 @@ void CPlayer::ChangeAnimation(EAnimType type)
 	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength);
 }
 
+void CPlayer::SetIsWall(bool isWall)
+{
+	mIsWall = isWall;
+}
+
 // 待機
 void CPlayer::UpdateIdle()
 {
@@ -251,7 +256,7 @@ void CPlayer::UpdateJumpEnd()
 //}
 
 // キーの入力情報から移動ベクトルを求める
-CVector CPlayer::CalcMoveVec() const
+CVector CPlayer::CalcMoveVec()
 {
 	CVector move = CVector::zero;
 
@@ -279,6 +284,47 @@ CVector CPlayer::CalcMoveVec() const
 		// 横方向の移動ベクトルと上方向ベクトルの外積から
 		// 正面方向の移動ベクトルを求める
 		CVector moveForward = CVector::Cross(moveSide, up);
+
+		// 壁と接触していたら壁の法線と逆方向の移動ベクトルを無効にする
+		if (mIsWall == true)
+		{
+			// TODO
+			// 壁の法線が0でないとき移動と方向が同じなら、mIsWallをfalse
+			if (mWallNormal.X() == moveSide*input.X() && mWallNormal.X() != 0.0f)
+			{
+				mIsWall = false;
+			}
+			if (mWallNormal.Z() == input.Y() && mWallNormal.Z() != 0.0f)
+			{
+				mIsWall = false;
+			}
+			
+
+			// 壁の法線の逆ベクトルを取得
+			CVector wallInverseNormal = -mWallNormal;
+
+			// 逆ベクトルも移動ベクトルも+X方向の場合（右）
+			if (wallInverseNormal.X() > 0.0f && input.X() > 0.0f)
+			{
+				input.X(0.0f);
+			}
+			// 逆ベクトルも移動ベクトルも-X方向の場合（左）
+			else if (wallInverseNormal.X() < 0.0f && input.X() < 0.0f)
+			{
+				input.X(0.0f);
+			}
+
+			// 逆ベクトルも移動ベクトルも+Z方向の場合（後）	
+			if (wallInverseNormal.Z() > 0.0f && input.Y() > 0.0f)
+			{
+				input.Y(0.0f);
+			}
+			// 逆ベクトルも移動ベクトルも-Z方向の場合（前）
+			else if (wallInverseNormal.Z() < 0.0f && input.Y() < 0.0f)
+			{
+				input.Y(0.0f);
+			}
+		}
 
 		// 求めた各方向の移動ベクトルから、
 		// 最終的なプレイヤーの移動ベクトルを求める
@@ -464,10 +510,10 @@ void CPlayer::Update()
 	CXCharacter::Update();
 
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
+	CDebugPrint::Print("Wall:%s\n", mIsWall ? "true" : "false");
 	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
-	mIsWall = false;
 
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
@@ -537,7 +583,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					// 横方向の速度を調整する
 					if (fabs(CVector::Dot(horizontalNormal, mMoveSpeed)) > 0.0f)
 					{
-						mMoveSpeed = CVector(0.0f, 0.0f, 0.0f);
+						//mMoveSpeed = CVector(0.0f, 0.0f, 0.0f);
 					}
 				}
 

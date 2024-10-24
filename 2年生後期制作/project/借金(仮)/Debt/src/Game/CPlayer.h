@@ -51,7 +51,7 @@ public:
 	//std::string GetInteractObject();
 private:
 	// キーの入力情報から移動ベクトルを求める
-	CVector CalcMoveVec() const;
+	CVector CalcMoveVec();
 
 	// 待機状態
 	void UpdateIdle();
@@ -135,6 +135,7 @@ private:
 
 	bool mIsGrounded;	// 接地しているかどうか
 	bool mIsWall;		// 壁に接触しているかどうか
+
 	CVector mGroundNormal;	// 接地している地面の法線
 	CVector mWallNormal;	// 壁に接触している時の法線
 
