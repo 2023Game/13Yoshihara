@@ -1,21 +1,27 @@
 #include "CInteractObject.h"
 #include "CInput.h"
+#include "CBillBoardImage.h"
 
-#define INTERACT_RADIUS 10.0f
+#define INTERACT_IMAGE "res\\UI\\menu_item.png"
 
 //コンストラクタ
 CInteractObject::CInteractObject(float radius, std::string interactName)
 	: mIsInteract(false)
 	, mIsInteractArea(false)
 {
-	//プレイヤーとだけ衝突判定をする
+	// プレイヤーとだけ衝突判定をする
 	mpColliderSphere = new CColliderSphere
 	(
 		this, ELayer::eInteract,
-		INTERACT_RADIUS,
+		radius,
 		true
 	);
 	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
+
+	// TODO:インタラクトの画像表示
+	// インタラクトの画像を表示
+	mpBillBoardImage=new CBillBoardImage
+		(INTERACT_IMAGE,ETag::)
 }
 
 CInteractObject::~CInteractObject()

@@ -1,6 +1,6 @@
-#include "CGameScene.h"
+#include "CHomeScene.h"
 #include "CSceneManager.h"
-#include "CField.h"
+#include "CHomeField.h"
 #include "CPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -10,19 +10,19 @@
 #include "CLineEffect.h"
 
 //コンストラクタ
-CGameScene::CGameScene()
-	: CSceneBase(EScene::eGame)
+CHomeScene::CHomeScene()
+	: CSceneBase(EScene::eHome)
 	, mpGameMenu(nullptr)
 {
 }
 
 //デストラクタ
-CGameScene::~CGameScene()
+CHomeScene::~CHomeScene()
 {
 }
 
 //シーン読み込み
-void CGameScene::Load()
+void CHomeScene::Load()
 {
 	// ゲーム画面はカーソル非表示
 	CInput::ShowCursor(false);
@@ -51,9 +51,9 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
 
 	// ゲームBGMを読み込み
-	CBGMManager::Instance()->Play(EBGMType::eGame);
+	CBGMManager::Instance()->Play(EBGMType::eHome);
 
-	new CField();
+	new CHomeField();
 
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
@@ -81,7 +81,7 @@ void CGameScene::Load()
 }
 
 //シーンの更新処理
-void CGameScene::Update()
+void CHomeScene::Update()
 {
 	// BGM再生中でなければ、BGMを再生
 	//if (!mpGameBGM->IsPlaying())

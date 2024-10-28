@@ -1,6 +1,6 @@
 #include "CTitleScene.h"
 #include "CSceneManager.h"
-#include "CGameScene.h"
+#include "CHomeScene.h"
 #include "CCamera.h"
 #include "CSound.h"
 #include "CBGMManager.h"
@@ -52,10 +52,10 @@ void CTitleScene::Update()
 	// タイトル画面が
 	if (mpTitleUI->IsEnd())
 	{
-		// ゲーム開始ならば、ゲームシーンを読み込む
+		// ゲーム開始ならば、ホームシーンを読み込む
 		if (mpTitleUI->IsStartGame())
 		{
-			CSceneManager::Instance()->LoadScene(EScene::eGame);
+			CSceneManager::Instance()->LoadScene(EScene::eHome);
 		}
 		// ゲーム終了ならば、アプリを閉じる
 		else if (mpTitleUI->IsExitGame())

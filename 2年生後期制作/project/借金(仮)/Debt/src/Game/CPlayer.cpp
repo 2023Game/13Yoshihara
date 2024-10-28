@@ -129,11 +129,6 @@ void CPlayer::ChangeAnimation(EAnimType type)
 	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength);
 }
 
-void CPlayer::SetIsWall(bool isWall)
-{
-	mIsWall = isWall;
-}
-
 // 待機
 void CPlayer::UpdateIdle()
 {
@@ -270,7 +265,6 @@ CVector CPlayer::CalcMoveVec()
 	// 入力ベクトルの長さで入力されているか判定
 	if (input.LengthSqr() > 0.0f)
 	{
-		// TODO：壁とぶつかっているとき壁がある方向への移動を制限する
 		// 上方向ベクトル(設置している場合は、地面の法線)
 		CVector up = mIsGrounded ? mGroundNormal : CVector::up;
 		// カメラの向きに合わせた移動ベクトルに変換
@@ -284,47 +278,6 @@ CVector CPlayer::CalcMoveVec()
 		// 横方向の移動ベクトルと上方向ベクトルの外積から
 		// 正面方向の移動ベクトルを求める
 		CVector moveForward = CVector::Cross(moveSide, up);
-
-		// 壁と接触していたら壁の法線と逆方向の移動ベクトルを無効にする
-		if (mIsWall == true)
-		{
-			// TODO
-			// 壁の法線が0でないとき移動と方向が同じなら、mIsWallをfalse
-			if (mWallNormal.X() == moveSide*input.X() && mWallNormal.X() != 0.0f)
-			{
-				mIsWall = false;
-			}
-			if (mWallNormal.Z() == input.Y() && mWallNormal.Z() != 0.0f)
-			{
-				mIsWall = false;
-			}
-			
-
-			// 壁の法線の逆ベクトルを取得
-			CVector wallInverseNormal = -mWallNormal;
-
-			// 逆ベクトルも移動ベクトルも+X方向の場合（右）
-			if (wallInverseNormal.X() > 0.0f && input.X() > 0.0f)
-			{
-				input.X(0.0f);
-			}
-			// 逆ベクトルも移動ベクトルも-X方向の場合（左）
-			else if (wallInverseNormal.X() < 0.0f && input.X() < 0.0f)
-			{
-				input.X(0.0f);
-			}
-
-			// 逆ベクトルも移動ベクトルも+Z方向の場合（後）	
-			if (wallInverseNormal.Z() > 0.0f && input.Y() > 0.0f)
-			{
-				input.Y(0.0f);
-			}
-			// 逆ベクトルも移動ベクトルも-Z方向の場合（前）
-			else if (wallInverseNormal.Z() < 0.0f && input.Y() < 0.0f)
-			{
-				input.Y(0.0f);
-			}
-		}
 
 		// 求めた各方向の移動ベクトルから、
 		// 最終的なプレイヤーの移動ベクトルを求める
@@ -514,6 +467,7 @@ void CPlayer::Update()
 	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
+	mIsWall = false;
 
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
 }
@@ -548,7 +502,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 接地した
 				mIsGrounded = true;
 				// 接地した地面の法線を記憶しておく
-				mGroundNormal = hit.adjust.Normalized();
+				mGroundNormal = normal;
 
 				if (other->Tag() == ETag::eRideableObject)
 				{
@@ -568,22 +522,49 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				{
 					mMoveSpeedY = 0.0f;
 				}
-				
 			}
+			// TODO:壁に移動し続けているとき震えるので後で修正
 			// 床でも天井でもないなら壁に衝突した
 			else
 			{
 				CVector horizontalNormal = normal;
 				horizontalNormal.Y(0.0f); // 水平面の法線
 
-				if (horizontalNormal.LengthSqr() > 0.0f)
+					// X方向の＋へ押し戻す壁なら－側にいるので
+				if (horizontalNormal.X() > 0.0f)
 				{
-					horizontalNormal = horizontalNormal.Normalized();
-
-					// 横方向の速度を調整する
-					if (fabs(CVector::Dot(horizontalNormal, mMoveSpeed)) > 0.0f)
+					// X移動が－なら0にする
+					if (mMoveSpeed.X() < 0.0f)
 					{
-						//mMoveSpeed = CVector(0.0f, 0.0f, 0.0f);
+						mMoveSpeed.X(0.0f);
+					}
+				}
+				// X方向の－へ押し戻す壁なら＋側にいるので
+				else if (horizontalNormal.X() < 0.0f)
+				{
+					// X移動が＋なら0にする
+					if (mMoveSpeed.X() > 0.0f)
+					{
+						mMoveSpeed.X(0.0f);
+					}
+				}
+
+				// Z方向の＋へ押し戻す壁なら－側にいるので
+				if (horizontalNormal.Z() > 0.0f)
+				{
+					// Z移動が－なら0にする
+					if (mMoveSpeed.Z() < 0.0f)
+					{
+						mMoveSpeed.Z(0.0f);
+					}
+				}
+				// Z方向の－へ押し戻す壁なら＋側にいるので
+				else if (horizontalNormal.Z() < 0.0f)
+				{
+					// Z移動が＋なら0にする
+					if (mMoveSpeed.Z() > 0.0f)
+					{
+						mMoveSpeed.Z(0.0f);
 					}
 				}
 
@@ -596,8 +577,8 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				adjust.Y(0.0f);
 			}
 
-				// 位置の調整
-				Position(Position() + adjust * hit.weight);
+			// 位置の調整
+			Position(Position() + adjust * hit.weight);
 		}
 	}
 }

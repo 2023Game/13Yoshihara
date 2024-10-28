@@ -1,13 +1,14 @@
-#include "CField.h"
+#include "CHomeField.h"
 #include "CCollisionManager.h"
 #include "CMoveFloor.h"
 #include "CRotateFloor.h"
 #include "CLineEffect.h"
 #include "CComputer.h"
+#include "CDoor.h"
 
 #define Scale_XYZ CVector(0.5f,0.5f,0.5f)
 
-CField::CField()
+CHomeField::CHomeField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
 	, mEffectAnimData(1, 11, true, 11, 0.03f)
 {
@@ -19,7 +20,7 @@ CField::CField()
 	CreateFieldObjects();
 }
 
-CField::~CField()
+CHomeField::~CHomeField()
 {
 	if (mpColliderMesh != nullptr)
 	{
@@ -28,7 +29,7 @@ CField::~CField()
 	}
 }
 
-void CField::CreateFieldObjects()
+void CHomeField::CreateFieldObjects()
 {
 	mpCube = CResourceManager::Get<CModel>("FieldCube");
 	mpBed = CResourceManager::Get<CModel>("Bed");
@@ -46,12 +47,13 @@ void CField::CreateFieldObjects()
 		CVector(1.0f, 1.0f, 1.0f),
 		CVector(0.0f, 180.0f, 0.0f)
 	);
-	//new CRotateFloor
-	//(
-	//	mpChair,
-	//	CVector(-40.0f, 15.0f, 20.0f), CVector(1.0f, 1.0f, 1.0f),
-	//	1.0f
-	//);
+	new CDoor
+	(
+		mpDoor,
+		CVector(23.5f, 0.0f, -14.0f),
+		CVector(0.55f, 0.55f, 0.55f),
+		CVector(0.0f, 180.0f, 0.0f)
+	);
 
 	//// “®‚©‚È‚¢°‡@
 	//new CMoveFloor
@@ -123,11 +125,11 @@ void CField::CreateFieldObjects()
 	//}
 }
 
-void CField::Update()
+void CHomeField::Update()
 {
 }
 
-void CField::Render()
+void CHomeField::Render()
 {
 	mpModel->Render(Matrix());
 }

@@ -4,7 +4,7 @@ class CModel;
 class CColliderMesh;
 class CGameMenu;
 
-class CComputer : public CInteractObject
+class CDoor : public CInteractObject
 {
 public:
 	/// <summary>
@@ -14,15 +14,14 @@ public:
 	/// <param name="pos">ç¿ïW</param>
 	/// <param name="scale">ëÂÇ´Ç≥</param>
 	/// <param name="rotation">âÒì]</param>
-	CComputer(CModel* model, const CVector& pos,
+	CDoor(CModel* model, const CVector& pos,
 		const CVector& scale, const CVector& rotation);
-	~CComputer();
+	~CDoor();
 
 	void Update();
 	void Render();
-
 private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
-	CGameMenu* mpBuyMenu;
+	CGameMenu* mpJobMenu;
 };

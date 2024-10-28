@@ -2,11 +2,11 @@
 #include "CObjectBase.h"
 #include "CColliderMesh.h"
 
-class CField : public CObjectBase
+class CHomeField : public CObjectBase
 {
 public:
-	CField();
-	~CField();
+	CHomeField();
+	~CHomeField();
 
 	void Update();
 	void Render();

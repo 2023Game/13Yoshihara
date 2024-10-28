@@ -67,7 +67,7 @@ void CGameMenu::Close()
 {
 	SetEnable(false);
 	SetShow(false);
-	CBGMManager::Instance()->Play(EBGMType::eGame, false);
+	CBGMManager::Instance()->Play(EBGMType::eHome, false);
 	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 }
 
