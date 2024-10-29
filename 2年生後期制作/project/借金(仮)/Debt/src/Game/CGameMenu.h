@@ -3,6 +3,7 @@
 #include "CImage.h"
 #include <vector>
 
+// TODO:í—Ş•Ê‚ÌƒQ[ƒ€ƒƒjƒ…[‚É‘Î‰‚³‚¹‚é
 class CGameMenu : public CTask
 {
 public:

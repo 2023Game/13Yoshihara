@@ -2,6 +2,7 @@
 #include "CRideableObject.h"
 #include "CColliderSphere.h"
 class CBillBoardImage;
+class CObjectBase;
 
 class CInteractObject : public CRideableObject
 {
@@ -23,6 +24,7 @@ public:
 protected:
 	CColliderSphere* mpColliderSphere;
 	CBillBoardImage* mpBillBoardImage;
+	CObjectBase* mpPlayer;
 	bool mIsInteract;		// インタラクトしているかどうか
 	bool mIsInteractArea;	// インタラクトエリア内かどうか
 };
