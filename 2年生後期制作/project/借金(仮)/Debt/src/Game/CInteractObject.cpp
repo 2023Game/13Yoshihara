@@ -16,7 +16,6 @@ CInteractObject::CInteractObject(float radius, std::string interactName)
 	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
 	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
 
-	// TODO:インタラクトの画像表示
 	// インタラクトの画像を表示
 	mpBillBoardImage = new CBillBoardImage(INTERACT_IMAGE, ETag::eInteractUI, ETaskPauseType::eGame);
 	mpBillBoardImage->SetSize(IMAGE_SIZE);
@@ -42,7 +41,7 @@ void CInteractObject::Interact()
 	CVector direction = CPlayer::Instance()->Position() - mpBillBoardImage->Position();
 	direction.Normalize();
 	direction = direction * 10.0f;
-	// 
+	// プレイヤー側にビルボードを表示
 	mpBillBoardImage->
 		Position(CVector(Position().X() + direction.X(),
 			CPlayer::Instance()->Position().Y() + 10.0f,

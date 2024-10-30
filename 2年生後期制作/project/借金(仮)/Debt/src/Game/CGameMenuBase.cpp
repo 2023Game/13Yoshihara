@@ -1,15 +1,17 @@
-#include "CGameMenu.h"
+#include "CGameMenuBase.h"
 #include "CInput.h"
 #include "CTaskManager.h"
 #include "CBGMManager.h"
 
 #define MENU_ALPHA 0.75f
 
-CGameMenu::CGameMenu()
+CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
 	, mSelectIndex(0)
 	, mIsOpened(false)
 {
+	int menuItemMax = menuItemPathList.size();
+
 	mpBackground = new CImage
 	(
 		"UI/menu_back.png",
@@ -20,13 +22,13 @@ CGameMenu::CGameMenu()
 	mpBackground->SetPos(CVector2(WINDOW_WIDTH, WINDOW_HEIGHT) * 0.5f);
 	mpBackground->SetColor(1.0f, 1.0f, 1.0f, MENU_ALPHA);
 
-	int menuItemCount = 3;
+	int menuItemCount = menuItemMax;
 	float spaceY = (float)WINDOW_HEIGHT / (menuItemCount + 1);
 	for (int i = 0; i < menuItemCount; i++)
 	{
 		CImage* item = new CImage
 		(
-			"UI/menu_item.png",
+			menuItemPathList[i].c_str(),
 			ETaskPriority::eUI, 0, ETaskPauseType::eMenu,
 			false, false
 		);
@@ -39,7 +41,7 @@ CGameMenu::CGameMenu()
 
 	mpSelectFrame = new CImage
 	(
-		"UI/menu_item_select.png",
+		menuSelectPath.c_str(),
 		ETaskPriority::eUI, 0, ETaskPauseType::eMenu,
 		false, false
 	);
@@ -50,11 +52,11 @@ CGameMenu::CGameMenu()
 	SetShow(false);
 }
 
-CGameMenu::~CGameMenu()
+CGameMenuBase::~CGameMenuBase()
 {
 }
 
-void CGameMenu::Open()
+void CGameMenuBase::Open()
 {
 	SetEnable(true);
 	SetShow(true);
@@ -63,7 +65,7 @@ void CGameMenu::Open()
 	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
 }
 
-void CGameMenu::Close()
+void CGameMenuBase::Close()
 {
 	SetEnable(false);
 	SetShow(false);
@@ -71,25 +73,17 @@ void CGameMenu::Close()
 	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 }
 
-bool CGameMenu::IsOpened() const
+bool CGameMenuBase::IsOpened() const
 {
 	return mIsOpened;
 }
 
-void CGameMenu::Decide(int select)
+//@Œˆ’è‚µ‚½ƒ{ƒ^ƒ“‚Ìˆ—
+void CGameMenuBase::Decide(int select)
 {
-	switch (select)
-	{
-		case 0:
-		case 1:
-			break;
-		case 2:
-			Close();
-			break;
-	}
 }
 
-void CGameMenu::Update()
+void CGameMenuBase::Update()
 {
 	int itemCount = mMenuItems.size();
 	if (CInput::PushKey('W'))
@@ -113,7 +107,7 @@ void CGameMenu::Update()
 	mpSelectFrame->Update();
 }
 
-void CGameMenu::Render()
+void CGameMenuBase::Render()
 {
 	mpBackground->Render();
 	for (int i = 0; i < mMenuItems.size(); i++)

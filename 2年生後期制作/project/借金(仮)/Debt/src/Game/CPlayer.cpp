@@ -69,7 +69,7 @@ CPlayer::CPlayer()
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle);
 
-	//フィールドとインタラクトオブジェクトだけ衝突判定をする
+	//フィールドとだけ衝突判定をする
 	mpColliderCapsule = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
@@ -77,20 +77,16 @@ CPlayer::CPlayer()
 		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
 		CAPSULE_RADIUS
 	);
-	mpColliderCapsule->SetCollisionLayers({ ELayer::eField,ELayer::eInteract });
-	//フィールドとだけ衝突判定
-	//mpColliderLine = new CColliderLine
-	//(
-	//	this, ELayer::ePlayer,
-	//	CVector(0.0f, 0.0f, 0.0f),
-	//	CVector(0.0f, PLAYER_HEIGHT, 0.0f)
-	//);
-	//mpColliderLine->SetCollisionLayers({ ELayer::eField });
-
+	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
+	
 	//インタラクトオブジェクトとだけ衝突判定
-	//mpInteractColliderSphere = new CColliderSphere
-	//(this, ELayer::ePlayer, 5, true);
-	//mpInteractColliderSphere->SetCollisionLayers({ ELayer::eInteract });
+	mpColliderLine = new CColliderLine
+	(
+		this, ELayer::ePlayer,
+		CVector(0.0f, 0.0f, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
+	);
+	mpColliderLine->SetCollisionLayers({ ELayer::eInteract });
 
 	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
 
@@ -104,11 +100,11 @@ CPlayer::CPlayer()
 
 CPlayer::~CPlayer()
 {
-	//if (mpColliderLine != nullptr)
-	//{
-	//	delete mpColliderLine;
-	//	mpColliderLine = nullptr;
-	//}
+	if (mpColliderLine != nullptr)
+	{
+		delete mpColliderLine;
+		mpColliderLine = nullptr;
+	}
 	if (mpColliderCapsule != nullptr)
 	{
 		delete mpColliderCapsule;
@@ -146,15 +142,6 @@ void CPlayer::UpdateIdle()
 		{
 			mState = EState::eJumpStart;
 		}
-		//// Fキーでインタラクト
-		//else if (CInput::PushKey('F'))
-		//{
-		//	//Interactオブジェクトのインタラクト範囲内なら
-		//	if (GetInteract())
-		//	{
-		//		mState = EState::eInteract;
-		//	}	
-		//}
 	}
 }
 
@@ -240,15 +227,6 @@ void CPlayer::UpdateJumpEnd()
 		mState = EState::eIdle;
 	}
 }
-
-//// インタラクト中
-//void CPlayer::UpdateInteract()
-//{
-//	if (!GetInteract())
-//	{
-//		mState = EState::eIdle;
-//	}
-//}
 
 // キーの入力情報から移動ベクトルを求める
 CVector CPlayer::CalcMoveVec()
@@ -383,9 +361,6 @@ void CPlayer::Update()
 		case EState::eJumpEnd:
 			UpdateJumpEnd();
 			break;
-		//// インタラクト中
-		//case EState::eInteract:
-		//	UpdateInteract();
 	}
 
 	// 待機中とジャンプ中は、移動処理を行う
@@ -588,48 +563,3 @@ void CPlayer::Render()
 {
 	CXCharacter::Render();
 }
-
-////mIsInteractの値を設定
-//void CPlayer::SetInteract(bool interact)
-//{
-//	mIsInteract = interact;
-//}
-////mIsInteractの値を返す
-//bool CPlayer::GetInteract()
-//{
-//	return mIsInteract;
-//}
-//
-//void CPlayer::SetInteractObject(std::string interactName)
-//{
-//	if (interactName == "eComputer")
-//	{
-//		mInteractObject = EInteractObject::eComputer;
-//	}
-//	else if (interactName == "eDoor")
-//	{
-//		mInteractObject = EInteractObject::eDoor;
-//	}
-//	else
-//	{
-//		mInteractObject = EInteractObject::None;
-//	}
-//}
-//
-//
-//
-//std::string CPlayer::GetInteractObject()
-//{
-//	switch (mInteractObject)
-//	{
-//	case EInteractObject::eComputer:
-//		return "eComputer";
-//
-//	case EInteractObject::eDoor:
-//		return "eDoor";
-//	
-//	default:
-//		return "None";
-//	}
-//}
-

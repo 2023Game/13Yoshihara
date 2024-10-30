@@ -2,6 +2,7 @@
 #include "CFade.h"
 #include "CTitleScene.h"
 #include "CHomeScene.h"
+#include "CTaskManager.h"
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"

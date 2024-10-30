@@ -38,17 +38,6 @@ public:
 	// 描画
 	void Render();
 
-	//// mIsInteractの値を設定する
-	//// CInteractObjectで設定
-	//void SetInteract(bool interact);
-	////mIsInteractの値を返す
-	//bool GetInteract();
-
-	//// インタラクトオブジェクトを設定する
-	//// CInteractObjectで設定
-	//void SetInteractObject(std::string interactName);
-	//// プレイヤーのインタラクトオブジェクトを返す
-	//std::string GetInteractObject();
 private:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec();
@@ -118,18 +107,6 @@ private:
 	};
 	EState mState;	// プレイヤーの状態
 
-	//// インタラクト中のオブジェクト
-	//enum class EInteractObject
-	//{
-	//	None = -1,
-
-	//	eComputer,	//パソコン
-	//	eDoor,		//ドア
-	//};
-	//EInteractObject mInteractObject;	//インタラクト中のオブジェクト
-
-	//bool mIsInteract; // インタラクト範囲内かどうか
-
 	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
 
@@ -141,7 +118,6 @@ private:
 
 	CColliderCapsule* mpColliderCapsule;
 	CColliderLine* mpColliderLine;
-	//CColliderSphere* mpInteractColliderSphere;
 	CTransform* mpRideObject;
 
 	CSound* mpSlashSE;

@@ -5,9 +5,12 @@
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
-#include "CGameMenu.h"
+#include "CGameMenuBase.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
+
+#define MENU_ITEM1 "UI/menu_item.png"
+#define MENU_SELECT "UI/menu_item_select.png"
 
 //コンストラクタ
 CHomeScene::CHomeScene()
@@ -76,8 +79,13 @@ void CHomeScene::Load()
 
 	mainCamera->SetFollowTargetTf(player);
 
+	std::vector < std::string> menuItemPathList;
+	menuItemPathList.push_back(MENU_ITEM1);
+	menuItemPathList.push_back(MENU_ITEM1);
+	menuItemPathList.push_back(MENU_ITEM1);
+
 	// ゲームメニューを作成
-	mpGameMenu = new CGameMenu();
+	mpGameMenu = new CGameMenuBase(menuItemPathList, MENU_SELECT);
 }
 
 //シーンの更新処理

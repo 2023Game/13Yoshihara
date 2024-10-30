@@ -2,7 +2,7 @@
 #include "CInteractObject.h"
 class CModel;
 class CColliderMesh;
-class CGameMenu;
+class CStageMenu;
 
 class CDoor : public CInteractObject
 {
@@ -23,5 +23,5 @@ public:
 private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
-	CGameMenu* mpJobMenu;
+	CStageMenu* mpStageMenu;
 };

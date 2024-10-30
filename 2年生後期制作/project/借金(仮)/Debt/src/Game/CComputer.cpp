@@ -1,15 +1,24 @@
 #include "CComputer.h"
 #include "CModel.h"
 #include "CColliderMesh.h"
-#include "CGameMenu.h"
+#include "CGameMenuBase.h"
 #include "CInput.h"
+
+#define MENU_ITEM1 "UI/menu_item.png"
+#define MENU_SELECT "UI/menu_item_select.png"
 
 CComputer::CComputer(CModel* model, const CVector& pos,
 	const CVector& scale, const CVector& rotation)
 	: CInteractObject(15, "eComputer")
 	, mpModel(model)
 {
-	mpColliderSphere->Position(0.0f, 0.0f, 0.0f);
+	mMenuItemPathList.push_back(MENU_ITEM1);
+	mMenuItemPathList.push_back(MENU_ITEM1);
+	mMenuItemPathList.push_back(MENU_ITEM1);
+
+	mMenuSelectPath = MENU_SELECT;
+
+	mpColliderSphere->Position(-10.0f, 0.0f, 0.0f);
 	mpColliderMesh = 
 		new CColliderMesh(this, ELayer::eField, mpModel, true);
 	Position(pos);
@@ -17,7 +26,7 @@ CComputer::CComputer(CModel* model, const CVector& pos,
 	Rotate(rotation);
 
 	// w“üƒƒjƒ…[‚ğì¬
-	mpBuyMenu = new CGameMenu();
+	mpBuyMenu = new CGameMenuBase(mMenuItemPathList, mMenuSelectPath);
 }
 
 CComputer::~CComputer()

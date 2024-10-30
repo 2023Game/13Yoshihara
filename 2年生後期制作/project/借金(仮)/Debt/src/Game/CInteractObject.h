@@ -27,4 +27,6 @@ protected:
 	CObjectBase* mpPlayer;
 	bool mIsInteract;		// インタラクトしているかどうか
 	bool mIsInteractArea;	// インタラクトエリア内かどうか
+	std::vector<std::string> mMenuItemPathList;	// メニューのアイテム用画像のパスリスト
+	std::string mMenuSelectPath;	// メニューのセレクト画像のパス
 };
