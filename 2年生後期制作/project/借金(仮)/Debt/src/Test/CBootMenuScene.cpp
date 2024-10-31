@@ -80,13 +80,13 @@ void CBootMenuScene::SelectPrevMenu()
 // 更新
 void CBootMenuScene::Update()
 {
-	// 「W」キーで前の項目に戻る
-	if (CInput::PushKey('W'))
+	// 「↑」キーもしくは「W」キーで前の項目に戻る
+	if (CInput::PushKey(VK_UP) || CInput::PushKey('W'))
 	{
 		SelectPrevMenu();
 	}
-	// 「S」キーで次の項目へ進める
-	else if (CInput::PushKey('S'))
+	// 「↓」キーもしくは「S」キーで次の項目へ進める
+	else if (CInput::PushKey(VK_DOWN) || CInput::PushKey('S'))
 	{
 		SelectNextMenu();
 	}

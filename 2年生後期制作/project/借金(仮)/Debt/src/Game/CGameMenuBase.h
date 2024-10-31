@@ -28,8 +28,8 @@ public:
 protected:
 	CImage* mpBackground;
 	std::vector<CImage*> mMenuItems;
-	std::vector<std::string> mMenuItemPng;
 	CImage* mpSelectFrame;
 	int mSelectIndex;
 	bool mIsOpened;
+	CGameMenuBase* mPrevMenu;	// 一つ前のメニューの格納用
 };

@@ -11,12 +11,6 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	: CInteractObject(15,"eDoor")
 	, mpModel(model)
 {
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-
-	mMenuSelectPath = MENU_SELECT;
-
 	mpColliderSphere->Position(-10.0f, 0.0f, 0.0f);
 	mpColliderMesh =
 		new CColliderMesh(this, ELayer::eField, mpModel, true);
@@ -24,6 +18,12 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	Scale(scale);
 	Rotate(rotation);
 
+	// メニューのアイテム画像のパス
+	mMenuItemPathList.push_back(MENU_ITEM1);
+	mMenuItemPathList.push_back(MENU_ITEM1);
+	mMenuItemPathList.push_back(MENU_ITEM1);
+	// メニュー選択画像のパス
+	mMenuSelectPath = MENU_SELECT;
 	// ステージ選択メニューを作成
 	mpStageMenu = new CStageMenu(mMenuItemPathList, mMenuSelectPath);
 }

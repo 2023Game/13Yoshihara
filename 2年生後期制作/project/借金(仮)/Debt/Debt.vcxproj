@@ -77,6 +77,7 @@
     <ClCompile Include="src\Game\CDoor.cpp" />
     <ClCompile Include="src\Game\CDustGameScene.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
+    <ClCompile Include="src\Game\CGameMenu.cpp" />
     <ClCompile Include="src\Game\CHomeField.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
     <ClCompile Include="src\Game\CFlamethrower.cpp" />
@@ -86,6 +87,8 @@
     <ClCompile Include="src\Game\CHomeScene.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
     <ClCompile Include="src\Game\CInteractObject.cpp" />
+    <ClCompile Include="src\Game\CJobLiberationMenu.cpp" />
+    <ClCompile Include="src\Game\CJobUpgradeMenu.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CRideabeObject.cpp" />
@@ -182,6 +185,7 @@
     <ClInclude Include="src\Game\CDoor.h" />
     <ClInclude Include="src\Game\CDustGameScene.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
+    <ClInclude Include="src\Game\CGameMenu.h" />
     <ClInclude Include="src\Game\CHomeField.h" />
     <ClInclude Include="src\Game\CFlame.h" />
     <ClInclude Include="src\Game\CFlamethrower.h" />
@@ -191,6 +195,8 @@
     <ClInclude Include="src\Game\CHomeScene.h" />
     <ClInclude Include="src\Game\CImage.h" />
     <ClInclude Include="src\Game\CInteractObject.h" />
+    <ClInclude Include="src\Game\CJobLiberationMenu.h" />
+    <ClInclude Include="src\Game\CJobUpgradeMenu.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />

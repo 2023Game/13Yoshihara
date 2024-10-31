@@ -9,6 +9,7 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::str
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
 	, mSelectIndex(0)
 	, mIsOpened(false)
+	, mPrevMenu(nullptr)
 {
 	int menuItemMax = menuItemPathList.size();
 

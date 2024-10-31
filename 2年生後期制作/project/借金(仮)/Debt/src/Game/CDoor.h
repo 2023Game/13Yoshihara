@@ -23,5 +23,5 @@ public:
 private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
-	CStageMenu* mpStageMenu;
+	CStageMenu* mpStageMenu;	// ステージ選択メニュー
 };
