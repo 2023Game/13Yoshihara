@@ -1,10 +1,7 @@
 #include "CDoor.h"
 #include "CModel.h"
 #include "CColliderMesh.h"
-#include "CStageMenu.h"
-
-#define MENU_ITEM1 "UI/menu_item.png"
-#define MENU_SELECT "UI/menu_item_select.png"
+#include "CStageSelectMenu.h"
 
 CDoor::CDoor(CModel* model, const CVector& pos,
 	const CVector& scale, const CVector& rotation)
@@ -18,14 +15,8 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	Scale(scale);
 	Rotate(rotation);
 
-	// メニューのアイテム画像のパス
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	// メニュー選択画像のパス
-	mMenuSelectPath = MENU_SELECT;
 	// ステージ選択メニューを作成
-	mpStageMenu = new CStageMenu(mMenuItemPathList, mMenuSelectPath);
+	mpStageSelectMenu = new CStageSelectMenu();
 }
 
 CDoor::~CDoor()
@@ -43,12 +34,12 @@ void CDoor::Update()
 	CInteractObject::Interact();
 
 	// ステージ選択メニューを開いてなければ、インタラクトされたとき開く
-	if (!mpStageMenu->IsOpened())
+	if (!mpStageSelectMenu->IsOpened())
 	{
 		if (mIsInteract)
 		{
 			mIsInteract = false;
-			mpStageMenu->Open();
+			mpStageSelectMenu->Open();
 		}
 	}
 }

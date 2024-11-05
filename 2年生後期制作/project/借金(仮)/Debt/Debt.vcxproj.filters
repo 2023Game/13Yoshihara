@@ -89,6 +89,9 @@
     <Filter Include="ソース ファイル\Game\UI\Title">
       <UniqueIdentifier>{a594cb69-7b77-4a90-8304-3ec10f740063}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Job">
+      <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -370,7 +373,7 @@
     <ClCompile Include="src\Game\CBuyMenu.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CStageMenu.cpp">
+    <ClCompile Include="src\Game\CStageSelectMenu.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGameMenu.cpp">
@@ -379,8 +382,20 @@
     <ClCompile Include="src\Game\CJobUpgradeMenu.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CJobLiberationMenu.cpp">
+    <ClCompile Include="src\Game\CJobUnlockMenu.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobStatusBase.cpp">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobStatusManager.cpp">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashStatus.cpp">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryStatus.cpp">
+      <Filter>ソース ファイル\Game\Job</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -687,7 +702,7 @@
     <ClInclude Include="src\Game\CBuyMenu.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CStageMenu.h">
+    <ClInclude Include="src\Game\CStageSelectMenu.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGameMenu.h">
@@ -696,8 +711,23 @@
     <ClInclude Include="src\Game\CJobUpgradeMenu.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CJobLiberationMenu.h">
+    <ClInclude Include="src\Game\CJobUnlockMenu.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobStatusBase.h">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobStatusManager.h">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\JobType.h">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashStatus.h">
+      <Filter>ソース ファイル\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryStatus.h">
+      <Filter>ソース ファイル\Game\Job</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

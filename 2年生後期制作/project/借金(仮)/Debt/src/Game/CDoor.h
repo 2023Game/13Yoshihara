@@ -2,7 +2,7 @@
 #include "CInteractObject.h"
 class CModel;
 class CColliderMesh;
-class CStageMenu;
+class CStageSelectMenu;
 
 class CDoor : public CInteractObject
 {
@@ -23,5 +23,5 @@ public:
 private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
-	CStageMenu* mpStageMenu;	// ステージ選択メニュー
+	CStageSelectMenu* mpStageSelectMenu;	// ステージ選択メニュー
 };

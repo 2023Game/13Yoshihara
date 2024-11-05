@@ -1,6 +1,6 @@
 #pragma once
 #include "CSceneBase.h"
-class CGameMenuBase;
+class CGameMenu;
 class CSound;
 
 //タイトルシーン
@@ -17,5 +17,5 @@ public:
 	void Update();
 
 private:
-	CGameMenuBase* mpGameMenu;
+	CGameMenu* mpGameMenu;
 };

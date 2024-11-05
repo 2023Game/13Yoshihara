@@ -4,7 +4,7 @@
 #include "CObjectBase.h"
 #include "CPlayer.h"
 
-#define INTERACT_IMAGE "UI\\Interact.png"
+#define INTERACT_IMAGE "UI\\interact.png"
 #define IMAGE_SIZE CVector2(6.0f,2.0f)
 
 //コンストラクタ

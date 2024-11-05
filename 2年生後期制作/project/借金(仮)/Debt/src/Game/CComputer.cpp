@@ -4,9 +4,6 @@
 #include "CBuyMenu.h"
 #include "CInput.h"
 
-#define MENU_ITEM1 "UI/menu_item.png"
-#define MENU_SELECT "UI/menu_item_select.png"
-
 CComputer::CComputer(CModel* model, const CVector& pos,
 	const CVector& scale, const CVector& rotation)
 	: CInteractObject(15, "eComputer")
@@ -19,14 +16,8 @@ CComputer::CComputer(CModel* model, const CVector& pos,
 	Scale(scale);
 	Rotate(rotation);
 
-	// メニューのアイテム画像のパス
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	mMenuItemPathList.push_back(MENU_ITEM1);
-	// メニュー選択画像のパス
-	mMenuSelectPath = MENU_SELECT;
 	// 購入メニューを作成
-	mpBuyMenu = new CBuyMenu(mMenuItemPathList, mMenuSelectPath);
+	mpBuyMenu = new CBuyMenu();
 }
 
 CComputer::~CComputer()

@@ -1,32 +1,21 @@
 #include "CBuyMenu.h"
 #include "CSceneManager.h"
-#include "CJobLiberationMenu.h"
+#include "CJobUnlockMenu.h"
 #include "CJobUpgradeMenu.h"
 
-#define MENU_JOB_LIBERATION1 "UI/menu_item.png"
-#define MENU_JOB_UPGRADE1 "UI/menu_item.png"
-#define MENU_SELECT "UI/menu_item_select.png"
+#define MENU_JOB_UNLOCK "UI/menu_job_unlock.png"
+#define MENU_JOB_UPGRADE "UI/menu_job_upgrade.png"
+#define MENU_CLOSE "UI/menu_close.png"
+#define MENU_SELECT "UI/menu_select.png"
 
-CBuyMenu::CBuyMenu(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
-	: CGameMenuBase(menuItemPathList, menuSelectPath)
+CBuyMenu::CBuyMenu()
+	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_UPGRADE, MENU_CLOSE}, MENU_SELECT)
 {
-	std::string menuSelect = MENU_SELECT;
+	// 仕事解放メニューを作成
+	mpJobUnlockMenu = new CJobUnlockMenu(this);
 
-	// 仕事解放メニュー
-	std::vector<std::string> menuJobLiberation;
-	menuJobLiberation.push_back(MENU_JOB_LIBERATION1);
-	menuJobLiberation.push_back(MENU_JOB_LIBERATION1);
-	menuJobLiberation.push_back(MENU_JOB_LIBERATION1);
-
-	mpJobLiberationMenu = new CJobLiberationMenu(menuJobLiberation, menuSelect, this);
-
-	// 仕事強化メニュー
-	std::vector<std::string> menuUpgrade;
-	menuUpgrade.push_back(MENU_JOB_UPGRADE1);
-	menuUpgrade.push_back(MENU_JOB_UPGRADE1);
-	menuUpgrade.push_back(MENU_JOB_UPGRADE1);
-
-	mpJobUpgradeMenu = new CJobUpgradeMenu(menuUpgrade, menuSelect, this);
+	// 仕事強化メニューを作成
+	mpJobUpgradeMenu = new CJobUpgradeMenu(this);
 }
 
 CBuyMenu::~CBuyMenu()
@@ -39,7 +28,7 @@ void CBuyMenu::Decide(int select)
 	{
 	case 0:		// 仕事解放メニューを表示
 		Close();
-		mpJobLiberationMenu->Open();
+		mpJobUnlockMenu->Open();
 		break;
 	case 1:		// 強化購入メニューを表示
 		Close();

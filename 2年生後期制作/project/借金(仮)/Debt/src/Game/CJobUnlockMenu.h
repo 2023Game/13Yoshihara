@@ -1,15 +1,15 @@
 #pragma once
 #include "CGameMenuBase.h"
 
-class CJobUpgradeMenu : public CGameMenuBase
+class CJobUnlockMenu : public CGameMenuBase
 {
 public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="prevMenu">一つ前のメニュー</param>
-	CJobUpgradeMenu(CGameMenuBase* prevMenu);
-	~CJobUpgradeMenu();
+	CJobUnlockMenu(CGameMenuBase* prevMenu);
+	~CJobUnlockMenu();
 
 	void Decide(int select) override;
 

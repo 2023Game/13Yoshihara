@@ -1,11 +1,11 @@
 #pragma once
 #include "CGameMenuBase.h"
 
-class CGameMenu : public CGameMenuBase
+class CStageSelectMenu : public CGameMenuBase
 {
 public:
-	CGameMenu();
-	~CGameMenu();
+	CStageSelectMenu();
+	~CStageSelectMenu();
 
 	void Decide(int select) override;
 

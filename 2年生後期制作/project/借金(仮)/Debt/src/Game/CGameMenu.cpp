@@ -1,8 +1,12 @@
 #include "CGameMenu.h"
 #include "CSceneManager.h"
 
-CGameMenu::CGameMenu(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
-	: CGameMenuBase(menuItemPathList, menuSelectPath)
+#define MENU_ITEM1 "UI/menu_item.png"
+#define MENU_CLOSE "UI/menu_close.png"
+#define MENU_SELECT "UI/menu_select.png"
+
+CGameMenu::CGameMenu()
+	: CGameMenuBase(std::vector<std::string> {MENU_ITEM1, MENU_ITEM1, MENU_CLOSE}, MENU_SELECT)
 {
 
 }
