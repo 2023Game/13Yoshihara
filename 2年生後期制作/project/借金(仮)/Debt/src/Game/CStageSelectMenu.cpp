@@ -1,5 +1,6 @@
 #include "CStageSelectMenu.h"
 #include "CSceneManager.h"
+#include "CJobStatusManager.h"
 
 #define MENU_STAGE_TRASH "UI/menu_stage_trash.png"
 #define MENU_STAGE_DELIVERY "UI/menu_stage_delivery.png"
@@ -21,12 +22,30 @@ void CStageSelectMenu::Decide(int select)
 	switch (select)
 	{
 	case 0:		// ゴミ拾いシーンへ移動
-		Close();
-		CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		// ゴミ拾いがアンロック済みだったら移動
+		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eTrash))
+		{
+			Close();
+			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		}
+		// アンロックしていないならブザー音を再生
+		else
+		{
+			// TODO : ブザー音を再生
+		}
 		break;
 	case 1:		// 配達シーンへ移動
-		Close();
-		CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		// 配達がアンロック済みだったら移動
+		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eDelivery))
+		{
+			Close();
+			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+		}
+		// アンロックしていないならブザー音を再生
+		else
+		{
+			// TODO : ブザー音を再生
+		}
 		break;
 	default:	// 一番下はメニューを閉じる
 		Close();

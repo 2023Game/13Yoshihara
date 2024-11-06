@@ -20,13 +20,23 @@ public:
 	void Update();
 
 	// TODO
-	// 各仕事の解除状態を取得する
+	// 各仕事のアンロック状態を取得する
+	bool GetUnlock(EJobType jobType);
+	/// <summary>
+	/// 各仕事のアンロック状態を設定する
+	/// </summary>
+	/// <param name="jobType">仕事の種類</param>
+	/// <param name="unlock">アンロック状態(trueでアンロック)</param>
+	void SetUnlock(EJobType jobType, bool unlock);
 
-	// 各仕事の解除状態を設定する
-
-	// 各仕事の強化値を取得する
-
-	// 各仕事の強化値を設定する
+	// 各仕事の強化倍率を取得する
+	float GetUpgrade(EJobType jobType);
+	/// <summary>
+	/// 各仕事の強化倍率を設定する
+	/// </summary>
+	/// <param name="jobType">仕事の種類</param>
+	/// <param name="upgrade">強化倍率の増加量</param>
+	void SetUpgrade(EJobType jobType, float upgrade);
 private:
 	// 仕事ステータスマネージャのインスタンス
 	static CJobStatusManager* mpInstance;

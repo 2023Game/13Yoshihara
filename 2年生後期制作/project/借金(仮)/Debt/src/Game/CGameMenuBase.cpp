@@ -90,14 +90,17 @@ void CGameMenuBase::Update()
 	if (CInput::PushKey('W'))
 	{
 		mSelectIndex = (mSelectIndex + itemCount - 1) % itemCount;
+		// TODO : セレクト音を再生
 	}
 	else if (CInput::PushKey('S'))
 	{
 		mSelectIndex = (mSelectIndex + 1) % itemCount;
+		// TODO : セレクト音を再生
 	}
 	else if (CInput::PushKey(VK_SPACE))
 	{
 		Decide(mSelectIndex);
+		// TODO : 決定音を再生
 	}
 
 	mpBackground->Update();

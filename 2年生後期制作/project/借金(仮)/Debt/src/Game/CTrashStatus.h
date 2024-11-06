@@ -1,7 +1,7 @@
 #pragma once
 #include "CJobStatusBase.h"
 
-class CTrashStatus : CJobStatusBase
+class CTrashStatus : public CJobStatusBase
 {
 public:
 	CTrashStatus();

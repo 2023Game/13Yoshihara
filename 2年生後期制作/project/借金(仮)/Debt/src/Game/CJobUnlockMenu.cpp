@@ -1,5 +1,6 @@
 #include "CJobUnlockMenu.h"
 #include "CSceneManager.h"
+#include "CJobStatusManager.h"
 
 #define MENU_UNLOCK_TRASH "UI/menu_unlock_trash.png"
 #define MENU_UNLOCK_DELIVERY "UI/menu_unlock_delivery.png"
@@ -20,9 +21,11 @@ void CJobUnlockMenu::Decide(int select)
 {
 	switch (select)
 	{
-	case 0:		// を解放
+	case 0:		// ゴミ拾いをアンロック
+		CJobStatusManager::Instance()->SetUnlock(EJobType::eTrash, true);
 		break;
-	case 1:		// を解放
+	case 1:		// 配達をアンロック
+		CJobStatusManager::Instance()->SetUnlock(EJobType::eDelivery, true);
 		break;
 	default:	// 一つ前のメニューへ戻る
 		Close();

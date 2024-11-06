@@ -36,7 +36,7 @@ float CJobStatusBase::GetUpgrade()
 // ‹­‰»”{—¦‚ğİ’è
 void CJobStatusBase::SetUpgrade(float upgrade)
 {
-	mUpgrade = upgrade;
+	mUpgrade = mUpgrade + upgrade;
 }
 
 // d–‚Ìí—Ş‚Ìæ“¾

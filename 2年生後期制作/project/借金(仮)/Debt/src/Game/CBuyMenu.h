@@ -14,6 +14,6 @@ public:
 	void Update();
 
 private:
-	CJobUnlockMenu* mpJobUnlockMenu;// 仕事解放メニュー
+	CJobUnlockMenu* mpJobUnlockMenu;// 仕事アンロックメニュー
 	CJobUpgradeMenu* mpJobUpgradeMenu;		// 仕事強化メニュー
 };

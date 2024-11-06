@@ -11,7 +11,7 @@
 CBuyMenu::CBuyMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_UPGRADE, MENU_CLOSE}, MENU_SELECT)
 {
-	// 仕事解放メニューを作成
+	// 仕事アンロックメニューを作成
 	mpJobUnlockMenu = new CJobUnlockMenu(this);
 
 	// 仕事強化メニューを作成
@@ -26,7 +26,7 @@ void CBuyMenu::Decide(int select)
 {
 	switch (select)
 	{
-	case 0:		// 仕事解放メニューを表示
+	case 0:		// 仕事アンロックメニューを表示
 		Close();
 		mpJobUnlockMenu->Open();
 		break;

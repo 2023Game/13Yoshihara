@@ -20,7 +20,10 @@ public:
 
 	// ‹­‰»”{—¦‚ğæ“¾
 	float GetUpgrade();
-	// ‹­‰»”{—¦‚ğİ’è
+	/// <summary>
+	/// ‹­‰»”{—¦‚ğİ’è
+	/// </summary>
+	/// <param name="upgrade">‹­‰»”{—¦‚Ì‘‰Á—Ê</param>
 	void SetUpgrade(float upgrade);
 
 	// d–‚Ìí—Ş‚ğæ“¾
