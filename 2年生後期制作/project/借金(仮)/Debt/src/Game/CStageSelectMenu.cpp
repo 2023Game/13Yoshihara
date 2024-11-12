@@ -26,7 +26,7 @@ void CStageSelectMenu::Decide(int select)
 		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eTrash))
 		{
 			Close();
-			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+			CSceneManager::Instance()->LoadScene(EScene::eTrashGame);
 		}
 		// アンロックしていないならブザー音を再生
 		else

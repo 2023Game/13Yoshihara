@@ -2,11 +2,11 @@
 #include "CObjectBase.h"
 #include "CColliderMesh.h"
 
-class CHomeField : public CObjectBase
+class CTrashField : public CObjectBase
 {
 public:
-	CHomeField();
-	~CHomeField();
+	CTrashField();
+	~CTrashField();
 
 	void Update();
 	void Render();
@@ -17,13 +17,8 @@ private:
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
 
-	CModel* mpBed;
-	CModel* mpChair;
-	CModel* mpComputer;
-	CModel* mpDesk;
-	CModel* mpDoor;
-	CModel* mpRack;
-	
+	CModel* mpTrashBox;
+
 	CModel* mpCube;
 
 	TexAnimData mEffectAnimData;

@@ -157,9 +157,6 @@
     <ClCompile Include="src\Game\CApplication.cpp">
       <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CPlayer.cpp">
-      <Filter>ソース ファイル\Game\Character</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CEnemy.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
@@ -367,7 +364,7 @@
     <ClCompile Include="src\Game\CDoor.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDustGameScene.cpp">
+    <ClCompile Include="src\Game\CTrashGameScene.cpp">
       <Filter>ソース ファイル\Game\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CBuyMenu.cpp">
@@ -396,6 +393,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryStatus.cpp">
       <Filter>ソース ファイル\Game\Job</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CTrashField.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -464,9 +467,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CApplication.h">
       <Filter>ソース ファイル\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CPlayer.h">
-      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CEnemy.h">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -696,7 +696,7 @@
     <ClInclude Include="src\Game\CDoor.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDustGameScene.h">
+    <ClInclude Include="src\Game\CTrashGameScene.h">
       <Filter>ソース ファイル\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CBuyMenu.h">
@@ -728,6 +728,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryStatus.h">
       <Filter>ソース ファイル\Game\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CTrashField.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPlayer.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

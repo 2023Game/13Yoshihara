@@ -7,7 +7,7 @@ enum class EScene
 
 	eTitle,		//タイトルシーン
 	eHome,		//ホームシーン
-	eDustGame,	//ゴミ収集ゲームシーン
+	eTrashGame,	//ゴミ収集ゲームシーン
 
 	eBootMenu,	//起動時メニュー
 	eColTest,	//衝突判定テスト

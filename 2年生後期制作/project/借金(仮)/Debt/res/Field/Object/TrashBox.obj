@@ -1,7 +1,7 @@
 # Blender 4.1.0
 # www.blender.org
-mtllib DustBox.mtl
-o ダストボックス
+mtllib TrashBox.mtl
+o TrashBox
 v 5.000000 -5.000000 -10.000000
 v 5.000000 3.916099 -1.511924
 v 5.000000 3.915992 -9.148260

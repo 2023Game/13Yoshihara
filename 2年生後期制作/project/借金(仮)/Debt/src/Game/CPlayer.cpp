@@ -27,7 +27,8 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 #define JUMP_SPEED 1.5f
 #define GRAVITY 0.0625f
 #define JUMP_END_Y 1.0f
-#define CAPSULE_RADIUS 2.5f
+#define CAPSULE_RADIUS_HOME 2.5f
+#define CAPSULE_RADIUS_TRASH 2.5f
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -43,15 +44,11 @@ CPlayer::CPlayer()
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
 	, mIsWall(false)
-	//, mIsInteract(false)
 	, mpRideObject(nullptr)
 	, mIsPlayedSlashSE(false)
 	, mIsSpawnedSlashEffect(false)
 	, mMotionBlurRemainTime(0.0f)
 {
-	//インスタンスの設定
-	spInstance = this;
-
 	// モデルデータ取得
 	CModelX* model = CResourceManager::Get<CModelX>("Player");
 
@@ -73,12 +70,11 @@ CPlayer::CPlayer()
 	mpColliderCapsule = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, CAPSULE_RADIUS, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
-		CAPSULE_RADIUS
+		CVector(0.0f, CAPSULE_RADIUS_HOME, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS_HOME, 0.0f),
+		CAPSULE_RADIUS_HOME
 	);
 	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
-	
 	//インタラクトオブジェクトとだけ衝突判定
 	mpColliderLine = new CColliderLine
 	(
@@ -114,6 +110,10 @@ CPlayer::~CPlayer()
 
 CPlayer* CPlayer::Instance()
 {
+	if (spInstance == nullptr)
+	{
+		spInstance = new CPlayer();
+	}
 	return spInstance;
 }
 

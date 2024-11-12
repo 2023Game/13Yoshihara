@@ -13,7 +13,8 @@ CBootMenuScene::CBootMenuScene()
 	{
 		{ "■メイン", EScene::eNone },
 		{ "タイトル画面", EScene::eTitle },
-		{ "ゲーム画面", EScene::eHome },
+		{ "拠点画面", EScene::eHome },
+		{ "ゴミ拾いゲーム画面", EScene::eTrashGame},
 		{ "", EScene::eNone },
 		{ "■デバッグ", EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest },

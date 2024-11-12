@@ -1,6 +1,6 @@
-#include "CHomeScene.h"
+#include "CTrashGameScene.h"
 #include "CSceneManager.h"
-#include "CHomeField.h"
+#include "CTrashField.h"
 #include "CPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -10,19 +10,19 @@
 #include "CLineEffect.h"
 
 //コンストラクタ
-CHomeScene::CHomeScene()
-	: CSceneBase(EScene::eHome)
+CTrashGameScene::CTrashGameScene()
+	: CSceneBase(EScene::eTrashGame)
 	, mpGameMenu(nullptr)
 {
 }
 
 //デストラクタ
-CHomeScene::~CHomeScene()
+CTrashGameScene::~CTrashGameScene()
 {
 }
 
 //シーン読み込み
-void CHomeScene::Load()
+void CTrashGameScene::Load()
 {
 	// ゲーム画面はカーソル非表示
 	CInput::ShowCursor(false);
@@ -41,20 +41,14 @@ void CHomeScene::Load()
 	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
 	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
 
-	CResourceManager::Load<CModel>("HomeBase", "Field\\HomeBase\\HomeBase.obj");
-	CResourceManager::Load<CModel>("Bed", "Field\\Object\\Bed.obj");
-	CResourceManager::Load<CModel>("Chair", "Field\\Object\\Chair.obj");
-	CResourceManager::Load<CModel>("Computer", "Field\\Object\\Computer.obj");
-	CResourceManager::Load<CModel>("Desk", "Field\\Object\\Desk.obj");
-	CResourceManager::Load<CModel>("Door", "Field\\Object\\Door.obj");
-	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
+	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
+	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
 
-	new CHomeField();
+	new CTrashField();
 
-	//TODO
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 
@@ -81,7 +75,7 @@ void CHomeScene::Load()
 }
 
 //シーンの更新処理
-void CHomeScene::Update()
+void CTrashGameScene::Update()
 {
 	// BGM再生中でなければ、BGMを再生
 	//if (!mpGameBGM->IsPlaying())

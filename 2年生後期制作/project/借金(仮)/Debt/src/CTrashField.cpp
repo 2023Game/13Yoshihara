@@ -1,4 +1,4 @@
-#include "CHomeField.h"
+#include "CTrashField.h"
 #include "CCollisionManager.h"
 #include "CMoveFloor.h"
 #include "CRotateFloor.h"
@@ -6,13 +6,13 @@
 #include "CComputer.h"
 #include "CDoor.h"
 
-#define SCALE CVector(0.5f,0.5f,0.5f)
+#define SCALE CVector(1.0f,1.0f,1.0f)
 
-CHomeField::CHomeField()
+CTrashField::CTrashField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
 	, mEffectAnimData(1, 11, true, 11, 0.03f)
 {
-	mpModel = CResourceManager::Get<CModel>("HomeBase");
+	mpModel = CResourceManager::Get<CModel>("TrashStage");
 	Scale(SCALE);
 
 	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
@@ -20,7 +20,7 @@ CHomeField::CHomeField()
 	CreateFieldObjects();
 }
 
-CHomeField::~CHomeField()
+CTrashField::~CTrashField()
 {
 	if (mpColliderMesh != nullptr)
 	{
@@ -29,30 +29,26 @@ CHomeField::~CHomeField()
 	}
 }
 
-void CHomeField::CreateFieldObjects()
+void CTrashField::CreateFieldObjects()
 {
 	mpCube = CResourceManager::Get<CModel>("FieldCube");
-	mpBed = CResourceManager::Get<CModel>("Bed");
-	mpChair = CResourceManager::Get<CModel>("Chair");
-	mpComputer = CResourceManager::Get<CModel>("Computer");
-	mpDesk = CResourceManager::Get<CModel>("Desk");
-	mpDoor = CResourceManager::Get<CModel>("Door");
-	mpRack = CResourceManager::Get<CModel>("Rack");
 
-	new CComputer
-	(
-		mpComputer,
-		CVector(20.5f, 7.6f, 10.0f),
-		CVector(1.0f, 1.0f, 1.0f),
-		CVector(0.0f, 180.0f, 0.0f)
-	);
-	new CDoor
-	(
-		mpDoor,
-		CVector(23.5f, 0.0f, -14.0f),
-		CVector(0.55f, 0.55f, 0.55f),
-		CVector(0.0f, 180.0f, 0.0f)
-	);
+	mpTrashBox = CResourceManager::Get<CModel>("TrashBox");
+
+	//new CComputer
+	//(
+	//	mpComputer,
+	//	CVector(20.5f, 7.6f, 10.0f),
+	//	CVector(1.0f, 1.0f, 1.0f),
+	//	CVector(0.0f, 180.0f, 0.0f)
+	//);
+	//new CDoor
+	//(
+	//	mpDoor,
+	//	CVector(23.5f, 0.0f, -14.0f),
+	//	CVector(0.55f, 0.55f, 0.55f),
+	//	CVector(0.0f, 180.0f, 0.0f)
+	//);
 
 	//// “®‚©‚È‚¢°‡@
 	//new CMoveFloor
@@ -124,11 +120,11 @@ void CHomeField::CreateFieldObjects()
 	//}
 }
 
-void CHomeField::Update()
+void CTrashField::Update()
 {
 }
 
-void CHomeField::Render()
+void CTrashField::Render()
 {
 	mpModel->Render(Matrix());
 }

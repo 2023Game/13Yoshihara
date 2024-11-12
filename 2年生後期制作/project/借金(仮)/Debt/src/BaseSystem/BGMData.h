@@ -7,7 +7,7 @@ enum class EBGMType
 
 	eTitle,		// タイトル画面のBGM
 	eHome,		// ホーム画面のBGM
-	eDustGame,	//ゴミ収集ゲーム画面のBGM
+	eTrashGame,	//ゴミ収集ゲーム画面のBGM
 	eMenu,		// メニューを開いている時のBGM
 
 	Num
