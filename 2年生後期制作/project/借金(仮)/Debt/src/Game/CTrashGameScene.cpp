@@ -40,7 +40,8 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
 	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
-
+	
+	// ÉSÉ~èEÇ¢
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 

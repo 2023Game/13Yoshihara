@@ -4,7 +4,7 @@
 class CBillBoardImage;
 class CObjectBase;
 
-class CInteractObject : public CRideableObject
+class CInteractObject : public CObjectBase
 {
 public:
 	CInteractObject(float radius, std::string objectName);

@@ -41,6 +41,7 @@ void CHomeScene::Load()
 	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
 	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
 
+	// ‹’“_
 	CResourceManager::Load<CModel>("HomeBase", "Field\\HomeBase\\HomeBase.obj");
 	CResourceManager::Load<CModel>("Bed", "Field\\Object\\Bed.obj");
 	CResourceManager::Load<CModel>("Chair", "Field\\Object\\Chair.obj");
@@ -49,12 +50,12 @@ void CHomeScene::Load()
 	CResourceManager::Load<CModel>("Door", "Field\\Object\\Door.obj");
 	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
 
+
 	// ƒQ[ƒ€BGM‚ð“Ç‚Ýž‚Ý
 	CBGMManager::Instance()->Play(EBGMType::eHome);
 
 	new CHomeField();
 
-	//TODO
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 

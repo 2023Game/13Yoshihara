@@ -394,10 +394,13 @@
     <ClCompile Include="src\Game\CDeliveryStatus.cpp">
       <Filter>ソース ファイル\Game\Job</Filter>
     </ClCompile>
-    <ClCompile Include="src\CTrashField.cpp">
+    <ClCompile Include="src\Game\CPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashField.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CPlayer.cpp">
+    <ClCompile Include="src\Game\CCar.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
   </ItemGroup>
@@ -729,11 +732,14 @@
     <ClInclude Include="src\Game\CDeliveryStatus.h">
       <Filter>ソース ファイル\Game\Job</Filter>
     </ClInclude>
-    <ClInclude Include="src\CTrashField.h">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CPlayer.h">
       <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCar.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashField.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,8 @@
 
 //コンストラクタ
 CInteractObject::CInteractObject(float radius, std::string interactName)
-	: mIsInteract(false)
+	: CObjectBase(ETag::eField, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
+	, mIsInteract(false)
 	, mIsInteractArea(false)
 {
 	// プレイヤーとだけ衝突判定をする

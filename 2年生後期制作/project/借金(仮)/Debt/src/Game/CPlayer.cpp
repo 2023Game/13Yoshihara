@@ -49,6 +49,8 @@ CPlayer::CPlayer()
 	, mIsSpawnedSlashEffect(false)
 	, mMotionBlurRemainTime(0.0f)
 {
+	spInstance = this;
+	
 	// モデルデータ取得
 	CModelX* model = CResourceManager::Get<CModelX>("Player");
 
@@ -110,10 +112,6 @@ CPlayer::~CPlayer()
 
 CPlayer* CPlayer::Instance()
 {
-	if (spInstance == nullptr)
-	{
-		spInstance = new CPlayer();
-	}
 	return spInstance;
 }
 
