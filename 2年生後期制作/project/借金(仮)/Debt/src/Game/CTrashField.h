@@ -18,6 +18,7 @@ private:
 	CColliderMesh* mpColliderMesh;
 
 	CModel* mpTrashBox;
+	CModel* mpCar;
 
 	CModel* mpCube;
 

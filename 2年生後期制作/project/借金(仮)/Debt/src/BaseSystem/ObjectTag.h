@@ -12,7 +12,10 @@ enum class ETag
 
 	ePlayer,// プレイヤー
 	eEnemy,	// エネミー
+	eCar,	// 車
+	eGarbageTruck, // ゴミ収集車
 
+	eTrashBag, // ゴミ袋
 	eBullet,// 弾丸
 	eFlame,	// 炎
 	eSlash,	// 斬撃

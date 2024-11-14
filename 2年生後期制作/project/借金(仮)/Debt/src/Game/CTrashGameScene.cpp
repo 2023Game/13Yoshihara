@@ -44,6 +44,7 @@ void CTrashGameScene::Load()
 	// ÉSÉ~èEÇ¢
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
+	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 
 	// ÉQÅ[ÉÄBGMÇì«Ç›çûÇ›
 	CBGMManager::Instance()->Play(EBGMType::eHome);

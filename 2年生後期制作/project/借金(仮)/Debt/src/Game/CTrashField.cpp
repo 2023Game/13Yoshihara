@@ -3,10 +3,15 @@
 #include "CMoveFloor.h"
 #include "CRotateFloor.h"
 #include "CLineEffect.h"
-#include "CComputer.h"
-#include "CDoor.h"
+#include "CCar.h"
 
 #define SCALE CVector(1.0f,1.0f,1.0f)
+#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,0.0f)
+#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,0.0f)
+#define CAR_RIGHT_ROTATION CVector(0.0f,.0f,0.0f)
+#define CAR_LEFT_POS1 CVector(-60.0f,0.0f,0.0f)
+#define CAR_LEFT_POS2 CVector(-20.0f,0.0f,0.0f)
+#define CAR_LEFT_ROTATION CVector(0.0f,180.0f,0.0f)
 
 CTrashField::CTrashField()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
@@ -34,6 +39,42 @@ void CTrashField::CreateFieldObjects()
 	mpCube = CResourceManager::Get<CModel>("FieldCube");
 
 	mpTrashBox = CResourceManager::Get<CModel>("TrashBox");
+	mpCar = CResourceManager::Get<CModel>("Car");
+
+
+	// àÍî‘âEÇÃé‘
+	new CCar
+	(
+		mpCar,
+		CAR_RIGHT_POS1,
+		SCALE,
+		CAR_RIGHT_ROTATION
+	);
+	// âEÇ©ÇÁ2î‘ñ⁄ÇÃé‘
+	new CCar
+	(
+		mpCar,
+		CAR_RIGHT_POS2,
+		SCALE,
+		CAR_RIGHT_ROTATION
+	);
+	// àÍî‘ç∂ÇÃé‘
+	new CCar
+	(
+		mpCar,
+		CAR_LEFT_POS1,
+		SCALE,
+		CAR_LEFT_ROTATION
+	);
+	// ç∂Ç©ÇÁ2î‘ñ⁄ÇÃé‘
+	new CCar
+	(
+		mpCar,
+		CAR_LEFT_POS2,
+		SCALE,
+		CAR_LEFT_ROTATION
+	);
+
 
 	//new CComputer
 	//(
