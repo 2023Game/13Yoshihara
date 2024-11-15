@@ -1,6 +1,6 @@
 #pragma once
 #include "CInteractObject.h"
-class CModel;
+#include "CModel.h"
 class CColliderMesh;
 class CBuyMenu;
 

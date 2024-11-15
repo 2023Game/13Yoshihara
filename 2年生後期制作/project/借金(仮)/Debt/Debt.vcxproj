@@ -74,9 +74,11 @@
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
+    <ClCompile Include="src\Game\CCarAndTruckManager.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
     <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
+    <ClCompile Include="src\Game\CGarbageTruck.cpp" />
     <ClCompile Include="src\Game\CTrashField.cpp" />
     <ClCompile Include="src\Game\CTrashGameScene.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
@@ -188,9 +190,11 @@
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCar.h" />
+    <ClInclude Include="src\Game\CCarAndTruckManager.h" />
     <ClInclude Include="src\Game\CComputer.h" />
     <ClInclude Include="src\Game\CDeliveryStatus.h" />
     <ClInclude Include="src\Game\CDoor.h" />
+    <ClInclude Include="src\Game\CGarbageTruck.h" />
     <ClInclude Include="src\Game\CTrashField.h" />
     <ClInclude Include="src\Game\CTrashGameScene.h" />
     <ClInclude Include="src\Game\CEnemy.h" />

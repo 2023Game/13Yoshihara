@@ -8,6 +8,7 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
+#include "CCarAndTruckManager.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -45,6 +46,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
+	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
@@ -53,6 +55,10 @@ void CTrashGameScene::Load()
 
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
+
+	// 車とトラックの管理クラス作成
+	mpCCarAndTruckManager =
+		new CCarAndTruckManager();
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -98,4 +104,6 @@ void CTrashGameScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+
+	mpCCarAndTruckManager->Update();
 }

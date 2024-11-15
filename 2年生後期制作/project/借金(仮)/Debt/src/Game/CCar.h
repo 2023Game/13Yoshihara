@@ -1,7 +1,7 @@
 #pragma once
 #include "CCharaBase.h"
 #include "CColliderCapsule.h"
-class CModel;
+#include "CModel.h"
 
 class CCar : public CCharaBase
 {
@@ -15,4 +15,6 @@ public:
 private:
 	CModel* mpModel;
 	CColliderCapsule* mpColliderCapsule;
+
+	int mHp;
 };

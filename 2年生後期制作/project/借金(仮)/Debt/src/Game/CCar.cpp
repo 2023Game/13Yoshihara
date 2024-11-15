@@ -16,7 +16,7 @@ CCar::~CCar()
 
 void CCar::Update()
 {
-	Position(Position() + VectorZ() * 2.0f);
+	//Position(Position() + VectorZ() * 2.0f);
 }
 
 void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)

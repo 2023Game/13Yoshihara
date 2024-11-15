@@ -1,5 +1,4 @@
 #include "CComputer.h"
-#include "CModel.h"
 #include "CColliderMesh.h"
 #include "CBuyMenu.h"
 #include "CInput.h"

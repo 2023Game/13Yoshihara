@@ -92,6 +92,9 @@
     <Filter Include="ソース ファイル\Game\Job">
       <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame">
+      <UniqueIdentifier>{c5f8f9c5-a203-4a10-bcb3-8e290765b8de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -401,7 +404,13 @@
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CCar.cpp">
-      <Filter>ソース ファイル\Game\Character</Filter>
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCarAndTruckManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGarbageTruck.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -735,11 +744,17 @@
     <ClInclude Include="src\Game\CPlayer.h">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CCar.h">
-      <Filter>ソース ファイル\Game\Character</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CTrashField.h">
       <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCar.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCarAndTruckManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGarbageTruck.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

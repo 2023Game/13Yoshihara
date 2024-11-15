@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
 #include "CColliderMesh.h"
+class CCarAndTruckManager;
 
 class CTrashField : public CObjectBase
 {
@@ -16,9 +17,6 @@ private:
 
 	CModel* mpModel;
 	CColliderMesh* mpColliderMesh;
-
-	CModel* mpTrashBox;
-	CModel* mpCar;
 
 	CModel* mpCube;
 
