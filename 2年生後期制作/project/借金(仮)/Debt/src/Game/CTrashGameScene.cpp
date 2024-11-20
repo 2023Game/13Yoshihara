@@ -2,6 +2,7 @@
 #include "CSceneManager.h"
 #include "CTrashField.h"
 #include "CPlayer.h"
+#include "CTrashPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
@@ -36,13 +37,14 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("Field", "Field\\Field.obj");
 	CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
 	CResourceManager::Load<CModel>("FieldCylinder", "Field\\Object\\cylinder.obj");
+	CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
 	CResourceManager::Load<CTexture>("Laser", "Effect\\laser.png");
 	CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
 	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
 	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
 	
 	// ゴミ拾い
-	CResourceManager::Load<CModelX>("Player", "Character\\TrashBox\\TrashBox.x");
+	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBox.x");
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
@@ -55,6 +57,9 @@ void CTrashGameScene::Load()
 
 	CPlayer* player = new CPlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
+
+	CTrashPlayer* trashPlayer = new CTrashPlayer();
+	trashPlayer->Scale(0.2f, 0.2f, 0.2f);
 
 	// 車とトラックの管理クラス作成
 	mpCCarAndTruckManager =

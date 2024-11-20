@@ -412,6 +412,9 @@
     <ClCompile Include="src\Game\CGarbageTruck.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CTrashPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -754,6 +757,9 @@
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGarbageTruck.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashPlayer.h">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClInclude>
   </ItemGroup>
