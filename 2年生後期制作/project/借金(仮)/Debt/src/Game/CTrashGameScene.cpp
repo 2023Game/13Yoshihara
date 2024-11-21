@@ -59,7 +59,7 @@ void CTrashGameScene::Load()
 	player->Scale(1.0f, 1.0f, 1.0f);
 
 	CTrashPlayer* trashPlayer = new CTrashPlayer();
-	trashPlayer->Scale(0.2f, 0.2f, 0.2f);
+	trashPlayer->Scale(0.1f, 0.1f, 0.1f);
 
 	// 車とトラックの管理クラス作成
 	mpCCarAndTruckManager =

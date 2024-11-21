@@ -56,6 +56,9 @@ protected:
 	void UpdateCritical();
 	// クリティカル攻撃終了
 	void UpdateCriticalEnd();
+	// 蓋を開閉する
+	void UpdateOpenClose();
+
 	/*
 	アニメーションの種類
 	(と)＝蓋が閉じている状態からのアニメーション
@@ -91,6 +94,8 @@ protected:
 		eCriticalStartOpen,	// クリティカル攻撃開始	（開）
 		eCritical,			// クリティカル攻撃		（開閉）
 		eCriticalEnd,		// クリティカル攻撃終了	（開閉）
+		eOpen,				// 蓋を開く				（と）
+		eClose,				// 蓋を閉じる			（開）
 
 
 		Num
@@ -127,6 +132,7 @@ protected:
 		eCriticalStart,	// クリティカル攻撃開始
 		eCritical,		// クリティカル攻撃
 		eCriticalEnd,	// クリティカル攻撃終了
+		eOpenClose,		// 蓋を開閉する
 	};
 	EState mState;
 

@@ -43,6 +43,8 @@ CTrashPlayer* CTrashPlayer::spInstance = nullptr;
 	{ "Character\\TrashBox\\anim\\CriticalStartOpen.x",	false,	10.0f	},	// クリティカル攻撃開始	（開）
 	{ "Character\\TrashBox\\anim\\Critical.x",			false,	5.0f	},	// クリティカル攻撃中	（開閉）
 	{ "Character\\TrashBox\\anim\\CriticalEnd.x",		false,	24.0f	},	// クリティカル攻撃終了	（開閉）
+	{ "Character\\TrashBox\\anim\\Open.x",				true,	5.0f	},	// 蓋を開く				（と）
+	{ "Character\\TrashBox\\anim\\Close.x",				true,	5.0f	},	// 蓋を閉じる			（開）
 };
 
 #define PLAYER_HEIGHT 16.0f
@@ -66,26 +68,25 @@ CTrashPlayer* CTrashPlayer::spInstance = nullptr;
 	 , mState(EState::eIdle)
 	 , IsOpen(false)
 	 , mTest(0)
-{
-	spInstance = this;
+ {
+	 mAnimationSpeed = 0.5f;
+	 spInstance = this;
+	 // モデルデータ取得
+	 CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
+	 // テーブル内のアニメーションデータを読み込み
+	 int size = ARRAY_SIZE(ANIM_DATA);
+	 for (int i = 0; i < size; i++)
+	 {
+		 const AnimData& data = ANIM_DATA[i];
+		 if (data.path.empty()) continue;
+		 model->AddAnimationSet(data.path.c_str());
+	 }
+	 // CXCharacterの初期化
+	 Init(model);
 
-	// モデルデータ取得
-	CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
-
-	// テーブル内のアニメーションデータを読み込み
-	int size = ARRAY_SIZE(ANIM_DATA);
-	for (int i = 0; i < size; i++)
-	{
-		const AnimData& data = ANIM_DATA[i];
-		if (data.path.empty()) continue;
-		model->AddAnimationSet(data.path.c_str());
-	}
-	// CXCharacterの初期化
-	Init(model);
-
-	// 最初は待機アニメーションを再生
-	ChangeAnimation(EAnimType::eIdleClose);
-}
+	 // 最初は待機アニメーションを再生
+	 ChangeAnimation(EAnimType::eIdleClose);
+ }
 
 CTrashPlayer::~CTrashPlayer()
 {
@@ -143,6 +144,9 @@ void CTrashPlayer::Update()
 	case EState::eCriticalEnd:
 		UpdateCriticalEnd();
 		break;
+	case EState::eOpenClose:
+		UpdateOpenClose();
+		break;
 	}
 
 	//// 待機中とジャンプ中は、移動処理を行う
@@ -170,11 +174,11 @@ void CTrashPlayer::UpdateIdle()
 		ChangeAnimation(EAnimType::eIdleClose);
 	else
 		ChangeAnimation(EAnimType::eIdleOpen);
+
 	mTest++;
-	if (mTest > 5)
+	if (mTest > 6)
 	{
 		mTest = 1;
-		IsOpen = !IsOpen;
 	}
 
 	if (mTest == 1)
@@ -187,6 +191,8 @@ void CTrashPlayer::UpdateIdle()
 		mState = EState::eCriticalStart;
 	else if (mTest == 5)
 		mState = EState::eMove;
+	else if (mTest == 6)
+		mState = EState::eOpenClose;
 }
 
 // 移動
@@ -357,6 +363,21 @@ void CTrashPlayer::UpdateCriticalEnd()
 	if (IsAnimationFinished())
 	{
 		mState = EState::eIdle;
+	}
+}
+
+// 蓋を開閉する
+void CTrashPlayer::UpdateOpenClose()
+{
+	if (!IsOpen)
+		ChangeAnimation(EAnimType::eOpen);
+	else
+		ChangeAnimation(EAnimType::eClose);
+
+	if (IsAnimationFinished())
+	{
+		mState = EState::eIdle;
+		IsOpen = !IsOpen;
 	}
 }
 

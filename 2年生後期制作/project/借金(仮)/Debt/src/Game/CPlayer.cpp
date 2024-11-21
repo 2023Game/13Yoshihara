@@ -50,7 +50,7 @@ CPlayer::CPlayer()
 	, mMotionBlurRemainTime(0.0f)
 {
 	spInstance = this;
-	
+
 	// モデルデータ取得
 	CModelX* model = CResourceManager::Get<CModelX>("Player");
 
