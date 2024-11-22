@@ -16,7 +16,7 @@ CTrashPlayer* CTrashPlayer::spInstance = nullptr;
  (開)＝蓋が開いている状態からのアニメーション
  (開閉)＝両方の状態兼用のアニメーション
 */
- const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
+const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 {
 	{ "",												true,	0.0f	},	// Tポーズ
 	{ "Character\\TrashBox\\anim\\IdleClose.x",			true,	10.0f	},	// 待機					（と）
@@ -100,54 +100,95 @@ CTrashPlayer* CTrashPlayer::Instance()
 // 更新
 void CTrashPlayer::Update()
 {
-	switch (mState)
+	if (CInput::PushKey('1'))
 	{
-	case EState::eIdle:
-		UpdateIdle();
-		break;
-	case EState::eMove:
-		UpdateMove();
-		break;
-	case EState::eDamageStart:
-		UpdateDamageStart();
-		break;
-	case EState::eDamage:
-		UpdateDamage();
-		break;
-	case EState::eDamageEnd:
-		UpdateDamageEnd();
-		break;
-	case EState::eJumpStart:
-		UpdateJumpStart();
-		break;
-	case EState::eJump:
-		UpdateJump();
-		break;
-	case EState::eJumpEnd:
-		UpdateJumpEnd();
-		break;
-	case EState::eAttackStart:
-		UpdateAttackStart();
-		break;
-	case EState::eAttack:
-		UpdateAttack();
-		break;
-	case EState::eAttackEnd:
-		UpdateAttackEnd();
-		break;
-	case EState::eCriticalStart:
-		UpdateCriticalStart();
-		break;
-	case EState::eCritical:
-		UpdateCritical();
-		break;
-	case EState::eCriticalEnd:
-		UpdateCriticalEnd();
-		break;
-	case EState::eOpenClose:
-		UpdateOpenClose();
-		break;
+		ChangeAnimation(EAnimType::eIdleClose);
 	}
+	if (CInput::PushKey('2'))
+	{
+		ChangeAnimation(EAnimType::eIdleOpen);
+	}
+	if (CInput::PushKey('3'))
+	{
+		ChangeAnimation(EAnimType::eMoveClose);
+	}
+	if (CInput::PushKey('4'))
+	{
+		ChangeAnimation(EAnimType::eMoveOpen);
+	}
+	if (CInput::PushKey('5'))
+	{
+		ChangeAnimation(EAnimType::eDamageStartClose);
+	}
+	if (CInput::PushKey('6'))
+	{
+		ChangeAnimation(EAnimType::eDamageStartOpen);
+	}
+	if (CInput::PushKey('7'))
+	{
+		ChangeAnimation(EAnimType::eDamageClose);
+	}
+	if (CInput::PushKey('8'))
+	{
+		ChangeAnimation(EAnimType::eDamageOpen);
+	}
+	if (CInput::PushKey('9'))
+	{
+		ChangeAnimation(EAnimType::eDamageEndClose);
+	}
+	if (CInput::PushKey('0'))
+	{
+		ChangeAnimation(EAnimType::eDamageEndOpen);
+	}
+
+	//switch (mState)
+	//{
+	//case EState::eIdle:
+	//	UpdateIdle();
+	//	break;
+	//case EState::eMove:
+	//	UpdateMove();
+	//	break;
+	//case EState::eDamageStart:
+	//	UpdateDamageStart();
+	//	break;
+	//case EState::eDamage:
+	//	UpdateDamage();
+	//	break;
+	//case EState::eDamageEnd:
+	//	UpdateDamageEnd();
+	//	break;
+	//case EState::eJumpStart:
+	//	UpdateJumpStart();
+	//	break;
+	//case EState::eJump:
+	//	UpdateJump();
+	//	break;
+	//case EState::eJumpEnd:
+	//	UpdateJumpEnd();
+	//	break;
+	//case EState::eAttackStart:
+	//	UpdateAttackStart();
+	//	break;
+	//case EState::eAttack:
+	//	UpdateAttack();
+	//	break;
+	//case EState::eAttackEnd:
+	//	UpdateAttackEnd();
+	//	break;
+	//case EState::eCriticalStart:
+	//	UpdateCriticalStart();
+	//	break;
+	//case EState::eCritical:
+	//	UpdateCritical();
+	//	break;
+	//case EState::eCriticalEnd:
+	//	UpdateCriticalEnd();
+	//	break;
+	//case EState::eOpenClose:
+	//	UpdateOpenClose();
+	//	break;
+	//}
 
 	//// 待機中とジャンプ中は、移動処理を行う
 	//if (mState == EState::eIdle
@@ -377,7 +418,7 @@ void CTrashPlayer::UpdateOpenClose()
 	if (IsAnimationFinished())
 	{
 		mState = EState::eIdle;
-		IsOpen = !IsOpen;
+		//IsOpen = !IsOpen;
 	}
 }
 
