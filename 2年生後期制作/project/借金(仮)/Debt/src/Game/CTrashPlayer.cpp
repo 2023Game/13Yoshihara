@@ -18,33 +18,31 @@ CTrashPlayer* CTrashPlayer::spInstance = nullptr;
 */
 const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 {
-	{ "",												true,	0.0f	},	// Tポーズ
-	{ "Character\\TrashBox\\anim\\IdleClose.x",			true,	10.0f	},	// 待機					（と）
-	{ "Character\\TrashBox\\anim\\IdleOpen.x",			true,	10.0f	},	// 待機					（開）
-	{ "Character\\TrashBox\\anim\\MoveClose.x",			true,	32.0f	},	// 移動					（と）
-	{ "Character\\TrashBox\\anim\\MoveOpen.x",			true,	32.0f	},	// 移動					（開）
-	{ "Character\\TrashBox\\anim\\DamageStartClose.x",	false,	4.0f	},	// 被弾開始				（と）
-	{ "Character\\TrashBox\\anim\\DamageStartOpen.x",	false,	4.0f	},	// 被弾開始				（開）
-	{ "Character\\TrashBox\\anim\\DamageClose.x",		false,	4.0f	},	// 被弾ノックバック		（と）
-	{ "Character\\TrashBox\\anim\\DamageOpen.x",		false,	4.0f	},	// 被弾ノックバック		（開）
-	{ "Character\\TrashBox\\anim\\DamageEndClose.x",	false,	28.0f	},	// 被弾終了				（と）
-	{ "Character\\TrashBox\\anim\\DamageEndOpen.x",		false,	28.0f	},	// 被弾終了				（開）
-	{ "Character\\TrashBox\\anim\\JumpStartClose.x",	false,	12.0f	},	// ジャンプ開始			（と）
-	{ "Character\\TrashBox\\anim\\JumpStartOpen.x",		false,	12.0f	},	// ジャンプ開始			（開）
-	{ "Character\\TrashBox\\anim\\JumpClose.x",			true,	12.0f	},	// ジャンプ中			（と）
-	{ "Character\\TrashBox\\anim\\JumpOpen.x",			true,	12.0f	},	// ジャンプ中			（開）
-	{ "Character\\TrashBox\\anim\\JumpEndClose.x",		false,	10.0f	},	// ジャンプ終了			（と）
-	{ "Character\\TrashBox\\anim\\JumpEndOpen.x",		false,	10.0f	},	// ジャンプ終了			（開）
-	{ "Character\\TrashBox\\anim\\AttackStartClose.x",	false,	11.0f	},	// 攻撃開始				（と）
-	{ "Character\\TrashBox\\anim\\AttackStartOpen.x",	false,	10.0f	},	// 攻撃開始				（開）
-	{ "Character\\TrashBox\\anim\\Attack.x",			false,	5.0f	},	// 攻撃中				（開閉）
-	{ "Character\\TrashBox\\anim\\AttackEnd.x",			false,	24.0f	},	// 攻撃終了				（開閉）
-	{ "Character\\TrashBox\\anim\\CriticalStartClose.x",false,	11.0f	},	// クリティカル攻撃開始	（と）
-	{ "Character\\TrashBox\\anim\\CriticalStartOpen.x",	false,	10.0f	},	// クリティカル攻撃開始	（開）
-	{ "Character\\TrashBox\\anim\\Critical.x",			false,	5.0f	},	// クリティカル攻撃中	（開閉）
-	{ "Character\\TrashBox\\anim\\CriticalEnd.x",		false,	24.0f	},	// クリティカル攻撃終了	（開閉）
-	{ "Character\\TrashBox\\anim\\Open.x",				true,	5.0f	},	// 蓋を開く				（と）
-	{ "Character\\TrashBox\\anim\\Close.x",				true,	5.0f	},	// 蓋を閉じる			（開）
+	{ "",													true,	0.0f	},	// Tポーズ
+	{ "Character\\TrashBox\\anim\\Idle_Close.x",			true,	30.0f	},	// 待機					（と）
+	{ "Character\\TrashBox\\anim\\Idle_Open.x",				true,	30.0f	},	// 待機					（開）
+	{ "Character\\TrashBox\\anim\\Move_Close.x",			true,	80.0f	},	// 移動					（と）
+	{ "Character\\TrashBox\\anim\\Move_Open.x",				true,	80.0f	},	// 移動					（開）
+	{ "Character\\TrashBox\\anim\\Damage_Close_Start.x",	false,	10.0f	},	// 被弾開始				（と）
+	{ "Character\\TrashBox\\anim\\Damage_Close.x",			true,	11.0f	},	// 被弾ノックバック		（と）
+	{ "Character\\TrashBox\\anim\\Damage_Close_End.x",		false,	51.0f	},	// 被弾終了				（と）
+	{ "Character\\TrashBox\\anim\\Damage_Open_Start.x",		false,	10.0f	},	// 被弾開始				（開）
+	{ "Character\\TrashBox\\anim\\Damage_Open.x",			true,	11.0f	},	// 被弾ノックバック		（開）
+	{ "Character\\TrashBox\\anim\\Damage_Open_End.x",		false,	51.0f	},	// 被弾終了				（開）
+	{ "Character\\TrashBox\\anim\\Jump_Close_Start.x",		false,	20.0f	},	// ジャンプ開始			（と）
+	{ "Character\\TrashBox\\anim\\Jump_Close.x",			true,	11.0f	},	// ジャンプ中			（と）
+	{ "Character\\TrashBox\\anim\\Jump_Close_End.x",		false,	21.0f	},	// ジャンプ終了			（と）
+	{ "Character\\TrashBox\\anim\\Jump_Open_Start.x",		false,	20.0f	},	// ジャンプ開始			（開）
+	{ "Character\\TrashBox\\anim\\Jump_Open.x",				true,	11.0f	},	// ジャンプ中			（開）
+	{ "Character\\TrashBox\\anim\\Jump_Open_End.x",			false,	21.0f	},	// ジャンプ終了			（開）
+	{ "Character\\TrashBox\\anim\\Attack_Start.x",			false,	35.0f	},	// 攻撃開始				（開閉）
+	{ "Character\\TrashBox\\anim\\Attack.x",				false,	11.0f	},	// 攻撃中				（開閉）
+	{ "Character\\TrashBox\\anim\\Attack_End.x",			false,	69.0f	},	// 攻撃終了				（開閉）
+	{ "Character\\TrashBox\\anim\\Critical_Start.x",		false,	35.0f	},	// クリティカル攻撃開始	（開閉）
+	{ "Character\\TrashBox\\anim\\Critical_.x",				false,	11.0f	},	// クリティカル攻撃中	（開閉）
+	{ "Character\\TrashBox\\anim\\Critical_End.x",			false,	69.0f	},	// クリティカル攻撃終了	（開閉）
+	{ "Character\\TrashBox\\anim\\Open.x",					true,	10.0f	},	// 蓋を開く				（と）
+	{ "Character\\TrashBox\\anim\\Close.x",					true,	10.0f	},	// 蓋を閉じる			（開）
 };
 
 #define PLAYER_HEIGHT 16.0f
@@ -69,7 +67,6 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 	 , IsOpen(false)
 	 , mTest(0)
  {
-	 mAnimationSpeed = 0.5f;
 	 spInstance = this;
 	 // モデルデータ取得
 	 CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
@@ -85,7 +82,7 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 	 Init(model);
 
 	 // 最初は待機アニメーションを再生
-	 ChangeAnimation(EAnimType::eIdleClose);
+	 ChangeAnimation(EAnimType::eIdle_Close);
  }
 
 CTrashPlayer::~CTrashPlayer()
@@ -100,95 +97,54 @@ CTrashPlayer* CTrashPlayer::Instance()
 // 更新
 void CTrashPlayer::Update()
 {
-	if (CInput::PushKey('1'))
+	switch (mState)
 	{
-		ChangeAnimation(EAnimType::eIdleClose);
+	case EState::eIdle:
+		UpdateIdle();
+		break;
+	case EState::eMove:
+		UpdateMove();
+		break;
+	case EState::eDamageStart:
+		UpdateDamageStart();
+		break;
+	case EState::eDamage:
+		UpdateDamage();
+		break;
+	case EState::eDamageEnd:
+		UpdateDamageEnd();
+		break;
+	case EState::eJumpStart:
+		UpdateJumpStart();
+		break;
+	case EState::eJump:
+		UpdateJump();
+		break;
+	case EState::eJumpEnd:
+		UpdateJumpEnd();
+		break;
+	case EState::eAttackStart:
+		UpdateAttackStart();
+		break;
+	case EState::eAttack:
+		UpdateAttack();
+		break;
+	case EState::eAttackEnd:
+		UpdateAttackEnd();
+		break;
+	case EState::eCriticalStart:
+		UpdateCriticalStart();
+		break;
+	case EState::eCritical:
+		UpdateCritical();
+		break;
+	case EState::eCriticalEnd:
+		UpdateCriticalEnd();
+		break;
+	case EState::eOpenClose:
+		UpdateOpenClose();
+		break;
 	}
-	if (CInput::PushKey('2'))
-	{
-		ChangeAnimation(EAnimType::eIdleOpen);
-	}
-	if (CInput::PushKey('3'))
-	{
-		ChangeAnimation(EAnimType::eMoveClose);
-	}
-	if (CInput::PushKey('4'))
-	{
-		ChangeAnimation(EAnimType::eMoveOpen);
-	}
-	if (CInput::PushKey('5'))
-	{
-		ChangeAnimation(EAnimType::eDamageStartClose);
-	}
-	if (CInput::PushKey('6'))
-	{
-		ChangeAnimation(EAnimType::eDamageStartOpen);
-	}
-	if (CInput::PushKey('7'))
-	{
-		ChangeAnimation(EAnimType::eDamageClose);
-	}
-	if (CInput::PushKey('8'))
-	{
-		ChangeAnimation(EAnimType::eDamageOpen);
-	}
-	if (CInput::PushKey('9'))
-	{
-		ChangeAnimation(EAnimType::eDamageEndClose);
-	}
-	if (CInput::PushKey('0'))
-	{
-		ChangeAnimation(EAnimType::eDamageEndOpen);
-	}
-
-	//switch (mState)
-	//{
-	//case EState::eIdle:
-	//	UpdateIdle();
-	//	break;
-	//case EState::eMove:
-	//	UpdateMove();
-	//	break;
-	//case EState::eDamageStart:
-	//	UpdateDamageStart();
-	//	break;
-	//case EState::eDamage:
-	//	UpdateDamage();
-	//	break;
-	//case EState::eDamageEnd:
-	//	UpdateDamageEnd();
-	//	break;
-	//case EState::eJumpStart:
-	//	UpdateJumpStart();
-	//	break;
-	//case EState::eJump:
-	//	UpdateJump();
-	//	break;
-	//case EState::eJumpEnd:
-	//	UpdateJumpEnd();
-	//	break;
-	//case EState::eAttackStart:
-	//	UpdateAttackStart();
-	//	break;
-	//case EState::eAttack:
-	//	UpdateAttack();
-	//	break;
-	//case EState::eAttackEnd:
-	//	UpdateAttackEnd();
-	//	break;
-	//case EState::eCriticalStart:
-	//	UpdateCriticalStart();
-	//	break;
-	//case EState::eCritical:
-	//	UpdateCritical();
-	//	break;
-	//case EState::eCriticalEnd:
-	//	UpdateCriticalEnd();
-	//	break;
-	//case EState::eOpenClose:
-	//	UpdateOpenClose();
-	//	break;
-	//}
 
 	//// 待機中とジャンプ中は、移動処理を行う
 	//if (mState == EState::eIdle
@@ -212,37 +168,18 @@ void CTrashPlayer::Render()
 void CTrashPlayer::UpdateIdle()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eIdleClose);
+		ChangeAnimation(EAnimType::eIdle_Close);
 	else
-		ChangeAnimation(EAnimType::eIdleOpen);
-
-	mTest++;
-	if (mTest > 6)
-	{
-		mTest = 1;
-	}
-
-	if (mTest == 1)
-		mState = EState::eDamageStart;
-	else if (mTest == 2)
-		mState = EState::eJumpStart;
-	else if (mTest == 3)
-		mState = EState::eAttackStart;
-	else if (mTest == 4)
-		mState = EState::eCriticalStart;
-	else if (mTest == 5)
-		mState = EState::eMove;
-	else if (mTest == 6)
-		mState = EState::eOpenClose;
+		ChangeAnimation(EAnimType::eIdle_Open);
 }
 
 // 移動
 void CTrashPlayer::UpdateMove()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eMoveClose);
+		ChangeAnimation(EAnimType::eMove_Close);
 	else
-		ChangeAnimation(EAnimType::eMoveOpen);
+		ChangeAnimation(EAnimType::eMove_Open);
 
 	if (IsAnimationFinished())
 	{
@@ -255,9 +192,9 @@ void CTrashPlayer::UpdateDamageStart()
 {
 
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eDamageStartClose);
+		ChangeAnimation(EAnimType::eDamage_Close_Start);
 	else
-		ChangeAnimation(EAnimType::eDamageStartOpen);
+		ChangeAnimation(EAnimType::eDamage_Open_Start);
 
 	if (IsAnimationFinished())
 	{
@@ -269,9 +206,9 @@ void CTrashPlayer::UpdateDamageStart()
 void CTrashPlayer::UpdateDamage()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eDamageClose);
+		ChangeAnimation(EAnimType::eDamage_Close);
 	else
-		ChangeAnimation(EAnimType::eDamageOpen);
+		ChangeAnimation(EAnimType::eDamage_Open);
 
 	if (IsAnimationFinished())
 	{
@@ -283,9 +220,9 @@ void CTrashPlayer::UpdateDamage()
 void CTrashPlayer::UpdateDamageEnd()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eDamageEndClose);
+		ChangeAnimation(EAnimType::eDamage_Close_End);
 	else
-		ChangeAnimation(EAnimType::eDamageEndOpen);
+		ChangeAnimation(EAnimType::eDamage_Open_End);
 
 	if (IsAnimationFinished())
 	{
@@ -297,9 +234,9 @@ void CTrashPlayer::UpdateDamageEnd()
 void CTrashPlayer::UpdateJumpStart()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eJumpStartClose);
+		ChangeAnimation(EAnimType::eJump_Close_Start);
 	else
-		ChangeAnimation(EAnimType::eJumpStartOpen);
+		ChangeAnimation(EAnimType::eJump_Open_Start);
 
 	if (IsAnimationFinished())
 	{
@@ -311,9 +248,9 @@ void CTrashPlayer::UpdateJumpStart()
 void CTrashPlayer::UpdateJump()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eJumpClose);
+		ChangeAnimation(EAnimType::eJump_Close);
 	else
-		ChangeAnimation(EAnimType::eJumpOpen);
+		ChangeAnimation(EAnimType::eJump_Open);
 
 	if (IsAnimationFinished())
 	{
@@ -325,9 +262,9 @@ void CTrashPlayer::UpdateJump()
 void CTrashPlayer::UpdateJumpEnd()
 {
 	if (!IsOpen)
-		ChangeAnimation(EAnimType::eJumpEndClose);
+		ChangeAnimation(EAnimType::eJump_Close_End);
 	else
-		ChangeAnimation(EAnimType::eJumpEndOpen);
+		ChangeAnimation(EAnimType::eJump_Open_End);
 
 	if (IsAnimationFinished())
 	{
@@ -338,10 +275,7 @@ void CTrashPlayer::UpdateJumpEnd()
 // 攻撃開始
 void CTrashPlayer::UpdateAttackStart()
 {
-	if (!IsOpen)
-		ChangeAnimation(EAnimType::eAttackStartClose);
-	else
-		ChangeAnimation(EAnimType::eAttackStartOpen);
+	ChangeAnimation(EAnimType::eAttack_Start);
 
 	if (IsAnimationFinished())
 	{
@@ -363,7 +297,7 @@ void CTrashPlayer::UpdateAttack()
 // 攻撃終了
 void CTrashPlayer::UpdateAttackEnd()
 {
-	ChangeAnimation(EAnimType::eAttackEnd);
+	ChangeAnimation(EAnimType::eAttack_End);
 
 	if (IsAnimationFinished())
 	{
@@ -374,11 +308,7 @@ void CTrashPlayer::UpdateAttackEnd()
 // クリティカル攻撃開始
 void CTrashPlayer::UpdateCriticalStart()
 {
-	if (!IsOpen)
-		ChangeAnimation(EAnimType::eCriticalStartClose);
-	else
-		ChangeAnimation(EAnimType::eCriticalStartOpen);
-
+	ChangeAnimation(EAnimType::eCritical_Start);
 	if (IsAnimationFinished())
 	{
 		mState = EState::eCritical;
@@ -399,7 +329,7 @@ void CTrashPlayer::UpdateCritical()
 // クリティカル攻撃終了
 void CTrashPlayer::UpdateCriticalEnd()
 {
-	ChangeAnimation(EAnimType::eCriticalEnd);
+	ChangeAnimation(EAnimType::eCritical_End);
 
 	if (IsAnimationFinished())
 	{
@@ -418,7 +348,7 @@ void CTrashPlayer::UpdateOpenClose()
 	if (IsAnimationFinished())
 	{
 		mState = EState::eIdle;
-		//IsOpen = !IsOpen;
+		IsOpen = !IsOpen;
 	}
 }
 

@@ -70,30 +70,28 @@ protected:
 		None = -1,
 
 		eTPose,				// Tポーズ
-		eIdleClose,			// 待機					（と）
-		eIdleOpen,			// 待機					（開）
-		eMoveClose,			// 移動					（と）
-		eMoveOpen,			// 移動					（開）
-		eDamageStartClose,	// 被弾開始				（と）
-		eDamageStartOpen,	// 被弾開始				（開）
-		eDamageClose,		// 被弾ノックバック		（と）
-		eDamageOpen,		// 被弾ノックバック		（開）
-		eDamageEndClose,	// 被弾終了				（と）
-		eDamageEndOpen,		// 被弾終了				（開）
-		eJumpStartClose,	// ジャンプ開始			（と）
-		eJumpStartOpen,		// ジャンプ開始			（開）
-		eJumpClose,			// ジャンプ				（と）
-		eJumpOpen,			// ジャンプ				（開）
-		eJumpEndClose,		// ジャンプ終了			（と）
-		eJumpEndOpen,		// ジャンプ終了			（開）
-		eAttackStartClose,	// 攻撃開始				（と）
-		eAttackStartOpen,	// 攻撃開始				（開）
-		eAttack,			// 攻撃					（開閉）
-		eAttackEnd,			// 攻撃終了				（開閉）
-		eCriticalStartClose,// クリティカル攻撃開始	（と）
-		eCriticalStartOpen,	// クリティカル攻撃開始	（開）
-		eCritical,			// クリティカル攻撃		（開閉）
-		eCriticalEnd,		// クリティカル攻撃終了	（開閉）
+		eIdle_Close,		// 待機					（と）
+		eIdle_Open,			// 待機					（開）
+		eMove_Close,		// 移動					（と）
+		eMove_Open,			// 移動					（開）
+		eDamage_Close_Start,// 被弾開始				（と）
+		eDamage_Close,		// 被弾ノックバック		（と）
+		eDamage_Close_End,	// 被弾終了				（と）
+		eDamage_Open_Start,	// 被弾開始				（開）
+		eDamage_Open,		// 被弾ノックバック		（開）
+		eDamage_Open_End,	// 被弾終了				（開）
+		eJump_Close_Start,	// ジャンプ開始			（と）
+		eJump_Close,		// ジャンプ中			（と）
+		eJump_Close_End,	// ジャンプ終了			（と）
+		eJump_Open_Start,	// ジャンプ開始			（開）
+		eJump_Open,			// ジャンプ中			（開）
+		eJump_Open_End,		// ジャンプ終了			（開）
+		eAttack_Start,		// 攻撃開始				（開）
+		eAttack,			// 攻撃中				（開閉）
+		eAttack_End,		// 攻撃終了				（開閉）
+		eCritical_Start,	// クリティカル攻撃開始	（開）
+		eCritical,			// クリティカル攻撃中	（開閉）
+		eCritical_End,		// クリティカル攻撃終了	（開閉）
 		eOpen,				// 蓋を開く				（と）
 		eClose,				// 蓋を閉じる			（開）
 
