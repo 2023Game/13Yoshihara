@@ -1,6 +1,6 @@
 #pragma once
 //キャラクタクラスのインクルード
-#include "CXCharacter.h"
+#include "CPlayerBase.h"
 #include "CColliderLine.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
@@ -11,12 +11,9 @@
 プレイヤークラス
 キャラクタクラスを継承
 */
-class CTrashPlayer : public CXCharacter
+class CTrashPlayer : public CPlayerBase
 {
 public:
-	// インスタンスのポインタの取得
-	static CTrashPlayer* Instance();
-
 	// コンストラクタ
 	CTrashPlayer();
 	// デストラクタ
@@ -24,8 +21,14 @@ public:
 
 	// 更新
 	void Update();
-	// 描画
-	void Render();
+
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	/// <param name="self">衝突した自身のコライダー</param>
+	/// <param name="other">衝突した相手のコライダー</param>
+	/// <param name="hit">衝突した時の情報</param>
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 protected:
 	// 待機状態
@@ -58,6 +61,16 @@ protected:
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
+
+	// アニメーションデータ
+	struct AnimData
+	{
+		std::string path;	// アニメーションデータのパス
+		bool loop;			// ループするかどうか
+		float frameLength;	// アニメーションのフレーム数
+	};
+	// アニメーションデータのテーブル
+	static const AnimData ANIM_DATA[];
 
 	/*
 	アニメーションの種類
@@ -101,19 +114,6 @@ protected:
 	// アニメーション切り替え
 	void ChangeAnimation(EAnimType type);
 
-	// プレイヤーのインスタンス
-	static CTrashPlayer* spInstance;
-
-	// アニメーションデータ
-	struct AnimData
-	{
-		std::string path;	// アニメーションデータのパス
-		bool loop;			// ループするかどうか
-		float frameLength;	// アニメーションのフレーム数
-	};
-	// アニメーションデータのテーブル
-	static const AnimData ANIM_DATA[];
-
 	enum class EState
 	{
 		eIdle,			// 待機
@@ -135,7 +135,7 @@ protected:
 	EState mState;
 
 	// 蓋が開いているか
-	bool IsOpen;
+	bool mIsOpen;
 
 	int mTest;
 };

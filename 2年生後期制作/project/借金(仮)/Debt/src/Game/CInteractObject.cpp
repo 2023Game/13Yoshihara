@@ -2,7 +2,7 @@
 #include "CInput.h"
 #include "CBillBoardImage.h"
 #include "CObjectBase.h"
-#include "CPlayer.h"
+#include "CPlayerBase.h"
 
 #define INTERACT_IMAGE "UI\\interact.png"
 #define IMAGE_SIZE CVector2(6.0f,2.0f)
@@ -39,13 +39,13 @@ CInteractObject::~CInteractObject()
 // インタラクト判定
 void CInteractObject::Interact()
 {
-	CVector direction = CPlayer::Instance()->Position() - mpBillBoardImage->Position();
+	CVector direction = CPlayerBase::Instance()->Position() - mpBillBoardImage->Position();
 	direction.Normalize();
 	direction = direction * 10.0f;
 	// プレイヤー側にビルボードを表示
 	mpBillBoardImage->
 		Position(CVector(Position().X() + direction.X(),
-			CPlayer::Instance()->Position().Y() + 10.0f,
+			CPlayerBase::Instance()->Position().Y() + 10.0f,
 			Position().Z() + direction.Z()));
 
 	// インタラクトエリア内でFキーを押すとmIsInteractをtrue

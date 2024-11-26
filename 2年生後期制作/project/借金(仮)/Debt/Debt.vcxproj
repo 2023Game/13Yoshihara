@@ -79,6 +79,7 @@
     <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
     <ClCompile Include="src\Game\CGarbageTruck.cpp" />
+    <ClCompile Include="src\Game\CHomePlayer.cpp" />
     <ClCompile Include="src\Game\CTrashField.cpp" />
     <ClCompile Include="src\Game\CTrashGameScene.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
@@ -97,7 +98,7 @@
     <ClCompile Include="src\Game\CJobUnlockMenu.cpp" />
     <ClCompile Include="src\Game\CJobUpgradeMenu.cpp" />
     <ClCompile Include="src\Game\CMoveFloor.cpp" />
-    <ClCompile Include="src\Game\CPlayer.cpp" />
+    <ClCompile Include="src\Game\CPlayerBase.cpp" />
     <ClCompile Include="src\Game\CRideabeObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CSlash.cpp" />
@@ -196,6 +197,7 @@
     <ClInclude Include="src\Game\CDeliveryStatus.h" />
     <ClInclude Include="src\Game\CDoor.h" />
     <ClInclude Include="src\Game\CGarbageTruck.h" />
+    <ClInclude Include="src\Game\CHomePlayer.h" />
     <ClInclude Include="src\Game\CTrashField.h" />
     <ClInclude Include="src\Game\CTrashGameScene.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
@@ -214,7 +216,7 @@
     <ClInclude Include="src\Game\CJobUnlockMenu.h" />
     <ClInclude Include="src\Game\CJobUpgradeMenu.h" />
     <ClInclude Include="src\Game\CMoveFloor.h" />
-    <ClInclude Include="src\Game\CPlayer.h" />
+    <ClInclude Include="src\Game\CPlayerBase.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CSlash.h" />

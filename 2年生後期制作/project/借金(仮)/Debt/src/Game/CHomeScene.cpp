@@ -1,7 +1,7 @@
 #include "CHomeScene.h"
 #include "CSceneManager.h"
 #include "CHomeField.h"
-#include "CPlayer.h"
+#include "CHomePlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
@@ -56,7 +56,7 @@ void CHomeScene::Load()
 
 	new CHomeField();
 
-	CPlayer* player = new CPlayer();
+	CHomePlayer* player = new CHomePlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 
 	// CGameCamera‚ÌƒeƒXƒg

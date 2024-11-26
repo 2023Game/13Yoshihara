@@ -2,13 +2,7 @@
 #include "CTrashPlayer.h"
 #include "CInput.h"
 #include "CCamera.h"
-#include "CBullet.h"
-#include "CFlamethrower.h"
-#include "CSlash.h"
 #include "Maths.h"
-
-// プレイヤーのインスタンス
-CTrashPlayer* CTrashPlayer::spInstance = nullptr;
 
 /*
  プレイヤーのアニメーションデータのテーブル
@@ -45,13 +39,11 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 	{ "Character\\TrashBox\\anim\\Close.x",					true,	10.0f	},	// 蓋を閉じる			（開）
 };
 
+#define CAPSULE_RADIUS 2.5f
 #define PLAYER_HEIGHT 16.0f
+
 #define MOVE_SPEED 0.375f * 2.0f
 #define JUMP_SPEED 1.5f
-#define GRAVITY 0.0625f
-#define JUMP_END_Y 1.0f
-#define CAPSULE_RADIUS_HOME 2.5f
-#define CAPSULE_RADIUS_TRASH 2.5f
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -62,14 +54,14 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 
 // コンストラクタ
  CTrashPlayer::CTrashPlayer()
-	 : CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
+	 : CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
 	 , mState(EState::eIdle)
-	 , IsOpen(false)
+	 , mIsOpen(false)
 	 , mTest(0)
  {
-	 spInstance = this;
 	 // モデルデータ取得
 	 CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
+
 	 // テーブル内のアニメーションデータを読み込み
 	 int size = ARRAY_SIZE(ANIM_DATA);
 	 for (int i = 0; i < size; i++)
@@ -89,11 +81,6 @@ CTrashPlayer::~CTrashPlayer()
 {
 }
 
-CTrashPlayer* CTrashPlayer::Instance()
-{
-	return spInstance;
-}
-
 // 更新
 void CTrashPlayer::Update()
 {
@@ -101,9 +88,6 @@ void CTrashPlayer::Update()
 	{
 	case EState::eIdle:
 		UpdateIdle();
-		break;
-	case EState::eMove:
-		UpdateMove();
 		break;
 	case EState::eDamageStart:
 		UpdateDamageStart();
@@ -146,52 +130,109 @@ void CTrashPlayer::Update()
 		break;
 	}
 
-	//// 待機中とジャンプ中は、移動処理を行う
-	//if (mState == EState::eIdle
-	//	|| mState == EState::eJump)
-	//{
-	//	UpdateMove();
-	//}
-	// キャラクターの更新
-	CXCharacter::Update();
+	// 待機中とジャンプ中は、移動処理を行う
+	if (mState == EState::eIdle
+		|| mState == EState::eJump)
+	{
+		UpdateMove();
+	}
 
-	CDebugPrint::Print("TState:%d\n", mState);
+	// キャラクターの更新
+	CPlayerBase::Update();
+
+	CDebugPrint::Print("State:%d\n", mState);
 }
 
-// 描画
-void CTrashPlayer::Render()
+void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	CXCharacter::Render();
+	CPlayerBase::Collision(self, other, hit);
 }
 
 // 待機状態
 void CTrashPlayer::UpdateIdle()
 {
-	if (!IsOpen)
-		ChangeAnimation(EAnimType::eIdle_Close);
-	else
-		ChangeAnimation(EAnimType::eIdle_Open);
+	if (mIsGrounded)
+	{
+		// 左クリックで攻撃
+		if (CInput::PushKey(VK_LBUTTON))
+		{
+			mMoveSpeed = CVector::zero;
+			mState = EState::eAttackStart;
+
+			// 閉じていたら開く
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eOpen);
+			else
+				ChangeAnimation(EAnimType::eAttack_Start);
+		}
+		// 右クリックで蓋の開閉
+		if (CInput::PushKey(VK_RBUTTON))
+		{
+			mMoveSpeed = CVector::zero;
+			mState = EState::eOpenClose;
+
+			// 閉じていたら蓋を開く
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eOpen);
+			// 開いていたら蓋を閉じる
+			else
+				ChangeAnimation(EAnimType::eClose);
+		}
+		// スペースでジャンプ
+		if (CInput::PushKey(VK_SPACE))
+		{
+			mMoveSpeed = CVector::zero;
+			mState = EState::eJumpStart;
+
+			// 閉じた状態のジャンプ
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eJump_Close_Start);
+			// 開いた状態のジャンプ
+			else
+				ChangeAnimation(EAnimType::eJump_Open_Start);
+		}
+	}
 }
 
 // 移動
 void CTrashPlayer::UpdateMove()
 {
-	if (!IsOpen)
-		ChangeAnimation(EAnimType::eMove_Close);
-	else
-		ChangeAnimation(EAnimType::eMove_Open);
+	mMoveSpeed = CVector::zero;
 
-	if (IsAnimationFinished())
+	// プレイヤーの移動ベクトルを求める
+	CVector move = CalcMoveVec();
+	// 求めた移動ベクトルの長さで入力されているか判定
+	if (move.LengthSqr() > 0.0f)
 	{
-		mState = EState::eIdle;
+		mMoveSpeed += move * MOVE_SPEED;
+
+		// 待機状態であれば、移動アニメーションに切り替え
+		if (mState == EState::eIdle)
+		{
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eMove_Close);
+			else
+				ChangeAnimation(EAnimType::eMove_Open);
+		}
+	}
+	// 移動キーを入力していない
+	else
+	{
+		// 待機状態であれば、待機アニメーションに切り替え
+		if (mState == EState::eIdle)
+		{
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eIdle_Close);
+			else
+				ChangeAnimation(EAnimType::eIdle_Open);
+		}
 	}
 }
 
 // 被弾開始
 void CTrashPlayer::UpdateDamageStart()
 {
-
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eDamage_Close_Start);
 	else
 		ChangeAnimation(EAnimType::eDamage_Open_Start);
@@ -205,7 +246,7 @@ void CTrashPlayer::UpdateDamageStart()
 // 被弾ノックバック
 void CTrashPlayer::UpdateDamage()
 {
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eDamage_Close);
 	else
 		ChangeAnimation(EAnimType::eDamage_Open);
@@ -219,13 +260,17 @@ void CTrashPlayer::UpdateDamage()
 // 被弾終了
 void CTrashPlayer::UpdateDamageEnd()
 {
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eDamage_Close_End);
 	else
 		ChangeAnimation(EAnimType::eDamage_Open_End);
 
 	if (IsAnimationFinished())
 	{
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eIdle_Close);
+		else
+			ChangeAnimation(EAnimType::eIdle_Open);
 		mState = EState::eIdle;
 	}
 }
@@ -233,10 +278,13 @@ void CTrashPlayer::UpdateDamageEnd()
 // ジャンプ開始
 void CTrashPlayer::UpdateJumpStart()
 {
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eJump_Close_Start);
 	else
 		ChangeAnimation(EAnimType::eJump_Open_Start);
+
+	mMoveSpeedY += JUMP_SPEED;
+	mIsGrounded = false;
 
 	if (IsAnimationFinished())
 	{
@@ -247,12 +295,12 @@ void CTrashPlayer::UpdateJumpStart()
 // ジャンプ中
 void CTrashPlayer::UpdateJump()
 {
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eJump_Close);
 	else
 		ChangeAnimation(EAnimType::eJump_Open);
 
-	if (IsAnimationFinished())
+	if (mMoveSpeedY <= 0.0f)
 	{
 		mState = EState::eJumpEnd;
 	}
@@ -261,7 +309,7 @@ void CTrashPlayer::UpdateJump()
 // ジャンプ終了
 void CTrashPlayer::UpdateJumpEnd()
 {
-	if (!IsOpen)
+	if (!mIsOpen)
 		ChangeAnimation(EAnimType::eJump_Close_End);
 	else
 		ChangeAnimation(EAnimType::eJump_Open_End);
@@ -275,33 +323,46 @@ void CTrashPlayer::UpdateJumpEnd()
 // 攻撃開始
 void CTrashPlayer::UpdateAttackStart()
 {
-	ChangeAnimation(EAnimType::eAttack_Start);
-
-	if (IsAnimationFinished())
+	// 開いていなければ開くアニメーションの再生をしているので
+	// 終わってから攻撃の最初へ
+	if (!mIsOpen)
 	{
-		mState = EState::eAttack;
+		if (IsAnimationFinished())
+		{
+			mIsOpen = !mIsOpen;
+			ChangeAnimation(EAnimType::eAttack_Start);
+		}
+	}
+	// 開いているなら攻撃の最初のアニメーションが終了したので攻撃中へ
+	else
+	{
+		if (IsAnimationFinished())
+		{
+			mState = EState::eAttack;
+			ChangeAnimation(EAnimType::eAttack);
+		}
 	}
 }
 
 // 攻撃中
 void CTrashPlayer::UpdateAttack()
 {
-	ChangeAnimation(EAnimType::eAttack);
-
 	if (IsAnimationFinished())
 	{
 		mState = EState::eAttackEnd;
+		ChangeAnimation(EAnimType::eAttack_End);
 	}
 }
 
 // 攻撃終了
 void CTrashPlayer::UpdateAttackEnd()
 {
-	ChangeAnimation(EAnimType::eAttack_End);
-
 	if (IsAnimationFinished())
 	{
+		// 攻撃は最後には蓋が閉じる
 		mState = EState::eIdle;
+		mIsOpen = false;
+		ChangeAnimation(EAnimType::eIdle_Close);
 	}
 }
 
@@ -340,15 +401,11 @@ void CTrashPlayer::UpdateCriticalEnd()
 // 蓋を開閉する
 void CTrashPlayer::UpdateOpenClose()
 {
-	if (!IsOpen)
-		ChangeAnimation(EAnimType::eOpen);
-	else
-		ChangeAnimation(EAnimType::eClose);
-
 	if (IsAnimationFinished())
 	{
 		mState = EState::eIdle;
-		IsOpen = !IsOpen;
+		// 開き状態を変更
+		mIsOpen = !mIsOpen;
 	}
 }
 

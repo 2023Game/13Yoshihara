@@ -1,5 +1,5 @@
 //プレイヤークラスのインクルード
-#include "CPlayer.h"
+#include "CPlayerBase.h"
 #include "CInput.h"
 #include "CCamera.h"
 #include "CBullet.h"
@@ -8,26 +8,13 @@
 #include "Maths.h"
 
 // プレイヤーのインスタンス
-CPlayer* CPlayer::spInstance = nullptr;
+CPlayerBase* CPlayerBase::spInstance = nullptr;
 
-// プレイヤーのアニメーションデータのテーブル
-const CPlayer::AnimData CPlayer::ANIM_DATA[] =
-{
-	{ "",										true,	0.0f	},	// Tポーズ
-	{ "Character\\Player\\anim\\idle.x",		true,	153.0f	},	// 待機
-	{ "Character\\Player\\anim\\walk.x",		true,	66.0f	},	// 歩行
-	{ "Character\\Player\\anim\\attack.x",		false,	91.0f	},	// 攻撃
-	{ "Character\\Player\\anim\\jump_start.x",	false,	25.0f	},	// ジャンプ開始
-	{ "Character\\Player\\anim\\jump.x",		true,	1.0f	},	// ジャンプ中
-	{ "Character\\Player\\anim\\jump_end.x",	false,	26.0f	},	// ジャンプ終了
-};
 
-#define PLAYER_HEIGHT 16.0f
-#define MOVE_SPEED 0.375f * 2.0f
-#define JUMP_SPEED 1.5f
+
 #define GRAVITY 0.0625f
 #define JUMP_END_Y 1.0f
-#define CAPSULE_RADIUS_HOME 2.5f
+
 #define CAPSULE_RADIUS_TRASH 2.5f
 
 // モーションブラーを掛ける時間
@@ -38,196 +25,121 @@ const CPlayer::AnimData CPlayer::ANIM_DATA[] =
 #define MOTION_BLUR_COUNT 5
 
 // コンストラクタ
-CPlayer::CPlayer()
+CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
-	, mState(EState::eIdle)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
 	, mIsWall(false)
 	, mpRideObject(nullptr)
-	, mIsPlayedSlashSE(false)
-	, mIsSpawnedSlashEffect(false)
 	, mMotionBlurRemainTime(0.0f)
 {
 	spInstance = this;
-
-	// モデルデータ取得
-	CModelX* model = CResourceManager::Get<CModelX>("Player");
-
-	// テーブル内のアニメーションデータを読み込み
-	int size = ARRAY_SIZE(ANIM_DATA);
-	for (int i = 0; i < size; i++)
-	{
-		const AnimData& data = ANIM_DATA[i];
-		if (data.path.empty()) continue;
-		model->AddAnimationSet(data.path.c_str());
-	}
-	// CXCharacterの初期化
-	Init(model);
-
-	// 最初は待機アニメーションを再生
-	//ChangeAnimation(EAnimType::eIdle);
 
 	//フィールドとだけ衝突判定をする
 	mpColliderCapsule = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, CAPSULE_RADIUS_HOME, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS_HOME, 0.0f),
-		CAPSULE_RADIUS_HOME
+		CVector(0.0f, capsuleRadius, 0.0f),
+		CVector(0.0f, playerHeight - capsuleRadius, 0.0f),
+		capsuleRadius
 	);
 	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
-	//インタラクトオブジェクトとだけ衝突判定
-	mpColliderLine = new CColliderLine
-	(
-		this, ELayer::ePlayer,
-		CVector(0.0f, 0.0f, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
-	);
-	mpColliderLine->SetCollisionLayers({ ELayer::eInteract });
-
-	mpSlashSE = CResourceManager::Get<CSound>("SlashSound");
-
-	mpFlamethrower = new CFlamethrower
-	(
-		this, nullptr,
-		CVector(0.0f, 14.0f, -1.0f),
-		CQuaternion(0.0f, 90.0f, 0.0f).Matrix()
-	);
 }
 
-CPlayer::~CPlayer()
+CPlayerBase::~CPlayerBase()
 {
-	if (mpColliderLine != nullptr)
-	{
-		delete mpColliderLine;
-		mpColliderLine = nullptr;
-	}
-	if (mpColliderCapsule != nullptr)
-	{
-		delete mpColliderCapsule;
-		mpColliderCapsule = nullptr;
-	}
 }
 
-CPlayer* CPlayer::Instance()
+CPlayerBase* CPlayerBase::Instance()
 {
 	return spInstance;
 }
 
-// アニメーション切り替え
-void CPlayer::ChangeAnimation(EAnimType type)
-{
-	if (!(EAnimType::None < type && type < EAnimType::Num)) return;
-	AnimData data = ANIM_DATA[(int)type];
-	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength);
-}
-
-// 待機
-void CPlayer::UpdateIdle()
-{
-	// 接地していれば、
-	if (mIsGrounded)
-	{
-		// 左クリックで攻撃状態へ移行
-		if (CInput::PushKey(VK_LBUTTON))
-		{
-			mMoveSpeed = CVector::zero;
-			mState = EState::eAttack;
-		}
-		// SPACEキーでジャンプ開始へ移行
-		else if (CInput::PushKey(VK_SPACE))
-		{
-			mState = EState::eJumpStart;
-		}
-	}
-}
-
-// 攻撃
-void CPlayer::UpdateAttack()
-{
-	// 攻撃アニメーションを開始
-	ChangeAnimation(EAnimType::eAttack);
-	// 攻撃終了待ち状態へ移行
-	mState = EState::eAttackWait;
-
-	// 斬撃SEの再生済みフラグを初期化
-	mIsPlayedSlashSE = false;
-	// 斬撃エフェクトの生成済みフラグを初期化
-	mIsSpawnedSlashEffect = false;
-}
-
-// 攻撃終了待ち
-void CPlayer::UpdateAttackWait()
-{
-	// 斬撃SEを再生していないかつ、アニメーションが25%以上進行したら、
-	if (!mIsPlayedSlashSE && GetAnimationFrameRatio() >= 0.25f)
-	{
-		// 斬撃SEを再生
-		mpSlashSE->Play();
-		mIsPlayedSlashSE = true;
-	}
-
-	// 斬撃エフェクトを生成していないかつ、アニメーションが35%以上進行したら、
-	if (!mIsSpawnedSlashEffect && GetAnimationFrameRatio() >= 0.35f)
-	{
-		// 斬撃エフェクトを生成して、正面方向へ飛ばす
-		CSlash* slash = new CSlash
-		(
-			this,
-			Position() + CVector(0.0f, 10.0f, 0.0f),
-			VectorZ(),
-			300.0f,
-			100.0f
-		);
-		// 斬撃エフェクトの色設定
-		slash->SetColor(CColor(0.15f, 0.5f, 0.5f));
-
-		mIsSpawnedSlashEffect = true;
-	}
-
-	// 攻撃アニメーションが終了したら、
-	if (IsAnimationFinished())
-	{
-		// 待機状態へ移行
-		mState = EState::eIdle;
-		ChangeAnimation(EAnimType::eIdle);
-	}
-}
-
-// ジャンプ開始
-void CPlayer::UpdateJumpStart()
-{
-	ChangeAnimation(EAnimType::eJumpStart);
-	mState = EState::eJump;
-
-	mMoveSpeedY += JUMP_SPEED;
-	mIsGrounded = false;
-}
-
-// ジャンプ中
-void CPlayer::UpdateJump()
-{
-	if (mMoveSpeedY <= 0.0f)
-	{
-		ChangeAnimation(EAnimType::eJumpEnd);
-		mState = EState::eJumpEnd;
-	}
-}
-
-// ジャンプ終了
-void CPlayer::UpdateJumpEnd()
-{
-	// ジャンプアニメーションが終了かつ、
-	// 地面に接地したら、待機状態へ戻す
-	if (IsAnimationFinished() && mIsGrounded)
-	{
-		mState = EState::eIdle;
-	}
-}
+//// 攻撃
+//void CPlayerBase::UpdateAttack()
+//{
+//	// 攻撃アニメーションを開始
+//	ChangeAnimation(EAnimType::eAttack);
+//	// 攻撃終了待ち状態へ移行
+//	mState = EState::eAttackWait;
+//
+//	// 斬撃SEの再生済みフラグを初期化
+//	mIsPlayedSlashSE = false;
+//	// 斬撃エフェクトの生成済みフラグを初期化
+//	mIsSpawnedSlashEffect = false;
+//}
+//
+//// 攻撃終了待ち
+//void CPlayerBase::UpdateAttackWait()
+//{
+//	// 斬撃SEを再生していないかつ、アニメーションが25%以上進行したら、
+//	if (!mIsPlayedSlashSE && GetAnimationFrameRatio() >= 0.25f)
+//	{
+//		// 斬撃SEを再生
+//		mpSlashSE->Play();
+//		mIsPlayedSlashSE = true;
+//	}
+//
+//	// 斬撃エフェクトを生成していないかつ、アニメーションが35%以上進行したら、
+//	if (!mIsSpawnedSlashEffect && GetAnimationFrameRatio() >= 0.35f)
+//	{
+//		// 斬撃エフェクトを生成して、正面方向へ飛ばす
+//		CSlash* slash = new CSlash
+//		(
+//			this,
+//			Position() + CVector(0.0f, 10.0f, 0.0f),
+//			VectorZ(),
+//			300.0f,
+//			100.0f
+//		);
+//		// 斬撃エフェクトの色設定
+//		slash->SetColor(CColor(0.15f, 0.5f, 0.5f));
+//
+//		mIsSpawnedSlashEffect = true;
+//	}
+//
+//	// 攻撃アニメーションが終了したら、
+//	if (IsAnimationFinished())
+//	{
+//		// 待機状態へ移行
+//		mState = EState::eIdle;
+//		ChangeAnimation(EAnimType::eIdle);
+//	}
+//}
+//
+//// ジャンプ開始
+//void CPlayerBase::UpdateJumpStart()
+//{
+//	ChangeAnimation(EAnimType::eJumpStart);
+//	mState = EState::eJump;
+//
+//	mMoveSpeedY += JUMP_SPEED;
+//	mIsGrounded = false;
+//}
+//
+//// ジャンプ中
+//void CPlayerBase::UpdateJump()
+//{
+//	if (mMoveSpeedY <= 0.0f)
+//	{
+//		ChangeAnimation(EAnimType::eJumpEnd);
+//		mState = EState::eJumpEnd;
+//	}
+//}
+//
+//// ジャンプ終了
+//void CPlayerBase::UpdateJumpEnd()
+//{
+//	// ジャンプアニメーションが終了かつ、
+//	// 地面に接地したら、待機状態へ戻す
+//	if (IsAnimationFinished() && mIsGrounded)
+//	{
+//		mState = EState::eIdle;
+//	}
+//}
 
 // キーの入力情報から移動ベクトルを求める
-CVector CPlayer::CalcMoveVec()
+CVector CPlayerBase::CalcMoveVec()
 {
 	CVector move = CVector::zero;
 
@@ -264,37 +176,8 @@ CVector CPlayer::CalcMoveVec()
 	return move;
 }
 
-// 移動の更新処理
-void CPlayer::UpdateMove()
-{
-	mMoveSpeed = CVector::zero;
-
-	// プレイヤーの移動ベクトルを求める
-	CVector move = CalcMoveVec();
-	// 求めた移動ベクトルの長さで入力されているか判定
-	if (move.LengthSqr() > 0.0f)
-	{
-		mMoveSpeed += move * MOVE_SPEED;
-
-		// 待機状態であれば、歩行アニメーションに切り替え
-		if (mState == EState::eIdle)
-		{
-			ChangeAnimation(EAnimType::eWalk);
-		}
-	}
-	// 移動キーを入力していない
-	else
-	{
-		// 待機状態であれば、待機アニメーションに切り替え
-		if (mState == EState::eIdle)
-		{
-			ChangeAnimation(EAnimType::eIdle);
-		}
-	}
-}
-
 // モーションブラーの更新処理
-void CPlayer::UpdateMotionBlur()
+void CPlayerBase::UpdateMotionBlur()
 {
 	// モーションブラーの残り時間が残っていなければ、処理しない
 	if (mMotionBlurRemainTime <= 0.0f) return;
@@ -327,48 +210,10 @@ void CPlayer::UpdateMotionBlur()
 }
 
 // 更新
-void CPlayer::Update()
+void CPlayerBase::Update()
 {
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
-
-	// 状態に合わせて、更新処理を切り替える
-	switch (mState)
-	{
-		// 待機状態
-		case EState::eIdle:
-			UpdateIdle();
-			break;
-		// 攻撃
-		case EState::eAttack:
-			UpdateAttack();
-			break;
-		// 攻撃終了待ち
-		case EState::eAttackWait:
-			UpdateAttackWait();
-			break;
-		// ジャンプ開始
-		case EState::eJumpStart:
-			UpdateJumpStart();
-			break;
-		// ジャンプ中
-		case EState::eJump:
-			UpdateJump();
-			break;
-		// ジャンプ終了
-		case EState::eJumpEnd:
-			UpdateJumpEnd();
-			break;
-	}
-
-	// 待機中とジャンプ中は、移動処理を行う
-	if (mState == EState::eIdle
-		|| mState == EState::eJumpStart
-		|| mState == EState::eJump
-		|| mState == EState::eJumpEnd)
-	{
-		UpdateMove();
-	}
 
 	mMoveSpeedY -= GRAVITY;
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
@@ -383,33 +228,6 @@ void CPlayer::Update()
 	target.Normalize();
 	CVector forward = CVector::Slerp(current, target, 0.125f);
 	Rotation(CQuaternion::LookRotation(forward));
-
-	// 右クリックで弾丸発射
-	if (CInput::PushKey(VK_RBUTTON))
-	{
-		// 弾丸を生成
-		new CBullet
-		(
-			// 発射位置
-			Position() + CVector(0.0f, 10.0f, 0.0f) + VectorZ() * 20.0f,
-			VectorZ(),	// 発射方向
-			1000.0f,	// 移動距離
-			1000.0f		// 飛距離
-		);
-	}
-
-	// 「E」キーで炎の発射をオンオフする
-	if (CInput::PushKey('E'))
-	{
-		if (!mpFlamethrower->IsThrowing())
-		{
-			mpFlamethrower->Start();
-		}
-		else
-		{
-			mpFlamethrower->Stop();
-		}
-	}
 
 	// 「P」キーを押したら、ゲームを終了
 	if (CInput::PushKey('P'))
@@ -437,7 +255,6 @@ void CPlayer::Update()
 
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("Wall:%s\n", mIsWall ? "true" : "false");
-	CDebugPrint::Print("State:%d\n", mState);
 
 	mIsGrounded = false;
 	mIsWall = false;
@@ -446,7 +263,7 @@ void CPlayer::Update()
 }
 
 // 衝突処理
-void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	if (self == mpColliderCapsule)
 	{
@@ -557,7 +374,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 }
 
 // 描画
-void CPlayer::Render()
+void CPlayerBase::Render()
 {
 	CXCharacter::Render();
 }
