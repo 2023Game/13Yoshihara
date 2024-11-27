@@ -41,6 +41,9 @@ protected:
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
 
+	// 攻撃を受けているか
+	bool mIsDamage;
+
 public:
 	// インスタンスのポインタの取得
 	static CPlayerBase* Instance();

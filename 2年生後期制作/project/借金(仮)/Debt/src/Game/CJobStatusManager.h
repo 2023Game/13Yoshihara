@@ -37,9 +37,14 @@ public:
 	/// <param name="jobType">仕事の種類</param>
 	/// <param name="upgrade">強化倍率の増加量</param>
 	void SetUpgrade(EJobType jobType, float upgrade);
+
+	// 各ジョブのポインタを取得
+	CTrashStatus* GetTrashStatus();
+	CDeliveryStatus* GetDeliveryStatus();
 private:
 	// 仕事ステータスマネージャのインスタンス
 	static CJobStatusManager* mpInstance;
+	// 各ジョブのステータス
 	CTrashStatus* mTrashStatus;
 	CDeliveryStatus* mDeliveryStatus;
 };

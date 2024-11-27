@@ -136,6 +136,8 @@ protected:
 
 	// ŠW‚ªŠJ‚¢‚Ä‚¢‚é‚©
 	bool mIsOpen;
+	// ƒWƒƒƒ“ƒv‚µ‚Ä‚¢‚é‚©
+	bool mIsJump;
 
 	int mTest;
 };

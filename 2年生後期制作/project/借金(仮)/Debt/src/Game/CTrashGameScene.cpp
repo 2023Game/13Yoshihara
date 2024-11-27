@@ -48,7 +48,6 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
-	CResourceManager::Load<CModel>("Fox", "Character\\Object\\Fox.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
@@ -71,10 +70,10 @@ void CTrashGameScene::Load()
 	//);
 	// 
 	// CGameCamera2のテスト
-	CVector atPos = player->Position() + CVector(0.0f, 10.0f, 0.0f);
+	CVector atPos = player->Position() + CVector(0.0f, 8.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 0.0f, 15.0f),
+		atPos + CVector(0.0f, 0.0f, 50.0f),
 		atPos
 	);
 

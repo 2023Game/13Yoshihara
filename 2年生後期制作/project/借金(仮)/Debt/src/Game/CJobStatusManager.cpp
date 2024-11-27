@@ -141,3 +141,15 @@ void CJobStatusManager::SetUpgrade(EJobType jobType, float upgrade)
 		break;
 	}
 }
+
+// ゴミ拾いのステータスのポインタを取得
+CTrashStatus* CJobStatusManager::GetTrashStatus()
+{
+	return mTrashStatus;
+}
+
+// 配達のステータスのポインタを取得
+CDeliveryStatus* CJobStatusManager::GetDeliveryStatus()
+{
+	return mDeliveryStatus;
+}

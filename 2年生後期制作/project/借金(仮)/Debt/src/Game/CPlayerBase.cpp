@@ -32,6 +32,7 @@ CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 	, mIsWall(false)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
+	, mIsDamage(false)
 {
 	spInstance = this;
 
@@ -106,37 +107,7 @@ CPlayerBase* CPlayerBase::Instance()
 //		ChangeAnimation(EAnimType::eIdle);
 //	}
 //}
-//
-//// ジャンプ開始
-//void CPlayerBase::UpdateJumpStart()
-//{
-//	ChangeAnimation(EAnimType::eJumpStart);
-//	mState = EState::eJump;
-//
-//	mMoveSpeedY += JUMP_SPEED;
-//	mIsGrounded = false;
-//}
-//
-//// ジャンプ中
-//void CPlayerBase::UpdateJump()
-//{
-//	if (mMoveSpeedY <= 0.0f)
-//	{
-//		ChangeAnimation(EAnimType::eJumpEnd);
-//		mState = EState::eJumpEnd;
-//	}
-//}
-//
-//// ジャンプ終了
-//void CPlayerBase::UpdateJumpEnd()
-//{
-//	// ジャンプアニメーションが終了かつ、
-//	// 地面に接地したら、待機状態へ戻す
-//	if (IsAnimationFinished() && mIsGrounded)
-//	{
-//		mState = EState::eIdle;
-//	}
-//}
+
 
 // キーの入力情報から移動ベクトルを求める
 CVector CPlayerBase::CalcMoveVec()
@@ -221,13 +192,18 @@ void CPlayerBase::Update()
 	// 移動
 	Position(Position() + moveSpeed);
 
-	// プレイヤーを移動方向へ向ける
-	CVector current = VectorZ();
-	CVector target = moveSpeed;
-	target.Y(0.0f);
-	target.Normalize();
-	CVector forward = CVector::Slerp(current, target, 0.125f);
-	Rotation(CQuaternion::LookRotation(forward));
+	// 攻撃を受けていない時は
+	if (!mIsDamage)
+	{
+		// プレイヤーを移動方向へ向ける
+		CVector current = VectorZ();
+		CVector target = moveSpeed;
+		target.Y(0.0f);
+		target.Normalize();
+		CVector forward = CVector::Slerp(current, target, 0.125f);
+		Rotation(CQuaternion::LookRotation(forward));
+	}
+
 
 	// 「P」キーを押したら、ゲームを終了
 	if (CInput::PushKey('P'))

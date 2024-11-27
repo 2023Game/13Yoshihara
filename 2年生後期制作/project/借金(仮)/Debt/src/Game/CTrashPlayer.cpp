@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "CCamera.h"
 #include "Maths.h"
+#include "CJobStatusManager.h"
 
 /*
  プレイヤーのアニメーションデータのテーブル
@@ -33,7 +34,7 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 	{ "Character\\TrashBox\\anim\\Attack.x",				false,	11.0f	},	// 攻撃中				（開閉）
 	{ "Character\\TrashBox\\anim\\Attack_End.x",			false,	69.0f	},	// 攻撃終了				（開閉）
 	{ "Character\\TrashBox\\anim\\Critical_Start.x",		false,	35.0f	},	// クリティカル攻撃開始	（開閉）
-	{ "Character\\TrashBox\\anim\\Critical_.x",				false,	11.0f	},	// クリティカル攻撃中	（開閉）
+	{ "Character\\TrashBox\\anim\\Critical.x",				false,	11.0f	},	// クリティカル攻撃中	（開閉）
 	{ "Character\\TrashBox\\anim\\Critical_End.x",			false,	69.0f	},	// クリティカル攻撃終了	（開閉）
 	{ "Character\\TrashBox\\anim\\Open.x",					true,	10.0f	},	// 蓋を開く				（と）
 	{ "Character\\TrashBox\\anim\\Close.x",					true,	10.0f	},	// 蓋を閉じる			（開）
@@ -53,12 +54,13 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 #define MOTION_BLUR_COUNT 5
 
 // コンストラクタ
- CTrashPlayer::CTrashPlayer()
-	 : CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
-	 , mState(EState::eIdle)
-	 , mIsOpen(false)
-	 , mTest(0)
- {
+CTrashPlayer::CTrashPlayer()
+	: CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
+	, mState(EState::eIdle)
+	, mIsOpen(false)
+	, mIsJump(false)
+	, mTest(0)
+{
 	 // モデルデータ取得
 	 CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
 
@@ -75,7 +77,7 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 
 	 // 最初は待機アニメーションを再生
 	 ChangeAnimation(EAnimType::eIdle_Close);
- }
+}
 
 CTrashPlayer::~CTrashPlayer()
 {
@@ -137,10 +139,16 @@ void CTrashPlayer::Update()
 		UpdateMove();
 	}
 
+	// 地面に接しているならジャンプしていない
+	if (mIsGrounded)
+		mIsJump = false;
+
 	// キャラクターの更新
 	CPlayerBase::Update();
 
 	CDebugPrint::Print("State:%d\n", mState);
+	CDebugPrint::Print("IsOpen:%s\n", mIsOpen ? "true" : "false");
+	CDebugPrint::Print("IsJump:%s\n", mIsJump ? "true" : "false");
 }
 
 void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
@@ -153,6 +161,19 @@ void CTrashPlayer::UpdateIdle()
 {
 	if (mIsGrounded)
 	{
+
+		// スペースでジャンプ
+		if (CInput::PushKey(VK_SPACE))
+		{
+			mState = EState::eJumpStart;
+
+			// 閉じた状態のジャンプ
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eJump_Close_Start);
+			// 開いた状態のジャンプ
+			else
+				ChangeAnimation(EAnimType::eJump_Open_Start);
+		}
 		// 左クリックで攻撃
 		if (CInput::PushKey(VK_LBUTTON))
 		{
@@ -178,18 +199,25 @@ void CTrashPlayer::UpdateIdle()
 			else
 				ChangeAnimation(EAnimType::eClose);
 		}
-		// スペースでジャンプ
-		if (CInput::PushKey(VK_SPACE))
+		if (CInput::PushKey('1'))
 		{
 			mMoveSpeed = CVector::zero;
-			mState = EState::eJumpStart;
-
-			// 閉じた状態のジャンプ
+			mState = EState::eCriticalStart;
+			// 閉じていたら開く
 			if (!mIsOpen)
-				ChangeAnimation(EAnimType::eJump_Close_Start);
-			// 開いた状態のジャンプ
+				ChangeAnimation(EAnimType::eOpen);
 			else
-				ChangeAnimation(EAnimType::eJump_Open_Start);
+				ChangeAnimation(EAnimType::eCritical_Start);
+		}
+		if (CInput::PushKey('2'))
+		{
+			mIsDamage = true;
+			mMoveSpeed = CVector::zero;
+			mState = EState::eDamageStart;
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eDamage_Close_Start);
+			else
+				ChangeAnimation(EAnimType::eDamage_Open_Start);
 		}
 	}
 }
@@ -232,45 +260,49 @@ void CTrashPlayer::UpdateMove()
 // 被弾開始
 void CTrashPlayer::UpdateDamageStart()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eDamage_Close_Start);
-	else
-		ChangeAnimation(EAnimType::eDamage_Open_Start);
-
+	// アニメーションが終了したら被弾ノックバックへ
 	if (IsAnimationFinished())
 	{
+		// ノックバック速度の設定
+		mMoveSpeedY = JUMP_SPEED;
+		// 後ろ方向にノックバックさせる
+		mMoveSpeed = -VectorZ() * MOVE_SPEED;
+		mIsGrounded = false;
+
 		mState = EState::eDamage;
+
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eDamage_Close);
+		else
+			ChangeAnimation(EAnimType::eDamage_Open);
 	}
 }
 
 // 被弾ノックバック
 void CTrashPlayer::UpdateDamage()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eDamage_Close);
-	else
-		ChangeAnimation(EAnimType::eDamage_Open);
-
-	if (IsAnimationFinished())
+	// 地面に付いたら被弾終了へ
+	if (mIsGrounded)
 	{
 		mState = EState::eDamageEnd;
+
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eDamage_Close_End);
+		else
+			ChangeAnimation(EAnimType::eDamage_Open_End);
 	}
 }
 
 // 被弾終了
 void CTrashPlayer::UpdateDamageEnd()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eDamage_Close_End);
-	else
-		ChangeAnimation(EAnimType::eDamage_Open_End);
+	// 被弾終了時は移動をゼロ
+	mMoveSpeed = CVector::zero;
 
+	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
-		if (!mIsOpen)
-			ChangeAnimation(EAnimType::eIdle_Close);
-		else
-			ChangeAnimation(EAnimType::eIdle_Open);
+		mIsDamage = false;
 		mState = EState::eIdle;
 	}
 }
@@ -278,42 +310,66 @@ void CTrashPlayer::UpdateDamageEnd()
 // ジャンプ開始
 void CTrashPlayer::UpdateJumpStart()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eJump_Close_Start);
-	else
-		ChangeAnimation(EAnimType::eJump_Open_Start);
+	// ジャンプ開始時は移動をゼロ
+	mMoveSpeed = CVector::zero;
 
-	mMoveSpeedY += JUMP_SPEED;
-	mIsGrounded = false;
-
+	// アニメーションが終了したら
 	if (IsAnimationFinished())
 	{
+		// ジャンプ速度の設定
+		mMoveSpeedY = JUMP_SPEED;
+		mIsGrounded = false;
+
 		mState = EState::eJump;
+		// 閉じた状態のジャンプ中へ
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eJump_Close);
+		// 開いた状態のジャンプ中へ
+		else
+			ChangeAnimation(EAnimType::eJump_Open);
 	}
 }
 
 // ジャンプ中
 void CTrashPlayer::UpdateJump()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eJump_Close);
-	else
-		ChangeAnimation(EAnimType::eJump_Open);
-
-	if (mMoveSpeedY <= 0.0f)
+	mIsJump = true;
+	// ジャンプ中は移動しながら開閉可能
+	// 右クリックで蓋の開閉
+	if (CInput::PushKey(VK_RBUTTON))
+	{
+		mState = EState::eOpenClose;
+		// 閉じていたら蓋を開く
+		if (!mIsOpen)
+		{
+			ChangeAnimation(EAnimType::eOpen);
+		}
+		// 開いていたら蓋を閉じる
+		else
+		{
+			ChangeAnimation(EAnimType::eClose);
+		}
+	}
+	// 地面に付いたら
+	if (mIsGrounded)
 	{
 		mState = EState::eJumpEnd;
+		// 閉じた状態のジャンプ終了へ
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eJump_Close_End);
+		// 開いた状態のジャンプ終了へ
+		else
+			ChangeAnimation(EAnimType::eJump_Open_End);
 	}
 }
 
 // ジャンプ終了
 void CTrashPlayer::UpdateJumpEnd()
 {
-	if (!mIsOpen)
-		ChangeAnimation(EAnimType::eJump_Close_End);
-	else
-		ChangeAnimation(EAnimType::eJump_Open_End);
+	// 着地中は移動をゼロ
+	mMoveSpeed = CVector::zero;
 
+	// アニメーションが終了したら
 	if (IsAnimationFinished())
 	{
 		mState = EState::eIdle;
@@ -347,8 +403,10 @@ void CTrashPlayer::UpdateAttackStart()
 // 攻撃中
 void CTrashPlayer::UpdateAttack()
 {
+	// アニメーションが終了したら
 	if (IsAnimationFinished())
 	{
+		// 攻撃終了へ
 		mState = EState::eAttackEnd;
 		ChangeAnimation(EAnimType::eAttack_End);
 	}
@@ -357,44 +415,59 @@ void CTrashPlayer::UpdateAttack()
 // 攻撃終了
 void CTrashPlayer::UpdateAttackEnd()
 {
+	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
-		// 攻撃は最後には蓋が閉じる
+		// 最後には蓋が閉じる
 		mState = EState::eIdle;
 		mIsOpen = false;
-		ChangeAnimation(EAnimType::eIdle_Close);
 	}
 }
 
 // クリティカル攻撃開始
 void CTrashPlayer::UpdateCriticalStart()
 {
-	ChangeAnimation(EAnimType::eCritical_Start);
-	if (IsAnimationFinished())
+	// 開いていなければ開くアニメーションの再生をしているので
+	// 終わってからクリティカルの最初へ
+	if (!mIsOpen)
 	{
-		mState = EState::eCritical;
+		if (IsAnimationFinished())
+		{
+			mIsOpen = true;
+			ChangeAnimation(EAnimType::eCritical_Start);
+		}
+	}
+	// 開いているならクリティカルの最初のアニメーションが終了したのでクリティカルへ
+	else
+	{
+		if (IsAnimationFinished())
+		{
+			mState = EState::eCritical;
+			ChangeAnimation(EAnimType::eCritical);
+		}
 	}
 }
 
 // クリティカル攻撃中
 void CTrashPlayer::UpdateCritical()
 {
-	ChangeAnimation(EAnimType::eCritical);
-
+	// アニメーションが終了したらクリティカル終了へ
 	if (IsAnimationFinished())
 	{
 		mState = EState::eCriticalEnd;
+		ChangeAnimation(EAnimType::eCritical_End);
 	}
 }
 
 // クリティカル攻撃終了
 void CTrashPlayer::UpdateCriticalEnd()
 {
-	ChangeAnimation(EAnimType::eCritical_End);
-
+	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
+		// 最後には蓋が閉じる
 		mState = EState::eIdle;
+		mIsOpen = false;
 	}
 }
 
@@ -403,9 +476,25 @@ void CTrashPlayer::UpdateOpenClose()
 {
 	if (IsAnimationFinished())
 	{
-		mState = EState::eIdle;
 		// 開き状態を変更
 		mIsOpen = !mIsOpen;
+		// ジャンプしていないなら待機へ
+		if (!mIsJump)
+		{
+			mState = EState::eIdle;
+		}
+		// ジャンプしているならジャンプへ戻る
+		else
+		{
+			mState = EState::eJump;
+			// 閉じた状態のジャンプ
+			if (!mIsOpen)
+				ChangeAnimation(EAnimType::eJump_Close);
+			// 開いた状態のジャンプ
+			else
+				ChangeAnimation(EAnimType::eJump_Open);
+		}
+
 	}
 }
 
