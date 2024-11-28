@@ -302,6 +302,7 @@ void CTrashPlayer::UpdateDamageEnd()
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
+		mIsOpen = true;
 		mIsDamage = false;
 		mState = EState::eIdle;
 	}
@@ -368,6 +369,19 @@ void CTrashPlayer::UpdateJumpEnd()
 {
 	// 着地中は移動をゼロ
 	mMoveSpeed = CVector::zero;
+	// 連続でジャンプする用
+	// スペースでジャンプ
+	if (CInput::PushKey(VK_SPACE))
+	{
+		mState = EState::eJumpStart;
+
+		// 閉じた状態のジャンプ
+		if (!mIsOpen)
+			ChangeAnimation(EAnimType::eJump_Close_Start);
+		// 開いた状態のジャンプ
+		else
+			ChangeAnimation(EAnimType::eJump_Open_Start);
+	}
 
 	// アニメーションが終了したら
 	if (IsAnimationFinished())
@@ -385,7 +399,7 @@ void CTrashPlayer::UpdateAttackStart()
 	{
 		if (IsAnimationFinished())
 		{
-			mIsOpen = !mIsOpen;
+			mIsOpen = true;
 			ChangeAnimation(EAnimType::eAttack_Start);
 		}
 	}
@@ -418,9 +432,9 @@ void CTrashPlayer::UpdateAttackEnd()
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
-		// 最後には蓋が閉じる
+		// 最後は蓋が開いた状態
 		mState = EState::eIdle;
-		mIsOpen = false;
+		mIsOpen = true;
 	}
 }
 
@@ -465,9 +479,9 @@ void CTrashPlayer::UpdateCriticalEnd()
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
-		// 最後には蓋が閉じる
+		// 最後は蓋が開いた状態
 		mState = EState::eIdle;
-		mIsOpen = false;
+		mIsOpen = true;
 	}
 }
 
