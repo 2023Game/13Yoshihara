@@ -1,6 +1,6 @@
 #pragma once
 #include "CJobStatusBase.h"
-class CTrashStatus;
+class CTrashJobStatus;
 class CDeliveryStatus;
 
 class CJobStatusManager
@@ -39,12 +39,12 @@ public:
 	void SetUpgrade(EJobType jobType, float upgrade);
 
 	// 各ジョブのポインタを取得
-	CTrashStatus* GetTrashStatus();
+	CTrashJobStatus* GetTrashStatus();
 	CDeliveryStatus* GetDeliveryStatus();
 private:
 	// 仕事ステータスマネージャのインスタンス
 	static CJobStatusManager* mpInstance;
 	// 各ジョブのステータス
-	CTrashStatus* mTrashStatus;
+	CTrashJobStatus* mTrashStatus;
 	CDeliveryStatus* mDeliveryStatus;
 };

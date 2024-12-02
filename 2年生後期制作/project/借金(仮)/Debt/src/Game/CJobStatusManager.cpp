@@ -1,5 +1,5 @@
 #include "CJobStatusManager.h"
-#include "CTrashStatus.h"
+#include "CTrashJobStatus.h"
 #include "CDeliveryStatus.h"
 
 // 仕事ステータスマネージャのインスタンス
@@ -25,7 +25,7 @@ void CJobStatusManager::ClearInstance()
 
 CJobStatusManager::CJobStatusManager()
 {
-	mTrashStatus = new CTrashStatus();
+	mTrashStatus = new CTrashJobStatus();
 	mDeliveryStatus = new CDeliveryStatus();
 }
 
@@ -143,7 +143,7 @@ void CJobStatusManager::SetUpgrade(EJobType jobType, float upgrade)
 }
 
 // ゴミ拾いのステータスのポインタを取得
-CTrashStatus* CJobStatusManager::GetTrashStatus()
+CTrashJobStatus* CJobStatusManager::GetTrashStatus()
 {
 	return mTrashStatus;
 }

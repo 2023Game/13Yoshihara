@@ -18,7 +18,7 @@ CCar::~CCar()
 
 void CCar::Update()
 {
-	//Position(Position() + VectorZ() * 2.0f);
+	Move(mStatus.mMoveSpeed);
 }
 
 void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
@@ -28,4 +28,10 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CCar::Render()
 {
 	mpModel->Render(Matrix());
+}
+
+// ³–Ê•ûŒü‚ÖˆÚ“®‚·‚é
+void CCar::Move(float moveSpeed)
+{
+	Position(Position() + VectorZ() * 2.0f);
 }

@@ -1,6 +1,7 @@
 #pragma once
 //キャラクタクラスのインクルード
 #include "CPlayerBase.h"
+#include "CTrashPlayerStatus.h"
 #include "CColliderLine.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
@@ -11,7 +12,7 @@
 プレイヤークラス
 キャラクタクラスを継承
 */
-class CTrashPlayer : public CPlayerBase
+class CTrashPlayer : public CPlayerBase, public CTrashPlayerStatus
 {
 public:
 	// コンストラクタ
@@ -31,6 +32,8 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 protected:
+	// アクションのキー入力
+	void ActionInput();
 	// 待機状態
 	void UpdateIdle();
 	// 移動処理
