@@ -13,15 +13,16 @@
 CCarStatus::CCarStatus()
 	: CTrashStatusBase()
 {
+	
 	// ベースステータスを設定
-	mStatus =
-	{
+	SetStatusBase(
 		MAX_HP,
 		MOVE_SPEED,
 		JUMP_SPEED,
 		KNOCKBACK_SPEED,
-		POWER,
-	};
+		POWER
+		);
+
 
 	// 出現までの時間
 	mPopTime = POP_TIME;
@@ -32,3 +33,29 @@ CCarStatus::CCarStatus()
 CCarStatus::~CCarStatus()
 {
 }
+
+// 出現までの時間を取得する
+float CCarStatus::GetPopTime()
+{
+	return mPopTime;
+}
+
+// 出現までの時間を設定する
+void CCarStatus::SetPopTime(float popTime)
+{
+	mPopTime = popTime;
+}
+
+// 消滅までの時間を取得する
+float CCarStatus::GetDeleteTime()
+{
+	return mDeleteTime;
+}
+
+// 消滅までの時間を設定する
+void CCarStatus::SetDeleteTime(float deleteTime)
+{
+	mDeleteTime = deleteTime;
+}
+
+

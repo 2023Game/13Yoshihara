@@ -15,17 +15,29 @@ CHomeField::CHomeField()
 	mpModel = CResourceManager::Get<CModel>("HomeBase");
 	Scale(SCALE);
 
-	mpColliderMesh = new CColliderMesh(this, ELayer::eField, mpModel, true);
+	mpWallColliderMesh = new CColliderMesh(this, ELayer::eField, CResourceManager::Get<CModel>("HomeBase_Wall_Collision"), true);
+	mpGroundColliderMesh = new CColliderMesh(this, ELayer::eField, CResourceManager::Get<CModel>("HomeBase_Ground&Ceiling_Collision"), true);
+	mpObjectColliderMesh = new CColliderMesh(this, ELayer::eField, CResourceManager::Get<CModel>("HomeBase_Object_Collision"), true);
 
 	CreateFieldObjects();
 }
 
 CHomeField::~CHomeField()
 {
-	if (mpColliderMesh != nullptr)
+	if (mpWallColliderMesh != nullptr)
 	{
-		delete mpColliderMesh;
-		mpColliderMesh = nullptr;
+		delete mpWallColliderMesh;
+		mpWallColliderMesh = nullptr;
+	}
+	if (mpGroundColliderMesh != nullptr)
+	{
+		delete mpGroundColliderMesh;
+		mpGroundColliderMesh = nullptr;
+	}
+	if (mpObjectColliderMesh != nullptr)
+	{
+		delete mpObjectColliderMesh;
+		mpObjectColliderMesh = nullptr;
 	}
 }
 

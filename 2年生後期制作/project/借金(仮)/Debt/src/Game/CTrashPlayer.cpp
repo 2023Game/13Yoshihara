@@ -41,7 +41,8 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 };
 
 #define CAPSULE_RADIUS 2.5f
-#define PLAYER_HEIGHT 16.0f
+#define PLAYER_HEIGHT 25.0f
+#define PLAYER_WIDTH 50.0f
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -58,22 +59,40 @@ CTrashPlayer::CTrashPlayer()
 	, mIsJump(false)
 	, mTest(0)
 {
-	 // モデルデータ取得
-	 CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
+	// モデルデータ取得
+	CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
 
-	 // テーブル内のアニメーションデータを読み込み
-	 int size = ARRAY_SIZE(ANIM_DATA);
-	 for (int i = 0; i < size; i++)
-	 {
-		 const AnimData& data = ANIM_DATA[i];
-		 if (data.path.empty()) continue;
-		 model->AddAnimationSet(data.path.c_str());
-	 }
-	 // CXCharacterの初期化
-	 Init(model);
+	// テーブル内のアニメーションデータを読み込み
+	int size = ARRAY_SIZE(ANIM_DATA);
+	for (int i = 0; i < size; i++)
+	{
+		const AnimData& data = ANIM_DATA[i];
+		if (data.path.empty()) continue;
+		model->AddAnimationSet(data.path.c_str());
+	}
+	// CXCharacterの初期化
+	Init(model);
 
-	 // 最初は待機アニメーションを再生
-	 ChangeAnimation(EAnimType::eIdle_Close);
+	//フィールドとだけ衝突判定をする
+	mpColliderCapsule = new CColliderCapsule
+	(
+		this, ELayer::ePlayer,
+		CVector(PLAYER_WIDTH - CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
+		CVector(-PLAYER_WIDTH + CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
+		CAPSULE_RADIUS
+	);
+	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
+
+
+	CColliderLine* mpColliderLine = new CColliderLine
+	(
+		this, ELayer::ePlayer,
+		CVector(0.0f, 0.0f, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
+	);
+
+	// 最初は待機アニメーションを再生
+	ChangeAnimation(EAnimType::eIdle_Close);
 }
 
 CTrashPlayer::~CTrashPlayer()
@@ -207,6 +226,7 @@ void CTrashPlayer::ActionInput()
 	{
 		mIsDamage = true;
 		mMoveSpeed = CVector::zero;
+		SetTakeKnockback(GetStatusBase().mKnockback);
 		mState = EState::eDamageStart;
 		if (!mIsOpen)
 			ChangeAnimation(EAnimType::eDamage_Close_Start);
@@ -234,11 +254,12 @@ void CTrashPlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * mStatus.mMoveSpeed;
+		mMoveSpeed += move * GetStatusBase().mMoveSpeed;
 
-		// 待機状態であれば、移動アニメーションに切り替え
-		if (mState == EState::eIdle)
+		// ジャンプ状態でなければ、移動アニメーションに切り替え
+		if (mState != EState::eJump)
 		{
+			mState = EState::eIdle;
 			if (!mIsOpen)
 				ChangeAnimation(EAnimType::eMove_Close);
 			else
@@ -268,9 +289,9 @@ void CTrashPlayer::UpdateDamageStart()
 		// ダメージを1受ける
 		TakeDamage();
 		// ノックバック速度の設定
-		mMoveSpeedY = mStatus.mJumpSpeed;
+		mMoveSpeedY = GetStatusBase().mJumpSpeed;
 		// 後ろ方向にノックバックさせる
-		mMoveSpeed = -VectorZ() * mTakeKnockback;
+		mMoveSpeed = -VectorZ() * GetTakeKnockback();
 		mIsGrounded = false;
 
 		mState = EState::eDamage;
@@ -285,6 +306,8 @@ void CTrashPlayer::UpdateDamageStart()
 // 被弾ノックバック
 void CTrashPlayer::UpdateDamage()
 {
+	mIsOpen = true;
+
 	// 地面に付いたら被弾終了へ
 	if (mIsGrounded)
 	{
@@ -302,14 +325,22 @@ void CTrashPlayer::UpdateDamageEnd()
 {
 	// 被弾終了時は移動をゼロ
 	mMoveSpeed = CVector::zero;
-	// 入力可能
-	ActionInput();
+
+	// アニメーションが60%進行したら
+	if (GetAnimationFrameRatio() >= 0.60f)
+	{
+		// 入力可能
+		ActionInput();
+		// 移動可能
+		UpdateMove();
+
+		mIsDamage = false;
+		SetTakeKnockback(0.0f);
+	}
 
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
 	{
-		mIsOpen = true;
-		mIsDamage = false;
 		mState = EState::eIdle;
 	}
 }
@@ -324,7 +355,7 @@ void CTrashPlayer::UpdateJumpStart()
 	if (IsAnimationFinished())
 	{
 		// ジャンプ速度の設定
-		mMoveSpeedY = mStatus.mJumpSpeed;
+		mMoveSpeedY = GetStatusBase().mJumpSpeed;
 		mIsGrounded = false;
 
 		mState = EState::eJump;
@@ -375,9 +406,14 @@ void CTrashPlayer::UpdateJumpEnd()
 {
 	// 着地中は移動をゼロ
 	mMoveSpeed = CVector::zero;
-	// 入力可能
-	ActionInput();
-
+	// アニメーションが50%以上進行したら
+	if (GetAnimationFrameRatio() >= 0.50f)
+	{
+		// 入力可能
+		ActionInput();
+		// 移動可能
+		UpdateMove();
+	}
 
 	// アニメーションが終了したら
 	if (IsAnimationFinished())
@@ -425,8 +461,14 @@ void CTrashPlayer::UpdateAttack()
 // 攻撃終了
 void CTrashPlayer::UpdateAttackEnd()
 {
-	// 入力可能
-	ActionInput();
+	// アニメーションが52%以上進行したら
+	if (GetAnimationFrameRatio() >= 0.52f)
+	{
+		// 入力可能
+		ActionInput();
+		// 移動可能
+		UpdateMove();
+	}
 
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())
@@ -475,8 +517,14 @@ void CTrashPlayer::UpdateCritical()
 // クリティカル攻撃終了
 void CTrashPlayer::UpdateCriticalEnd()
 {
-	// 入力可能
-	ActionInput();
+	// アニメーションが52%以上進行したら
+	if (GetAnimationFrameRatio() >= 0.52f)
+	{
+		// 入力可能
+		ActionInput();
+		// 移動可能
+		UpdateMove();
+	}
 
 	// アニメーションが終了したら待機へ
 	if (IsAnimationFinished())

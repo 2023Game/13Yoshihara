@@ -11,5 +11,5 @@ CGarbageTruck::~CGarbageTruck()
 
 void CGarbageTruck::Update()
 {
-	CCar::Move(mStatus.mMoveSpeed);
+	CCar::Move(GetStatusBase().mMoveSpeed);
 }

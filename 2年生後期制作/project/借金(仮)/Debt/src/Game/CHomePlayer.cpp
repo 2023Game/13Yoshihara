@@ -35,6 +35,15 @@ CHomePlayer::CHomePlayer()
 	// CXCharacterの初期化
 	Init(model);
 
+	//フィールドとだけ衝突判定をする
+	mpColliderCapsule = new CColliderCapsule
+	(
+		this, ELayer::ePlayer,
+		CVector(0.0f, CAPSULE_RADIUS, 0.0f),
+		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
+		CAPSULE_RADIUS
+	);
+	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
 
 	//インタラクトオブジェクトとだけ衝突判定
 	mpColliderLine = new CColliderLine

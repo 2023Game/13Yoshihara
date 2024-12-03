@@ -18,7 +18,7 @@ CCar::~CCar()
 
 void CCar::Update()
 {
-	Move(mStatus.mMoveSpeed);
+	Move(GetStatusBase().mMoveSpeed);
 }
 
 void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)

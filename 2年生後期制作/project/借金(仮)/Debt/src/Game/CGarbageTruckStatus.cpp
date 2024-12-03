@@ -17,14 +17,13 @@ CGarbageTruckStatus::CGarbageTruckStatus()
 	: CTrashStatusBase()
 {
 	// ベースステータスを設定
-	mStatus =
-	{
+	SetStatusBase(
 		MAX_HP,
 		MOVE_SPEED,
 		JUMP_SPEED,
 		KNOCKBACK_SPEED,
-		POWER,
-	};
+		POWER
+	);
 
 	// 出現までの時間
 	mPopTime = POP_TIME;
@@ -40,4 +39,58 @@ CGarbageTruckStatus::CGarbageTruckStatus()
 
 CGarbageTruckStatus::~CGarbageTruckStatus()
 {
+}
+
+// 出現までの時間を取得する
+float CGarbageTruckStatus::GetPopTime()
+{
+	return mPopTime;
+}
+
+// 出現までの時間を設定する
+void CGarbageTruckStatus::SetPopTime(float popTime)
+{
+	mPopTime = popTime;
+}
+
+// 消滅までの時間を取得する
+float CGarbageTruckStatus::GetDeleteTime()
+{
+	return mDeleteTime;
+}
+
+// 消滅までの時間を設定する
+void CGarbageTruckStatus::SetDeleteTime(float deleteTime)
+{
+	mDeleteTime = deleteTime;
+}
+
+// 撤退までの時間を取得する
+float CGarbageTruckStatus::GetBackTime()
+{
+	return mBackTime;
+}
+
+// 撤退までの時間を設定する
+void CGarbageTruckStatus::SetBackTime(float backTime)
+{
+	mBackTime = backTime;
+}
+
+// 回収範囲の半径を取得する
+float CGarbageTruckStatus::GetCollectRadius()
+{
+	return mCollectRadius;
+}
+
+// 回収員の人数を取得する
+int CGarbageTruckStatus::GetCollectors()
+{
+	return mCollectors;
+}
+
+// 回収員の人数を設定する
+void CGarbageTruckStatus::SetCollectors(int collectors)
+{
+	mCollectors = collectors;
 }

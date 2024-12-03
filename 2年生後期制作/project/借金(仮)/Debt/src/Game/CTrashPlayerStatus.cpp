@@ -10,14 +10,13 @@ CTrashPlayerStatus::CTrashPlayerStatus()
 	: CTrashStatusBase()
 {
 	// ベースステータスを設定
-	mStatus =
-	{
+	SetStatusBase(
 		MAX_HP,
 		MOVE_SPEED,
 		JUMP_SPEED,
 		KNOCKBACK_SPEED,
-		POWER,
-	};
+		POWER
+	);
 }
 
 CTrashPlayerStatus::~CTrashPlayerStatus()

@@ -2,16 +2,7 @@
 
 class CTrashStatusBase
 {
-public:
-	// コンストラクタ
-	CTrashStatusBase();
-	~CTrashStatusBase();
-
-	// ダメージを1受ける
-	void TakeDamage();
-	// ノックバックを受ける
-	void SetTakeKnockBack(float knockback);
-protected:
+private:
 	// ステータス
 	struct StatusBase
 	{
@@ -26,4 +17,22 @@ protected:
 
 	// 受けるノックバック速度
 	float mTakeKnockback;
+
+public:
+	// コンストラクタ
+	CTrashStatusBase();
+	~CTrashStatusBase();
+
+	// ダメージを1受ける
+	void TakeDamage();
+
+	// ノックバックの値を取得
+	float GetTakeKnockback();
+	// ノックバックを受ける
+	void SetTakeKnockback(float knockback);
+
+	// ベースステータスを取得する
+	StatusBase GetStatusBase();
+	// ベースステータスを設定する
+	void SetStatusBase(int hp, float moveSpeed, float jumpSpeed, float knockback, int power);
 };

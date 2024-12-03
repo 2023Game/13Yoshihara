@@ -49,6 +49,9 @@ void CHomeScene::Load()
 	CResourceManager::Load<CModel>("Desk", "Field\\Object\\Desk.obj");
 	CResourceManager::Load<CModel>("Door", "Field\\Object\\Door.obj");
 	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
+	CResourceManager::Load<CModel>("HomeBase_Wall_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Wall_Collision.obj");
+	CResourceManager::Load<CModel>("HomeBase_Ground&Ceiling_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Ground&Ceiling_Collision.obj");
+	CResourceManager::Load<CModel>("HomeBase_Object_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Object_Collision.obj");
 
 
 	// ÉQÅ[ÉÄBGMÇì«Ç›çûÇ›

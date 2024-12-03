@@ -1,6 +1,7 @@
 #include "CTrashGameScene.h"
 #include "CSceneManager.h"
 #include "CTrashField.h"
+#include "CHomePlayer.h"
 #include "CTrashPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -53,6 +54,9 @@ void CTrashGameScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eHome);
 
 	new CTrashField();
+
+
+
 
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Scale(0.1f, 0.1f, 0.1f);
