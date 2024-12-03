@@ -1,7 +1,7 @@
 #pragma once
 #include "CRideableObject.h"
 #include "CColliderSphere.h"
-class CBillBoardImage;
+class CBillBoardUI;
 class CObjectBase;
 
 class CInteractObject : public CObjectBase
@@ -23,7 +23,7 @@ public:
 
 protected:
 	CColliderSphere* mpColliderSphere;
-	CBillBoardImage* mpBillBoardImage;
+	CBillBoardUI* mpBillBoardUI;
 	CObjectBase* mpPlayer;
 	bool mIsInteract;		// インタラクトしているかどうか
 	bool mIsInteractArea;	// インタラクトエリア内かどうか

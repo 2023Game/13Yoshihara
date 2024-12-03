@@ -119,6 +119,9 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Collector\Punisher">
       <UniqueIdentifier>{69485343-d85e-4b73-b7e3-1aafb511b8c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\BillBoard">
+      <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -453,6 +456,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Truck</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBillBoardUI.cpp">
+      <Filter>ソース ファイル\Game\UI\BillBoard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -815,6 +821,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CGarbageTruckStatus.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Truck</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBillBoardUI.h">
+      <Filter>ソース ファイル\Game\UI\BillBoard</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

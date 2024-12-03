@@ -9,8 +9,7 @@ CComputer::CComputer(CModel* model, const CVector& pos,
 	, mpModel(model)
 {
 	mpColliderSphere->Position(-10.0f, 0.0f, 0.0f);
-	mpColliderMesh = 
-		new CColliderMesh(this, ELayer::eField, mpModel, true);
+
 	Position(pos);
 	Scale(scale);
 	Rotate(rotation);
@@ -21,11 +20,7 @@ CComputer::CComputer(CModel* model, const CVector& pos,
 
 CComputer::~CComputer()
 {
-	if (mpColliderMesh != nullptr)
-	{
-		delete mpColliderMesh;
-		mpColliderMesh = nullptr;
-	}
+
 }
 
 void CComputer::Update()

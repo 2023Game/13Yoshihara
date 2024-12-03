@@ -21,7 +21,7 @@ public:
 	void Update() override;
 	//•`‰æ
 	void Render() override;
-	void Render(CMaterial* mpMaterial);
+	virtual void Render(CMaterial* mpMaterial);
 
 protected:
 	//ŽOŠpŒ`2‚Â

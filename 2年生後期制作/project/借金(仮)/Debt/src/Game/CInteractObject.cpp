@@ -1,8 +1,9 @@
 #include "CInteractObject.h"
 #include "CInput.h"
-#include "CBillBoardImage.h"
+#include "CBillBoardUI.h"
 #include "CObjectBase.h"
 #include "CPlayerBase.h"
+#include "CCamera.h"
 
 #define INTERACT_IMAGE "UI\\interact.png"
 #define IMAGE_SIZE CVector2(6.0f,2.0f)
@@ -18,9 +19,9 @@ CInteractObject::CInteractObject(float radius, std::string interactName)
 	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
 
 	// インタラクトの画像を表示
-	mpBillBoardImage = new CBillBoardImage(INTERACT_IMAGE, ETag::eInteractUI, ETaskPauseType::eGame);
-	mpBillBoardImage->SetSize(IMAGE_SIZE);
-	mpBillBoardImage->SetShow(false);
+	mpBillBoardUI = new CBillBoardUI(INTERACT_IMAGE, ETag::eInteractUI, ETaskPauseType::eGame);
+	mpBillBoardUI->SetSize(IMAGE_SIZE);
+	mpBillBoardUI->SetShow(false);
 }
 
 CInteractObject::~CInteractObject()
@@ -30,28 +31,25 @@ CInteractObject::~CInteractObject()
 		delete mpColliderSphere;
 		mpColliderSphere = nullptr;
 	}
-	if (mpBillBoardImage != nullptr)
+	if (mpBillBoardUI != nullptr)
 	{
-		mpBillBoardImage->Kill();
+		mpBillBoardUI->Kill();
 	}
 }
 
 // インタラクト判定
 void CInteractObject::Interact()
 {
-	CVector direction = CPlayerBase::Instance()->Position() - mpBillBoardImage->Position();
-	direction.Normalize();
-	direction = direction * 10.0f;
-	// プレイヤー側にビルボードを表示
-	mpBillBoardImage->
-		Position(CVector(Position().X() + direction.X(),
+	// プレイヤーの高さにビルボードを表示
+	mpBillBoardUI->
+		Position(Position().X(),
 			CPlayerBase::Instance()->Position().Y() + 10.0f,
-			Position().Z() + direction.Z()));
+			Position().Z());
 
 	// インタラクトエリア内でFキーを押すとmIsInteractをtrue
 	if (mIsInteractArea == true)
 	{
-		mpBillBoardImage->SetShow(true);
+		mpBillBoardUI->SetShow(true);
 		if(CInput::PushKey('F'))
 		{
 			mIsInteract = true;
@@ -59,7 +57,7 @@ void CInteractObject::Interact()
 	}
 	else
 	{
-		mpBillBoardImage->SetShow(false);
+		mpBillBoardUI->SetShow(false);
 	}
 	// プレイヤーと衝突してないときはmIsInteractAreaをfalse
 	mIsInteractArea = false;

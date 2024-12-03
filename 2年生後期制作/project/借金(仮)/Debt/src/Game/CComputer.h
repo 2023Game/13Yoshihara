@@ -23,6 +23,5 @@ public:
 
 private:
 	CModel* mpModel;
-	CColliderMesh* mpColliderMesh;
 	CBuyMenu* mpBuyMenu;	// w“ü‰æ–Ê
 };

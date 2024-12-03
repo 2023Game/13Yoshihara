@@ -22,6 +22,5 @@ public:
 	void Render();
 private:
 	CModel* mpModel;
-	CColliderMesh* mpColliderMesh;
 	CStageSelectMenu* mpStageSelectMenu;	// ステージ選択メニュー
 };

@@ -192,9 +192,8 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 			// 衝突した地面が床か天井かを内積で判定
 			CVector normal = hit.adjust.Normalized();
 			float dot = CVector::Dot(normal, CVector::up);
-			float angle = Math::DegreeToRadian(5.0f);
 			// 内積の結果がプラスであれば、床と衝突した
-			if (dot >= cosf(angle))
+			if (dot >= 0.0f)
 			{
 				// 落下などで床に上から衝突したとき（下移動）のみ
 				// 上下の移動速度を0にする
@@ -214,7 +213,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				}
 			}
 			// 内積の結果がマイナスであれば、天井と衝突した
-			else if(dot <= -cosf(angle))
+			else if (dot < 0.0f)
 			{
 				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
 				// 上下の移動速度を0にする
@@ -223,12 +222,24 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 					mMoveSpeedY = 0.0f;
 				}
 			}
-			// それ以外は壁に衝突した
-			else
-			{
-				mIsWall = true;
-					mMoveSpeedY = 0.0f;
-			}
+		}
+		else if (other->Layer() == ELayer::eWall)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+		else if (other->Layer() == ELayer::eObject)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
 		}
 	}
 }
