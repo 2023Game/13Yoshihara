@@ -180,7 +180,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 {
 	if (self == mpColliderCapsule)
 	{
-		// 衝突した相手がフィールドオブジェクトの場合
+		// 衝突した相手がフィールドの場合
 		if (other->Layer() == ELayer::eField)
 		{
 			// 押し戻しベクトル
@@ -223,6 +223,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				}
 			}
 		}
+		// 衝突した相手が壁の場合
 		else if (other->Layer() == ELayer::eWall)
 		{
 			// 押し戻しベクトル
@@ -232,6 +233,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
 		}
+		// 衝突した相手がオブジェクトだった場合
 		else if (other->Layer() == ELayer::eObject)
 		{
 			// 押し戻しベクトル

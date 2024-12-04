@@ -49,6 +49,10 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
+	// 当たり判定用のコリジョンモデル
+	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
+	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
+	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);

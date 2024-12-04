@@ -16,7 +16,9 @@ private:
 	void CreateFieldObjects();
 
 	CModel* mpModel;
-	CColliderMesh* mpColliderMesh;
+	CColliderMesh* mpGroundColliderMesh;
+	CColliderMesh* mpWallColliderMesh;
+	CColliderMesh* mpObjectColliderMesh;
 
 	CModel* mpCube;
 

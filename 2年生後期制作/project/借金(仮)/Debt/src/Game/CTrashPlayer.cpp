@@ -81,7 +81,7 @@ CTrashPlayer::CTrashPlayer()
 		CVector(-PLAYER_WIDTH + CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
 		CAPSULE_RADIUS
 	);
-	mpColliderCapsule->SetCollisionLayers({ ELayer::eField });
+	mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
 
 	CColliderLine* mpColliderLine = new CColliderLine
