@@ -4,7 +4,7 @@
 class CGarbageTruck : public CCar
 {
 public:
-	CGarbageTruck(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation);
+	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation);
 	~CGarbageTruck();
 
 	void Update();

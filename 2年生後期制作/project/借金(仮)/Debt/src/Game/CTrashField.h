@@ -1,7 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
 #include "CColliderMesh.h"
-class CCarAndTruckManager;
+class CVehicleManager;
 
 class CTrashField : public CObjectBase
 {

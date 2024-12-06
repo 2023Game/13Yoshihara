@@ -7,16 +7,14 @@ public:
 	CCarStatus();
 	~CCarStatus();
 
-	// 出現までの時間を取得する
-	float GetPopTime();
-	// 出現までの時間を設定する
-	void SetPopTime(float popTime);
-
 	// 消滅までの時間を取得する
 	float GetDeleteTime();
 	// 消滅までの時間を設定する
 	void SetDeleteTime(float deleteTime);
+	// 消滅までの時間が経過したかどうか
+	bool IsElapsedDeleteTime();
+	// 消滅までの時間をカウント
+	void CountDeleteTime();
 private:
-	float mPopTime;		// 出現までの時間
 	float mDeleteTime;	// 消滅までの時間
 };

@@ -5,7 +5,7 @@
 #include "CLineEffect.h"
 #include "CCar.h"
 #include "CGarbageTruck.h"
-#include "CCarAndTruckManager.h"
+#include "CVehicleManager.h"
 
 #define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-100.0f)
 #define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-100.0f)

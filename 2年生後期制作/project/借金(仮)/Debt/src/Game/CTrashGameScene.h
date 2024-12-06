@@ -1,7 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 class CGameMenuBase;
-class CCarAndTruckManager;
+class CVehicleManager;
 class CSound;
 
 //タイトルシーン
@@ -19,5 +19,5 @@ public:
 
 private:
 	CGameMenuBase* mpGameMenu;
-	CCarAndTruckManager* mpCCarAndTruckManager;
+	CVehicleManager* mpCVehicleManager;
 };

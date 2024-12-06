@@ -89,9 +89,6 @@
     <Filter Include="ソース ファイル\Game\UI\Title">
       <UniqueIdentifier>{a594cb69-7b77-4a90-8304-3ec10f740063}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Job">
-      <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Character\TrashGame">
       <UniqueIdentifier>{c5f8f9c5-a203-4a10-bcb3-8e290765b8de}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\UI\BillBoard">
       <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\JobStatus">
+      <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -410,16 +410,16 @@
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CJobStatusBase.cpp">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CJobStatusManager.cpp">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashJobStatus.cpp">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryStatus.cpp">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CPlayerBase.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -427,7 +427,7 @@
     <ClCompile Include="src\Game\CTrashField.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CCarAndTruckManager.cpp">
+    <ClCompile Include="src\Game\CVehicleManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CHomePlayer.cpp">
@@ -772,19 +772,19 @@
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CJobStatusBase.h">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CJobStatusManager.h">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\JobType.h">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashJobStatus.h">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryStatus.h">
-      <Filter>ソース ファイル\Game\Job</Filter>
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CPlayerBase.h">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -792,7 +792,7 @@
     <ClInclude Include="src\Game\CTrashField.h">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CCarAndTruckManager.h">
+    <ClInclude Include="src\Game\CVehicleManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CHomePlayer.h">

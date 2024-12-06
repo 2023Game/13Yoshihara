@@ -1,26 +1,18 @@
 #pragma once
-#include "CTrashStatusBase.h"
+#include "CCarStatus.h"
 
-class CGarbageTruckStatus : public CTrashStatusBase
+class CGarbageTruckStatus : public CCarStatus
 {
 public:
 	CGarbageTruckStatus();
 	~CGarbageTruckStatus();
 
-	// oŒ»‚Ü‚Å‚ÌŠÔ‚ğæ“¾‚·‚é
-	float GetPopTime();
-	// oŒ»‚Ü‚Å‚ÌŠÔ‚ğİ’è‚·‚é
-	void SetPopTime(float popTime);
-
-	// Á–Å‚Ü‚Å‚ÌŠÔ‚ğæ“¾‚·‚é
-	float GetDeleteTime();
-	// Á–Å‚Ü‚Å‚ÌŠÔ‚ğİ’è‚·‚é
-	void SetDeleteTime(float deleteTime);
-
-	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğæ“¾‚·‚é
+	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğæ“¾
 	float GetBackTime();
-	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğİ’è‚·‚é
+	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğİ’è
 	void SetBackTime(float backTime);
+	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğƒJƒEƒ“ƒg
+	void CountBackTime();
 
 	// ‰ñû”ÍˆÍ‚Ì”¼Œa‚ğæ“¾‚·‚é
 	float GetCollectRadius();
@@ -29,9 +21,7 @@ public:
 	int GetCollectors();
 	// ‰ñûˆõ‚Ìl”‚ğİ’è‚·‚é
 	void SetCollectors(int collectors);
-protected:
-	float mPopTime;			// oŒ»‚Ü‚Å‚ÌŠÔ
-	float mDeleteTime;		// Á–Å‚Ü‚Å‚ÌŠÔ
+private:
 	float mBackTime;		// “P‘Ş‚Ü‚Å‚ÌŠÔ
 	float mCollectRadius;	// ‰ñû”ÍˆÍ‚Ì”¼Œa
 	int mCollectors;		// ‰ñûˆõ‚Ìl”

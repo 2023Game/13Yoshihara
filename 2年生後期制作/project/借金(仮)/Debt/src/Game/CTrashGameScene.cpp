@@ -9,7 +9,7 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
-#include "CCarAndTruckManager.h"
+#include "CVehicleManager.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -49,6 +49,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
+	CResourceManager::Load<CModel>("BlackTruck", "Character\\BlackTruck\\BlackTruck.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
@@ -66,8 +67,8 @@ void CTrashGameScene::Load()
 	player->Scale(0.1f, 0.1f, 0.1f);
 
 	// 車とトラックの管理クラス作成
-	mpCCarAndTruckManager =
-		new CCarAndTruckManager();
+	mpCVehicleManager =
+		new CVehicleManager();
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -114,5 +115,5 @@ void CTrashGameScene::Update()
 		}
 	}
 
-	mpCCarAndTruckManager->Update();
+	mpCVehicleManager->Update();
 }

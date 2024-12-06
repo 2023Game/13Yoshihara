@@ -7,7 +7,6 @@
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
 #define POWER 1							// ゴミを落とすパワー
 
-#define POP_TIME 10.0f		// 出現までの時間
 #define DELETE_TIME 2.0f	// 消滅までの時間
 
 CCarStatus::CCarStatus()
@@ -23,27 +22,12 @@ CCarStatus::CCarStatus()
 		POWER
 		);
 
-
-	// 出現までの時間
-	mPopTime = POP_TIME;
-	// 消滅までの時間
-	mDeleteTime = DELETE_TIME;
+	// 消滅までの時間を設定
+	SetDeleteTime(DELETE_TIME);
 }
 
 CCarStatus::~CCarStatus()
 {
-}
-
-// 出現までの時間を取得する
-float CCarStatus::GetPopTime()
-{
-	return mPopTime;
-}
-
-// 出現までの時間を設定する
-void CCarStatus::SetPopTime(float popTime)
-{
-	mPopTime = popTime;
 }
 
 // 消滅までの時間を取得する
@@ -56,6 +40,31 @@ float CCarStatus::GetDeleteTime()
 void CCarStatus::SetDeleteTime(float deleteTime)
 {
 	mDeleteTime = deleteTime;
+}
+
+// 消滅までの時間が経過したかどうか
+bool CCarStatus::IsElapsedDeleteTime()
+{
+	// 消滅までの時間が0より大きいなら経過していない
+	if (mDeleteTime > 0.0f)
+	{
+		return false;
+	}
+	// 0以下なら経過した
+	else
+	{
+		return true;
+	}
+}
+
+// 消滅までの時間をカウント
+void CCarStatus::CountDeleteTime()
+{
+	// 0より大きいなら減算
+	if (mDeleteTime > 0.0f)
+	{
+		mDeleteTime -= Times::DeltaTime();
+	}
 }
 
 

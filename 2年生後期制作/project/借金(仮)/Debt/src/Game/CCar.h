@@ -7,7 +7,7 @@
 class CCar : public CCharaBase, public CCarStatus
 {
 public:
-	CCar(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation);
+	CCar(CModel* model, const CVector& pos, const CVector& rotation);
 	~CCar();
 
 	void Update();
@@ -22,4 +22,13 @@ public:
 private:
 	CModel* mpModel;
 	CColliderCapsule* mpColliderCapsule;
+
+	enum class EState
+	{
+		eMove,		// ˆÚ“®
+		eStop,		// ’âŽ~
+		eBroken,	// ‰ó‚ê‚é
+		eCollect,	// ‰ñŽû
+	};
+	EState mState;
 };

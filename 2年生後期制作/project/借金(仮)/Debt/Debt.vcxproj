@@ -75,7 +75,7 @@
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
-    <ClCompile Include="src\Game\CCarAndTruckManager.cpp" />
+    <ClCompile Include="src\Game\CVehicleManager.cpp" />
     <ClCompile Include="src\Game\CCarStatus.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
     <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
@@ -198,7 +198,7 @@
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCar.h" />
-    <ClInclude Include="src\Game\CCarAndTruckManager.h" />
+    <ClInclude Include="src\Game\CVehicleManager.h" />
     <ClInclude Include="src\Game\CCarStatus.h" />
     <ClInclude Include="src\Game\CComputer.h" />
     <ClInclude Include="src\Game\CDeliveryStatus.h" />

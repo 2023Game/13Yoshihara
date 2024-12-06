@@ -3,13 +3,17 @@
 
 #define MOVE_SPEED 
 
-CCar::CCar(CModel* model, const CVector& pos, const CVector& scale, const CVector& rotation)
+CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation)
 	: CCharaBase(ETag::eCar, ETaskPriority::eDefault)
 	, mpModel(model)
+	, mState(EState::eMove)
 {
 	Position(pos);
-	Scale(scale);
 	Rotation(rotation);
+
+	// ç≈èâÇÕï`âÊÅAçXêVÇµÇ»Ç¢
+	SetEnable(false);
+	SetShow(false);
 }
 
 CCar::~CCar()
@@ -18,7 +22,21 @@ CCar::~CCar()
 
 void CCar::Update()
 {
-	Move(GetStatusBase().mMoveSpeed);
+	switch (mState)
+	{
+	// à⁄ìÆ
+	case EState::eMove:
+
+		Move(GetStatusBase().mMoveSpeed);
+		
+		break;
+
+	// âÛÇÍÇΩ
+	case EState::eBroken:
+
+
+		break;
+	}
 }
 
 void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
