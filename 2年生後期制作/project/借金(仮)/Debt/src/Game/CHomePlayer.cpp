@@ -65,11 +65,6 @@ CHomePlayer::~CHomePlayer()
 		delete mpColliderLine;
 		mpColliderLine = nullptr;
 	}
-	if (mpColliderCapsule != nullptr)
-	{
-		delete mpColliderCapsule;
-		mpColliderCapsule = nullptr;
-	}
 }
 
 void CHomePlayer::Update()
@@ -81,7 +76,7 @@ void CHomePlayer::Update()
 		break;
 	}
 
-	// 待機中とジャンプ中は、移動処理を行う
+	// 待機中は、移動処理を行う
 	if (mState == EState::eIdle)
 	{
 		UpdateMove();

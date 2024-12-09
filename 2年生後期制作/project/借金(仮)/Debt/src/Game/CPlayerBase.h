@@ -15,6 +15,29 @@ class CFlamethrower;
 */
 class CPlayerBase : public CXCharacter
 {
+public:
+	// インスタンスのポインタの取得
+	static CPlayerBase* Instance();
+
+	// コンストラクタ
+	CPlayerBase(float capsuleRadius, float playerHeight);
+	// デストラクタ
+	~CPlayerBase();
+
+	// 更新
+	void Update();
+
+	/// <summary>
+	/// 衝突処理
+	/// </summary>
+	/// <param name="self">衝突した自身のコライダー</param>
+	/// <param name="other">衝突した相手のコライダー</param>
+	/// <param name="hit">衝突した時の情報</param>
+	virtual void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
+
+	// 描画
+	void Render();
+
 protected:
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec();
@@ -43,28 +66,4 @@ protected:
 
 	// 攻撃を受けているか
 	bool mIsDamage;
-
-public:
-	// インスタンスのポインタの取得
-	static CPlayerBase* Instance();
-
-	// コンストラクタ
-	CPlayerBase(float capsuleRadius, float playerHeight);
-	// デストラクタ
-	~CPlayerBase();
-
-	// 更新
-	void Update();
-
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自身のコライダー</param>
-	/// <param name="other">衝突した相手のコライダー</param>
-	/// <param name="hit">衝突した時の情報</param>
-	virtual void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
-
-	// 描画
-	void Render();
-
 };

@@ -117,6 +117,7 @@ protected:
 	// アニメーション切り替え
 	void ChangeAnimation(EAnimType type);
 
+	// プレイヤーの状態
 	enum class EState
 	{
 		eIdle,			// 待機
@@ -135,12 +136,16 @@ protected:
 		eCriticalEnd,	// クリティカル攻撃終了
 		eOpenClose,		// 蓋を開閉する
 	};
-	EState mState;
+	// ステータス切り替え
+	void ChangeState(EState state);
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
+	EState mState;	// プレイヤーの状態
+
+
 
 	// 蓋が開いているか
 	bool mIsOpen;
 	// ジャンプしているか
 	bool mIsJump;
-
-	int mTest;
 };

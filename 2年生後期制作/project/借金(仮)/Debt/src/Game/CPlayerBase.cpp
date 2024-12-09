@@ -39,6 +39,11 @@ CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 
 CPlayerBase::~CPlayerBase()
 {
+	if (mpColliderCapsule != nullptr)
+	{
+		delete mpColliderCapsule;
+		mpColliderCapsule = nullptr;
+	}
 }
 
 CPlayerBase* CPlayerBase::Instance()

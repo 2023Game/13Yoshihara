@@ -23287,42 +23287,42 @@ Frame Root {
              249.019608;
              0.192237; 0.192237; 0.192237;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
           Material Cover {
              0.001878; 0.001909; 0.068478; 0.000000;;
              249.019608;
              0.001174; 0.001193; 0.042799;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
           Material InsideTheBox {
              0.015559; 0.015559; 0.015559; 0.000000;;
              249.019608;
              0.009725; 0.009725; 0.009725;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
           Material HammerHandle {
              0.000000; 0.000000; 0.000000; 0.000000;;
              249.019608;
              0.000000; 0.000000; 0.000000;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
           Material Hammer {
              0.221210; 0.221210; 0.221210; 0.000000;;
              633.333333;
              0.138256; 0.138256; 0.138256;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
           Material Arm {
              0.800000; 0.583143; 0.178561; 0.000000;;
              249.019608;
              0.500000; 0.364464; 0.111601;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"TrashBoxCol.png";}
+            TextureFilename {"TrashBoxEnemyCol.png";}
           }
         } // End of TrashBox material list
         XSkinMeshHeader {
