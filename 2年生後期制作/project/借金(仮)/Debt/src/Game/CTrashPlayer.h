@@ -12,7 +12,7 @@
 プレイヤークラス
 キャラクタクラスを継承
 */
-class CTrashPlayer : public CPlayerBase, public CTrashPlayerStatus
+class CTrashPlayer : public CPlayerBase
 {
 public:
 	// コンストラクタ
@@ -31,7 +31,8 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-protected:
+private:
+	CTrashPlayerStatus mPlayerStatus;
 	// アクションのキー入力
 	void ActionInput();
 	// 待機状態

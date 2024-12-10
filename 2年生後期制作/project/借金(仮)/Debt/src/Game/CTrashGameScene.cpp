@@ -1,7 +1,6 @@
 #include "CTrashGameScene.h"
 #include "CSceneManager.h"
 #include "CTrashField.h"
-#include "CHomePlayer.h"
 #include "CTrashPlayer.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -55,6 +54,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
+	CResourceManager::Load<CModel>("TrashStage_SpawnZone_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_SpawnZone_Collision.obj");
 
 	// ƒQ[ƒ€BGM‚ð“Ç‚Ýž‚Ý
 	CBGMManager::Instance()->Play(EBGMType::eHome);

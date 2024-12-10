@@ -59,7 +59,7 @@ CTrashPlayer::CTrashPlayer()
 	, mIsJump(false)
 {
 	// モデルデータ取得
-	CModelX* model = CResourceManager::Get<CModelX>("TrashEnemy");
+	CModelX* model = CResourceManager::Get<CModelX>("TrashPlayer");
 
 	// テーブル内のアニメーションデータを読み込み
 	int size = ARRAY_SIZE(ANIM_DATA);
@@ -190,7 +190,7 @@ void CTrashPlayer::ActionInput()
 	{
 		mIsDamage = true;
 		mMoveSpeed = CVector::zero;
-		SetTakeKnockback(GetStatusBase().mKnockback);
+		mPlayerStatus.SetTakeKnockback(mPlayerStatus.GetKnockback());
 		ChangeState(EState::eDamageStart);
 		if (!mIsOpen)
 			ChangeAnimation(EAnimType::eDamage_Close_Start);
@@ -218,7 +218,7 @@ void CTrashPlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * GetStatusBase().mMoveSpeed;
+		mMoveSpeed += move * mPlayerStatus.GetBaseMoveSpeed();
 
 		// ジャンプ状態でなければ、移動アニメーションに切り替え
 		if (mState != EState::eJump)
@@ -251,11 +251,11 @@ void CTrashPlayer::UpdateDamageStart()
 	if (IsAnimationFinished())
 	{
 		// ダメージを1受ける
-		TakeDamage();
+		mPlayerStatus.TakeDamage();
 		// ノックバック速度の設定
-		mMoveSpeedY = GetStatusBase().mJumpSpeed;
+		mMoveSpeedY = mPlayerStatus.GetJumpSpeed();
 		// 後ろ方向にノックバックさせる
-		mMoveSpeed = -VectorZ() * GetTakeKnockback();
+		mMoveSpeed = -VectorZ() * mPlayerStatus.GetTakeKnockback();
 		mIsGrounded = false;
 
 		ChangeState(EState::eDamage);
@@ -299,7 +299,7 @@ void CTrashPlayer::UpdateDamageEnd()
 		UpdateMove();
 
 		mIsDamage = false;
-		SetTakeKnockback(0.0f);
+		mPlayerStatus.SetTakeKnockback(0.0f);
 	}
 
 	// アニメーションが終了したら待機へ
@@ -319,7 +319,7 @@ void CTrashPlayer::UpdateJumpStart()
 	if (IsAnimationFinished())
 	{
 		// ジャンプ速度の設定
-		mMoveSpeedY = GetStatusBase().mJumpSpeed;
+		mMoveSpeedY = mPlayerStatus.GetJumpSpeed();
 		mIsGrounded = false;
 
 		ChangeState(EState::eJump);

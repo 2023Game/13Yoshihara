@@ -8,11 +8,11 @@ public:
 	~CCarStatus();
 
 	// 消滅までの時間を取得する
-	float GetDeleteTime();
+	float GetDeleteTime() const;
 	// 消滅までの時間を設定する
 	void SetDeleteTime(float deleteTime);
 	// 消滅までの時間が経過したかどうか
-	bool IsElapsedDeleteTime();
+	bool IsElapsedDeleteTime() const;
 	// 消滅までの時間をカウント
 	void CountDeleteTime();
 private:

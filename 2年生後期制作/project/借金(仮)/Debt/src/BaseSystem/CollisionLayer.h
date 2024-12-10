@@ -11,6 +11,9 @@ enum class ELayer
 	eObject,
 	eInteract,
 	ePlayer,
+	eEnemy,
+	eVehicle,
+	eSpawnZone,
 
 	eAttackCol,
 };

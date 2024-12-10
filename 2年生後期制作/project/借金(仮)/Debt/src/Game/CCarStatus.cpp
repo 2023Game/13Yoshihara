@@ -1,9 +1,6 @@
 #include "CCarStatus.h"
 
-// 使わないベースステータスは値が0
-#define MAX_HP 0						// 最大HP
 #define MOVE_SPEED 0.375f * 5.0f		// 移動速度
-#define JUMP_SPEED 0.0f					// ジャンプ速度
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
 #define POWER 1							// ゴミを落とすパワー
 
@@ -12,15 +9,11 @@
 CCarStatus::CCarStatus()
 	: CTrashStatusBase()
 {
-	
 	// ベースステータスを設定
-	SetStatusBase(
-		MAX_HP,
-		MOVE_SPEED,
-		JUMP_SPEED,
-		KNOCKBACK_SPEED,
-		POWER
-		);
+	// 使わないステータスは初期値の0のまま
+	SetBaseMoveSpeed(MOVE_SPEED);
+	SetKnockback(KNOCKBACK_SPEED);
+	SetPower(POWER);
 
 	// 消滅までの時間を設定
 	SetDeleteTime(DELETE_TIME);
@@ -31,7 +24,7 @@ CCarStatus::~CCarStatus()
 }
 
 // 消滅までの時間を取得する
-float CCarStatus::GetDeleteTime()
+float CCarStatus::GetDeleteTime() const
 {
 	return mDeleteTime;
 }
@@ -43,7 +36,7 @@ void CCarStatus::SetDeleteTime(float deleteTime)
 }
 
 // 消滅までの時間が経過したかどうか
-bool CCarStatus::IsElapsedDeleteTime()
+bool CCarStatus::IsElapsedDeleteTime() const
 {
 	// 消滅までの時間が0より大きいなら経過していない
 	if (mDeleteTime > 0.0f)

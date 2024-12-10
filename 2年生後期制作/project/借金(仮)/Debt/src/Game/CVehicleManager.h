@@ -1,5 +1,8 @@
 #pragma once
 #include "CModel.h"
+#include "CColliderMesh.h"
+#include "CTrashVehicleSpawnZone.h"
+
 class CCar;
 class CGarbageTruck;
 
@@ -26,7 +29,13 @@ public:
 	// お仕置きトラックの出現までの時間をカウント
 	void CountBlackTruckPopTime();
 
+	// ランダムで車両を出現させる場所を決める
+	CVector RandomDecidePopPosition();
+	// 指定したX座標(道)に他の車両がいるかチェックする
+	bool IsVehicle(float xPos);
 private:
+	//CTrashVehicleSpawnZone mSpawnZone;	// 生成場所に車がいるか判断するクラス
+
 	std::vector<CCar*> mCars;		// 車のリスト
 	CGarbageTruck* mpGarbageTruck;	// 通常トラック
 	CGarbageTruck* mpBlackTruck;	// お仕置きトラック

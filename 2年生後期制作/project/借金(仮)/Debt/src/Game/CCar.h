@@ -1,10 +1,12 @@
 #pragma once
 #include "CCharaBase.h"
 #include "CCarStatus.h"
-#include "CColliderCapsule.h"
-#include "CModel.h"
 
-class CCar : public CCharaBase, public CCarStatus
+class CColliderCapsule;
+class CModel;
+
+// 車のクラス
+class CCar : public CCharaBase
 {
 public:
 	CCar(CModel* model, const CVector& pos, const CVector& rotation);
@@ -14,12 +16,13 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 	void Render();
 
-	/// <summary>
-	/// 正面方向へ移動する
-	/// </summary>
-	/// <param name="moveSpeed">移動速度</param>
-	void Move(float moveSpeed);
-private:
+protected:
+	// 移動処理
+	void UpdateMove();
+	// 壊れた処理
+	void UpdateBroken();
+
+	CCarStatus mCarStatus;	// 車のステータス
 	CModel* mpModel;
 	CColliderCapsule* mpColliderCapsule;
 
@@ -30,5 +33,9 @@ private:
 		eBroken,	// 壊れる
 		eCollect,	// 回収
 	};
+	// ステートを変更
+	void ChangeState(EState state);
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
 	EState mState;
 };

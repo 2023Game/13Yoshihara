@@ -7,24 +7,12 @@
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
 #define POWER 1							// ゴミを落とすパワー
 
-#define DELETE_TIME 2.0f	// 消滅までの時間
 #define BACK_TIME 10.0f		// 撤退までの時間
 #define COLLECT_RADIUS 5.0f	// 回収範囲の半径
 #define COLLECTORS 3		// 回収員の人数
 
 CGarbageTruckStatus::CGarbageTruckStatus()
-	: CCarStatus()
 {
-	// ベースステータスを設定
-	SetStatusBase(
-		MAX_HP,
-		MOVE_SPEED,
-		JUMP_SPEED,
-		KNOCKBACK_SPEED,
-		POWER
-	);
-	// 消滅までの時間を設定
-	SetDeleteTime(DELETE_TIME);
 	// 回収範囲の半径を設定
 	mCollectRadius = COLLECT_RADIUS;
 	// 回収員の人数を設定

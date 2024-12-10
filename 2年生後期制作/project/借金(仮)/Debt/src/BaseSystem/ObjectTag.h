@@ -14,6 +14,7 @@ enum class ETag
 	eEnemy,	// エネミー
 	eCar,	// 車
 	eGarbageTruck, // ゴミ収集車
+	eSpawnZone,		// 生成場所
 
 	eTrashBag, // ゴミ袋
 	eBullet,// 弾丸
