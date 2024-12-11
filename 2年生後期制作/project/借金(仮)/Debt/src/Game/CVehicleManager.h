@@ -34,7 +34,7 @@ public:
 	// 指定したX座標(道)に他の車両がいるかチェックする
 	bool IsVehicle(float xPos);
 private:
-	//CTrashVehicleSpawnZone mSpawnZone;	// 生成場所に車がいるか判断するクラス
+	CTrashVehicleSpawnZone mSpawnZone;	// 生成場所に車がいるか判断するクラス
 
 	std::vector<CCar*> mCars;		// 車のリスト
 	CGarbageTruck* mpGarbageTruck;	// 通常トラック

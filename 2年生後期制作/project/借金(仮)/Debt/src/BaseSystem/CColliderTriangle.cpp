@@ -57,7 +57,7 @@ void CColliderTriangle::Render()
 	float* c = (float*)&col;
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
 	glColor4fv(c);
-
+	
 	// ŽOŠpŒ`‚ð•`‰æ
 	glBegin(GL_TRIANGLES);
 	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());

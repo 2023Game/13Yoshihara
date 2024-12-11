@@ -38,17 +38,17 @@ void CTrashVehicleSpawnZone::Collision(CCollider* self, CCollider* other, const 
 			// XÀ•W‚ðŒ©‚Ä“¹‚ð“Á’è
 			// ‘Î‰ž‚·‚ébool‚ðtrue‚É‚·‚é
 			// ¶‚©‚ç1”Ô‚Ì“¹‚È‚ç
-			if (other->GetParent()->Position().X() == mLeft1PosX)
+			if (other->Owner()->Position().X() == mLeft1PosX)
 			{
 				SetLeft1CanPop(true);
 			}
 			// ¶‚©‚ç2”Ô‚Ì“¹‚È‚ç
-			else if (other->GetParent()->Position().X() == mLeft2PosX)
+			else if (other->Owner()->Position().X() == mLeft2PosX)
 			{
 				SetLeft2CanPop(true);
 			}
 			// ‰E‚©‚ç1”Ô‚Ì“¹‚È‚ç
-			else if (other->GetParent()->Position().X() == mRight1PosX)
+			else if (other->Owner()->Position().X() == mRight1PosX)
 			{
 				SetRight1CanPop(true);
 			}

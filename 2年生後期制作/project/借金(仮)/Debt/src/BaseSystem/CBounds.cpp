@@ -160,3 +160,61 @@ CBounds CBounds::GetCapsuleBounds(const CVector& cs, const CVector& ce, float cr
 	ret.SetRange(min, max);
 	return ret;
 }
+
+// ボックスのバウンティングボックスを取得
+CBounds CBounds::GetBoxBounds(
+	const CVector& t0, const CVector& t1, const CVector& t2, const CVector& t3, 
+	const CVector& t4, const CVector& t5, const CVector& t6, const CVector& t7)
+{
+	CVector min, max;
+	min = t0;
+	max = t0;
+
+	min.X(std::min(min.X(), t1.X()));
+	min.Y(std::min(min.Y(), t1.Y()));
+	min.Z(std::min(min.Z(), t1.Z()));
+	min.X(std::min(min.X(), t2.X()));
+	min.Y(std::min(min.Y(), t2.Y()));
+	min.Z(std::min(min.Z(), t2.Z()));
+	min.X(std::min(min.X(), t3.X()));
+	min.Y(std::min(min.Y(), t3.Y()));
+	min.Z(std::min(min.Z(), t3.Z()));
+	min.X(std::min(min.X(), t4.X()));
+	min.Y(std::min(min.Y(), t4.Y()));
+	min.Z(std::min(min.Z(), t4.Z()));
+	min.X(std::min(min.X(), t5.X()));
+	min.Y(std::min(min.Y(), t5.Y()));
+	min.Z(std::min(min.Z(), t5.Z()));
+	min.X(std::min(min.X(), t6.X()));
+	min.Y(std::min(min.Y(), t6.Y()));
+	min.Z(std::min(min.Z(), t6.Z()));
+	min.X(std::min(min.X(), t7.X()));
+	min.Y(std::min(min.Y(), t7.Y()));
+	min.Z(std::min(min.Z(), t7.Z()));
+
+	max.X(std::max(max.X(), t1.X()));
+	max.Y(std::max(max.Y(), t1.Y()));
+	max.Z(std::max(max.Z(), t1.Z()));
+	max.X(std::max(max.X(), t2.X()));
+	max.Y(std::max(max.Y(), t2.Y()));
+	max.Z(std::max(max.Z(), t2.Z()));
+	max.X(std::max(max.X(), t3.X()));
+	max.Y(std::max(max.Y(), t3.Y()));
+	max.Z(std::max(max.Z(), t3.Z()));
+	max.X(std::max(max.X(), t4.X()));
+	max.Y(std::max(max.Y(), t4.Y()));
+	max.Z(std::max(max.Z(), t4.Z()));
+	max.X(std::max(max.X(), t5.X()));
+	max.Y(std::max(max.Y(), t5.Y()));
+	max.Z(std::max(max.Z(), t5.Z()));
+	max.X(std::max(max.X(), t6.X()));
+	max.Y(std::max(max.Y(), t6.Y()));
+	max.Z(std::max(max.Z(), t6.Z()));
+	max.X(std::max(max.X(), t7.X()));
+	max.Y(std::max(max.Y(), t7.Y()));
+	max.Z(std::max(max.Z(), t7.Z()));
+
+	CBounds ret;
+	ret.SetRange(min, max);
+	return ret;
+}

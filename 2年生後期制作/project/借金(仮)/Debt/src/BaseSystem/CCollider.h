@@ -368,6 +368,12 @@ public:
 	static bool CollisionMeshCapsule(const std::list<STVertexData>& tris,
 		CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain);
 
+	// ボックスと線分の衝突判定
+	// ボックスと球の衝突判定
+	// ボックスと三角形の衝突判定
+	// ボックスとカプセルの衝突判定
+	// ボックスとメッシュの衝突判定
+
 	/// <summary>
 	/// 点から線分までの最短距離を求める
 	/// </summary>

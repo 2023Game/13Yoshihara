@@ -4,13 +4,14 @@
 #include <random>
 
 // 位置
-#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-200.0f)	// 右から1番
-#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-200.0f)	// 右から2番
 #define CAR_LEFT_POS1 CVector(-60.0f,0.0f,200.0f)	// 左から1番
 #define CAR_LEFT_POS2 CVector(-20.0f,0.0f,200.0f)	// 左から2番
+#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-200.0f)	// 右から1番
+#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-200.0f)	// 右から2番
+
 // 回転
-#define CAR_RIGHT_ROTATION CVector(0.0f,.0f,0.0f)	// 右道路の方向
 #define CAR_LEFT_ROTATION CVector(0.0f,180.0f,0.0f)	// 左道路の方向
+#define CAR_RIGHT_ROTATION CVector(0.0f,.0f,0.0f)	// 右道路の方向
 
 // 出現までの時間
 #define CAR_POP_TIME 1.0f		// 車
@@ -18,6 +19,7 @@
 #define BLACK_POP_TIME 3.0f		// お仕置きトラック
 
 CVehicleManager::CVehicleManager()
+	: mSpawnZone(CAR_LEFT_POS1.X(), CAR_LEFT_POS2.X(), CAR_RIGHT_POS1.X(), CAR_RIGHT_POS2.X())
 {
 	CreateVehicle(CResourceManager::Get<CModel>("Car"),
 		CResourceManager::Get<CModel>("GarbageTruck"),
@@ -52,10 +54,11 @@ void CVehicleManager::Update()
 // 使用する車とトラックを全て生成
 void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck)
 {
-	mCars.push_back(new CCar(car, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION));	// 右から1番	：0
-	mCars.push_back(new CCar(car, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION));	// 右から2番	：1
-	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION));	// 左から1番	：2
-	mCars.push_back(new CCar(car, CAR_LEFT_POS2, CAR_LEFT_ROTATION));	// 左から2番	：3
+	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION));	// 左から1番	：0
+	mCars.push_back(new CCar(car, CAR_LEFT_POS2, CAR_LEFT_ROTATION));	// 左から2番	：1
+	mCars.push_back(new CCar(car, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION));	// 右から1番	：2
+	mCars.push_back(new CCar(car, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION));	// 右から2番	：3
+
 	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION);
 	mpBlackTruck = new CGarbageTruck(blackTruck, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION);
 }
@@ -109,11 +112,6 @@ void CVehicleManager::SpawnVehicle()
 		{
 			// ランダムに場所を決定
 			blackPopPos = RandomDecidePopPosition();
-			// 他の車両と同じ道で生成されるとき抽選しなおし
-			while (IsVehicle(blackPopPos.X()))
-			{
-				blackPopPos = RandomDecidePopPosition();
-			}
 			CVector popRotation;	// 生成された時の方向
 
 			// 生成するX座標が0より小さい場合
@@ -142,11 +140,6 @@ void CVehicleManager::SpawnVehicle()
 	{
 		// ランダムに場所を決定
 		carPopPos = RandomDecidePopPosition();
-		// 他の車両と同じ座標で生成されるとき抽選しなおし
-		while (IsVehicle(carPopPos.X()))
-		{
-			carPopPos = RandomDecidePopPosition();
-		}
 		CVector popRotation;	// 生成されたときの方向
 
 		// 生成するX座標が0より小さい場合
@@ -185,11 +178,11 @@ void CVehicleManager::SpawnVehicle()
 		{
 			// ランダムに場所を決定
 			truckPopPos = RandomDecidePopPosition();
-			// 他の車両と同じ道で生成されるとき抽選しなおし
-			while (IsVehicle(truckPopPos.X()))
-			{
-				truckPopPos = RandomDecidePopPosition();
-			}
+			//// 他の車両と同じ道で生成されるとき抽選しなおし
+			//while (IsVehicle(truckPopPos.X()))
+			//{
+			//	truckPopPos = RandomDecidePopPosition();
+			//}
 			CVector popRotation;
 
 			// X座標が0より小さい場合

@@ -1,10 +1,13 @@
 #include "CCar.h"
 #include "CColliderCapsule.h"
+#include "CColliderBox.h"
 #include "CModel.h"
 
-#define CAR_HEIGHT 5.0f
-#define CAR_WIDTH 5.0f
-#define CAPSULE_RADIUS 5.0f
+#define CAR_HEIGHT 10.0f
+#define CAR_WIDTH 25.0f
+#define CAR_WIDTH_X 25.0f
+#define CAR_WIDTH_Z 25.0f
+#define CAPSULE_RADIUS 10.0f
 
 CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation)
 	: CCharaBase(ETag::eCar, ETaskPriority::eDefault)
@@ -18,11 +21,24 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation)
 	mpColliderCapsule = new CColliderCapsule
 	{
 		this,ELayer::eVehicle,
-		CVector(CAR_HEIGHT - CAPSULE_RADIUS * 10,CAR_HEIGHT,0.0f),
-		CVector(-CAR_HEIGHT + CAPSULE_RADIUS * 10,CAR_HEIGHT,0.0f),
+		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH - CAPSULE_RADIUS),
+		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAPSULE_RADIUS),
 		CAPSULE_RADIUS
 	};
 	mpColliderCapsule->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eSpawnZone });
+
+	//mpColliderBox = new CColliderBox
+	//{
+	//	this,ELayer::eVehicle,
+	//	CVector(-CAR_WIDTH_X, CAR_HEIGHT, CAR_WIDTH_Z),
+	//	CVector(CAR_WIDTH_X, CAR_HEIGHT, CAR_WIDTH_Z),
+	//	CVector(CAR_WIDTH_X, 0.0f, CAR_WIDTH_Z),
+	//	CVector(-CAR_WIDTH_X, 0.0f, CAR_WIDTH_Z),
+	//	CVector(-CAR_WIDTH_X, CAR_HEIGHT, -CAR_WIDTH_Z),
+	//	CVector(CAR_WIDTH_X, CAR_HEIGHT, -CAR_WIDTH_Z),
+	//	CVector(CAR_WIDTH_X, 0.0f, -CAR_WIDTH_Z),
+	//	CVector(-CAR_WIDTH_X, 0.0f, -CAR_WIDTH_Z)
+	//};
 
 	// ç≈èâÇÕï`âÊÅAçXêVÇµÇ»Ç¢
 	SetEnable(false);
@@ -52,10 +68,7 @@ void CCar::Update()
 // è’ìÀèàóù
 void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	if (self == mpColliderCapsule)
-	{
 
-	}
 }
 
 void CCar::Render()

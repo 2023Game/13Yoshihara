@@ -77,6 +77,21 @@ public:
 	/// <param name="cr">カプセルの半径</param>
 	/// <returns>バウンディングボックス</returns>
 	static CBounds GetCapsuleBounds(const CVector& cs, const CVector& ce, float cr);
+	/// <summary>
+	/// ボックスのバウンティングボックスを取得
+	/// </summary>
+	/// <param name="t0">ボックスの1つ目の頂点</param>
+	/// <param name="t1">ボックスの1つ目の頂点</param>
+	/// <param name="t2">ボックスの1つ目の頂点</param>
+	/// <param name="t3">ボックスの1つ目の頂点</param>
+	/// <param name="t4">ボックスの1つ目の頂点</param>
+	/// <param name="t5">ボックスの1つ目の頂点</param>
+	/// <param name="t6">ボックスの1つ目の頂点</param>
+	/// <param name="t7">ボックスの1つ目の頂点</param>
+	/// <returns>バウンティングボックス</returns>
+	static CBounds GetBoxBounds(
+		const CVector& t0, const CVector& t1, const CVector& t2, const CVector& t3,
+		const CVector& t4, const CVector& t5, const CVector& t6, const CVector& t7);
 
 private:
 	CVector mMin;	// 最小位置

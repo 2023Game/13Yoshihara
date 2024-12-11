@@ -75,6 +75,7 @@
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
+    <ClCompile Include="src\Game\CColliderBox.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCar.h" />
+    <ClInclude Include="src\Game\CColliderBox.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />

@@ -4,6 +4,7 @@
 #include "CCamera.h"
 #include "Maths.h"
 #include "CJobStatusManager.h"
+#include "CColliderBox.h"
 
 /*
  プレイヤーのアニメーションデータのテーブル
@@ -41,8 +42,10 @@ const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
 };
 
 #define CAPSULE_RADIUS 2.5f
-#define PLAYER_HEIGHT 25.0f
+#define PLAYER_HEIGHT 50.0f
 #define PLAYER_WIDTH 50.0f
+#define PLAYER_WIDTH_X 50.0f
+#define PLAYER_WIDTH_Z 25.0f
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -81,6 +84,19 @@ CTrashPlayer::CTrashPlayer()
 		CAPSULE_RADIUS
 	);
 	mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+
+	mpColliderBox = new CColliderBox
+	{
+		this,ELayer::eVehicle,
+		CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+		CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+		CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	-PLAYER_WIDTH_Z),
+		CVector(-PLAYER_WIDTH_X,	0.0f,			-PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		0.0f,			-PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	-PLAYER_WIDTH_Z)
+	};
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle_Close);

@@ -2,6 +2,7 @@
 #include "CCharaBase.h"
 #include "CCarStatus.h"
 
+class CColliderBox;
 class CColliderCapsule;
 class CModel;
 
@@ -25,6 +26,7 @@ protected:
 	CCarStatus mCarStatus;	// 車のステータス
 	CModel* mpModel;
 	CColliderCapsule* mpColliderCapsule;
+	CColliderBox* mpColliderBox;
 
 	enum class EState
 	{
