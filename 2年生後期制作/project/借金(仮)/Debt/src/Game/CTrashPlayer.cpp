@@ -5,6 +5,7 @@
 #include "Maths.h"
 #include "CJobStatusManager.h"
 #include "CColliderBox.h"
+#include "CColliderRectangle.h"
 
 /*
  プレイヤーのアニメーションデータのテーブル
@@ -85,17 +86,26 @@ CTrashPlayer::CTrashPlayer()
 	);
 	mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
-	mpColliderBox = new CColliderBox
+	//mpColliderBox = new CColliderBox
+	//{
+	//	this,ELayer::eVehicle,
+	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+	//	CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	-PLAYER_WIDTH_Z),
+	//	CVector(-PLAYER_WIDTH_X,	0.0f,			-PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		0.0f,			-PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	-PLAYER_WIDTH_Z)
+	//};
+
+	mpColliderRect = new CColliderRectangle
 	{
 		this,ELayer::eVehicle,
 		CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
 		CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
 		CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
 		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-		CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	-PLAYER_WIDTH_Z),
-		CVector(-PLAYER_WIDTH_X,	0.0f,			-PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		0.0f,			-PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	-PLAYER_WIDTH_Z)
 	};
 
 	// 最初は待機アニメーションを再生

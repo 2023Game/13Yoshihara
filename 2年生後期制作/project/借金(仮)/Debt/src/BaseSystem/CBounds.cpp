@@ -161,6 +161,38 @@ CBounds CBounds::GetCapsuleBounds(const CVector& cs, const CVector& ce, float cr
 	return ret;
 }
 
+// 四角形のバウンティングボックスを取得
+CBounds CBounds::GetRectangleBounds(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3)
+{
+	CVector min, max;
+	min = r0;
+	max = r0;
+
+	min.X(std::min(min.X(), r1.X()));
+	min.Y(std::min(min.Y(), r1.Y()));
+	min.Z(std::min(min.Z(), r1.Z()));
+	min.X(std::min(min.X(), r2.X()));
+	min.Y(std::min(min.Y(), r2.Y()));
+	min.Z(std::min(min.Z(), r2.Z()));
+	min.X(std::min(min.X(), r3.X()));
+	min.Y(std::min(min.Y(), r3.Y()));
+	min.Z(std::min(min.Z(), r3.Z()));
+
+	max.X(std::max(max.X(), r1.X()));
+	max.Y(std::max(max.Y(), r1.Y()));
+	max.Z(std::max(max.Z(), r1.Z()));
+	max.X(std::max(max.X(), r2.X()));
+	max.Y(std::max(max.Y(), r2.Y()));
+	max.Z(std::max(max.Z(), r2.Z()));
+	max.X(std::max(max.X(), r3.X()));
+	max.Y(std::max(max.Y(), r3.Y()));
+	max.Z(std::max(max.Z(), r3.Z()));
+
+	CBounds ret;
+	ret.SetRange(min, max);
+	return ret;
+}
+
 // ボックスのバウンティングボックスを取得
 CBounds CBounds::GetBoxBounds(
 	const CVector& t0, const CVector& t1, const CVector& t2, const CVector& t3, 

@@ -466,7 +466,10 @@
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CColliderBox.cpp">
+    <ClCompile Include="src\BaseSystem\CColliderBox.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderRectangle.cpp">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClCompile>
   </ItemGroup>
@@ -840,7 +843,10 @@
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CColliderBox.h">
+    <ClInclude Include="src\BaseSystem\CColliderBox.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderRectangle.h">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClInclude>
   </ItemGroup>

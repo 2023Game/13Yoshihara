@@ -5,6 +5,8 @@
 #include "CColliderTriangle.h"
 #include "CColliderCapsule.h"
 #include "CColliderMesh.h"
+#include "CColliderRectangle.h"
+#include "CColliderBox.h"
 #include "CObjectBase.h"
 #include "Maths.h"
 
@@ -795,7 +797,7 @@ bool CCollider::CollisionMeshLine(const std::list<STVertexData>& tris,
 }
 
 // メッシュと球の衝突判定
-bool CCollider::CollisionMeshSpehre(const std::list<STVertexData>& tris,
+bool CCollider::CollisionMeshSphere(const std::list<STVertexData>& tris,
 	CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector sp;
@@ -897,6 +899,57 @@ bool CCollider::CollisionMeshCapsule(const std::list<STVertexData>& tris,
 	hit->cross = cross;
 	hit->dist = nearDist;
 	return ret;
+}
+
+// ボックスと線分の衝突判定
+bool CCollider::CollisionBoxLine(CColliderBox* boxCol,
+	const CVector& ls, const CVector& le, const CBounds& lb,
+	CHitInfo* hit, bool isLeftMain)
+{
+	bool ret = false;
+	CVector adjust = CVector::zero;
+	CVector cross = CVector::zero;
+	float nearDist = 0.0f;
+	CVector b0, b1, b2, b3, b4, b5, b6, b7;
+	boxCol->Get(&b0, &b1, &b2, &b3, &b4, &b5, &b6, &b7);
+	
+	// 交差していないなら衝突していない
+	if (!CBounds::Intersect(boxCol->Bounds(), lb))	return false;
+	CVector v00 =isLeftMain?b0:
+
+	// 衝突情報を記録
+	hit->adjust = adjust;
+	hit->cross = cross;
+	hit->dist = nearDist;
+	return ret;
+}
+
+// ボックスと球の衝突判定
+bool CCollider::CollisionBoxSphere(CColliderBox* boxCol,
+	CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// ボックスと三角形の衝突判定
+bool CCollider::CollisionBoxTriangle(CColliderBox* boxCol, 
+	CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// ボックスとカプセルの衝突判定
+bool CCollider::CollisionBoxCapsule(CColliderBox* boxCol,
+	CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// ボックスとメッシュの衝突範千絵
+bool CCollider::CollisionBoxMesh(CColliderBox* boxCol, 
+	const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
 }
 
 float CCollider::CalcDistancePointToLine(const CVector& point, const CVector& lineS, const CVector& lineE, CVector* nearest)
@@ -1052,7 +1105,7 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 		{
 			CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c1);
 			auto tris = mesh->Get();
-			return CollisionMeshSpehre(tris, sphere0, hit, false);
+			return CollisionMeshSphere(tris, sphere0, hit, false);
 		}
 		}
 		break;
@@ -1167,7 +1220,7 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 		case EColliderType::eSphere:
 		{
 			CColliderSphere* sphere = dynamic_cast<CColliderSphere*>(c1);
-			return CollisionMeshSpehre(tris, sphere, hit, true);
+			return CollisionMeshSphere(tris, sphere, hit, true);
 		}
 		case EColliderType::eTriangle:
 		{

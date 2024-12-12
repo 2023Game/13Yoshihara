@@ -20,9 +20,11 @@
     <ClCompile Include="src\BaseSystem\CButton.cpp" />
     <ClCompile Include="src\BaseSystem\CCamera.cpp" />
     <ClCompile Include="src\BaseSystem\CCollider.cpp" />
+    <ClCompile Include="src\BaseSystem\CColliderBox.cpp" />
     <ClCompile Include="src\BaseSystem\CColliderCapsule.cpp" />
     <ClCompile Include="src\BaseSystem\CColliderLine.cpp" />
     <ClCompile Include="src\BaseSystem\CColliderMesh.cpp" />
+    <ClCompile Include="src\BaseSystem\CColliderRectangle.cpp" />
     <ClCompile Include="src\BaseSystem\CColliderSphere.cpp" />
     <ClCompile Include="src\BaseSystem\CColliderTriangle.cpp" />
     <ClCompile Include="src\BaseSystem\CCollisionManager.cpp" />
@@ -75,7 +77,6 @@
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
-    <ClCompile Include="src\Game\CColliderBox.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
@@ -137,9 +138,11 @@
     <ClInclude Include="src\BaseSystem\CButton.h" />
     <ClInclude Include="src\BaseSystem\CCamera.h" />
     <ClInclude Include="src\BaseSystem\CCollider.h" />
+    <ClInclude Include="src\BaseSystem\CColliderBox.h" />
     <ClInclude Include="src\BaseSystem\CColliderCapsule.h" />
     <ClInclude Include="src\BaseSystem\CColliderLine.h" />
     <ClInclude Include="src\BaseSystem\CColliderMesh.h" />
+    <ClInclude Include="src\BaseSystem\CColliderRectangle.h" />
     <ClInclude Include="src\BaseSystem\CColliderSphere.h" />
     <ClInclude Include="src\BaseSystem\CColliderTriangle.h" />
     <ClInclude Include="src\BaseSystem\CCollisionManager.h" />
@@ -201,7 +204,6 @@
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCar.h" />
-    <ClInclude Include="src\Game\CColliderBox.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />

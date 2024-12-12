@@ -8,6 +8,7 @@
 #include "CRideableObject.h"
 #include "CSound.h"
 
+class CColliderRectangle;
 class CColliderBox;
 /*
 プレイヤークラス
@@ -33,6 +34,7 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
+	CColliderRectangle* mpColliderRect;
 	CColliderBox* mpColliderBox;
 	CTrashPlayerStatus mPlayerStatus;
 	// アクションのキー入力
