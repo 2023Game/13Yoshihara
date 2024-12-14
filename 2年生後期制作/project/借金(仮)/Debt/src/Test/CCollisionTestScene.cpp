@@ -76,12 +76,21 @@ void CCollisionTestScene::Load()
 	);
 	mColList.push_back(cl2);
 
-	//mpColTriangle = new CColTriangle
-	//(
-	//	CVector(-100.0f, -10.0f,  100.0f),
-	//	CVector( 100.0f, -10.0f,  100.0f),
-	//	CVector(   0.0f, -10.0f, -100.0f)
-	//);
+	CColTriangle* ct = new CColTriangle
+	(
+		CVector(-10.0f, 1.0f,  0.0f),
+		CVector( 10.0f, 1.0f,  0.0f),
+		CVector(   0.0f, 10.0f, 0.0f),
+		CColor::gray
+	);
+
+	CColTriangle* ct2 = new CColTriangle
+	(
+		CVector(0.0f, 1.0f, -5.0f),
+		CVector(0.0f, 1.0f, 5.0f),
+		CVector(0.0f, 5.0f, 5.0f),
+		CColor::gray
+	);
 
 	// ÉJÉÅÉâê∂ê¨
 	CCamera* mainCamera = new CCamera

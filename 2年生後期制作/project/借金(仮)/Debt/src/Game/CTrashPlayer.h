@@ -10,6 +10,7 @@
 
 class CColliderRectangle;
 class CColliderBox;
+class CColliderTriangle;
 /*
 プレイヤークラス
 キャラクタクラスを継承
@@ -34,6 +35,7 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
+	CColliderTriangle* mpColliderTriangle;
 	CColliderRectangle* mpColliderRect;
 	CColliderBox* mpColliderBox;
 	CTrashPlayerStatus mPlayerStatus;

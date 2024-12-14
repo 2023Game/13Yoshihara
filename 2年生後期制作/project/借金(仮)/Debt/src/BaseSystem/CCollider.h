@@ -170,6 +170,17 @@ public:
 	static bool CollisionRectPoint(const CRect& rect, const CVector2 point);
 
 	/// <summary>
+	/// 分離軸上での三角形の投影範囲の衝突
+	/// </summary>
+	/// <param name="tri0">三角形1</param>
+	/// <param name="tri1">三角形2</param>
+	/// <param name="axis">分離軸</param>
+	/// <param name="overlapDepth">衝突の深さ</param>
+	/// <returns>trueならば、衝突している</returns>
+	static bool OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[3],
+		const CVector& axis, float& overlapDepth);
+
+	/// <summary>
 	/// 三角形と三角形の衝突判定
 	/// </summary>
 	/// <param name="t00">三角形1の頂点1</param>
@@ -399,7 +410,7 @@ public:
 	/// <param name="r13">四角形2の頂点4</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionTriangle(const CVector& r00, const CVector& r01, const CVector& r02, const CVector& r03,
+	static bool CollisionRectangle(const CVector& r00, const CVector& r01, const CVector& r02, const CVector& r03,
 		const CVector& r10, const CVector& r11, const CVector& r12, const CVector& r13,
 		CHitInfo* hit);
 
@@ -444,7 +455,7 @@ public:
 	/// <param name="rn">四角形の法線</param>
 	/// <param name="p">点の座標</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionTrianglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	static bool CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 		const CVector& tn, const CVector& p);
 	/// <summary>
 	/// 四角形と点の衝突判定
@@ -455,7 +466,7 @@ public:
 	/// <param name="r3">四角形の頂点4</param>
 	/// <param name="p">点の座標</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionTrianglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	static bool CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 		const CVector& p);
 
 	/// <summary>

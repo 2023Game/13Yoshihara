@@ -6,6 +6,7 @@
 #include "CJobStatusManager.h"
 #include "CColliderBox.h"
 #include "CColliderRectangle.h"
+#include "CColliderTriangle.h"
 
 /*
  プレイヤーのアニメーションデータのテーブル
@@ -99,14 +100,23 @@ CTrashPlayer::CTrashPlayer()
 	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	-PLAYER_WIDTH_Z)
 	//};
 
-	mpColliderRect = new CColliderRectangle
+	//mpColliderRect = new CColliderRectangle
+	//{
+	//	this,ELayer::eVehicle,
+	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+	//	CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
+	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+	//};
+
+	mpColliderTriangle = new CColliderTriangle
 	{
-		this,ELayer::eVehicle,
-		CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-		CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+		this,ELayer::ePlayer,
+		CVector(-PLAYER_WIDTH_X,	-1.0f,			PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		-1.0f,			-PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		-1.0f,			PLAYER_WIDTH_Z),
 	};
+	mpColliderTriangle->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle_Close);
@@ -160,6 +170,73 @@ void CTrashPlayer::Update()
 void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
+
+	if (self == mpColliderTriangle)
+	{
+		// 衝突した相手がフィールドの場合
+		if (other->Layer() == ELayer::eField)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+
+			// 衝突した地面が床か天井かを内積で判定
+			CVector normal = hit.adjust.Normalized();
+			float dot = CVector::Dot(normal, CVector::up);
+			// 内積の結果がプラスであれば、床と衝突した
+			if (dot >= 0.0f)
+			{
+				// 落下などで床に上から衝突したとき（下移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY < 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+
+				// 接地した
+				mIsGrounded = true;
+				// 接地した地面の法線を記憶しておく
+				mGroundNormal = hit.adjust.Normalized();
+
+				if (other->Tag() == ETag::eRideableObject)
+				{
+					mpRideObject = other->Owner();
+				}
+			}
+			// 内積の結果がマイナスであれば、天井と衝突した
+			else if (dot < 0.0f)
+			{
+				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY > 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
+		}
+		// 衝突した相手が壁の場合
+		else if (other->Layer() == ELayer::eWall)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+		// 衝突した相手がオブジェクトだった場合
+		else if (other->Layer() == ELayer::eObject)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+	}
 }
 
 // アクションのキー入力

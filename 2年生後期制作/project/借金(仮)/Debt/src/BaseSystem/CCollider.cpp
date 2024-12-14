@@ -241,12 +241,110 @@ void CCollider::Set(CObjectBase* owner, ELayer layer)
 	mLayer = layer;
 }
 
+// 分離軸上での三角形の投影範囲の衝突
+bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[3],
+	const CVector& axis, float& overlapDepth)
+{
+	bool ret = false;
+	float min0, max0, min1, max1;
+	// 一度だけ通る
+	bool once0 = true;
+	bool once1 = true;
+
+	// 三角形1の投影範囲の計算
+	for (int i = 0; i < 3; i++)
+	{
+		float proj = tri0[i].Dot(axis);
+		// 一度だけ通る
+		if (once0)
+		{
+			min0 = proj;
+			max0 = proj;
+			once0 = false;
+			continue;	// 次へ
+		}
+
+		min0 = std::min(min0, proj);
+		max0 = std::max(max0, proj);
+	}
+	// 三角形2の投影範囲の計算
+	for (int i = 0; i < 3; i++)
+	{
+		float proj = tri1[i].Dot(axis);
+		// 一度だけ通る
+		if (once1)
+		{
+			min1 = proj;
+			max1 = proj;
+			once1 = false;
+			continue;	// 次へ
+		}
+
+		min1 = std::min(min1, proj);
+		max1 = std::max(max1, proj);
+	}
+	// 三角形0の範囲が三角形1の範囲の左側に離れているか
+	// 三角形1の範囲が三角形0の範囲の左側に離れている場合以外
+	// 衝突している
+	if (!(max0 < min1 || max1 < min0))
+	{
+		ret = true;
+		// 衝突の深さの設定
+		overlapDepth = std::min(max0, max1) - std::max(min0, min1);
+	}
+	return ret;
+}
+
+// TODO：調整値計算の修正
 // 三角形と三角形の衝突判定
 bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const CVector& t02,
 	const CVector& t10, const CVector& t11, const CVector& t12,
-	CHitInfo* hit)
+	CHitInfo* h)
 {
-	return false;
+	//面の法線を、外積を正規化して求める
+	CVector normal = CVector::Cross(t01 - t00, t02 - t00).Normalized();
+
+	// 三角形1の各頂点座標
+	CVector tri0[3] = { t00,t01,t02 };
+	// 三角形2の各頂点座標
+	CVector tri1[3] = { t10,t11,t12 };
+	// 分離軸
+	CVector axes[3];
+	// 衝突の深さ
+	float overlapDepth = FLT_MAX;
+	float currentOverlapDepth = FLT_MAX;
+
+	// 三角形の辺の外積から分離軸を生成
+	for (int i = 0; i < 3; i++) 
+	{
+		CVector edge0 = tri0[(i + 1) % 3] - tri0[i];
+		CVector edge1 = tri1[(i + 1) % 3] - tri1[i];
+
+		// 分離軸の候補として外積を追加
+		axes[i] = edge0.Cross(edge1);
+	}
+
+	// すべての分離軸で重なりを確認
+	for (int i = 0; i < 3; i++)
+	{
+
+		// 重ならない軸があれば衝突なし
+		if (!OverlapTriangleOnAxis(tri0, tri1, axes[i], currentOverlapDepth))
+		{
+			return false;
+		}
+		// 一番小さいものを衝突の深さに設定する
+		if (currentOverlapDepth < overlapDepth)
+		{
+			overlapDepth = currentOverlapDepth;
+		}
+	}
+
+	// 調整値計算
+	h->adjust = normal * currentOverlapDepth;
+
+	// すべての軸で重なっていれば衝突している
+	return true;
 }
 
 // 三角形と線分の衝突判定
@@ -899,6 +997,54 @@ bool CCollider::CollisionMeshCapsule(const std::list<STVertexData>& tris,
 	hit->cross = cross;
 	hit->dist = nearDist;
 	return ret;
+}
+
+// 四角形と三角形の衝突判定
+bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& t0, const CVector& t1, const CVector& t2, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// 四角形と四角形の衝突判定
+bool CCollider::CollisionRectangle(const CVector& r00, const CVector& r01, const CVector& r02, const CVector& r03, const CVector& r10, const CVector& r11, const CVector& r12, const CVector& r13, CHitInfo* hit)
+{
+	return false;
+}
+
+// 四角形と線分の衝突判定
+bool CCollider::CColliderRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& ls, const CVector& le, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// 四角形とカプセルの衝突判定
+bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& cs, const CVector& ce, float cr, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// 四角形と点の衝突判定
+bool CCollider::CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& tn, const CVector& p)
+{
+	return false;
+}
+
+//四角形と点の衝突判定
+bool CCollider::CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& p)
+{
+	return false;
+}
+
+// 四角形と球の衝突判定
+bool CCollider::CColliderRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& sp, const float sr, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
+// 四角形とメッシュの衝突判定
+bool CCollider::CollisionRectangleMesh(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
 }
 
 // ボックスと線分の衝突判定
