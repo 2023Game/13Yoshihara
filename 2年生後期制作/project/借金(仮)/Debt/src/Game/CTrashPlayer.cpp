@@ -77,15 +77,15 @@ CTrashPlayer::CTrashPlayer()
 	// CXCharacterの初期化
 	Init(model);
 
-	//フィールド、壁、オブジェクトとだけ衝突判定をする
-	mpColliderCapsule = new CColliderCapsule
-	(
-		this, ELayer::ePlayer,
-		CVector(PLAYER_WIDTH - CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
-		CVector(-PLAYER_WIDTH + CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
-		CAPSULE_RADIUS
-	);
-	mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+	////フィールド、壁、オブジェクトとだけ衝突判定をする
+	//mpColliderCapsule = new CColliderCapsule
+	//(
+	//	this, ELayer::ePlayer,
+	//	CVector(PLAYER_WIDTH - CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
+	//	CVector(-PLAYER_WIDTH + CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
+	//	CAPSULE_RADIUS
+	//);
+	//mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
 	//mpColliderBox = new CColliderBox
 	//{
@@ -117,6 +117,15 @@ CTrashPlayer::CTrashPlayer()
 		CVector(PLAYER_WIDTH_X,		-1.0f,			PLAYER_WIDTH_Z),
 	};
 	mpColliderTriangle->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+
+	mpColTri = new CColliderTriangle
+	{
+		this,ELayer::ePlayer,
+		CVector(-PLAYER_WIDTH_X,	-1.0f,			PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		-1.0f,			PLAYER_WIDTH_Z),
+		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
+	};
+	mpColTri->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation(EAnimType::eIdle_Close);

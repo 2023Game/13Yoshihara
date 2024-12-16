@@ -76,6 +76,7 @@ void CCollisionTestScene::Load()
 	);
 	mColList.push_back(cl2);
 
+	// 三角形を生成
 	CColTriangle* ct = new CColTriangle
 	(
 		CVector(-10.0f, 1.0f,  0.0f),
@@ -84,10 +85,11 @@ void CCollisionTestScene::Load()
 		CColor::gray
 	);
 
+	// 三角形を生成
 	CColTriangle* ct2 = new CColTriangle
 	(
-		CVector(0.0f, 1.0f, -5.0f),
-		CVector(0.0f, 1.0f, 5.0f),
+		CVector(0.0f, 2.0f, -5.0f),
+		CVector(0.0f, 2.0f, 5.0f),
 		CVector(0.0f, 5.0f, 5.0f),
 		CColor::gray
 	);

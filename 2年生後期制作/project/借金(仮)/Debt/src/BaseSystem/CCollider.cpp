@@ -291,6 +291,12 @@ bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[
 		ret = true;
 		// 衝突の深さの設定
 		overlapDepth = std::min(max0, max1) - std::max(min0, min1);
+
+		// 深さが0以下の場合は最小から最大への距離を計算し小さい方を衝突の深さに設定
+		if (overlapDepth <= 0)
+		{
+			overlapDepth = std::min(std::abs(max0 - min1), std::abs(max1 - min0));
+		}
 	}
 	return ret;
 }
@@ -309,30 +315,38 @@ bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const 
 	// 三角形2の各頂点座標
 	CVector tri1[3] = { t10,t11,t12 };
 	// 分離軸
-	CVector axes[3];
+	std::vector<CVector> axes;
 	// 衝突の深さ
 	float overlapDepth = FLT_MAX;
 	float currentOverlapDepth = FLT_MAX;
 
-	// 三角形の辺の外積から分離軸を生成
+	// 三角形の全ての辺の組み合わせの外積から分離軸を生成
 	for (int i = 0; i < 3; i++) 
 	{
-		CVector edge0 = tri0[(i + 1) % 3] - tri0[i];
-		CVector edge1 = tri1[(i + 1) % 3] - tri1[i];
+		for (int j = 0; j < 3; j++)
+		{
+			CVector edge0 = tri0[(i + 1) % 3] - tri0[i];
+			CVector edge1 = tri1[(j + 1) % 3] - tri1[j];
+			CVector axis = edge0.Cross(edge1);
 
-		// 分離軸の候補として外積を追加
-		axes[i] = edge0.Cross(edge1);
+			// 無効な軸は保存しない
+			if (axis.LengthSqr() > 1e-6f)
+			{
+				// 分離軸の候補として外積を追加
+				axes.push_back(axis);
+			}
+		}
 	}
 
 	// すべての分離軸で重なりを確認
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < axes.size(); i++)
 	{
-
 		// 重ならない軸があれば衝突なし
 		if (!OverlapTriangleOnAxis(tri0, tri1, axes[i], currentOverlapDepth))
 		{
 			return false;
 		}
+		
 		// 一番小さいものを衝突の深さに設定する
 		if (currentOverlapDepth < overlapDepth)
 		{
@@ -341,7 +355,7 @@ bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const 
 	}
 
 	// 調整値計算
-	h->adjust = normal * currentOverlapDepth;
+	h->adjust = -normal * overlapDepth;
 
 	// すべての軸で重なっていれば衝突している
 	return true;

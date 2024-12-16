@@ -35,6 +35,7 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
+	CColliderTriangle* mpColTri;
 	CColliderTriangle* mpColliderTriangle;
 	CColliderRectangle* mpColliderRect;
 	CColliderBox* mpColliderBox;
