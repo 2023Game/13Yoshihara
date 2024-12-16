@@ -82,17 +82,20 @@ void CCollisionTestScene::Load()
 		CVector(-10.0f, 1.0f,  0.0f),
 		CVector( 10.0f, 1.0f,  0.0f),
 		CVector(   0.0f, 10.0f, 0.0f),
-		CColor::gray
+		CColor::gray,
+		true
 	);
+	mColList.push_back(ct);
 
 	// éOäpå`Çê∂ê¨
 	CColTriangle* ct2 = new CColTriangle
 	(
-		CVector(0.0f, 2.0f, -5.0f),
 		CVector(0.0f, 2.0f, 5.0f),
-		CVector(0.0f, 5.0f, 5.0f),
+		CVector(0.0f, 2.0f, 10.0f),
+		CVector(0.0f, 5.0f, 10.0f),
 		CColor::gray
 	);
+	mColList.push_back(ct2);
 
 	// ÉJÉÅÉâê∂ê¨
 	CCamera* mainCamera = new CCamera

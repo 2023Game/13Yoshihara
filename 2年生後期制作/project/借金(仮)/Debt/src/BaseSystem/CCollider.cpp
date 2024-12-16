@@ -341,8 +341,9 @@ bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const 
 	// すべての分離軸で重なりを確認
 	for (int i = 0; i < axes.size(); i++)
 	{
+		CVector ax = axes[i].Normalized();
 		// 重ならない軸があれば衝突なし
-		if (!OverlapTriangleOnAxis(tri0, tri1, axes[i], currentOverlapDepth))
+		if (!OverlapTriangleOnAxis(tri0, tri1, ax, currentOverlapDepth))
 		{
 			return false;
 		}
