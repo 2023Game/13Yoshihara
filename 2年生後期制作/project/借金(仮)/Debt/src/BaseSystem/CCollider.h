@@ -170,14 +170,17 @@ public:
 	static bool CollisionRectPoint(const CRect& rect, const CVector2 point);
 
 	/// <summary>
-	/// 分離軸上での三角形の投影範囲の衝突
+	/// 分離軸上での投影範囲の衝突
 	/// </summary>
-	/// <param name="tri0">三角形1</param>
-	/// <param name="tri1">三角形2</param>
+	/// <param name="poly0">ポリゴン0</param>
+	/// <param name="size0">ポリゴン0の要素数</param>
+	/// <param name="poly1">ポリゴン1</param>
+	/// <param name="size1">ポリゴン1の要素数</param>
 	/// <param name="axis">分離軸</param>
 	/// <param name="overlapDepth">衝突の深さ</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[3],
+	static bool OverlapOnAxis(const CVector* poly0, int size0,
+		const CVector* poly1, int size1,
 		const CVector& axis, float& overlapDepth);
 
 	/// <summary>
@@ -223,26 +226,6 @@ public:
 	static bool CollisionTriangleCapsule(const CVector& t0, const CVector& t1, const CVector& t2,
 		const CVector& cs, const CVector& ce, float cr,
 		CHitInfo* hit, bool isLeftMain);
-
-	/// <summary>
-	/// 三角形と点の衝突判定
-	/// </summary>
-	/// <param name="t0">三角形の頂点1</param>
-	/// <param name="t1">三角形の頂点2</param>
-	/// <param name="t2">三角形の頂点3</param>
-	/// <param name="tn">三角形の法線</param>
-	/// <param name="p">点の座標</param>
-	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& tn, const CVector& p);
-	/// <summary>
-	/// 三角形と点の衝突判定
-	/// </summary>
-	/// <param name="t0">三角形の頂点1</param>
-	/// <param name="t1">三角形の頂点2</param>
-	/// <param name="t2">三角形の頂点3</param>
-	/// <param name="p">点の座標</param>
-	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& p);
 
 	/// <summary>
 	/// 三角形と球の衝突判定
@@ -425,7 +408,7 @@ public:
 	/// <param name="le">線分の終点</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CColliderRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	static bool CollisionRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 		const CVector& ls, const CVector& le,
 		CHitInfo* hit, bool isLeftMain);
 
@@ -446,30 +429,6 @@ public:
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
-	/// 四角形と点の衝突判定
-	/// </summary>
-	/// <param name="r0">四角形の頂点1</param>
-	/// <param name="r1">四角形の頂点2</param>
-	/// <param name="r2">四角形の頂点3</param>
-	/// <param name="r3">四角形の頂点4</param>
-	/// <param name="rn">四角形の法線</param>
-	/// <param name="p">点の座標</param>
-	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
-		const CVector& tn, const CVector& p);
-	/// <summary>
-	/// 四角形と点の衝突判定
-	/// </summary>
-	/// <param name="r0">四角形の頂点1</param>
-	/// <param name="r1">四角形の頂点2</param>
-	/// <param name="r2">四角形の頂点3</param>
-	/// <param name="r3">四角形の頂点4</param>
-	/// <param name="p">点の座標</param>
-	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
-		const CVector& p);
-
-	/// <summary>
 	/// 四角形と球の衝突判定
 	/// </summary>
 	/// <param name="r0">四角形の頂点1</param>
@@ -480,7 +439,7 @@ public:
 	/// <param name="sr">球の半径</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CColliderRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	static bool CollisionRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 		const CVector& sp, const float sr,
 		CHitInfo* hit, bool isLeftMain);
 
@@ -584,6 +543,19 @@ public:
 	/// <param name="n">三角形の法線</param>
 	/// <returns>trueならば、三角形の内側にある</returns>
 	static bool IsInsideTriangle(const CVector& p, const CVector& t0, const CVector& t1, const CVector& t2, const CVector& n);
+
+	/// <summary>
+	/// 指定した点が四角形の内側にあるかどうか
+	/// </summary>
+	/// <param name="point">点の座標</param>
+	/// <param name="r0">四角形の1つ目の頂点</param>
+	/// <param name="r1">四角形の2つ目の頂点</param>
+	/// <param name="r2">四角形の3つ目の頂点</param>
+	/// <param name="r3">四角形の4つ目の頂点</param>
+	/// <param name="n">四角形の法線</param>
+	/// <returns>trueならば、四角形の内側にある</returns>
+	static bool IsInsideRectangle(const CVector& p, const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& n);
+
 
 	/// <summary>
 	/// 衝突判定

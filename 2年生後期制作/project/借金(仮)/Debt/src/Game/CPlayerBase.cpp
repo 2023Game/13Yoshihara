@@ -128,7 +128,7 @@ void CPlayerBase::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
-	//mMoveSpeedY -= GRAVITY;
+	mMoveSpeedY -= GRAVITY;
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 
 	// ˆÚ“®

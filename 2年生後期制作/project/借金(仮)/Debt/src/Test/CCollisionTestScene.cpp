@@ -4,6 +4,7 @@
 #include "CColTriangle.h"
 #include "CColQuad.h"
 #include "CColCapsule.h"
+#include "CColRectangle.h"
 #include "CCamera.h"
 #include "CMeasure.h"
 #include "CDebugInput.h"
@@ -38,10 +39,10 @@ void CCollisionTestScene::Load()
 	new CMeasure(100);
 
 	// 球を生成
-	//CColSphere* cs = new CColSphere(10.0f, CColor::gray);
-	//cs->Scale(2.0f, 2.0f, 2.0f);
-	//cs->Position(10.0f, 10.0f, 0.0f);
-	//mColList.push_back(cs);
+	CColSphere* cs = new CColSphere(2.0f, CColor::gray);
+	cs->Scale(1.0f, 1.0f, 1.0f);
+	cs->Position(10.0f, 10.0f, 20.0f);
+	mColList.push_back(cs);
 
 	//CColSphere* cs2 = new CColSphere(1.0f, CColor::gray);
 	//cs2->Scale(5.0f, 5.0f, 5.0f);
@@ -77,25 +78,47 @@ void CCollisionTestScene::Load()
 	mColList.push_back(cl2);
 
 	// 三角形を生成
-	CColTriangle* ct = new CColTriangle
+	CColTriangle* ct0 = new CColTriangle
 	(
-		CVector(-10.0f, 1.0f,  0.0f),
-		CVector( 10.0f, 1.0f,  0.0f),
-		CVector(   0.0f, 10.0f, 0.0f),
+		CVector(-5.0f, 1.0f, 0.0f),
+		CVector(5.0f, 1.0f, 0.0f),
+		CVector(0.0f, 10.0f, 0.0f),
 		CColor::gray,
 		true
 	);
-	mColList.push_back(ct);
+	mColList.push_back(ct0);
 
 	// 三角形を生成
-	CColTriangle* ct2 = new CColTriangle
+	CColTriangle* ct1 = new CColTriangle
 	(
-		CVector(0.0f, 2.0f, 5.0f),
-		CVector(0.0f, 2.0f, 10.0f),
-		CVector(0.0f, 5.0f, 10.0f),
+		CVector(0.0f, 1.0f, 5.0f),
+		CVector(0.0f, 1.0f, 10.0f),
+		CVector(0.0f, 6.0f, 10.0f),
 		CColor::gray
 	);
-	mColList.push_back(ct2);
+	mColList.push_back(ct1);
+
+	// 四角形を生成
+	CColRectangle* r0 = new CColRectangle
+	(
+		CVector(6.0f, 1.0f, 0.0f),
+		CVector(16.0f, 1.0f, 0.0f),
+		CVector(16.0f, 10.0f, 0.0f),
+		CVector(6.0f, 10.0f, 0.0f),
+		CColor::gray,
+		true
+	);
+	mColList.push_back(r0);
+	// 四角形を生成
+	CColRectangle* r1 = new CColRectangle
+	(
+		CVector(10.0f, 1.0f, 5.0f),
+		CVector(10.0f, 1.0f, 10.0f),
+		CVector(10.0f, 6.0f, 10.0f),
+		CVector(10.0f, 6.0f, 5.0f),
+		CColor::gray
+	);
+	mColList.push_back(r1);
 
 	// カメラ生成
 	CCamera* mainCamera = new CCamera

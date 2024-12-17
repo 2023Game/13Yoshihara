@@ -2,6 +2,7 @@
 #include "glut.h"
 #include "Maths.h"
 #include "CColor.h"
+#include "CColliderRectangle.h"
 
 CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer, 
 	const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
@@ -9,48 +10,33 @@ CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer,
 	bool isKinematic, float weight)
 	: CCollider(owner, layer, EColliderType::eBox, isKinematic, weight)
 {
-	// ボックスの頂点を設定
-	mV[0] = v0;
-	mV[1] = v1;
-	mV[2] = v2;
-	mV[3] = v3;
-	mV[4] = v4;
-	mV[5] = v5;
-	mV[6] = v6;
-	mV[7] = v7;
+	Set(owner, layer, v0, v1, v2, v3, v4, v5, v6, v7, isKinematic, weight);
 }
 
-// ボックスコライダ―の設定
+// ボックスコライダ―を構成する四角形コライダの設定
 void CColliderBox::Set(CObjectBase* owner, ELayer layer, 
 	const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
-	const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7)
+	const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7,
+	bool isKinematic, float weight)
 {
-	CCollider::Set(owner, layer);
-
-	// ボックスの頂点を設定
-	mV[0] = v0;
-	mV[1] = v1;
-	mV[2] = v2;
-	mV[3] = v3;
-	mV[4] = v4;
-	mV[5] = v5;
-	mV[6] = v6;
-	mV[7] = v7;
+	// 前面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v0, v1, v2, v3, isKinematic, weight));
+	// 背面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v5, v6, v7, isKinematic, weight));
+	// 左面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v5, v1, v0, isKinematic, weight));
+	// 右面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v3, v2, v6, v7, isKinematic, weight));
+	// 上面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v0, v3, v7, isKinematic, weight));
+	// 底面
+	mRectangles.push_back(CColliderRectangle(owner, layer, v1, v5, v6, v2, isKinematic, weight));
 }
 
-// ボックスの頂点を取得
-void CColliderBox::Get(
-	CVector* v0, CVector* v1, CVector* v2, CVector* v3,
-	CVector* v4, CVector* v5, CVector* v6, CVector* v7)
+// 四角形コライダーの配列を返す
+const std::vector<CColliderRectangle>& CColliderBox::Get() const
 {
-	*v0 = mWV[0];
-	*v1 = mWV[1];
-	*v2 = mWV[2];
-	*v3 = mWV[3];
-	*v4 = mWV[4];
-	*v5 = mWV[5];
-	*v6 = mWV[6];
-	*v7 = mWV[7];
+	return mRectangles;
 }
 
 // コライダ―描画
@@ -80,7 +66,12 @@ void CColliderBox::Render()
 
 	// ボックスを描画
 	glBegin(GL_QUADS);
-
+	for (int i = 0; i < mRectangles.size(); i++)
+	{
+		CVector v0, v1, v2, v3;
+		mRectangles[i].Get(&v0, &v1, &v2, &v3);
+		glVertex3fv(v0.X(), v0.Y(), v0.Z());
+	}
 	// 前面
 	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面左上
 	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面左下

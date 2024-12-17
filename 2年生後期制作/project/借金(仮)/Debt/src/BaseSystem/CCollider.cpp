@@ -241,8 +241,9 @@ void CCollider::Set(CObjectBase* owner, ELayer layer)
 	mLayer = layer;
 }
 
-// 分離軸上での三角形の投影範囲の衝突
-bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[3],
+// 分離軸上での投影範囲の衝突
+bool CCollider::OverlapOnAxis(const CVector* poly0,int size0,
+	const CVector* poly1,int size1,
 	const CVector& axis, float& overlapDepth)
 {
 	bool ret = false;
@@ -251,10 +252,10 @@ bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[
 	bool once0 = true;
 	bool once1 = true;
 
-	// 三角形1の投影範囲の計算
-	for (int i = 0; i < 3; i++)
+	// ポリゴン0の投影範囲の計算
+	for (int i = 0; i < size0; i++)
 	{
-		float proj = tri0[i].Dot(axis);
+		float proj = poly0[i].Dot(axis);
 		// 一度だけ通る
 		if (once0)
 		{
@@ -267,10 +268,10 @@ bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[
 		min0 = std::min(min0, proj);
 		max0 = std::max(max0, proj);
 	}
-	// 三角形2の投影範囲の計算
-	for (int i = 0; i < 3; i++)
+	// ポリゴン1の投影範囲の計算
+	for (int i = 0; i < size1; i++)
 	{
-		float proj = tri1[i].Dot(axis);
+		float proj = poly1[i].Dot(axis);
 		// 一度だけ通る
 		if (once1)
 		{
@@ -283,8 +284,8 @@ bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[
 		min1 = std::min(min1, proj);
 		max1 = std::max(max1, proj);
 	}
-	// 三角形0の範囲が三角形1の範囲の左側に離れているか
-	// 三角形1の範囲が三角形0の範囲の左側に離れている場合以外
+	// ポリゴン0の範囲がポリゴン1の範囲の左側に離れているか
+	// ポリゴン1の範囲がポリゴン0の範囲の左側に離れている場合以外
 	// 衝突している
 	if (!(max0 < min1 || max1 < min0))
 	{
@@ -301,7 +302,6 @@ bool CCollider::OverlapTriangleOnAxis(const CVector tri0[3], const CVector tri1[
 	return ret;
 }
 
-// TODO：調整値計算の修正
 // 三角形と三角形の衝突判定
 bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const CVector& t02,
 	const CVector& t10, const CVector& t11, const CVector& t12,
@@ -343,7 +343,7 @@ bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const 
 	{
 		CVector ax = axes[i].Normalized();
 		// 重ならない軸があれば衝突なし
-		if (!OverlapTriangleOnAxis(tri0, tri1, ax, currentOverlapDepth))
+		if (!OverlapOnAxis(tri0, std::size(tri0), tri1, std::size(tri1), ax, currentOverlapDepth))
 		{
 			return false;
 		}
@@ -523,22 +523,6 @@ bool CCollider::CollisionTriangleCapsule(
 	return false;
 }
 
-// 三角形と点の衝突判定
-bool CCollider::CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& tn, const CVector& p)
-{
-	if (CVector::Dot(CVector::Cross(t1 - t0, p - t0), tn) < 0.0f) return false;
-	if (CVector::Dot(CVector::Cross(t2 - t1, p - t1), tn) < 0.0f) return false;
-	if (CVector::Dot(CVector::Cross(t0 - t2, p - t2), tn) < 0.0f) return false;
-	return true;
-}
-
-// 三角形と点の衝突判定
-bool CCollider::CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& p)
-{
-	CVector n = CVector::Cross(t1 - t0, t2 - t0).Normalized();
-	return CollisionTrianglePoint(t0, t1, t2, n, p);
-}
-
 // 三角形と球の衝突判定
 bool CCollider::CollisionTriangleSphere(
 	const CVector& t0, const CVector& t1, const CVector& t2,
@@ -559,7 +543,7 @@ bool CCollider::CollisionTriangleSphere(
 	// 球の中心点から三角形へ垂直に下ろした点を求める
 	CVector point = sp + (-n * dist);
 	// 求めた点が三角形の範囲内か調べる
-	if (CollisionTrianglePoint(t0, t1, t2, n, point))
+	if (IsInsideTriangle(point, t0, t1, t2, n))
 	{
 		// 範囲内であれば、衝突しているので、
 		// 押し戻し量を計算
@@ -1015,49 +999,372 @@ bool CCollider::CollisionMeshCapsule(const std::list<STVertexData>& tris,
 }
 
 // 四角形と三角形の衝突判定
-bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& t0, const CVector& t1, const CVector& t2, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1, const CVector& r2,const CVector& r3, 
+	const CVector& t0, const CVector& t1, const CVector& t2,
+	CHitInfo* hit, bool isLeftMain)
 {
-	return false;
+	//面の法線を、外積を正規化して求める
+	CVector normal = CVector::Cross(r1 - r0, r2 - r0).Normalized();
+
+	// 四角形の各頂点座標
+	CVector rec[4] = { r0,r1,r2,r3 };
+	// 三角形の各頂点座標
+	CVector tri[3] = { t0,t1,t2 };
+	// 分離軸
+	std::vector<CVector> axes;
+	// 衝突の深さ
+	float overlapDepth = FLT_MAX;
+	float currentOverlapDepth = FLT_MAX;
+
+	// 四角形と三角形の全ての辺の組み合わせの外積から分離軸を生成
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			CVector edge0 = rec[(i + 1) % 4] - rec[i];
+			CVector edge1 = tri[(j + 1) % 3] - tri[j];
+			CVector axis = edge0.Cross(edge1);
+
+			// 無効な軸は保存しない
+			if (axis.LengthSqr() > 1e-6f)
+			{
+				// 分離軸の候補として外積を追加
+				axes.push_back(axis);
+			}
+		}
+	}
+
+	// すべての分離軸で重なりを確認
+	for (int i = 0; i < axes.size(); i++)
+	{
+		CVector ax = axes[i].Normalized();
+		// 重ならない軸があれば衝突なし
+		if (!OverlapOnAxis(rec, std::size(rec), tri, std::size(tri), ax, currentOverlapDepth))
+		{
+			return false;
+		}
+
+		// 一番小さいものを衝突の深さに設定する
+		if (currentOverlapDepth < overlapDepth)
+		{
+			overlapDepth = currentOverlapDepth;
+		}
+	}
+
+	// 調整値計算
+	hit->adjust = normal * overlapDepth * (isLeftMain ? -1.0f : 1.0f);
+
+	// すべての軸で重なっていれば衝突している
+	return true;
 }
 
 // 四角形と四角形の衝突判定
-bool CCollider::CollisionRectangle(const CVector& r00, const CVector& r01, const CVector& r02, const CVector& r03, const CVector& r10, const CVector& r11, const CVector& r12, const CVector& r13, CHitInfo* hit)
+bool CCollider::CollisionRectangle(const CVector& r00, const CVector& r01, const CVector& r02, const CVector& r03,
+	const CVector& r10, const CVector& r11, const CVector& r12, const CVector& r13,
+	CHitInfo* hit)
 {
-	return false;
+	//面の法線を、外積を正規化して求める
+	CVector normal = CVector::Cross(r01 - r00, r02 - r00).Normalized();
+
+	// 四角形0の各頂点座標
+	CVector rec0[4] = { r00,r01,r02,r03 };
+	// 四角形1の各頂点座標
+	CVector rec1[4] = { r10,r11,r12,r13 };
+	// 分離軸
+	std::vector<CVector> axes;
+	// 衝突の深さ
+	float overlapDepth = FLT_MAX;
+	float currentOverlapDepth = FLT_MAX;
+
+	// 四角形と三角形の全ての辺の組み合わせの外積から分離軸を生成
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			CVector edge0 = rec0[(i + 1) % 4] - rec0[i];
+			CVector edge1 = rec1[(j + 1) % 3] - rec1[j];
+			CVector axis = edge0.Cross(edge1);
+
+			// 無効な軸は保存しない
+			if (axis.LengthSqr() > 1e-6f)
+			{
+				// 分離軸の候補として外積を追加
+				axes.push_back(axis);
+			}
+		}
+	}
+
+	// すべての分離軸で重なりを確認
+	for (int i = 0; i < axes.size(); i++)
+	{
+		CVector ax = axes[i].Normalized();
+		// 重ならない軸があれば衝突なし
+		if (!OverlapOnAxis(rec0, std::size(rec0), rec1, std::size(rec1), ax, currentOverlapDepth))
+		{
+			return false;
+		}
+
+		// 一番小さいものを衝突の深さに設定する
+		if (currentOverlapDepth < overlapDepth)
+		{
+			overlapDepth = currentOverlapDepth;
+		}
+	}
+
+	// 調整値計算
+	hit->adjust = -normal * overlapDepth;
+
+	// すべての軸で重なっていれば衝突している
+	return true;
 }
 
 // 四角形と線分の衝突判定
-bool CCollider::CColliderRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& ls, const CVector& le, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, 
+	const CVector& ls, const CVector& le, 
+	CHitInfo* hit, bool isLeftMain)
 {
-	return false;
+	//面の法線を、外積を正規化して求める
+	CVector normal = CVector::Cross(r1 - r0, r2 - r0).Normalized();
+	//四角の頂点から線分始点へのベクトルを求める
+	CVector v0sv = ls - r0;
+	//四角の頂点から線分終点へのベクトルを求める
+	CVector v0ev = le - r0;
+	//線分が面と交差しているか内積で確認する
+	float dots = v0sv.Dot(normal);
+	float dote = v0ev.Dot(normal);
+	//プラスは交差してない
+	if (dots * dote >= 0.0f) {
+		//衝突してない（調整不要）
+		hit->adjust = CVector(0.0f, 0.0f, 0.0f);
+		return false;
+	}
+
+	//線分は面と交差している
+	//面と線分の交点を求める
+	//交点の計算
+	CVector cross = ls + (le - ls) * (abs(dots) / (abs(dots) + abs(dote)));
+
+	//交点が四角形内なら衝突している
+	if (!IsInsideRectangle(cross, r0, r1, r2, r3, normal))
+	{
+		//三角形外なので、衝突してない
+		hit->adjust = CVector(0.0f, 0.0f, 0.0f);
+		return false;
+	}
+
+	//ヒット情報に交点を設定
+	hit->cross = cross;
+
+	//調整値計算（衝突しない位置まで戻す）
+	if (dots < 0.0f) {
+		//始点が裏面
+		hit->adjust = normal * dots;
+	}
+	else {
+		//終点が裏面
+		hit->adjust = normal * dote;
+	}
+	if (!isLeftMain) hit->adjust = -hit->adjust;
+	return true;
 }
 
 // 四角形とカプセルの衝突判定
-bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& cs, const CVector& ce, float cr, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, 
+	const CVector& cs, const CVector& ce, float cr,
+	CHitInfo* hit, bool isLeftMain)
 {
-	return false;
-}
+	// 四角形の法線を算出
+	CVector n = CVector::Cross(r1 - r0, r2 - r0).Normalized();
 
-// 四角形と点の衝突判定
-bool CCollider::CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& tn, const CVector& p)
-{
-	return false;
-}
+	// カプセルの始点から四角形の頂点までのベクトルを求める
+	CVector vs = cs - r0;
+	// カプセルの終点から四角形の頂点までのベクトルを求める
+	CVector ve = ce - r0;
 
-//四角形と点の衝突判定
-bool CCollider::CollisionRectanglePoint(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& p)
-{
+	// 各ベクトルと四角形の法線との内積を求める
+	float d1 = CVector::Dot(vs, n);
+	float d2 = CVector::Dot(ve, n);
+
+	// パターン①
+	// カプセルを構成する三角形が交差していたら、線分と四角形の衝突判定を行う
+	// （各内積の結果を乗算してマイナスの場合は、
+	// 　カプセルを構成する線分が四角形と交差している）
+	if (d1 * d2 < 0.0f)
+	{
+		// 線分と四角形の衝突判定を行う
+		if (CollisionRectangleLine(r0, r1, r2, r3, cs, ce, hit, isLeftMain))
+		{
+			// 衝突していた場合は、押し戻しベクトルに
+			// カプセルの半径分の長さを追加して返す
+			hit->adjust += hit->adjust.Normalized() * cr;
+			return true;
+		}
+	}
+
+
+	// 始点と終点を垂直に下ろした最近点を求める
+	CVector c1 = cs - n * d1;
+	CVector c2 = ce - n * d2;
+	// 始点と終点の押し戻し量を求める
+	CVector v1, v2;
+	if (fabsf(d1) <= cr) v1 = (c1 + n * cr) - cs;
+	if (fabsf(d2) <= cr) v2 = (c2 + n * cr) - ce;
+
+	// パターン②
+	// カプセルを構成する線分の始点と終点から四角形への距離を求め、
+	// カプセルの半径より近い（めり込んでいる）場合は、押し戻す
+	{
+		float l1 = FLT_MAX, l2 = FLT_MAX;
+		// 求めた最近点が四角形の内側かつ、距離が半径以下であれば、
+		// 距離と押し戻しベクトルを求める
+		if (IsInsideRectangle(c1, r0, r1, r2, r3, n) && fabsf(d1) <= cr) l1 = v1.LengthSqr();
+		if (IsInsideRectangle(c2, r0, r1, r2, r3, n) && fabsf(d2) <= cr) l2 = v2.LengthSqr();
+
+		if (l1 < FLT_MAX || l2 < FLT_MAX)
+		{
+			if (l1 < FLT_MAX && l2 < FLT_MAX) hit->adjust = l1 >= l2 ? v1 : v2;
+			else hit->adjust = l1 < FLT_MAX ? v1 : v2;
+			if (isLeftMain) hit->adjust = -hit->adjust;
+			return true;
+		}
+	}
+
+	// パターン③
+	// カプセルを構成する線分と四角形の各辺の距離を求め、
+	// カプセルの半径より近い場合は押し戻す
+	{
+		float e1 = CalcDistanceLine(r0, r1, cs, ce);
+		float e2 = CalcDistanceLine(r1, r2, cs, ce);
+		float e3 = CalcDistanceLine(r2, r3, cs, ce);
+		float e4 = CalcDistanceLine(r3, r0, cs, ce);
+		if (std::min(std::min(std::min(e1, e2), e3), e4) <= cr)
+		{
+			if (e1 <= e2 && e1 <= e3 && e1 <= e4)
+			{
+				CVector cv = CVector::Cross(r1 - r0, ce - cs).Normalized();
+				if (cv.LengthSqr() == 0.0f)
+				{
+					CVector nv = (r1 - r0).Normalized();
+					cv = (r0 + nv * CVector::Dot(cs - r0, nv) - cs).Normalized();
+				}
+				hit->adjust = cv * (cr - e1);
+			}
+			else if (e2 <= e1 && e2 <= e3 && e2 <= e4)
+			{
+				CVector cv = CVector::Cross(r2 - r1, ce - cs).Normalized();
+				if (cv.LengthSqr() == 0.0f)
+				{
+					CVector nv = (r2 - r1).Normalized();
+					cv = (r1 + nv * CVector::Dot(cs - r1, nv) - cs).Normalized();
+				}
+				hit->adjust = cv * (cr - e2);
+			}
+			else if (e3 <= e1 && e3 <= e2 && e3 <= e4)
+			{
+				CVector cv = CVector::Cross(r3 - r2, ce - cs).Normalized();
+				if (cv.LengthSqr() == 0.0f)
+				{
+					CVector nv = (r3 - r2).Normalized();
+					cv = (r2 + nv * CVector::Dot(cs - r2, nv) - cs).Normalized();
+				}
+				hit->adjust = cv * (cr - e3);
+			}
+			else
+			{
+				CVector cv = CVector::Cross(r0 - r3, ce - cs).Normalized();
+				if (cv.LengthSqr() == 0.0f)
+				{
+					CVector nv = (r0 - r3).Normalized();
+					cv = (r3 + nv * CVector::Dot(cs - r3, nv) - cs).Normalized();
+				}
+				hit->adjust = cv * (cr - e4);
+			}
+			if (!isLeftMain) hit->adjust = -hit->adjust;
+			return true;
+		}
+	}
+
+	hit->adjust = CVector::zero;
 	return false;
 }
 
 // 四角形と球の衝突判定
-bool CCollider::CColliderRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& sp, const float sr, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	const CVector& sp, const float sr, 
+	CHitInfo* hit, bool isLeftMain)
 {
+	// 四角形の法線を求める
+	CVector n = CVector::Cross(r1 - r0, r2 - r0).Normalized();
+	// 法線の長さが0であれば、無効な四角形なため、衝突していない
+	if (n.LengthSqr() <= 0.0f) return false;
+
+	// 四角形から球までの距離を求めて、
+	// 距離が球の半径より離れていたら、衝突していない
+	CVector v = sp - r0;
+	float dist = CVector::Dot(v, n);
+	if (fabsf(dist) > sr) return false;
+
+	// 球の中心点から四角形へ垂直に下ろした点を求める
+	CVector point = sp + (-n * dist);
+	// 求めた点が四角形の範囲内か調べる
+	if (IsInsideRectangle(point, r0, r1, r2, r3, n))
+	{
+		// 範囲内であれば、衝突しているので、
+		// 押し戻し量を計算
+		float l = (sr - fabsf(dist)) * (dist < 0.0f ? -1.0f : 1.0f);
+		hit->adjust = n * l * (isLeftMain ? -1.0f : 1.0f);
+		return true;
+	}
+
+	// 垂直に下ろした点が四角形の範囲外の場合、
+	// 各辺と球が衝突していないか確認
+
+	// 四角形の各辺との最短距離を求め、
+	// 半径より小さい場合は衝突しているため、
+	// その辺との押し戻し量を計算して返す
+
+	// 四角形の頂点0から頂点1までの辺
+	dist = CalcDistancePointToLine(sp, r0, r1);
+	if (dist <= sr)
+	{
+		float l = sr - dist;
+		hit->adjust = n * l * (isLeftMain ? -1.0f : 1.0f);
+		return true;
+	}
+	// 四角形の頂点1から頂点2までの辺
+	dist = CalcDistancePointToLine(sp, r1, r2);
+	if (dist <= sr)
+	{
+		float l = sr - dist;
+		hit->adjust = n * l * (isLeftMain ? -1.0f : 1.0f);
+		return true;
+	}
+	// 四角形の頂点2から頂点3までの辺
+	dist = CalcDistancePointToLine(sp, r2, r3);
+	if (dist <= sr)
+	{
+		float l = sr - dist;
+		hit->adjust = n * l * (isLeftMain ? -1.0f : 1.0f);
+		return true;
+	}
+	// 四角形の頂点3から頂点0までの辺
+	dist = CalcDistancePointToLine(sp, r3, r0);
+	if (dist <= sr)
+	{
+		float l = sr - dist;
+		hit->adjust = n * l * (isLeftMain ? -1.0f : 1.0f);
+		return true;
+	}
+
+	// 四角形の範囲外かつ、各辺とも衝突していない場合は、
+	// 完全に衝突していない
 	return false;
 }
 
 // 四角形とメッシュの衝突判定
-bool CCollider::CollisionRectangleMesh(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionRectangleMesh(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	const std::list<STVertexData>& tris, 
+	CHitInfo* hit, bool isLeftMain)
 {
 	return false;
 }
@@ -1155,6 +1462,7 @@ float CCollider::CalcDistanceLine(const CVector& s1, const CVector& e1, const CV
 	}
 }
 
+// 指定した点が三角形の内側にあるかどうか
 bool CCollider::IsInsideTriangle(const CVector& p, const CVector& t0, const CVector& t1, const CVector& t2, const CVector& n)
 {
 	// 三角形の各辺と三角形の各頂点から点までのベクトルに
@@ -1168,6 +1476,31 @@ bool CCollider::IsInsideTriangle(const CVector& p, const CVector& t0, const CVec
 	if (CVector::Dot(CVector::Cross(t1 - t0, p - t0), n) < 0.0f) return false;
 	if (CVector::Dot(CVector::Cross(t2 - t1, p - t1), n) < 0.0f) return false;
 	if (CVector::Dot(CVector::Cross(t0 - t2, p - t2), n) < 0.0f) return false;
+	return true;
+}
+
+// 指定した点が四角形の内側にあるかどうか
+bool CCollider::IsInsideRectangle(const CVector& p, const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& n)
+{
+	// 四角形の各辺と四角形の各頂点から点までのベクトルに
+	// 垂直なベクトルを外積で求める
+
+	// 四角形の法線と求めたベクトルの内積で
+	// 超ベクトルが同じ方向を向いているか調べる
+
+	// これを四角形の四辺分行い、全て条件を満たした場合は、
+	// 四角形の内側と判断する
+
+	// 四角形の各頂点
+	CVector rect[4] = { r0,r1,r2,r3 };
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (CVector::Dot(CVector::Cross(rect[(i + 1) % 4] - rect[i], p - rect[i]), n) < 0.0f)
+		{
+			return false;
+		}
+	}
 	return true;
 }
 
@@ -1219,6 +1552,13 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 			auto tris = mesh->Get();
 			return CollisionMeshLine(tris, ls0, le0, line0->Bounds(), hit, false);
 		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r0, r1, r2, r3;
+			rect->Get(&r0, &r1, &r2, &r3);
+			return CollisionRectangleLine(r0, r1, r2, r3, ls0, le0, hit, false);
+		}
 		}
 		break;
 	}
@@ -1261,12 +1601,18 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 			float cr = capsule->Radius();
 			return CollisionSphereCapsule(sp0, sr0, cs, ce, cr, hit, true);
 		}
-		break;
 		case EColliderType::eMesh:
 		{
 			CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c1);
 			auto tris = mesh->Get();
 			return CollisionMeshSphere(tris, sphere0, hit, false);
+		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r0, r1, r2, r3;
+			rect->Get(&r0, &r1, &r2, &r3);
+			return CollisionRectangleSphere(r0, r1, r2, r3, sp0, sr0, hit, false);
 		}
 		}
 		break;
@@ -1313,6 +1659,13 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 			CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c1);
 			auto tris = mesh->Get();
 			return CollisionMeshTriangle(tris, triangle0, hit, false);
+		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r0, r1, r2, r3;
+			rect->Get(&r0, &r1, &r2, &r3);
+			return CollisionRectangleTriangle(r0, r1, r2, r3, t00, t01, t02, hit, false);
 		}
 		}
 		break;
@@ -1362,6 +1715,13 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 			auto tris = mesh->Get();
 			return CollisionMeshCapsule(tris, capsule0, hit, false);
 		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r0, r1, r2, r3;
+			rect->Get(&r0, &r1, &r2, &r3);
+			return CollisionRectangleCapsule(r0, r1, r2, r3, cs0, ce0, cr0, hit, false);
+		}
 		}
 		break;
 	}
@@ -1398,8 +1758,67 @@ bool CCollider::Collision(CCollider* c0, CCollider* c1, CHitInfo* hit)
 			// メッシュとメッシュは衝突判定を行わない
 			return false;
 		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r0, r1, r2, r3;
+			rect->Get(&r0, &r1, &r2, &r3);
+			return CollisionRectangleMesh(r0, r1, r2, r3, tris, hit, false);
+		}
 		}
 		break;
+	}
+	case EColliderType::eRectangle:
+	{
+		CColliderRectangle* rec = dynamic_cast<CColliderRectangle*>(c0);
+		CVector r00, r01, r02, r03;
+		rec->Get(&r00, &r01, &r02, &r03);
+		switch (c1->Type())
+		{
+		case EColliderType::eLine:
+		{
+			CColliderLine* line = dynamic_cast<CColliderLine*>(c1);
+			CVector ls, le;
+			line->Get(&ls, &le);
+			return CollisionRectangleLine(r00, r01, r02, r03, ls, le, hit, true);
+		}
+		case EColliderType::eSphere:
+		{
+			CColliderSphere* sphere = dynamic_cast<CColliderSphere*>(c1);
+			CVector sp;
+			float sr;
+			sphere->Get(&sp, &sr);
+			return CollisionRectangleSphere(r00, r01, r02, r03, sp, sr, hit, true);
+		}
+		case EColliderType::eTriangle:
+		{
+			CColliderTriangle* tri = dynamic_cast<CColliderTriangle*>(c1);
+			CVector t0, t1, t2;
+			tri->Get(&t0, &t1, &t2);
+			return CollisionRectangleTriangle(r00, r01, r02, r03, t0, t1, t2, hit, true);
+		}
+		case EColliderType::eCapsule:
+		{
+			CColliderCapsule* capsule = dynamic_cast<CColliderCapsule*>(c1);
+			CVector cs, ce;
+			capsule->Get(&cs, &ce);
+			float cr = capsule->Radius();
+			return CollisionRectangleCapsule(r00, r01, r02, r03, cs, ce, cr, hit, true);
+		}
+		case EColliderType::eMesh:
+		{
+			CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c1);
+			auto tris = mesh->Get();
+			return CollisionRectangleMesh(r00, r01, r02, r03, tris, hit, true);
+		}
+		case EColliderType::eRectangle:
+		{
+			CColliderRectangle* rec = dynamic_cast<CColliderRectangle*>(c1);
+			CVector r10, r11, r12, r13;
+			rec->Get(&r10, &r11, &r12, &r13);
+			return CollisionRectangle(r00, r01, r02, r03, r10, r11, r12, r13, hit);
+		}
+		}
 	}
 	}
 	return false;

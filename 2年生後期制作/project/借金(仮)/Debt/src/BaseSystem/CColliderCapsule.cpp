@@ -30,7 +30,7 @@ void CColliderCapsule::Set(CObjectBase* owner, ELayer layer,
 	mRadius = radius;
 }
 
-// カプセルを構成する線分の視点と終点を取得
+// カプセルを構成する線分の始点と終点を取得
 void CColliderCapsule::Get(CVector* v0, CVector* v1) const
 {
 	*v0 = mWV[0];
