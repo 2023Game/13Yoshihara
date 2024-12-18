@@ -8,39 +8,41 @@
 #include "CColliderRectangle.h"
 #include "CColliderTriangle.h"
 
+// アニメーションのパス
+#define ANIM_PATH "Character\\TrashBox\\anim\\"
 /*
  プレイヤーのアニメーションデータのテーブル
  (と)＝蓋が閉じている状態からのアニメーション
  (開)＝蓋が開いている状態からのアニメーション
  (開閉)＝両方の状態兼用のアニメーション
 */
-const CTrashPlayer::AnimData CTrashPlayer::ANIM_DATA[] =
+const std::vector<CXCharacter::AnimData> ANIM_DATA =
 {
-	{ "",													true,	0.0f	},	// Tポーズ
-	{ "Character\\TrashBox\\anim\\Idle_Close.x",			true,	30.0f	},	// 待機					（と）
-	{ "Character\\TrashBox\\anim\\Idle_Open.x",				true,	30.0f	},	// 待機					（開）
-	{ "Character\\TrashBox\\anim\\Move_Close.x",			true,	80.0f	},	// 移動					（と）
-	{ "Character\\TrashBox\\anim\\Move_Open.x",				true,	80.0f	},	// 移動					（開）
-	{ "Character\\TrashBox\\anim\\Damage_Close_Start.x",	false,	10.0f	},	// 被弾開始				（と）
-	{ "Character\\TrashBox\\anim\\Damage_Close.x",			true,	11.0f	},	// 被弾ノックバック		（と）
-	{ "Character\\TrashBox\\anim\\Damage_Close_End.x",		false,	51.0f	},	// 被弾終了				（と）
-	{ "Character\\TrashBox\\anim\\Damage_Open_Start.x",		false,	10.0f	},	// 被弾開始				（開）
-	{ "Character\\TrashBox\\anim\\Damage_Open.x",			true,	11.0f	},	// 被弾ノックバック		（開）
-	{ "Character\\TrashBox\\anim\\Damage_Open_End.x",		false,	51.0f	},	// 被弾終了				（開）
-	{ "Character\\TrashBox\\anim\\Jump_Close_Start.x",		false,	20.0f	},	// ジャンプ開始			（と）
-	{ "Character\\TrashBox\\anim\\Jump_Close.x",			true,	11.0f	},	// ジャンプ中			（と）
-	{ "Character\\TrashBox\\anim\\Jump_Close_End.x",		false,	21.0f	},	// ジャンプ終了			（と）
-	{ "Character\\TrashBox\\anim\\Jump_Open_Start.x",		false,	20.0f	},	// ジャンプ開始			（開）
-	{ "Character\\TrashBox\\anim\\Jump_Open.x",				true,	11.0f	},	// ジャンプ中			（開）
-	{ "Character\\TrashBox\\anim\\Jump_Open_End.x",			false,	21.0f	},	// ジャンプ終了			（開）
-	{ "Character\\TrashBox\\anim\\Attack_Start.x",			false,	35.0f	},	// 攻撃開始				（開閉）
-	{ "Character\\TrashBox\\anim\\Attack.x",				false,	11.0f	},	// 攻撃中				（開閉）
-	{ "Character\\TrashBox\\anim\\Attack_End.x",			false,	69.0f	},	// 攻撃終了				（開閉）
-	{ "Character\\TrashBox\\anim\\Critical_Start.x",		false,	35.0f	},	// クリティカル攻撃開始	（開閉）
-	{ "Character\\TrashBox\\anim\\Critical.x",				false,	11.0f	},	// クリティカル攻撃中	（開閉）
-	{ "Character\\TrashBox\\anim\\Critical_End.x",			false,	69.0f	},	// クリティカル攻撃終了	（開閉）
-	{ "Character\\TrashBox\\anim\\Open.x",					true,	10.0f	},	// 蓋を開く				（と）
-	{ "Character\\TrashBox\\anim\\Close.x",					true,	10.0f	},	// 蓋を閉じる			（開）
+	{ "",								true,	0.0f,	1.0f},	// Tポーズ
+	{ ANIM_PATH"Idle_Close.x",			true,	30.0f,	1.0f},	// 待機					（と）
+	{ ANIM_PATH"Idle_Open.x",			true,	30.0f,	1.0f},	// 待機					（開）
+	{ ANIM_PATH"Move_Close.x",			true,	80.0f,	1.0f},	// 移動					（と）
+	{ ANIM_PATH"Move_Open.x",			true,	80.0f,	1.0f},	// 移動					（開）
+	{ ANIM_PATH"Damage_Close_Start.x",	false,	10.0f,	1.0f},	// 被弾開始				（と）
+	{ ANIM_PATH"Damage_Close.x",		true,	11.0f,	1.0f},	// 被弾ノックバック		（と）
+	{ ANIM_PATH"Damage_Close_End.x",	false,	51.0f,	1.0f},	// 被弾終了				（と）
+	{ ANIM_PATH"Damage_Open_Start.x",	false,	10.0f,	1.0f},	// 被弾開始				（開）
+	{ ANIM_PATH"Damage_Open.x",			true,	11.0f,	1.0f},	// 被弾ノックバック		（開）
+	{ ANIM_PATH"Damage_Open_End.x",		false,	51.0f,	1.0f},	// 被弾終了				（開）
+	{ ANIM_PATH"Jump_Close_Start.x",	false,	20.0f,	1.0f},	// ジャンプ開始			（と）
+	{ ANIM_PATH"Jump_Close.x",			true,	11.0f,	1.0f},	// ジャンプ中			（と）
+	{ ANIM_PATH"Jump_Close_End.x",		false,	21.0f,	1.0f},	// ジャンプ終了			（と）
+	{ ANIM_PATH"Jump_Open_Start.x",		false,	20.0f,	1.0f},	// ジャンプ開始			（開）
+	{ ANIM_PATH"Jump_Open.x",			true,	11.0f,	1.0f},	// ジャンプ中			（開）
+	{ ANIM_PATH"Jump_Open_End.x",		false,	21.0f,	1.0f},	// ジャンプ終了			（開）
+	{ ANIM_PATH"Attack_Start.x",		false,	35.0f,	1.0f},	// 攻撃開始				（開閉）
+	{ ANIM_PATH"Attack.x",				false,	11.0f,	1.0f},	// 攻撃中				（開閉）
+	{ ANIM_PATH"Attack_End.x",			false,	69.0f,	1.0f},	// 攻撃終了				（開閉）
+	{ ANIM_PATH"Critical_Start.x",		false,	35.0f,	1.0f},	// クリティカル攻撃開始	（開閉）
+	{ ANIM_PATH"Critical.x",			false,	11.0f,	1.0f},	// クリティカル攻撃中	（開閉）
+	{ ANIM_PATH"Critical_End.x",		false,	69.0f,	1.0f},	// クリティカル攻撃終了	（開閉）
+	{ ANIM_PATH"Open.x",				true,	10.0f,	1.0f},	// 蓋を開く				（と）
+	{ ANIM_PATH"Close.x",				true,	10.0f,	1.0f},	// 蓋を閉じる			（開）
 };
 
 #define CAPSULE_RADIUS 2.5f

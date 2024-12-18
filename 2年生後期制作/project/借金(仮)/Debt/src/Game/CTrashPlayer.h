@@ -35,10 +35,10 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
-	CColliderTriangle* mpColTri;
-	CColliderTriangle* mpColliderTriangle;
-	CColliderRectangle* mpColliderRect;
-	CColliderBox* mpColliderBox;
+	CCollider* mpColTri;
+	CCollider* mpColliderTriangle;
+	CCollider* mpColliderRect;
+	CCollider* mpColliderBox;
 	CTrashPlayerStatus mPlayerStatus;
 	// アクションのキー入力
 	void ActionInput();
@@ -72,16 +72,6 @@ private:
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
-
-	// アニメーションデータ
-	struct AnimData
-	{
-		std::string path;	// アニメーションデータのパス
-		bool loop;			// ループするかどうか
-		float frameLength;	// アニメーションのフレーム数
-	};
-	// アニメーションデータのテーブル
-	static const AnimData ANIM_DATA[];
 
 	/*
 	アニメーションの種類

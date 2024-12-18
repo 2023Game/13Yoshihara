@@ -475,6 +475,24 @@
     <ClCompile Include="src\Test\CColRectangle.cpp">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CImage3D.cpp">
+      <Filter>ソース ファイル\BaseSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCactus.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCactusNeedle.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSword.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CWeapon.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -854,6 +872,24 @@
     </ClInclude>
     <ClInclude Include="src\Test\CColRectangle.h">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CImage3D.h">
+      <Filter>ソース ファイル\BaseSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCactusNeedle.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCactus.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI3D.h">
+      <Filter>ソース ファイル\Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CWeapon.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSword.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

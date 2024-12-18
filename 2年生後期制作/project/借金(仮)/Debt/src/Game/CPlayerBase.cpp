@@ -39,16 +39,29 @@ CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 
 CPlayerBase::~CPlayerBase()
 {
-	if (mpColliderCapsule != nullptr)
-	{
-		delete mpColliderCapsule;
-		mpColliderCapsule = nullptr;
-	}
+	// コライダ―を削除
+	SAFE_DELETE(mpColliderCapsule);
 }
 
 CPlayerBase* CPlayerBase::Instance()
 {
 	return spInstance;
+}
+
+// アニメーション切り替え
+void CPlayerBase::ChangeAnimation(int type, bool restart)
+{
+	if (mpAnimData == nullptr) return;
+	if (!(0 <= type && type < mpAnimData->size())) return;
+	AnimData data = (*mpAnimData)[type];
+	CXCharacter::ChangeAnimation
+	(
+		type,
+		data.loop,
+		data.frameLength,
+		restart
+	);
+	CXCharacter::SetAnimationSpeed(data.speed);
 }
 
 // キーの入力情報から移動ベクトルを求める

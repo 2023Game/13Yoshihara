@@ -12,40 +12,50 @@ public:
 	/// </summary>
 	/// <param name="owner">コライダ―の持ち主</param>
 	/// <param name="layer">衝突判定用レイヤー</param>
-	/// <param name="v0">前面左上　ボックスの頂点 0</param>
-	/// <param name="v1">前面左下　ボックスの頂点 1</param>
-	/// <param name="v2">前面右下　ボックスの頂点 2</param>
-	/// <param name="v3">前面右上　ボックスの頂点 3</param>
-	/// <param name="v4">背面左上　ボックスの頂点 4</param>
-	/// <param name="v5">背面左下　ボックスの頂点 5</param>
-	/// <param name="v6">背面右下　ボックスの頂点 6</param>
-	/// <param name="v7">背面右上　ボックスの頂点 7</param>
+	/// <param name="min">最小座標</param>
+	/// <param name="max">最大座標</param>
 	/// <param name="isKinematic">trueならば、衝突時に押し戻しの影響を受けない</param>
 	/// <param name="weight">コライダ―の重量</param>
 	CColliderBox(CObjectBase* owner, ELayer layer,
-		const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
-		const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7,
+		CVector min, CVector max,
 		bool isKinematic = false, float weight = 1.0f);
 
 	/// <summary>
-	/// ボックスコライダを構成する四角形コライダの設定
+	/// ボックスコライダを構成する頂点の設定
 	/// </summary>
 	/// <param name="owner">コライダ―の持ち主</param>
 	/// <param name="layer">衝突判定用レイヤー</param>
-	/// <param name="v0">前面左上　ボックスの頂点 0</param>
-	/// <param name="v1">前面左下　ボックスの頂点 1</param>
-	/// <param name="v2">前面右下　ボックスの頂点 2</param>
-	/// <param name="v3">前面右上　ボックスの頂点 3</param>
-	/// <param name="v4">背面左上　ボックスの頂点 4</param>
-	/// <param name="v5">背面左下　ボックスの頂点 5</param>
-	/// <param name="v6">背面右下　ボックスの頂点 6</param>
-	/// <param name="v7">背面右上　ボックスの頂点 7</param>
+	/// <param name="min">最小座標</param>
+	/// <param name="max">最大座標</param>
+	/// <param name="isKinematic">trueならば、衝突時に押し戻しの影響を受けない</param>
+	/// <param name="weight">コライダ―の重量</param>
 	void Set(CObjectBase* owner, ELayer layer,
-		const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
-		const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7,
-		bool isKinematic, float weight);
-	// 四角形コライダーの配列を返す
-	const std::vector<CColliderRectangle>& Get() const;
+		CVector min, CVector max);
+
+	/// <summary>
+	/// ボックスの頂点を取得
+	/// </summary>
+	/// <param name="v0">前面　右上</param>
+	/// <param name="v1">前面　左上</param>
+	/// <param name="v2">前面　左下</param>
+	/// <param name="v3">前面　右下</param>
+	/// <param name="v4">背面　右上</param>
+	/// <param name="v5">背面　左上</param>
+	/// <param name="v6">背面　左下</param>
+	/// <param name="v7">背面　右下</param>
+	void Get(CVector* v0, CVector* v1, CVector* v2, CVector* v3,
+		CVector* v4, CVector* v5, CVector* v6, CVector* v7) const;
+
+	/// <summary>
+	/// ボックスを構成する四角形コライダの頂点を取得
+	/// </summary>
+	/// <param name="v0"></param>
+	/// <param name="v1"></param>
+	/// <param name="v2"></param>
+	/// <param name="v3"></param>
+	/// <param name="num"></param>
+	void GetRectangle(CVector* v0, CVector* v1, CVector* v2, CVector* v3,
+		int num);
 
 	//コライダ―描画
 	void Render() override;
@@ -55,6 +65,8 @@ protected:
 	void UpdateCol() override;
 
 private:
-	// 四角形コライダ―の配列作成
-	std::vector<CColliderRectangle> mRectangles;
+	CVector mMin;	// 最小座標
+	CVector mMax;	// 最大座標
+	CVector mV[8];	// ボックスの頂点の配列
+	CVector mWV[8];	// ボックスの頂点のワールド座標
 };

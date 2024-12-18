@@ -40,6 +40,7 @@
     <ClCompile Include="src\BaseSystem\CFont.cpp" />
     <ClCompile Include="src\BaseSystem\CCharaBase.cpp" />
     <ClCompile Include="src\BaseSystem\CGamePause.cpp" />
+    <ClCompile Include="src\BaseSystem\CImage3D.cpp" />
     <ClCompile Include="src\BaseSystem\CInput.cpp" />
     <ClCompile Include="src\BaseSystem\CLineEffect.cpp" />
     <ClCompile Include="src\BaseSystem\CMaterial.cpp" />
@@ -76,7 +77,11 @@
     <ClCompile Include="src\Game\CBillBoardUI.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
+    <ClCompile Include="src\Game\CCactus.cpp" />
+    <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
+    <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
+    <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
@@ -116,6 +121,7 @@
     <ClCompile Include="src\Game\CTrashPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CTrashJobStatus.cpp" />
     <ClCompile Include="src\Game\CTrashStatusBase.cpp" />
+    <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
@@ -159,6 +165,7 @@
     <ClInclude Include="src\BaseSystem\CFont.h" />
     <ClInclude Include="src\BaseSystem\CCharaBase.h" />
     <ClInclude Include="src\BaseSystem\CGamePause.h" />
+    <ClInclude Include="src\BaseSystem\CImage3D.h" />
     <ClInclude Include="src\BaseSystem\CInput.h" />
     <ClInclude Include="src\BaseSystem\CLineEffect.h" />
     <ClInclude Include="src\BaseSystem\CMaterial.h" />
@@ -204,7 +211,11 @@
     <ClInclude Include="src\Game\CBillBoardUI.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
+    <ClInclude Include="src\Game\CCactus.h" />
+    <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CCar.h" />
+    <ClInclude Include="src\Game\CGaugeUI3D.h" />
+    <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />
@@ -244,6 +255,7 @@
     <ClInclude Include="src\Game\CTrashPlayerStatus.h" />
     <ClInclude Include="src\Game\CTrashJobStatus.h" />
     <ClInclude Include="src\Game\CTrashStatusBase.h" />
+    <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\JobType.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />

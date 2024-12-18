@@ -1420,6 +1420,11 @@ bool CCollider::CollisionBoxMesh(CColliderBox* boxCol,
 	return false;
 }
 
+bool CCollider::CollisionBoxRectangle(CColliderBox* boxCol, CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain)
+{
+	return false;
+}
+
 float CCollider::CalcDistancePointToLine(const CVector& point, const CVector& lineS, const CVector& lineE, CVector* nearest)
 {
 	CVector SE = lineE - lineS;

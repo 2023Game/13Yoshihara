@@ -510,6 +510,13 @@ public:
 	static bool CollisionBoxMesh(CColliderBox* boxCol,
 		const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain);
 
+	/// <summary>
+	/// ボックスと四角形の衝突判定
+	/// </summary>
+	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rectCol">四角形コライダ―</param>
+	/// <param name="hit">衝突した時の情報</param>
+	/// <returns>trueならば、衝突している</returns>
 	static bool CollisionBoxRectangle(CColliderBox* boxCol,
 		CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain);
 

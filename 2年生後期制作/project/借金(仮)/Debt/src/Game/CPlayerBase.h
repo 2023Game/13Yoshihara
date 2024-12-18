@@ -39,6 +39,9 @@ public:
 	void Render();
 
 protected:
+	// アニメーション切り替え
+	void ChangeAnimation(int type, bool restart = false);
+
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec();
 

@@ -5,38 +5,50 @@
 #include "CColliderRectangle.h"
 
 CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer, 
-	const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
-	const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7,
+	CVector min,CVector max,
 	bool isKinematic, float weight)
 	: CCollider(owner, layer, EColliderType::eBox, isKinematic, weight)
 {
-	Set(owner, layer, v0, v1, v2, v3, v4, v5, v6, v7, isKinematic, weight);
+	Set(owner, layer, min, max);
 }
 
-// ボックスコライダ―を構成する四角形コライダの設定
+// ボックスコライダ―を構成する頂点の設定
 void CColliderBox::Set(CObjectBase* owner, ELayer layer, 
-	const CVector& v0, const CVector& v1, const CVector& v2, const CVector& v3,
-	const CVector& v4, const CVector& v5, const CVector& v6, const CVector& v7,
-	bool isKinematic, float weight)
+	CVector min, CVector max)
 {
-	// 前面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v0, v1, v2, v3, isKinematic, weight));
-	// 背面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v5, v6, v7, isKinematic, weight));
-	// 左面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v5, v1, v0, isKinematic, weight));
-	// 右面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v3, v2, v6, v7, isKinematic, weight));
-	// 上面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v4, v0, v3, v7, isKinematic, weight));
-	// 底面
-	mRectangles.push_back(CColliderRectangle(owner, layer, v1, v5, v6, v2, isKinematic, weight));
+	mMin = min;
+	mMax = max;
+
+	// 前面　右上
+	mV[0] = CVector(mMax.X(), mMax.Y(), mMax.Z());
+	// 前面　左上
+	mV[1] = CVector(mMin.X(), mMax.Y(), mMax.Z());
+	// 前面　左下
+	mV[2] = CVector(mMin.X(), mMin.Y(), mMax.Z());
+	// 前面　右下
+	mV[3] = CVector(mMax.X(), mMin.Y(), mMax.Z());
+	// 背面　右上
+	mV[4] = CVector(mMax.X(), mMax.Y(), mMin.Z());
+	// 背面　左上
+	mV[5] = CVector(mMin.X(), mMax.Y(), mMin.Z());
+	// 背面　左下
+	mV[6] = CVector(mMin.X(), mMin.Y(), mMin.Z());
+	// 背面　右下
+	mV[7] = CVector(mMax.X(), mMin.Y(), mMin.Z());
 }
 
-// 四角形コライダーの配列を返す
-const std::vector<CColliderRectangle>& CColliderBox::Get() const
+// ボックスの頂点を取得
+void CColliderBox::Get(CVector* v0, CVector* v1, CVector* v2, CVector* v3,
+	CVector* v4, CVector* v5, CVector* v6, CVector* v7) const
 {
-	return mRectangles;
+	*v0 = mWV[0];
+	*v1 = mWV[1];
+	*v2 = mWV[2];
+	*v3 = mWV[3];
+	*v4 = mWV[4];
+	*v5 = mWV[5];
+	*v6 = mWV[6];
+	*v7 = mWV[7];
 }
 
 // コライダ―描画
@@ -66,47 +78,41 @@ void CColliderBox::Render()
 
 	// ボックスを描画
 	glBegin(GL_QUADS);
-	for (int i = 0; i < mRectangles.size(); i++)
-	{
-		CVector v0, v1, v2, v3;
-		mRectangles[i].Get(&v0, &v1, &v2, &v3);
-		glVertex3fv(v0.X(), v0.Y(), v0.Z());
-	}
 	// 前面
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面左上
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面左下
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面右下
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面右上
+	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
+	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
+	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
+	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
 
 	// 背面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面左上
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面右上
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面右下
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面左下
+	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
+	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
+	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
+	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
 
 	// 左側面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面左上
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面左下
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面左下
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面左上
+	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
+	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
+	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
+	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
 
 	// 右側面
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面右上
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面右下
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面右下
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面右上
+	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
+	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
+	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
+	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
 
 	// 上面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面左上
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面左上
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面右上
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面右上
+	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
+	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
+	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
+	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
 
 	// 底面
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面左下
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面右下
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面右下
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面左下
+	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
+	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
+	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
+	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
 	glEnd();
 
 	// ライトオン

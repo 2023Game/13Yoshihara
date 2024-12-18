@@ -20,7 +20,9 @@ enum class ETag
 	eBullet,// 弾丸
 	eFlame,	// 炎
 	eSlash,	// 斬撃
+
 	eInteractUI, //インタラクト
+	eUI,
 
 	eCamera,// カメラ
 

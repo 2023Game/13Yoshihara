@@ -8,6 +8,14 @@
 class CXCharacter : public CCharaBase
 {
 public:
+	// アニメーションデータ
+	struct AnimData
+	{
+		std::string path;	// アニメーションデータのパス
+		bool loop;			// ループするかどうか
+		float frameLength;	// アニメーションのフレーム数
+		float speed;		// アニメーションの再生速度
+	};
 	//コンストラクタ
 	CXCharacter(ETag tag, ETaskPriority prio, int sortOrder = 0,
 		ETaskPauseType pause = ETaskPauseType::eGame);
@@ -17,7 +25,7 @@ public:
 	//初期化処理
 	void Init(CModelX* model);
 	//アニメーションの変更
-	void ChangeAnimation(int index, bool loop, float framesize);
+	void ChangeAnimation(int index, bool loop, float framesize, bool restart);
 	//更新処理
 	void Update(const CMatrix& m);
 	void Update();
@@ -44,6 +52,9 @@ public:
 	float GetAnimationSpeed() const;
 
 protected:
+	// アニメーションデータのテーブル
+	const std::vector<AnimData>* mpAnimData;
+
 	CModelX* mpModel;				//モデルデータ
 	CMatrix* mpCombinedMatrix;		//合成行列退避
 

@@ -9,9 +9,11 @@ enum class ETaskPriority
 	eBackground,// 背景
 	eDefault,	// デフォルト
 	ePlayer,	// プレイヤー
+	eEnemy,		// 敵
 
 	eEffect,	// エフェクト
 	eBillboard,	// ビルボードイメージ
+	eUI3D,
 
 	eCamera,	// カメラ
 
