@@ -707,14 +707,6 @@ void CTrashPlayer::UpdateOpenClose()
 	}
 }
 
-// アニメーション切り替え
-void CTrashPlayer::ChangeAnimation(EAnimType type)
-{
-	if (!(EAnimType::None < type && type < EAnimType::Num)) return;
-	AnimData data = ANIM_DATA[(int)type];
-	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength);
-}
-
 // ステータス切り替え
 void CTrashPlayer::ChangeState(EState state)
 {

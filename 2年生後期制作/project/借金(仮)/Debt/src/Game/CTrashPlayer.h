@@ -112,8 +112,6 @@ private:
 
 		Num
 	};
-	// アニメーション切り替え
-	void ChangeAnimation(EAnimType type);
 
 	// プレイヤーの状態
 	enum class EState
@@ -134,7 +132,7 @@ private:
 		eCriticalEnd,	// クリティカル攻撃終了
 		eOpenClose,		// 蓋を開閉する
 	};
-	// ステータス切り替え
+	// 状態切り替え
 	void ChangeState(EState state);
 	// 状態の文字列を取得
 	std::string GetStateStr(EState state) const;

@@ -1,11 +1,13 @@
 #include "CTrashStatusBase.h"
 
-CTrashStatusBase::CTrashStatusBase()
-	: mHp(0)
-	, mBaseMoveSpeed(0.0f)
-	, mJumpSpeed(0.0f)
-	, mKnockback(0.0f)
-	, mPower(0)
+CTrashStatusBase::CTrashStatusBase(int maxHp,float moveSpeed,float jumpSpeed,float knockback,
+	int power)
+	: mMaxHp(maxHp)
+	, mHp(mMaxHp)
+	, mMoveSpeed(moveSpeed)
+	, mJumpSpeed(jumpSpeed)
+	, mKnockback(knockback)
+	, mPower(power)
 	, mTakeKnockback(0)
 {
 }
@@ -14,10 +16,36 @@ CTrashStatusBase::~CTrashStatusBase()
 {
 }
 
-// ダメージを1受ける
-void CTrashStatusBase::TakeDamage()
+// ダメージを受ける
+void CTrashStatusBase::TakeDamage(int damage, CObjectBase* causer)
 {
-	SetHp(GetHp() - 1);
+	// 既に死亡していたら、ダメージを受けない
+	if (IsDeath()) return;
+
+	// 受けたダメージが現在HP以上なら
+	if (damage >= mHp)
+	{
+		// HPを0にして、死亡
+		mHp = 0;
+		Death();
+	}
+	// 現在HPの方が多い場合は、ダメージ分減らす
+	else
+	{
+		mHp -= damage;
+	}
+}
+
+// 死亡
+void CTrashStatusBase::Death()
+{
+}
+
+// 死んでいるかどうか
+bool CTrashStatusBase::IsDeath() const
+{
+	// 現在HPが0ならば、死亡
+	return mHp <= 0;
 }
 
 // 現在HPを取得
@@ -34,12 +62,12 @@ void CTrashStatusBase::SetHp(int hp)
 // 移動速度を取得
 float CTrashStatusBase::GetBaseMoveSpeed() const
 {
-	return mBaseMoveSpeed;
+	return mMoveSpeed;
 }
 // 基礎移動速度を設定
 void CTrashStatusBase::SetBaseMoveSpeed(float baseMoveSpeed)
 {
-	mBaseMoveSpeed = baseMoveSpeed;
+	mMoveSpeed = baseMoveSpeed;
 }
 
 // ジャンプ速度を取得

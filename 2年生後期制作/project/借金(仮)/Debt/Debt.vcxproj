@@ -80,6 +80,7 @@
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CCar.cpp" />
+    <ClCompile Include="src\Game\CCharaStatusBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CCar.h" />
+    <ClInclude Include="src\Game\CCharaStatusBase.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />

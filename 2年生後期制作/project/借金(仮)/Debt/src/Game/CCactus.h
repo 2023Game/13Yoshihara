@@ -1,8 +1,9 @@
 #pragma once
 #include "CEnemy.h"
+#include "CCharaStatusBase.h"
 
 // サボテンの敵クラス
-class CCactus : public CEnemy
+class CCactus : public CEnemy , public CCharaStatusBase
 {
 public:
 	// コンストラクタ

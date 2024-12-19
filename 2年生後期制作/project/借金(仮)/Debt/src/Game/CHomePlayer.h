@@ -26,16 +26,6 @@ private:
 	void UpdateIdle();
 	// 移動処理
 	void UpdateMove();
-
-	// アニメーションデータ
-	struct AnimData
-	{
-		std::string path;	// アニメーションデータのパス
-		bool loop;			// ループするかどうか
-		float frameLength;	// アニメーションのフレーム数
-	};
-	// アニメーションデータのテーブル
-	static const AnimData ANIM_DATA[];
 	
 	// アニメーションの種類
 	enum class EAnimType

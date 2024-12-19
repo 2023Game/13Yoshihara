@@ -134,7 +134,7 @@ void CCactus::AttackEnd()
 void CCactus::TakeDamage(int damage, CObjectBase* causer)
 {
 	// ベースクラスのダメージ処理を呼び出す
-	CEnemy::TakeDamage(damage, causer);
+	CCharaStatusBase::TakeDamage(damage, causer);
 
 	// 死亡していなければ、
 	if (!IsDeath())
@@ -174,7 +174,7 @@ void CCactus::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	{
 		// ヒットしたのがキャラクターかつ、
 		// まだ攻撃がヒットしていないキャラクターであれば
-		CCharaBase* chara = dynamic_cast<CCharaBase*>(other->Owner());
+		CCharaStatusBase* chara = dynamic_cast<CCharaStatusBase*>(other->Owner());
 		if (chara != nullptr && !IsAttackHitObj(chara))
 		{
 			// ダメージを与える

@@ -1,29 +1,20 @@
 #pragma once
+#include "CCharaStatusBase.h"
 
-class CTrashStatusBase
+class CTrashStatusBase : CCharaStatusBase
 {
 public:
-	// コンストラクタ
-	CTrashStatusBase();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="mMaxHp">最大HP</param>
+	/// <param name="moveSpeed">移動速度</param>
+	/// <param name="jumpSpeed">ジャンプ速度</param>
+	/// <param name="knockback">ノックバック速度</param>
+	/// <param name="power">ゴミを落とす力</param>
+	CTrashStatusBase(int mMaxHp, float moveSpeed, float jumpSpeed,
+		float knockback, int power);
 	~CTrashStatusBase();
-
-	// ダメージを1受ける
-	void TakeDamage();
-
-	// 現在HPを取得
-	int GetHp() const;
-	// HPを設定
-	void SetHp(int hp);
-
-	// 移動速度を取得
-	float GetBaseMoveSpeed() const;
-	// 移動速度を設定
-	void SetBaseMoveSpeed(float baseMoveSpeed);
-
-	// ジャンプ速度を取得
-	float GetJumpSpeed() const;
-	// ジャンプ速度を設定
-	void SetJumpSpeed(float jumpSpeed);
 
 	// 与えるノックバック速度を取得
 	float GetKnockback() const;
@@ -40,9 +31,6 @@ public:
 	// 受けるノックバック速度を設定
 	void SetTakeKnockback(float knockback);
 private:
-	int mHp;				// 現在HP
-	float mBaseMoveSpeed;	// 基礎移動速度
-	float mJumpSpeed;		// ジャンプ速度
 	float mKnockback;		// ノックバック速度
 	int mPower;				// ゴミを落とす力
 	float mTakeKnockback;	// 受けるノックバック速度
