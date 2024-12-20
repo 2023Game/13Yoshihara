@@ -24,6 +24,8 @@ public:
 
 	//初期化処理
 	void Init(CModelX* model);
+	// アニメーションとモデルの初期化処理
+	void InitAnimationModel(std::string path, const std::vector<AnimData>* pAnimData);
 	//アニメーションの変更
 	void ChangeAnimation(int index, bool loop, float framesize, bool restart);
 	//更新処理

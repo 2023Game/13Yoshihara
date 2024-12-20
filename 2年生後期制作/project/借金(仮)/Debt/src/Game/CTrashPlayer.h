@@ -15,7 +15,7 @@ class CColliderTriangle;
 プレイヤークラス
 キャラクタクラスを継承
 */
-class CTrashPlayer : public CPlayerBase
+class CTrashPlayer : public CPlayerBase , public CTrashPlayerStatus
 {
 public:
 	// コンストラクタ
@@ -39,7 +39,6 @@ private:
 	CCollider* mpColliderTriangle;
 	CCollider* mpColliderRect;
 	CCollider* mpColliderBox;
-	CTrashPlayerStatus mPlayerStatus;
 	// アクションのキー入力
 	void ActionInput();
 	// 待機状態

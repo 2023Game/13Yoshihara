@@ -33,8 +33,6 @@ public:
 	// •`‰æ
 	void Render() override;
 protected:
-	// “G‚Ì‰Šú‰»
-	void InitEnemy(std::string path, const std::vector<AnimData>* pAnimData);
 
 	// ó‘ÔØ‚è‘Ö‚¦
 	virtual void ChangeState(int state);

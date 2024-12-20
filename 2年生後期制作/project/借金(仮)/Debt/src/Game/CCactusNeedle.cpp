@@ -1,6 +1,7 @@
 #include "CCactusNeedle.h"
 #include "CColliderSphere.h"
 #include "CCharaBase.h"
+#include "CCharaStatusBase.h"
 
 // コンストラクタ
 CCactusNeedle::CCactusNeedle(float speed, float dist)
@@ -42,7 +43,7 @@ void CCactusNeedle::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	if (other->Layer() == ELayer::ePlayer)
 	{
 		// プレイヤーにダメージを与える
-		CCharaBase* chara = dynamic_cast<CCharaBase*>(other->Owner());
+		CCharaStatusBase* chara = dynamic_cast<CCharaStatusBase*>(other->Owner());
 		if (chara != nullptr)
 		{
 			chara->TakeDamage(1, this);

@@ -55,8 +55,8 @@ CCactus::CCactus()
 	// ゲージのオフセット位置を設定
 	mGaugeOffsetPos = CVector(0.0f, GAUGE_OFFSET_Y, 0.0f);
 
-	// 敵を初期化
-	InitEnemy("Cactus", &ANIM_DATA);
+	// アニメーションとモデルを初期化
+	InitAnimationModel("Cactus", &ANIM_DATA);
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
@@ -129,39 +129,39 @@ void CCactus::AttackEnd()
 	// 攻撃コライダーをオフ
 	mpAttack1Col->SetEnable(false);
 }
-
-// ダメージを受ける
-void CCactus::TakeDamage(int damage, CObjectBase* causer)
-{
-	// ベースクラスのダメージ処理を呼び出す
-	CCharaStatusBase::TakeDamage(damage, causer);
-
-	// 死亡していなければ、
-	if (!IsDeath())
-	{
-		// 仰け反り状態へ移行
-		ChangeState((int)EState::eHit);
-
-		// 攻撃を加えた相手を戦闘相手に設定
-		mpBattleTarget = causer;
-
-		// 攻撃を加えた相手の方向へ向く
-		LookAtBattleTarget(true);
-
-		// 戦闘状態へ切り替え
-		mIsBattle = true;
-
-		// 移動を停止
-		mMoveSpeed = CVector::zero;
-	}
-}
-
-// 死亡
-void CCactus::Death()
-{
-	// 死亡状態に切り替え
-	ChangeState((int)EState::eDeath);
-}
+//
+//// ダメージを受ける
+//void CCactus::TakeDamage(int damage, CObjectBase* causer)
+//{
+//	// ベースクラスのダメージ処理を呼び出す
+//	CCharaStatusBase::TakeDamage(damage, causer);
+//
+//	// 死亡していなければ、
+//	if (!IsDeath())
+//	{
+//		// 仰け反り状態へ移行
+//		ChangeState((int)EState::eHit);
+//
+//		// 攻撃を加えた相手を戦闘相手に設定
+//		mpBattleTarget = causer;
+//
+//		// 攻撃を加えた相手の方向へ向く
+//		LookAtBattleTarget(true);
+//
+//		// 戦闘状態へ切り替え
+//		mIsBattle = true;
+//
+//		// 移動を停止
+//		mMoveSpeed = CVector::zero;
+//	}
+//}
+//
+//// 死亡
+//void CCactus::Death()
+//{
+//	// 死亡状態に切り替え
+//	ChangeState((int)EState::eDeath);
+//}
 
 // 衝突処理
 void CCactus::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
@@ -174,11 +174,11 @@ void CCactus::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	{
 		// ヒットしたのがキャラクターかつ、
 		// まだ攻撃がヒットしていないキャラクターであれば
-		CCharaStatusBase* chara = dynamic_cast<CCharaStatusBase*>(other->Owner());
+		CObjectBase* chara = dynamic_cast<CObjectBase*>(other->Owner());
 		if (chara != nullptr && !IsAttackHitObj(chara))
 		{
 			// ダメージを与える
-			chara->TakeDamage(1, this);
+			//TakeDamage(1, this);
 			// 攻撃ヒット済みリストに登録
 			AddAttackHitObj(chara);
 		}

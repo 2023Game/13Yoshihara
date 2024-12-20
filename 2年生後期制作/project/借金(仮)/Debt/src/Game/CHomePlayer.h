@@ -39,8 +39,6 @@ private:
 
 		Num
 	};
-	// アニメーション切り替え
-	void ChangeAnimation(EAnimType type);
 
 	enum class EState
 	{

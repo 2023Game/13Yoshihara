@@ -1,20 +1,30 @@
 #include "CCarStatus.h"
 
-#define MOVE_SPEED 0.375f * 5.0f		// 移動速度
+#define MAX_HP 0						// 最大HP（未使用）
+#define BASE_MOVE_SPEED 0.375f * 5.0f	// 移動速度
+#define JUMP_SPEED 0.0f					// ジャンプ速度（未使用）
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
 #define POWER 1							// ゴミを落とすパワー
 
 #define DELETE_TIME 2.0f	// 消滅までの時間
 
+// コンストラクタ
 CCarStatus::CCarStatus()
-	: CTrashStatusBase()
+	: CTrashStatusBase(MAX_HP, BASE_MOVE_SPEED,
+		JUMP_SPEED, KNOCKBACK_SPEED, POWER)
 {
-	// ベースステータスを設定
-	// 使わないステータスは初期値の0のまま
-	SetBaseMoveSpeed(MOVE_SPEED);
-	SetKnockback(KNOCKBACK_SPEED);
-	SetPower(POWER);
+	// 消滅までの時間を設定
+	SetDeleteTime(DELETE_TIME);
+}
 
+/*
+コンストラクタ
+このクラスを継承したキャラのステータスの設定用
+*/
+CCarStatus::CCarStatus(int maxHp, float baseMoveSpeed, float jumpSpeed, float knockback, int power)
+	: CTrashStatusBase(maxHp, baseMoveSpeed,
+		jumpSpeed, knockback, power)
+{
 	// 消滅までの時間を設定
 	SetDeleteTime(DELETE_TIME);
 }

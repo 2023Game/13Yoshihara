@@ -42,6 +42,28 @@ void CXCharacter::Init(CModelX* model)
 	mpModel->AnimationSet()[mAnimationIndex]->Weight(1.0f);
 }
 
+// アニメーションとモデルの初期化処理
+void CXCharacter::InitAnimationModel(std::string path, const std::vector<AnimData>* pAnimData)
+{
+	// アニメーションデータテーブルを設定
+	mpAnimData = pAnimData;
+
+	// モデルデータを読み込み
+	CModelX* model = CResourceManager::Get<CModelX>(path);
+
+	// テーブル内のアニメーションデータを読み込み
+	int size = mpAnimData->size();
+	for (int i = 0; i < size; i++)
+	{
+		const AnimData& data = (*mpAnimData)[i];
+		if (data.path.empty())continue;
+		model->AddAnimationSet(data.path.c_str());
+	}
+
+	// モデルの初期化
+	Init(model);
+}
+
 
 /*
 ChangeAnimation

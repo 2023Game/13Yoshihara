@@ -1,8 +1,9 @@
 #pragma once
+#include "CCarStatus.h"
 
 // ゴミ収集車のステータス
 // 車のステータスに追加でこのステータスを付与
-class CGarbageTruckStatus
+class CGarbageTruckStatus : public CCarStatus
 {
 public:
 	CGarbageTruckStatus();

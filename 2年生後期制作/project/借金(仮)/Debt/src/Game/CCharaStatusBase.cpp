@@ -1,10 +1,10 @@
 #include "CCharaStatusBase.h"
 
 // コンストラクタ
-CCharaStatusBase::CCharaStatusBase(int maxHp, float moveSpeed, float jumpSpeed)
+CCharaStatusBase::CCharaStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed)
 	: mMaxHp(maxHp)
 	, mHp(mMaxHp)
-	, mMoveSpeed(moveSpeed)
+	, mBaseMoveSpeed(baseMoveSpeed)
 	, mJumpSpeed(jumpSpeed)
 {
 }

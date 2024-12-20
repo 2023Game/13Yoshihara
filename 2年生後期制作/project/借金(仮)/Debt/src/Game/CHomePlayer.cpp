@@ -10,7 +10,7 @@
 
 
 // プレイヤーのアニメーションデータのテーブル
-const CHomePlayer::AnimData CHomePlayer::ANIM_DATA[] =
+const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 {
 	{ "",										true,	0.0f	},	// Tポーズ
 	{ "Character\\Player\\anim\\idle.x",		true,	153.0f	},	// 待機
@@ -21,19 +21,8 @@ CHomePlayer::CHomePlayer()
 	: CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
 	, mState(EState::eIdle)
 {
-	// モデルデータ取得
-	CModelX* model = CResourceManager::Get<CModelX>("Player");
-
-	// テーブル内のアニメーションデータを読み込み
-	int size = ARRAY_SIZE(ANIM_DATA);
-	for (int i = 0; i < size; i++)
-	{
-		const AnimData& data = ANIM_DATA[i];
-		if (data.path.empty()) continue;
-		model->AddAnimationSet(data.path.c_str());
-	}
-	// CXCharacterの初期化
-	Init(model);
+	// アニメーションとモデルを初期化
+	InitAnimationModel("Player", &ANIM_DATA);
 
 	//フィールド、壁、オブジェクトとだけ衝突判定をする
 	mpColliderCapsule = new CColliderCapsule
@@ -55,7 +44,7 @@ CHomePlayer::CHomePlayer()
 	mpColliderLine->SetCollisionLayers({ ELayer::eInteract });
 
 	// 最初は待機アニメーションを再生
-	ChangeAnimation(EAnimType::eIdle);
+	ChangeAnimation((int)EAnimType::eIdle);
 }
 
 CHomePlayer::~CHomePlayer()
@@ -106,7 +95,7 @@ void CHomePlayer::UpdateMove()
 		// 待機状態であれば、移動アニメーションに切り替え
 		if (mState == EState::eIdle)
 		{
-			ChangeAnimation(EAnimType::eMove);
+			ChangeAnimation((int)EAnimType::eMove);
 		}
 	}
 	// 移動キーを入力していない
@@ -115,16 +104,9 @@ void CHomePlayer::UpdateMove()
 		// 待機状態であれば、待機アニメーションに切り替え
 		if (mState == EState::eIdle)
 		{
-			ChangeAnimation(EAnimType::eIdle);
+			ChangeAnimation((int)EAnimType::eIdle);
 		}
 	}
-}
-
-void CHomePlayer::ChangeAnimation(EAnimType type)
-{
-	if (!(EAnimType::None < type && type < EAnimType::Num)) return;
-	AnimData data = ANIM_DATA[(int)type];
-	CXCharacter::ChangeAnimation((int)type, data.loop, data.frameLength);
 }
 
 void CHomePlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)

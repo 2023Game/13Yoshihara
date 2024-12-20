@@ -1,9 +1,8 @@
 #pragma once
 #include "CEnemy.h"
-#include "CCharaStatusBase.h"
 
 // サボテンの敵クラス
-class CCactus : public CEnemy , public CCharaStatusBase
+class CCactus : public CEnemy
 {
 public:
 	// コンストラクタ
@@ -18,10 +17,10 @@ public:
 	// 攻撃終了
 	void AttackEnd() override;
 
-	// ダメージを受ける
-	void TakeDamage(int damage, CObjectBase* causer) override;
-	// 死亡
-	void Death() override;
+	//// ダメージを受ける
+	//void TakeDamage(int damage, CObjectBase* causer) override;
+	//// 死亡
+	//void Death() override;
 	// 衝突処理
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 

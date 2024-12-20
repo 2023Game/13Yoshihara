@@ -7,14 +7,8 @@
 #define POWER 1							// ゴミを落とすパワー
 
 CTrashPlayerStatus::CTrashPlayerStatus()
-	: CTrashStatusBase()
+	: CTrashStatusBase(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
 {
-	// ベースステータスを設定
-	SetHp(MAX_HP);
-	SetBaseMoveSpeed(MOVE_SPEED);
-	SetJumpSpeed(JUMP_SPEED);
-	SetKnockback(KNOCKBACK_SPEED);
-	SetPower(POWER);
 }
 
 CTrashPlayerStatus::~CTrashPlayerStatus()
