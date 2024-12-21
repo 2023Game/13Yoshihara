@@ -8,13 +8,14 @@
 
 #define MOVE_SPEED 0.375f * 2.0f
 
+#define ANIM_PATH "Character\\Player\\anim\\"
 
 // プレイヤーのアニメーションデータのテーブル
 const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 {
-	{ "",										true,	0.0f	},	// Tポーズ
-	{ "Character\\Player\\anim\\idle.x",		true,	153.0f	},	// 待機
-	{ "Character\\Player\\anim\\walk.x",		true,	66.0f	},	// 歩行
+	{ "",						true,	0.0f,	1.0f},	// Tポーズ
+	{ ANIM_PATH"idle.x",		true,	153.0f,	1.0f},	// 待機
+	{ ANIM_PATH"walk.x",		true,	66.0f,	1.0f},	// 歩行
 };
 
 CHomePlayer::CHomePlayer()

@@ -92,8 +92,8 @@ void CCollisionTestScene::Load()
 	CColTriangle* ct1 = new CColTriangle
 	(
 		CVector(0.0f, 1.0f, 5.0f),
-		CVector(0.0f, 1.0f, 10.0f),
-		CVector(0.0f, 6.0f, 10.0f),
+		CVector(0.0f, 1.0f, 20.0f),
+		CVector(0.0f, 6.0f, 20.0f),
 		CColor::gray
 	);
 	mColList.push_back(ct1);
