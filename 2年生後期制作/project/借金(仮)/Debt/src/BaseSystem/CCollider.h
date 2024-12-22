@@ -17,11 +17,20 @@ class CColliderMesh;
 class CColliderRectangle;
 class CColliderBox;
 
+// 三角形ポリゴンのデータ
 struct STVertexData
 {
-	STVertex lv;
-	STVertex wv;
-	CBounds bounds;
+	STVertex lv;	// ローカル座標
+	STVertex wv;	// ワールド座標
+	CBounds bounds;	// バウンディングボックス
+};
+
+// 四角形ポリゴンのデータ
+struct SRVertexData
+{
+	SRVertex lv;	// ローカル座標
+	SRVertex wv;	// ワールド座標
+	CBounds bounds;	// バウンディングボックス
 };
 
 // ヒット情報
@@ -33,6 +42,7 @@ public:
 	CVector cross;	// 衝突位置
 	float dist;		// 衝突位置までの距離
 	std::list<STVertex> tris;	// 衝突している三角形リスト
+	std::list<SRVertex> rects;	// 衝突している四角形リスト
 };
 
 /// <summary>
@@ -446,79 +456,87 @@ public:
 	/// <summary>
 	/// 四角形とメッシュの衝突判定
 	/// </summary>
-	/// <param name="r0">四角形の頂点1</param>
-	/// <param name="r1">四角形の頂点2</param>
-	/// <param name="r2">四角形の頂点3</param>
-	/// <param name="r3">四角形の頂点4</param>
+	/// <param name="rectCol">四角形コライダー</param>
 	/// <param name="tris">メッシュを構成する三角形ポリゴンのリスト</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionRectangleMesh(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	static bool CollisionRectangleMesh(CColliderRectangle* rectCol,
 		const std::list<STVertexData>& tris,
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
 	/// ボックスと線分の衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="ls">線分の始点</param>
 	/// <param name="le">線分の終点</param>
 	/// <param name="lb">線分のバウンティングボックス</param>
 	/// <param name="hit">衝突したときの情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxLine(CColliderBox* boxCol,
+	static bool CollisionBoxLine(const std::list<SRVertexData>& rects,
 		const CVector& ls,const CVector& le,const CBounds& lb,
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
 	/// ボックスと球の衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="sphereCol">球コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxSphere(CColliderBox* boxCol,
+	static bool CollisionBoxSphere(const std::list<SRVertexData>& rects,
 		CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain);
 	
 	/// <summary>
 	/// ボックスと三角形の衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="triCol">三角形コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxTriangle(CColliderBox* boxCol,
+	static bool CollisionBoxTriangle(const std::list<SRVertexData>& rects,
 		CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain);
 	
 	/// <summary>
 	/// ボックスとカプセルの衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="capsuleCol">カプセルコライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxCapsule(CColliderBox* boxCol,
+	static bool CollisionBoxCapsule(const std::list<SRVertexData>& rects,
 		CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain);
 	
 	/// <summary>
 	/// ボックスとメッシュの衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="tris">メッシュを構成する三角形ポリゴンのリスト</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxMesh(CColliderBox* boxCol,
+	static bool CollisionBoxMesh(const std::list<SRVertexData>& rects,
 		const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
 	/// ボックスと四角形の衝突判定
 	/// </summary>
-	/// <param name="boxCol">ボックスコライダ―</param>
+	/// <param name="rects">ボックスを構成する四角形ポリゴンのリスト</param>
 	/// <param name="rectCol">四角形コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxRectangle(CColliderBox* boxCol,
+	static bool CollisionBoxRectangle(const std::list<SRVertexData>& rects,
 		CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain);
+
+	/// <summary>
+	/// ボックス同士の衝突判定
+	/// </summary>
+	/// <param name="rects0">ボックス0を構成する四角形ポリゴンのリスト</param>
+	/// <param name="rects1">ボックス1を構成する四角形ポリゴンのリスト</param>
+	/// <param name="hit">衝突した時の情報</param>
+	/// <returns>trueならば、衝突している</returns>
+	static bool CollisionBox(const std::list<SRVertexData>& rects0,
+		const std::list<SRVertexData>& rects1,
+		CHitInfo* hit);
 
 	/// <summary>
 	/// 点から線分までの最短距離を求める

@@ -5,6 +5,8 @@
 #include "CColQuad.h"
 #include "CColCapsule.h"
 #include "CColRectangle.h"
+#include "CColMesh.h"
+#include "CColBox.h"
 #include "CCamera.h"
 #include "CMeasure.h"
 #include "CDebugInput.h"
@@ -24,6 +26,7 @@ CCollisionTestScene::~CCollisionTestScene()
 // シーン読み込み
 void CCollisionTestScene::Load()
 {
+	CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
 	// 背景色設定
 	System::SetClearColor(0.1921569f, 0.3019608f, 0.4745098f, 1.0f);
 
@@ -99,7 +102,7 @@ void CCollisionTestScene::Load()
 	mColList.push_back(ct1);
 
 	// 四角形を生成
-	CColRectangle* r0 = new CColRectangle
+	CColRectangle* cr0 = new CColRectangle
 	(
 		CVector(6.0f, 1.0f, 0.0f),
 		CVector(16.0f, 1.0f, 0.0f),
@@ -108,9 +111,9 @@ void CCollisionTestScene::Load()
 		CColor::gray,
 		true
 	);
-	mColList.push_back(r0);
+	mColList.push_back(cr0);
 	// 四角形を生成
-	CColRectangle* r1 = new CColRectangle
+	CColRectangle* cr1 = new CColRectangle
 	(
 		CVector(10.0f, 1.0f, 5.0f),
 		CVector(10.0f, 1.0f, 10.0f),
@@ -118,7 +121,24 @@ void CCollisionTestScene::Load()
 		CVector(10.0f, 6.0f, 5.0f),
 		CColor::gray
 	);
-	mColList.push_back(r1);
+	mColList.push_back(cr1);
+
+	// ボックスコライダを生成
+	CColBox* cb = new CColBox
+	(
+		CVector(-30.0f, 1.0f, -5.0f),
+		CVector(-20.0f, 5.0f, 5.0f),
+		CColor::gray
+	);
+	mColList.push_back(cb);
+	
+	// メッシュコライダ―を生成
+	//CColMesh* cm = new CColMesh
+	//{
+	//	CResourceManager::Get<CModel>("FieldCube"),
+	//	CColor::gray
+	//};
+	//mColList.push_back(cm);
 
 	// カメラ生成
 	CCamera* mainCamera = new CCamera

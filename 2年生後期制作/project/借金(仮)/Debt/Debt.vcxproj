@@ -127,9 +127,11 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
     <ClCompile Include="src\Test\CColBase.cpp" />
+    <ClCompile Include="src\Test\CColBox.cpp" />
     <ClCompile Include="src\Test\CColCapsule.cpp" />
     <ClCompile Include="src\Test\CColLine.cpp" />
     <ClCompile Include="src\Test\CCollisionTestScene.cpp" />
+    <ClCompile Include="src\Test\CColMesh.cpp" />
     <ClCompile Include="src\Test\CColQuad.cpp" />
     <ClCompile Include="src\Test\CColRectangle.cpp" />
     <ClCompile Include="src\Test\CColSphere.cpp" />
@@ -262,9 +264,11 @@
     <ClInclude Include="src\Game\JobType.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
+    <ClInclude Include="src\Test\CColBox.h" />
     <ClInclude Include="src\Test\CColCapsule.h" />
     <ClInclude Include="src\Test\CColLine.h" />
     <ClInclude Include="src\Test\CCollisionTestScene.h" />
+    <ClInclude Include="src\Test\CColMesh.h" />
     <ClInclude Include="src\Test\CColQuad.h" />
     <ClInclude Include="src\Test\CColRectangle.h" />
     <ClInclude Include="src\Test\CColSphere.h" />

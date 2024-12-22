@@ -505,6 +505,12 @@
     <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClCompile>
+    <ClCompile Include="src\Test\CColMesh.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColBox.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -905,6 +911,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CGarbageTruckStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColMesh.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColBox.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

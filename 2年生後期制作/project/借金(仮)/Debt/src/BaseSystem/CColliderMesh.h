@@ -24,6 +24,7 @@ public:
 	~CColliderMesh();
 
 	void Set(CModel* model);
+	// 三角形コライダの配列を取得
 	const std::list<STVertexData>& Get() const;
 
 	// コライダー描画

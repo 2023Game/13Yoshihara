@@ -74,6 +74,8 @@ void CColliderMesh::Render()
 // コライダーの情報を更新
 void CColliderMesh::UpdateCol()
 {
+	// 行列を反映した各頂点の座標を計算
+	// 各三角形のバウンディングボックスを保存
 	CMatrix m = Matrix();
 	for (auto& v : mVertices)
 	{

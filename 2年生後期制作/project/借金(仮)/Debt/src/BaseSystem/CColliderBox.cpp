@@ -12,43 +12,56 @@ CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer,
 	Set(owner, layer, min, max);
 }
 
+CColliderBox::~CColliderBox()
+{
+	mVertices.clear();
+}
+
 // ボックスコライダ―を構成する頂点の設定
 void CColliderBox::Set(CObjectBase* owner, ELayer layer, 
 	CVector min, CVector max)
 {
-	mMin = min;
-	mMax = max;
-
+	mVertices.clear();
 	// 前面　右上
-	mV[0] = CVector(mMax.X(), mMax.Y(), mMax.Z());
+	CVector v0 = CVector(max.X(), max.Y(), max.Z());
 	// 前面　左上
-	mV[1] = CVector(mMin.X(), mMax.Y(), mMax.Z());
+	CVector v1 = CVector(min.X(), max.Y(), max.Z());
 	// 前面　左下
-	mV[2] = CVector(mMin.X(), mMin.Y(), mMax.Z());
+	CVector v2 = CVector(min.X(), min.Y(), max.Z());
 	// 前面　右下
-	mV[3] = CVector(mMax.X(), mMin.Y(), mMax.Z());
+	CVector v3 = CVector(max.X(), min.Y(), max.Z());
 	// 背面　右上
-	mV[4] = CVector(mMax.X(), mMax.Y(), mMin.Z());
+	CVector v4 = CVector(max.X(), max.Y(), min.Z());
 	// 背面　左上
-	mV[5] = CVector(mMin.X(), mMax.Y(), mMin.Z());
+	CVector v5 = CVector(min.X(), max.Y(), min.Z());
 	// 背面　左下
-	mV[6] = CVector(mMin.X(), mMin.Y(), mMin.Z());
+	CVector v6 = CVector(min.X(), min.Y(), min.Z());
 	// 背面　右下
-	mV[7] = CVector(mMax.X(), mMin.Y(), mMin.Z());
+	CVector v7 = CVector(max.X(), min.Y(), min.Z());
+
+	// 前面
+	SRVertex rv0(v0, v1, v2, v3);
+	mVertices.push_back({ rv0,rv0 });
+	// 背面
+	SRVertex rv1(v4, v7, v6, v5);
+	mVertices.push_back({ rv1,rv1 });
+	// 左面
+	SRVertex rv2(v1, v5, v6, v2);
+	mVertices.push_back({ rv2,rv2 });
+	// 右面
+	SRVertex rv3(v4, v0, v3, v7);
+	mVertices.push_back({ rv3,rv3 });
+	// 上面
+	SRVertex rv4(v4, v5, v1, v0);
+	mVertices.push_back({ rv4,rv4 });
+	// 下面
+	SRVertex rv5(v7, v3, v2, v6);
+	mVertices.push_back({ rv5,rv5 });
 }
 
-// ボックスの頂点を取得
-void CColliderBox::Get(CVector* v0, CVector* v1, CVector* v2, CVector* v3,
-	CVector* v4, CVector* v5, CVector* v6, CVector* v7) const
+const std::list<SRVertexData>& CColliderBox::Get() const
 {
-	*v0 = mWV[0];
-	*v1 = mWV[1];
-	*v2 = mWV[2];
-	*v3 = mWV[3];
-	*v4 = mWV[4];
-	*v5 = mWV[5];
-	*v6 = mWV[6];
-	*v7 = mWV[7];
+	return mVertices;
 }
 
 // コライダ―描画
@@ -76,43 +89,15 @@ void CColliderBox::Render()
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, c);
 	glColor4fv(c);
 
-	// ボックスを描画
+	// 四角形を描画
 	glBegin(GL_QUADS);
-	// 前面
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
-
-	// 背面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
-
-	// 左側面
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
-
-	// 右側面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
-
-	// 上面
-	glVertex3f(mV[4].X(), mV[4].Y(), mV[4].Z());	// 背面　右上
-	glVertex3f(mV[5].X(), mV[5].Y(), mV[5].Z());	// 背面　左上
-	glVertex3f(mV[1].X(), mV[1].Y(), mV[1].Z());	// 前面　左上
-	glVertex3f(mV[0].X(), mV[0].Y(), mV[0].Z());	// 前面　右上
-
-	// 底面
-	glVertex3f(mV[7].X(), mV[7].Y(), mV[7].Z());	// 背面　右下
-	glVertex3f(mV[3].X(), mV[3].Y(), mV[3].Z());	// 前面　右下
-	glVertex3f(mV[2].X(), mV[2].Y(), mV[2].Z());	// 前面　左下
-	glVertex3f(mV[6].X(), mV[6].Y(), mV[6].Z());	// 背面　左下
+	for (const auto& v : mVertices)
+	{
+		glVertex3f(v.wv.V[0].X(), v.wv.V[0].Y(), v.wv.V[0].Z());
+		glVertex3f(v.wv.V[1].X(), v.wv.V[1].Y(), v.wv.V[1].Z());
+		glVertex3f(v.wv.V[2].X(), v.wv.V[2].Y(), v.wv.V[2].Z());
+		glVertex3f(v.wv.V[3].X(), v.wv.V[3].Y(), v.wv.V[3].Z());
+	}
 	glEnd();
 
 	// ライトオン
@@ -128,18 +113,14 @@ void CColliderBox::Render()
 void CColliderBox::UpdateCol()
 {
 	// 行列を反映した各頂点の座標を計算
+	// 各四角形のバウンディングボックスを保存
 	CMatrix m = Matrix();
-	mWV[0] = mV[0] * m;
-	mWV[1] = mV[1] * m;
-	mWV[2] = mV[2] * m;
-	mWV[3] = mV[3] * m;
-	mWV[4] = mV[4] * m;
-	mWV[5] = mV[5] * m;
-	mWV[6] = mV[6] * m;
-	mWV[7] = mV[7] * m;
-
-	// バウンティングボックスを更新
-	mBounds = CBounds::GetBoxBounds(
-		mWV[0], mWV[1], mWV[2], mWV[3],
-		mWV[4], mWV[5], mWV[6], mWV[7]);
+	for (auto& v : mVertices)
+	{
+		v.wv.V[0] = v.lv.V[0] * m;
+		v.wv.V[1] = v.lv.V[1] * m;
+		v.wv.V[2] = v.lv.V[2] * m;
+		v.wv.V[3] = v.lv.V[3] * m;
+		v.bounds = CBounds::GetRectangleBounds(v.wv.V[0], v.wv.V[1], v.wv.V[2], v.wv.V[3]);
+	}
 }

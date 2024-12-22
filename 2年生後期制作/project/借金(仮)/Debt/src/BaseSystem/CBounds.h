@@ -79,22 +79,6 @@ public:
 	static CBounds GetCapsuleBounds(const CVector& cs, const CVector& ce, float cr);
 	static CBounds GetRectangleBounds(const CVector& r0,const CVector& r1,
 		const CVector& r2, const CVector& r3);
-	/// <summary>
-	/// ボックスのバウンティングボックスを取得
-	/// </summary>
-	/// <param name="t0">ボックスの1つ目の頂点</param>
-	/// <param name="t1">ボックスの2つ目の頂点</param>
-	/// <param name="t2">ボックスの3つ目の頂点</param>
-	/// <param name="t3">ボックスの4つ目の頂点</param>
-	/// <param name="t4">ボックスの5つ目の頂点</param>
-	/// <param name="t5">ボックスの6つ目の頂点</param>
-	/// <param name="t6">ボックスの7つ目の頂点</param>
-	/// <param name="t7">ボックスの8つ目の頂点</param>
-	/// <returns>バウンティングボックス</returns>
-	static CBounds GetBoxBounds(
-		const CVector& t0, const CVector& t1, const CVector& t2, const CVector& t3,
-		const CVector& t4, const CVector& t5, const CVector& t6, const CVector& t7);
-
 private:
 	CVector mMin;	// 最小位置
 	CVector mMax;	// 最大位置
