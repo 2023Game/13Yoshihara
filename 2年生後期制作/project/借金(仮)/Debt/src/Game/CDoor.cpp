@@ -7,7 +7,11 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	: CInteractObject(15,"eDoor")
 	, mpModel(model)
 {
-	mpColliderSphere->Position(-10.0f, 0.0f, 0.0f);
+	mpCollider = new CColliderMesh
+	{
+		this,ELayer::eInteractObj,
+		model,true
+	};
 
 	Position(pos);
 	Scale(scale);
@@ -20,6 +24,10 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 CDoor::~CDoor()
 {
 
+}
+
+void CDoor::Interact()
+{
 }
 
 void CDoor::Update()

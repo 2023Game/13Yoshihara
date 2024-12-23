@@ -9,7 +9,7 @@ CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer,
 	bool isKinematic, float weight)
 	: CCollider(owner, layer, EColliderType::eBox, isKinematic, weight)
 {
-	Set(owner, layer, min, max);
+	Set(min, max);
 }
 
 CColliderBox::~CColliderBox()
@@ -18,8 +18,7 @@ CColliderBox::~CColliderBox()
 }
 
 // ボックスコライダ―を構成する頂点の設定
-void CColliderBox::Set(CObjectBase* owner, ELayer layer, 
-	CVector min, CVector max)
+void CColliderBox::Set(CVector min, CVector max)
 {
 	mVertices.clear();
 	// 前面　右上

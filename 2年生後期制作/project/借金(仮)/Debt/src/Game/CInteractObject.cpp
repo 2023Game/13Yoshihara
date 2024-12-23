@@ -9,15 +9,15 @@
 #define IMAGE_SIZE CVector2(6.0f,2.0f)
 
 //コンストラクタ
-CInteractObject::CInteractObject(float radius, std::string interactName)
-	: CObjectBase(ETag::eField, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
+CInteractObject::CInteractObject(ETaskPriority prio, int sortOrder, ETaskPauseType pause)
+	: CObjectBase(ETag::eField, prio, 0, pause)
+	, mInteractStr("調べる")
 	, mIsInteract(false)
 	, mIsInteractArea(false)
+#if _DEBUG
+	, mDebugName("InteractObj")
+#endif
 {
-	// プレイヤーとだけ衝突判定をする
-	mpColliderSphere = new CColliderSphere(this, ELayer::eInteract, radius, true);
-	mpColliderSphere->SetCollisionLayers({ ELayer::ePlayer });
-
 	// インタラクトの画像を表示
 	mpBillBoardUI = new CBillBoardUI(INTERACT_IMAGE, ETag::eInteractUI, ETaskPauseType::eGame);
 	mpBillBoardUI->SetSize(IMAGE_SIZE);
@@ -26,15 +26,22 @@ CInteractObject::CInteractObject(float radius, std::string interactName)
 
 CInteractObject::~CInteractObject()
 {
-	if (mpColliderSphere != nullptr)
-	{
-		delete mpColliderSphere;
-		mpColliderSphere = nullptr;
-	}
 	if (mpBillBoardUI != nullptr)
 	{
 		mpBillBoardUI->Kill();
 	}
+}
+
+// 調べる内容のテキストを返す
+std::string CInteractObject::GetInteractStr() const
+{
+	return mInteractStr;
+}
+
+// 調べられる状態かどうか
+bool CInteractObject::CanInteract() const
+{
+	return true;
 }
 
 // インタラクト判定
@@ -74,3 +81,17 @@ void CInteractObject::Collision(CCollider* self, CCollider* other, const CHitInf
 		mIsInteractArea = true;
 	}
 }
+
+#if _DEBUG
+// デバッグ表示用の名前を取得
+std::string CInteractObject::GetDebugName() const
+{
+	return mDebugName;
+}
+
+// デバッグ表示用の名前を設定
+void CInteractObject::SetDebugName(std::string name)
+{
+	mDebugName = name;
+}
+#endif

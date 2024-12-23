@@ -7,7 +7,4 @@ public:
 	// コンストラクタ
 	CTrashPlayerStatus();
 	~CTrashPlayerStatus();
-
-private:
-
 };

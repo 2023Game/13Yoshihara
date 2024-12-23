@@ -18,6 +18,8 @@ public:
 		const CVector& scale, const CVector& rotation);
 	~CComputer();
 
+	void Interact() override;
+
 	void Update();
 	void Render();
 

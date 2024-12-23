@@ -45,11 +45,9 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Close.x",				true,	10.0f,	1.0f},	// 蓋を閉じる			（開）
 };
 
-#define CAPSULE_RADIUS 2.5f
-#define PLAYER_HEIGHT 50.0f
-#define PLAYER_WIDTH 50.0f
-#define PLAYER_WIDTH_X 50.0f
-#define PLAYER_WIDTH_Z 25.0f
+#define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
+#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
+#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
@@ -60,7 +58,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
-	: CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
+	: CPlayerBase()
 	, mState(EState::eIdle)
 	, mIsOpen(false)
 	, mIsJump(false)
@@ -68,55 +66,18 @@ CTrashPlayer::CTrashPlayer()
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashPlayer", &ANIM_DATA);
 
-	////フィールド、壁、オブジェクトとだけ衝突判定をする
-	//mpColliderCapsule = new CColliderCapsule
-	//(
-	//	this, ELayer::ePlayer,
-	//	CVector(PLAYER_WIDTH - CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
-	//	CVector(-PLAYER_WIDTH + CAPSULE_RADIUS * 10, PLAYER_HEIGHT, 0.0f),
-	//	CAPSULE_RADIUS
-	//);
-	//mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
-
-	//mpColliderBox = new CColliderBox
-	//{
-	//	this,ELayer::eVehicle,
-	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-	//	CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	-PLAYER_WIDTH_Z),
-	//	CVector(-PLAYER_WIDTH_X,	0.0f,			-PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		0.0f,			-PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	-PLAYER_WIDTH_Z)
-	//};
-
-	//mpColliderRect = new CColliderRectangle
-	//{
-	//	this,ELayer::eVehicle,
-	//	CVector(-PLAYER_WIDTH_X,	PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-	//	CVector(-PLAYER_WIDTH_X,	0.0f,			PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		0.0f,			PLAYER_WIDTH_Z),
-	//	CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-	//};
-
-	mpColliderTriangle = new CColliderTriangle
-	{
-		this,ELayer::ePlayer,
-		CVector(-PLAYER_WIDTH_X,	-1.0f,			PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		-1.0f,			-PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		-1.0f,			PLAYER_WIDTH_Z),
-	};
-	mpColliderTriangle->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
-
-	mpColTri = new CColliderTriangle
-	{
-		this,ELayer::ePlayer,
-		CVector(-PLAYER_WIDTH_X,	-1.0f,			PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		-1.0f,			PLAYER_WIDTH_Z),
-		CVector(PLAYER_WIDTH_X,		PLAYER_HEIGHT,	PLAYER_WIDTH_Z),
-	};
-	mpColTri->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+	//フィールド、壁、オブジェクトとだけ衝突判定をする
+	mpBodyCol = new CColliderCapsule
+	(
+		this, ELayer::ePlayer,
+		CVector(BODY_WIDTH - BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
+		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
+		BODY_RADIUS
+	);
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy,
+		ETag::eCar, ETag::eGarbageTruck });
+	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject,
+		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle  });
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle_Close);
@@ -170,140 +131,6 @@ void CTrashPlayer::Update()
 void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
-
-	if (self == mpColliderTriangle)
-	{
-		// 衝突した相手がフィールドの場合
-		if (other->Layer() == ELayer::eField)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-
-			// 衝突した地面が床か天井かを内積で判定
-			CVector normal = hit.adjust.Normalized();
-			float dot = CVector::Dot(normal, CVector::up);
-			// 内積の結果がプラスであれば、床と衝突した
-			if (dot >= 0.0f)
-			{
-				// 落下などで床に上から衝突したとき（下移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY < 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-
-				// 接地した
-				mIsGrounded = true;
-				// 接地した地面の法線を記憶しておく
-				mGroundNormal = hit.adjust.Normalized();
-
-				if (other->Tag() == ETag::eRideableObject)
-				{
-					mpRideObject = other->Owner();
-				}
-			}
-			// 内積の結果がマイナスであれば、天井と衝突した
-			else if (dot < 0.0f)
-			{
-				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY > 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-			}
-		}
-		// 衝突した相手が壁の場合
-		else if (other->Layer() == ELayer::eWall)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-		// 衝突した相手がオブジェクトだった場合
-		else if (other->Layer() == ELayer::eObject)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-	}
-
-	if (self == mpColTri)
-	{
-		// 衝突した相手がフィールドの場合
-		if (other->Layer() == ELayer::eField)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-
-			// 衝突した地面が床か天井かを内積で判定
-			CVector normal = hit.adjust.Normalized();
-			float dot = CVector::Dot(normal, CVector::up);
-			// 内積の結果がプラスであれば、床と衝突した
-			if (dot >= 0.0f)
-			{
-				// 落下などで床に上から衝突したとき（下移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY < 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-
-				// 接地した
-				mIsGrounded = true;
-				// 接地した地面の法線を記憶しておく
-				mGroundNormal = hit.adjust.Normalized();
-
-				if (other->Tag() == ETag::eRideableObject)
-				{
-					mpRideObject = other->Owner();
-				}
-			}
-			// 内積の結果がマイナスであれば、天井と衝突した
-			else if (dot < 0.0f)
-			{
-				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY > 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-			}
-		}
-		// 衝突した相手が壁の場合
-		else if (other->Layer() == ELayer::eWall)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-		// 衝突した相手がオブジェクトだった場合
-		else if (other->Layer() == ELayer::eObject)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-	}
 }
 
 // アクションのキー入力

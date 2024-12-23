@@ -14,7 +14,7 @@ enum class ETaskPriority
 
 	eEffect,	// エフェクト
 	eBillboard,	// ビルボードイメージ
-	eUI3D,
+	eUI3D,		// 3D空間に配置するUI
 
 	eCamera,	// カメラ
 

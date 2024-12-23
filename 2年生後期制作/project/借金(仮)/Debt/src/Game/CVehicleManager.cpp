@@ -4,10 +4,10 @@
 #include <random>
 
 // 位置
-#define CAR_LEFT_POS1 CVector(-60.0f,0.0f,200.0f)	// 左から1番
-#define CAR_LEFT_POS2 CVector(-20.0f,0.0f,200.0f)	// 左から2番
-#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-200.0f)	// 右から1番
-#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-200.0f)	// 右から2番
+#define CAR_LEFT_POS1 CVector(-60.0f,0.0f,300.0f)	// 左から1番
+#define CAR_LEFT_POS2 CVector(-20.0f,0.0f,300.0f)	// 左から2番
+#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-300.0f)	// 右から1番
+#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-300.0f)	// 右から2番
 
 // 回転
 #define CAR_LEFT_ROTATION CVector(0.0f,180.0f,0.0f)	// 左道路の方向
@@ -70,20 +70,20 @@ void CVehicleManager::HideVehicle()
 	for (CCar* car : mCars)
 	{
 		// ステージエリア外なら更新、描画を止める
-		if (car->Position().Z() > 250.0f || car->Position().Z() < -250.0f)
+		if (car->Position().Z() > CAR_LEFT_POS1.Z() || car->Position().Z() < CAR_RIGHT_POS1.Z())
 		{
 			car->SetEnable(false);
 			car->SetShow(false);
 		}
 	}
 	// トラック
-	if (mpGarbageTruck->Position().Z() > 250.0f || mpGarbageTruck->Position().Z() < -250.0f)
+	if (mpGarbageTruck->Position().Z() > CAR_LEFT_POS1.Z() || mpGarbageTruck->Position().Z() < CAR_RIGHT_POS1.Z())
 	{
 		mpGarbageTruck->SetEnable(false);
 		mpGarbageTruck->SetShow(false);
 	}
 	// お仕置きトラック
-	if (mpBlackTruck->Position().Z() > 250.0f || mpBlackTruck->Position().Z() < -250.0f)
+	if (mpBlackTruck->Position().Z() > CAR_LEFT_POS1.Z() || mpBlackTruck->Position().Z() < CAR_RIGHT_POS1.Z())
 	{
 		mpBlackTruck->SetEnable(false);
 		mpBlackTruck->SetShow(false);

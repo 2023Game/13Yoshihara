@@ -4,11 +4,22 @@
 class CBillBoardUI;
 class CObjectBase;
 
+// 調べるオブジェクトのベースクラス
 class CInteractObject : public CObjectBase
 {
 public:
-	CInteractObject(float radius, std::string objectName);
+	CInteractObject(ETaskPriority prio=ETaskPriority::eDefault,
+		int sortOrder=0,
+		ETaskPauseType pause = ETaskPauseType::eDefault);
 	virtual ~CInteractObject();
+
+	// 調べる内容のテキストを返す
+	std::string GetInteractStr() const;
+
+	// 調べられる状態かどうか
+	virtual bool CanInteract() const;
+	// 調べる（継承先で実装）
+	virtual void Interact() = 0;
 
 	// インタラクト判定
 	void Interact();
@@ -21,12 +32,21 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+#if _DEBUG
+	// デバッグ表示用の名前を取得
+	std::string GetDebugName() const;
+	// デバッグ表示用の名前を設定
+	void SetDebugName(std::string name);
+#endif
 protected:
-	CColliderSphere* mpColliderSphere;
+	std::string mInteractStr;	// 調べる内容のテキスト
 	CBillBoardUI* mpBillBoardUI;
 	CObjectBase* mpPlayer;
 	bool mIsInteract;		// インタラクトしているかどうか
 	bool mIsInteractArea;	// インタラクトエリア内かどうか
 	std::vector<std::string> mMenuItemPathList;	// メニューのアイテム用画像のパスリスト
 	std::string mMenuSelectPath;	// メニューのセレクト画像のパス
+#if _DEBUG
+	std::string mDebugName;		// デバッグ表示用の名前
+#endif
 };

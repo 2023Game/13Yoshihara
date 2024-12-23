@@ -22,7 +22,7 @@ CPlayerBase* CPlayerBase::spInstance = nullptr;
 #define MOTION_BLUR_COUNT 5
 
 // コンストラクタ
-CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
+CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
@@ -30,7 +30,7 @@ CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
 	, mIsDamage(false)
-	, mpColliderCapsule(nullptr)
+	, mpBodyCol(nullptr)
 {
 	spInstance = this;
 
@@ -40,7 +40,7 @@ CPlayerBase::CPlayerBase(float capsuleRadius, float playerHeight)
 CPlayerBase::~CPlayerBase()
 {
 	// コライダ―を削除
-	SAFE_DELETE(mpColliderCapsule);
+	SAFE_DELETE(mpBodyCol);
 }
 
 CPlayerBase* CPlayerBase::Instance()
@@ -135,6 +135,11 @@ void CPlayerBase::UpdateMotionBlur()
 	}
 }
 
+CInteractObject* CPlayerBase::GetNearInteractObject() const
+{
+	return nullptr;
+}
+
 // 更新
 void CPlayerBase::Update()
 {
@@ -196,7 +201,7 @@ void CPlayerBase::Update()
 // 衝突処理
 void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	if (self == mpColliderCapsule)
+	if (self == mpBodyCol)
 	{
 		// 衝突した相手がフィールドの場合
 		if (other->Layer() == ELayer::eField)

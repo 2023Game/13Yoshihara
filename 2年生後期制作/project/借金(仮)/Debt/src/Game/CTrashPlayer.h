@@ -35,10 +35,6 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
-	CCollider* mpColTri;
-	CCollider* mpColliderTriangle;
-	CCollider* mpColliderRect;
-	CCollider* mpColliderBox;
 	// アクションのキー入力
 	void ActionInput();
 	// 待機状態

@@ -7,7 +7,7 @@
 #include "CRideableObject.h"
 #include "CSound.h"
 
-class CFlamethrower;
+class CInteractObject;
 
 /*
 プレイヤークラス
@@ -20,7 +20,7 @@ public:
 	static CPlayerBase* Instance();
 
 	// コンストラクタ
-	CPlayerBase(float capsuleRadius, float playerHeight);
+	CPlayerBase();
 	// デストラクタ
 	~CPlayerBase();
 
@@ -60,7 +60,7 @@ protected:
 	CVector mGroundNormal;	// 接地している地面の法線
 	CVector mWallNormal;	// 壁に接触している時の法線
 
-	CColliderCapsule* mpColliderCapsule;
+	CCollider* mpBodyCol;	// 本体のコライダ―
 
 	CTransform* mpRideObject;
 
@@ -69,4 +69,11 @@ protected:
 
 	// 攻撃を受けているか
 	bool mIsDamage;
+
+	// 一番近くにある調べるオブジェクトを取得
+	CInteractObject* GetNearInteractObject() const;
+	// 近くにある調べるオブジェクトのリスト
+	std::list<CInteractObject*> mNearInteractObjs;
+	// 調べるオブジェクト探知用のコライダ―
+	CCollider* mpSearchCol;
 };

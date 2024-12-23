@@ -1,7 +1,8 @@
 #pragma once
 #include "CInteractObject.h"
 #include "CModel.h"
-class CColliderMesh;
+
+class CColliderRectangle;
 class CStageSelectMenu;
 
 class CDoor : public CInteractObject
@@ -18,9 +19,12 @@ public:
 		const CVector& scale, const CVector& rotation);
 	~CDoor();
 
+	void Interact() override;
+
 	void Update();
 	void Render();
 private:
 	CModel* mpModel;
+	CColliderMesh* mpCollider;
 	CStageSelectMenu* mpStageSelectMenu;	// ステージ選択メニュー
 };

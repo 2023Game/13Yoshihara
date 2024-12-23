@@ -23,6 +23,11 @@ CComputer::~CComputer()
 
 }
 
+// 調べる
+void CComputer::Interact()
+{
+}
+
 void CComputer::Update()
 {
 	// インタラクト判定

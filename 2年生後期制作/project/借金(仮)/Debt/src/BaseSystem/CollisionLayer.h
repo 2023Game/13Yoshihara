@@ -9,7 +9,8 @@ enum class ELayer
 	eField,
 	eWall,
 	eObject,
-	eInteract,
+	eInteractObj,	// 調べるオブジェクト
+	eInteractSearch,// 調べるオブジェクト探知用
 	ePlayer,
 	eEnemy,
 	eVehicle,

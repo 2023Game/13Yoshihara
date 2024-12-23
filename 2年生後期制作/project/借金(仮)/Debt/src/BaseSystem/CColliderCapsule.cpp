@@ -48,8 +48,11 @@ void CColliderCapsule::Render()
 {
 	// DIFFUSEÔFÝ’è
 	CColor col = CColor::red;
-	if (!IsEnable()) col = CColor::gray;
-
+	if (!IsEnable() ||
+		(Owner() != nullptr && !Owner()->IsEnableCol()))
+	{
+		col = CColor::gray;
+	}
 	CMatrix m = Matrix();
 	CVector s = mV[0] * m;
 	CVector e = mV[1] * m;

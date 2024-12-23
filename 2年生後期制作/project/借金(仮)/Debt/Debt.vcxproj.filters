@@ -131,6 +131,9 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Truck\Punisher">
       <UniqueIdentifier>{b25a58a6-0c85-4166-89ca-ea7ba91db312}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\InteractObject">
+      <UniqueIdentifier>{c334abdd-1f88-484d-9d55-0ab121f15f9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -388,17 +391,8 @@
     <ClCompile Include="src\BaseSystem\CExpandButton.cpp">
       <Filter>ソース ファイル\BaseSystem\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CComputer.cpp">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CInteractObject.cpp">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\Blend.cpp">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CDoor.cpp">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashGameScene.cpp">
       <Filter>ソース ファイル\Game\Scene</Filter>
@@ -472,9 +466,6 @@
     <ClCompile Include="src\Test\CColRectangle.cpp">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseSystem\CImage3D.cpp">
-      <Filter>ソース ファイル\BaseSystem</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CCactus.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
@@ -510,6 +501,18 @@
     </ClCompile>
     <ClCompile Include="src\Test\CColBox.cpp">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CImage3D.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CComputer.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDoor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CInteractObject.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -789,20 +792,11 @@
     <ClInclude Include="src\BaseSystem\CExpandButton.h">
       <Filter>ソース ファイル\BaseSystem\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CComputer.h">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CInteractObject.h">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\Times.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\Blend.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CDoor.h">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashGameScene.h">
       <Filter>ソース ファイル\Game\Scene</Filter>
@@ -879,9 +873,6 @@
     <ClInclude Include="src\Test\CColRectangle.h">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClInclude>
-    <ClInclude Include="src\BaseSystem\CImage3D.h">
-      <Filter>ソース ファイル\BaseSystem</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CCactusNeedle.h">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
@@ -917,6 +908,18 @@
     </ClInclude>
     <ClInclude Include="src\Test\CColBox.h">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CImage3D.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDoor.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CComputer.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CInteractObject.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

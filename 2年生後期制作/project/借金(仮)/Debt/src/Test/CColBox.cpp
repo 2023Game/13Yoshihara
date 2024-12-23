@@ -11,6 +11,7 @@ CColBox::CColBox(CVector min, CVector max, const CColor defaultColor,
 		this,ELayer::eTest,
 		min,max,isKinematic,weight
 	};
+	mpCollider->SetCollisionLayers({ ELayer::eTest });
 	mVertices = mpCollider->Get();
 }
 
