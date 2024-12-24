@@ -1,7 +1,7 @@
 #pragma once
 #include "CInteractObject.h"
 #include "CModel.h"
-class CColliderMesh;
+
 class CBuyMenu;
 
 class CComputer : public CInteractObject
@@ -20,10 +20,10 @@ public:
 
 	void Interact() override;
 
-	void Update();
 	void Render();
 
 private:
 	CModel* mpModel;
+	CCollider* mpCollider;
 	CBuyMenu* mpBuyMenu;	// çwì¸âÊñ 
 };

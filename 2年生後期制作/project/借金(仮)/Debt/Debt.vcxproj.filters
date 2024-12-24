@@ -110,9 +110,6 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Collector\Punisher">
       <UniqueIdentifier>{69485343-d85e-4b73-b7e3-1aafb511b8c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\UI\BillBoard">
-      <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\JobStatus">
       <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
     </Filter>
@@ -133,6 +130,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Field\Object\InteractObject">
       <UniqueIdentifier>{c334abdd-1f88-484d-9d55-0ab121f15f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI3D">
+      <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -448,8 +448,8 @@
     <ClCompile Include="src\Game\CEnemy.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CBillBoardUI.cpp">
-      <Filter>ソース ファイル\Game\UI\BillBoard</Filter>
+    <ClCompile Include="src\Game\CInteractUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
@@ -471,9 +471,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CCactusNeedle.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
-      <Filter>ソース ファイル\Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CSword.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
@@ -513,6 +510,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CInteractObject.cpp">
       <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -855,8 +855,8 @@
     <ClInclude Include="src\Game\CEnemy.h">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CBillBoardUI.h">
-      <Filter>ソース ファイル\Game\UI\BillBoard</Filter>
+    <ClInclude Include="src\Game\CInteractUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashEnemyManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
@@ -878,9 +878,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CCactus.h">
       <Filter>ソース ファイル\Game\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CGaugeUI3D.h">
-      <Filter>ソース ファイル\Game\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CWeapon.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
@@ -920,6 +917,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CInteractObject.h">
       <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

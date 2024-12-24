@@ -24,6 +24,7 @@ void CJobStatusManager::ClearInstance()
 }
 
 CJobStatusManager::CJobStatusManager()
+	: mSelectJob(EJobType::eNone)
 {
 	mTrashStatus = new CTrashJobStatus();
 	mDeliveryStatus = new CDeliveryStatus();
@@ -38,7 +39,7 @@ void CJobStatusManager::Update()
 }
 
 // 各仕事のアンロック状態を取得
-bool CJobStatusManager::GetUnlock(EJobType jobType)
+bool CJobStatusManager::GetUnlock(EJobType jobType) const
 {
 	switch (jobType)
 	{
@@ -55,7 +56,7 @@ bool CJobStatusManager::GetUnlock(EJobType jobType)
 		return mDeliveryStatus->GetUnlock();
 		
 		break;
-
+	// それ以外
 	default:
 		
 		return false;
@@ -90,7 +91,7 @@ void CJobStatusManager::SetUnlock(EJobType jobType, bool unlock)
 }
 
 // 各仕事の強化値を取得
-float CJobStatusManager::GetUpgrade(EJobType jobType)
+float CJobStatusManager::GetUpgrade(EJobType jobType) const
 {
 	switch (jobType)
 	{
@@ -152,4 +153,16 @@ CTrashJobStatus* CJobStatusManager::GetTrashStatus()
 CDeliveryStatus* CJobStatusManager::GetDeliveryStatus()
 {
 	return mDeliveryStatus;
+}
+
+// 選択されている仕事を取得
+EJobType CJobStatusManager::GetSelectJob() const
+{
+	return mSelectJob;
+}
+
+// 選択されている仕事を設定
+void CJobStatusManager::SetSelectJob(EJobType jobType)
+{
+	mSelectJob = jobType;
 }

@@ -21,7 +21,7 @@ public:
 
 	// TODO
 	// 各仕事のアンロック状態を取得する
-	bool GetUnlock(EJobType jobType);
+	bool GetUnlock(EJobType jobType) const;
 	/// <summary>
 	/// 各仕事のアンロック状態を設定する
 	/// </summary>
@@ -30,7 +30,7 @@ public:
 	void SetUnlock(EJobType jobType, bool unlock);
 
 	// 各仕事の強化倍率を取得する
-	float GetUpgrade(EJobType jobType);
+	float GetUpgrade(EJobType jobType) const;
 	/// <summary>
 	/// 各仕事の強化倍率を設定する
 	/// </summary>
@@ -41,7 +41,14 @@ public:
 	// 各ジョブのポインタを取得
 	CTrashJobStatus* GetTrashStatus();
 	CDeliveryStatus* GetDeliveryStatus();
+
+	// 選択されている仕事を取得
+	EJobType GetSelectJob() const;
+	// 選択されている仕事を設定
+	void SetSelectJob(EJobType jobType);
 private:
+	// 選択されている仕事
+	EJobType mSelectJob;
 	// 仕事ステータスマネージャのインスタンス
 	static CJobStatusManager* mpInstance;
 	// 各ジョブのステータス

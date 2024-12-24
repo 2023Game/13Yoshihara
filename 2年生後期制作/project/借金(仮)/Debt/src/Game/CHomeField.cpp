@@ -51,21 +51,28 @@ void CHomeField::CreateFieldObjects()
 	mpDoor = CResourceManager::Get<CModel>("Door");
 	mpRack = CResourceManager::Get<CModel>("Rack");
 
-	new CComputer
+	CComputer* computer = new CComputer
 	(
 		mpComputer,
 		CVector(20.5f, 7.6f, 10.0f),
 		CVector(1.0f, 1.0f, 1.0f),
 		CVector(0.0f, 180.0f, 0.0f)
 	);
-	new CDoor
+
+#if _DEBUG
+	computer->SetDebugName("Computer");
+#endif
+
+	CDoor* door = new CDoor
 	(
 		mpDoor,
 		CVector(23.5f, 0.0f, -14.0f),
 		CVector(0.55f, 0.55f, 0.55f),
 		CVector(0.0f, 180.0f, 0.0f)
 	);
-
+#if _DEBUG
+	door->SetDebugName("Door");
+#endif
 	//// ìÆÇ©Ç»Ç¢è∞á@
 	//new CMoveFloor
 	//(

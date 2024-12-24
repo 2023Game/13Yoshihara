@@ -1,17 +1,25 @@
 #pragma once
 #include "CRideableObject.h"
-#include "CColliderSphere.h"
-class CBillBoardUI;
-class CObjectBase;
+#include "CObjectBase.h"
+
+class CInteractUI3D;
 
 // 調べるオブジェクトのベースクラス
 class CInteractObject : public CObjectBase
 {
 public:
+	// コンストラクタ
 	CInteractObject(ETaskPriority prio=ETaskPriority::eDefault,
 		int sortOrder=0,
 		ETaskPauseType pause = ETaskPauseType::eDefault);
+	// デストラクタ
 	virtual ~CInteractObject();
+
+	// オブジェクト削除を伝える関数
+	void DeleteObject(CObjectBase* obj) override;
+
+	// 更新
+	void Update();
 
 	// 調べる内容のテキストを返す
 	std::string GetInteractStr() const;
@@ -21,9 +29,6 @@ public:
 	// 調べる（継承先で実装）
 	virtual void Interact() = 0;
 
-	// インタラクト判定
-	void Interact();
-	
 	/// <summary>
 	/// 衝突処理
 	/// </summary>
@@ -38,14 +43,12 @@ public:
 	// デバッグ表示用の名前を設定
 	void SetDebugName(std::string name);
 #endif
+
 protected:
 	std::string mInteractStr;	// 調べる内容のテキスト
-	CBillBoardUI* mpBillBoardUI;
-	CObjectBase* mpPlayer;
-	bool mIsInteract;		// インタラクトしているかどうか
-	bool mIsInteractArea;	// インタラクトエリア内かどうか
-	std::vector<std::string> mMenuItemPathList;	// メニューのアイテム用画像のパスリスト
-	std::string mMenuSelectPath;	// メニューのセレクト画像のパス
+	CInteractUI3D* mpInteractUI3D;	// インタラクトUI
+	CVector mUIOffsetPos;			// UIのオフセット座標
+
 #if _DEBUG
 	std::string mDebugName;		// デバッグ表示用の名前
 #endif

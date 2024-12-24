@@ -1,9 +1,6 @@
 #pragma once
 //キャラクタクラスのインクルード
 #include "CXCharacter.h"
-#include "CColliderLine.h"
-#include "CColliderCapsule.h"
-#include "CColliderSphere.h"
 #include "CRideableObject.h"
 #include "CSound.h"
 
@@ -38,6 +35,8 @@ public:
 	// 描画
 	void Render();
 
+	// 一番近くにある調べるオブジェクトを取得
+	CInteractObject* GetNearInteractObject() const;
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
@@ -70,8 +69,6 @@ protected:
 	// 攻撃を受けているか
 	bool mIsDamage;
 
-	// 一番近くにある調べるオブジェクトを取得
-	CInteractObject* GetNearInteractObject() const;
 	// 近くにある調べるオブジェクトのリスト
 	std::list<CInteractObject*> mNearInteractObjs;
 	// 調べるオブジェクト探知用のコライダ―

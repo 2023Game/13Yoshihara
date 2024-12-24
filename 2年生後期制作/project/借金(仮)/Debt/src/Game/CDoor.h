@@ -2,7 +2,6 @@
 #include "CInteractObject.h"
 #include "CModel.h"
 
-class CColliderRectangle;
 class CStageSelectMenu;
 
 class CDoor : public CInteractObject
@@ -21,10 +20,9 @@ public:
 
 	void Interact() override;
 
-	void Update();
 	void Render();
 private:
 	CModel* mpModel;
-	CColliderMesh* mpCollider;
+	CCollider* mpCollider;
 	CStageSelectMenu* mpStageSelectMenu;	// ステージ選択メニュー
 };

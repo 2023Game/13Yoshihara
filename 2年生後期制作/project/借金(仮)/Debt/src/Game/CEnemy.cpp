@@ -18,6 +18,10 @@ CEnemy::CEnemy()
 	, mpBodyCol(nullptr)
 	, mpHpGauge(nullptr)
 {
+	// HPゲージを作成
+	mpHpGauge = new CGaugeUI3D(this);
+	//mpHpGauge->SetMaxPoint(mMaxHp);
+	//mpHpGauge->SetCurrPoint(mHp);
 }
 
 // デストラクタ
@@ -81,6 +85,11 @@ void CEnemy::Update()
 	CXCharacter::Update();
 
 	mIsGrounded = false;
+
+	// HPゲージを更新
+	mpHpGauge->Position(Position() + mGaugeOffsetPos);
+	//mpHpGauge->SetMaxPoint(mMaxHp);
+	//mpHpGauge->SetCurrPoint(mHp);
 
 	//CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
 }

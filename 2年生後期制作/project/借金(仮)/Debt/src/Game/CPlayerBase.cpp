@@ -6,6 +6,7 @@
 #include "CFlamethrower.h"
 #include "CSlash.h"
 #include "Maths.h"
+#include "CInteractObject.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -31,6 +32,7 @@ CPlayerBase::CPlayerBase()
 	, mMotionBlurRemainTime(0.0f)
 	, mIsDamage(false)
 	, mpBodyCol(nullptr)
+	, mpSearchCol(nullptr)
 {
 	spInstance = this;
 
@@ -41,6 +43,9 @@ CPlayerBase::~CPlayerBase()
 {
 	// コライダ―を削除
 	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpSearchCol);
+
+	spInstance = nullptr;
 }
 
 CPlayerBase* CPlayerBase::Instance()
@@ -135,11 +140,6 @@ void CPlayerBase::UpdateMotionBlur()
 	}
 }
 
-CInteractObject* CPlayerBase::GetNearInteractObject() const
-{
-	return nullptr;
-}
-
 // 更新
 void CPlayerBase::Update()
 {
@@ -196,11 +196,15 @@ void CPlayerBase::Update()
 	mIsWall = false;
 
 	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+
+	// 調べるオブジェクトのリストをクリア
+	mNearInteractObjs.clear();
 }
 
 // 衝突処理
 void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
+	// 体との衝突判定
 	if (self == mpBodyCol)
 	{
 		// 衝突した相手がフィールドの場合
@@ -267,10 +271,56 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 			Position(Position() + adjust * hit.weight);
 		}
 	}
+	// 調べるオブジェクトの探知コライダーの衝突判定
+	else if (self == mpSearchCol)
+	{
+		CInteractObject* obj = dynamic_cast<CInteractObject*>(other->Owner());
+		if (obj != nullptr)
+		{
+			// 衝突した調べるオブジェクトをリストに追加
+			mNearInteractObjs.push_back(obj);
+
+#if _DEBUG
+			// 探知範囲内に入ったオブジェクトの名前を表示
+			CDebugPrint::Print
+			(
+				"%s:%s\n",
+				obj->GetDebugName().c_str(),
+				obj->GetInteractStr().c_str()
+			);
+#endif
+		}
+	}
 }
 
 // 描画
 void CPlayerBase::Render()
 {
 	CXCharacter::Render();
+}
+
+// 一番近くにある調べるオブジェクトを取得
+CInteractObject* CPlayerBase::GetNearInteractObject() const
+{
+	// 一番近くの調べるオブジェクトのポインタ格納用
+	CInteractObject* nearObj = nullptr;
+	float nearDist = 0.0f;	// 現在一番近くにある調べるオブジェクトとの距離
+	CVector pos = Position();
+	// 探知範囲内の調べるオブジェクトを順番に調べる
+	for (CInteractObject * obj : mNearInteractObjs)
+	{
+		// 現在調べられる状態じゃなければスルー
+		if (!obj->CanInteract()) continue;
+
+		float dist = (obj->Position() - pos).LengthSqr();
+		// 一番最初の調べるオブジェクトか
+		// 求めた距離が現在の一番近いオブジェクトよりも近い場合
+		if (nearObj == nullptr || dist < nearDist)
+		{
+			// 一番近いオブジェクトを更新
+			nearObj = obj;
+			nearDist = dist;
+		}
+	}
+	return nearObj;
 }

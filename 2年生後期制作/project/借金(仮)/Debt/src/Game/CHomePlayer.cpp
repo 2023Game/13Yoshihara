@@ -2,9 +2,14 @@
 #include "CInput.h"
 #include "CCamera.h"
 #include "Maths.h"
+#include "CColliderCapsule.h"
+#include "CColliderSphere.h"
+#include "CInteractObject.h"
 
 #define CAPSULE_RADIUS 2.5f	// カプセルコライダの半径
 #define PLAYER_HEIGHT 16.0f	// プレイヤーの高さ
+
+#define SEARCH_RADIUS 10.0f	// 調べるオブジェクトの探知範囲の半径
 
 #define MOVE_SPEED 0.375f * 2.0f
 
@@ -19,30 +24,33 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 };
 
 CHomePlayer::CHomePlayer()
-	: CPlayerBase(CAPSULE_RADIUS, PLAYER_HEIGHT)
+	: CPlayerBase()
 	, mState(EState::eIdle)
 {
 	// アニメーションとモデルを初期化
 	InitAnimationModel("Player", &ANIM_DATA);
 
-	//フィールド、壁、オブジェクトとだけ衝突判定をする
-	mpColliderCapsule = new CColliderCapsule
+	// 本体のコライダ―
+	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
 		CVector(0.0f, CAPSULE_RADIUS, 0.0f),
 		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
 		CAPSULE_RADIUS
 	);
-	mpColliderCapsule->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+	//フィールド、壁、オブジェクトとだけ衝突
+	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
 
-	//インタラクトオブジェクトとだけ衝突判定
-	mpColliderLine = new CColliderLine
+	// 調べるオブジェクトを探知するコライダ―
+	mpSearchCol = new CColliderSphere
 	(
-		this, ELayer::ePlayer,
-		CVector(0.0f, 0.0f, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT, 0.0f)
+		this, ELayer::eInteractSearch,
+		SEARCH_RADIUS
 	);
-	mpColliderLine->SetCollisionLayers({ ELayer::eInteract });
+	mpSearchCol->Position(0.0f, SEARCH_RADIUS * 0.5f , 0.0f);
+	// 調べるオブジェクトとのみ衝突
+	mpSearchCol->SetCollisionTags({ ETag::eInteractObject });
+	mpSearchCol->SetCollisionLayers({ ELayer::eInteractObj });
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
@@ -50,11 +58,7 @@ CHomePlayer::CHomePlayer()
 
 CHomePlayer::~CHomePlayer()
 {
-	if (mpColliderLine != nullptr)
-	{
-		delete mpColliderLine;
-		mpColliderLine = nullptr;
-	}
+
 }
 
 void CHomePlayer::Update()
@@ -79,6 +83,20 @@ void CHomePlayer::Update()
 
 void CHomePlayer::UpdateIdle()
 {
+	// 接地していれば
+	if (mIsGrounded)
+	{
+		// 近くの調べるオブジェクトを取得
+		CInteractObject* obj = GetNearInteractObject();
+		if (obj != nullptr)
+		{
+			// Fキーを押したら、近くの調べるオブジェクトを調べる
+			if (CInput::PushKey('F'))
+			{
+				obj->Interact();
+			}
+		}
+	}
 }
 
 // 移動の更新処理

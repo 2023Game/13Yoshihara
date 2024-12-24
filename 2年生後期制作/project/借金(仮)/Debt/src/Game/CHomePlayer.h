@@ -45,6 +45,4 @@ private:
 		eIdle,			// ‘Ò‹@
 	};
 	EState mState;
-
-	CColliderLine* mpColliderLine;
 }; 

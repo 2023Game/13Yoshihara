@@ -18,27 +18,14 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation)
 	Rotation(rotation);
 
 	// プレイヤー、敵、スポーンゾーンとだけ衝突判定をする
-	mpColliderCapsule = new CColliderCapsule
+	mpBodyCol = new CColliderCapsule
 	{
 		this,ELayer::eVehicle,
 		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH - CAPSULE_RADIUS),
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAPSULE_RADIUS),
 		CAPSULE_RADIUS
 	};
-	mpColliderCapsule->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eSpawnZone });
-
-	//mpColliderBox = new CColliderBox
-	//{
-	//	this,ELayer::eVehicle,
-	//	CVector(-CAR_WIDTH_X, CAR_HEIGHT, CAR_WIDTH_Z),
-	//	CVector(CAR_WIDTH_X, CAR_HEIGHT, CAR_WIDTH_Z),
-	//	CVector(CAR_WIDTH_X, 0.0f, CAR_WIDTH_Z),
-	//	CVector(-CAR_WIDTH_X, 0.0f, CAR_WIDTH_Z),
-	//	CVector(-CAR_WIDTH_X, CAR_HEIGHT, -CAR_WIDTH_Z),
-	//	CVector(CAR_WIDTH_X, CAR_HEIGHT, -CAR_WIDTH_Z),
-	//	CVector(CAR_WIDTH_X, 0.0f, -CAR_WIDTH_Z),
-	//	CVector(-CAR_WIDTH_X, 0.0f, -CAR_WIDTH_Z)
-	//};
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eSpawnZone });
 
 	// 最初は描画、更新しない
 	SetEnable(false);
@@ -47,6 +34,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation)
 
 CCar::~CCar()
 {
+	SAFE_DELETE(mpBodyCol);
 }
 
 void CCar::Update()
