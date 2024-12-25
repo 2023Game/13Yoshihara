@@ -12,9 +12,8 @@
 CCarStatus::CCarStatus()
 	: CTrashStatusBase(MAX_HP, BASE_MOVE_SPEED,
 		JUMP_SPEED, KNOCKBACK_SPEED, POWER)
+	, mDeleteTime(DELETE_TIME)
 {
-	// 消滅までの時間を設定
-	SetDeleteTime(DELETE_TIME);
 }
 
 /*
@@ -24,9 +23,8 @@ CCarStatus::CCarStatus()
 CCarStatus::CCarStatus(int maxHp, float baseMoveSpeed, float jumpSpeed, float knockback, int power)
 	: CTrashStatusBase(maxHp, baseMoveSpeed,
 		jumpSpeed, knockback, power)
+	, mDeleteTime(DELETE_TIME)
 {
-	// 消滅までの時間を設定
-	SetDeleteTime(DELETE_TIME);
 }
 
 CCarStatus::~CCarStatus()
@@ -39,10 +37,10 @@ float CCarStatus::GetDeleteTime() const
 	return mDeleteTime;
 }
 
-// 消滅までの時間を設定する
-void CCarStatus::SetDeleteTime(float deleteTime)
+// 消滅までの時間を初期値に設定する
+void CCarStatus::SetDeleteTime()
 {
-	mDeleteTime = deleteTime;
+	mDeleteTime = DELETE_TIME;
 }
 
 // 消滅までの時間が経過したかどうか
@@ -60,7 +58,7 @@ bool CCarStatus::IsElapsedDeleteTime() const
 	}
 }
 
-// 消滅までの時間をカウント
+// 消滅までの時間をカウントダウン
 void CCarStatus::CountDeleteTime()
 {
 	// 0より大きいなら減算

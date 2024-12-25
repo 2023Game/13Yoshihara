@@ -17,15 +17,16 @@ public:
 	/// <param name="power">ゴミを落とす力</param>
 	CCarStatus(int maxHp, float baseMoveSpeed,
 		float jumpSpeed, float knockback, int power);
+	// デストラクタ
 	~CCarStatus();
 
 	// 消滅までの時間を取得する
 	float GetDeleteTime() const;
-	// 消滅までの時間を設定する
-	void SetDeleteTime(float deleteTime);
+	// 消滅までの時間を初期値に設定する
+	void SetDeleteTime();
 	// 消滅までの時間が経過したかどうか
 	bool IsElapsedDeleteTime() const;
-	// 消滅までの時間をカウント
+	// 消滅までの時間をカウントダウン
 	void CountDeleteTime();
 private:
 	float mDeleteTime;	// 消滅までの時間

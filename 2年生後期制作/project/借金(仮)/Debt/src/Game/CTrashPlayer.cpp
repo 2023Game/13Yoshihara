@@ -7,6 +7,7 @@
 #include "CColliderBox.h"
 #include "CColliderRectangle.h"
 #include "CColliderTriangle.h"
+#include "CVehicleBase.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TrashBox\\anim\\"
@@ -66,7 +67,8 @@ CTrashPlayer::CTrashPlayer()
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashPlayer", &ANIM_DATA);
 
-	//フィールド、壁、オブジェクトとだけ衝突判定をする
+	// 地形、敵、攻撃、車両
+	// と衝突判定をする本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
@@ -74,8 +76,7 @@ CTrashPlayer::CTrashPlayer()
 		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eRideableObject, ETag::eEnemy,
-		ETag::eCar, ETag::eGarbageTruck });
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
 	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject,
 		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle  });
 
@@ -128,9 +129,55 @@ void CTrashPlayer::Update()
 	CDebugPrint::Print("IsJump:%s\n", mIsJump ? "true" : "false");
 }
 
+// 衝突処理
 void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
+
+	// 本体コライダ―
+	if (self == mpBodyCol)
+	{
+		// 衝突した相手が車両なら
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+
+			// 車両クラスを取得
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			// 移動中なら吹き飛ばされる
+			if (vehicle->IsMove())
+			{
+				// 移動速度をゼロにする
+				mMoveSpeed = CVector::zero;
+
+				// 相手のステータスを取得
+				CTrashStatusBase* status = dynamic_cast<CTrashStatusBase*>(other->Owner());
+				// プレイヤーが受けるノックバック速度に、相手が与えるノックバック速度を設定
+				SetKnockbackReceived(status->GetKnockbackDealt());
+
+				// 攻撃を受けていなければ被弾開始アニメーションに変更
+				if (!mIsDamage)
+				{
+					// 蓋がしまっていたら蓋がしまっている状態からのアニメーション
+					if (!mIsOpen)
+						ChangeAnimation((int)EAnimType::eDamage_Close_Start);
+					// 蓋が開いていたら蓋が開いている状態からのアニメーション
+					else
+						ChangeAnimation((int)EAnimType::eDamage_Open_Start);
+				}
+
+				// 攻撃を受けている
+				mIsDamage = true;
+				// 状態を被弾開始に変更
+				ChangeState(EState::eDamageStart);
+			}
+		}
+	}
 }
 
 // アクションのキー入力
@@ -187,7 +234,7 @@ void CTrashPlayer::ActionInput()
 	{
 		mIsDamage = true;
 		mMoveSpeed = CVector::zero;
-		SetTakeKnockback(GetKnockback());
+		SetKnockbackReceived(GetKnockbackDealt());
 		ChangeState(EState::eDamageStart);
 		if (!mIsOpen)
 			ChangeAnimation((int)EAnimType::eDamage_Close_Start);
@@ -252,7 +299,7 @@ void CTrashPlayer::UpdateDamageStart()
 		// ノックバック速度の設定
 		mMoveSpeedY = GetJumpSpeed();
 		// 後ろ方向にノックバックさせる
-		mMoveSpeed = -VectorZ() * GetTakeKnockback();
+		mMoveSpeed = -VectorZ() * GetKnockbackReceived();
 		mIsGrounded = false;
 
 		ChangeState(EState::eDamage);
@@ -296,7 +343,7 @@ void CTrashPlayer::UpdateDamageEnd()
 		UpdateMove();
 
 		mIsDamage = false;
-		SetTakeKnockback(0.0f);
+		SetKnockbackReceived(0.0f);
 	}
 
 	// アニメーションが終了したら待機へ

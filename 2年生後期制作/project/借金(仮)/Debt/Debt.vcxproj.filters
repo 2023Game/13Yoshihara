@@ -101,9 +101,6 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Enemy">
       <UniqueIdentifier>{f78c9a88-6212-4aa7-b471-c65c541b9c5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Character\TrashGame\Car">
-      <UniqueIdentifier>{a8d9dca1-6726-43c6-904d-ffda03edf6e0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Collector">
       <UniqueIdentifier>{aecc9e95-ed66-4eea-8907-8a97e61315a7}</UniqueIdentifier>
     </Filter>
@@ -122,17 +119,23 @@
     <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame">
       <UniqueIdentifier>{9f17e39c-c19b-46c1-9a5a-8e8b31e03488}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Character\TrashGame\Truck">
-      <UniqueIdentifier>{0e571c8e-843d-4f94-8393-7f12148a2f84}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Game\Character\TrashGame\Truck\Punisher">
-      <UniqueIdentifier>{b25a58a6-0c85-4166-89ca-ea7ba91db312}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Field\Object\InteractObject">
       <UniqueIdentifier>{c334abdd-1f88-484d-9d55-0ab121f15f9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Game\UI\UI3D">
       <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle">
+      <UniqueIdentifier>{4e582f70-e040-45bd-a463-2683d82cbac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Car">
+      <UniqueIdentifier>{a8d9dca1-6726-43c6-904d-ffda03edf6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck">
+      <UniqueIdentifier>{0e571c8e-843d-4f94-8393-7f12148a2f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
+      <UniqueIdentifier>{b25a58a6-0c85-4166-89ca-ea7ba91db312}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -440,10 +443,10 @@
       <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CCar.cpp">
-      <Filter>ソース ファイル\Game\Character\TrashGame\Car</Filter>
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGarbageTruck.cpp">
-      <Filter>ソース ファイル\Game\Character\TrashGame\Truck</Filter>
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CEnemy.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -513,6 +516,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CGaugeUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CVehicleBase.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -847,10 +853,10 @@
       <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CCar.h">
-      <Filter>ソース ファイル\Game\Character\TrashGame\Car</Filter>
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGarbageTruck.h">
-      <Filter>ソース ファイル\Game\Character\TrashGame\Truck</Filter>
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CEnemy.h">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -920,6 +926,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CGaugeUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CVehicleBase.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

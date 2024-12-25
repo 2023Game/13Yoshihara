@@ -12,48 +12,71 @@
 #define COLLECTORS 3		// 回収員の人数
 
 CGarbageTruckStatus::CGarbageTruckStatus()
+	: CCarStatus(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
+	, mBackTime(BACK_TIME)
+	, mCollectRadius(COLLECT_RADIUS)
+	, mCollectors(COLLECTORS)
 {
-	// 回収範囲の半径を設定
-	mCollectRadius = COLLECT_RADIUS;
-	// 回収員の人数を設定
-	SetCollectors(COLLECTORS);
 }
 
 CGarbageTruckStatus::~CGarbageTruckStatus()
 {
 }
 // 撤退までの時間を取得
-float CGarbageTruckStatus::GetBackTime()
+float CGarbageTruckStatus::GetBackTime() const
 {
 	return mBackTime;
 }
 
-// 撤退までの時間を設定
-void CGarbageTruckStatus::SetBackTime(float backTime)
+// 撤退までの時間を初期値に設定
+void CGarbageTruckStatus::SetBackTime()
 {
-	mBackTime = backTime;
+	mBackTime = BACK_TIME;
 }
 
-// 撤退までの時間をカウント
+// 撤退までの時間が経過したかどうか
+bool CGarbageTruckStatus::IsElapsedBackTime() const
+{
+	// 撤退までの時間が0より大きいなら経過していない
+	if (mBackTime > 0.0f)
+	{
+		return false;
+	}
+	// 0以下なら経過した
+	else
+	{
+		return true;
+	}
+}
+
+// 撤退までの時間をカウントダウン
 void CGarbageTruckStatus::CountBackTime()
 {
 	mBackTime -= Times::DeltaTime();
 }
 
 // 回収範囲の半径を取得する
-float CGarbageTruckStatus::GetCollectRadius()
+float CGarbageTruckStatus::GetCollectRadius() const
 {
 	return mCollectRadius;
 }
 
 // 回収員の人数を取得する
-int CGarbageTruckStatus::GetCollectors()
+int CGarbageTruckStatus::GetCollectors() const
 {
 	return mCollectors;
 }
 
-// 回収員の人数を設定する
-void CGarbageTruckStatus::SetCollectors(int collectors)
+// 回収員の人数を初期値に設定する
+void CGarbageTruckStatus::SetCollectors()
 {
-	mCollectors = collectors;
+	mCollectors = COLLECTORS;
 }
+
+// 回収員の人数を1減らす
+void CGarbageTruckStatus::DecreaseCollectors()
+{
+	mCollectors--;
+}
+
+

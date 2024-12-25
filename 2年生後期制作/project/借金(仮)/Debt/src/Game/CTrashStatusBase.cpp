@@ -1,11 +1,11 @@
 #include "CTrashStatusBase.h"
 
-CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed, float knockback,
+CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed, float knockbackDealt,
 	int power)
 	: CCharaStatusBase(maxHp, baseMoveSpeed, jumpSpeed)
-	, mKnockback(knockback)
+	, mKnockbackDealt(knockbackDealt)
 	, mPower(power)
-	, mTakeKnockback(0)
+	, mKnockbackReceived(0)
 {
 }
 
@@ -14,9 +14,9 @@ CTrashStatusBase::~CTrashStatusBase()
 }
 
 // 与えるノックバック速度を取得
-float CTrashStatusBase::GetKnockback() const
+float CTrashStatusBase::GetKnockbackDealt() const
 {
-	return mKnockback;
+	return mKnockbackDealt;
 }
 
 // ゴミを落とす力を取得
@@ -26,13 +26,13 @@ int CTrashStatusBase::GetPower() const
 }
 
 // 受けるノックバック速度を取得
-float CTrashStatusBase::GetTakeKnockback() const
+float CTrashStatusBase::GetKnockbackReceived() const
 {
-	return mTakeKnockback;
+	return mKnockbackReceived;
 }
 
 // 受けるノックバック速度を設定
-void CTrashStatusBase::SetTakeKnockback(float knockback)
+void CTrashStatusBase::SetKnockbackReceived(float knockbackReceived)
 {
-	mTakeKnockback = knockback;
+	mKnockbackReceived = knockbackReceived;
 }

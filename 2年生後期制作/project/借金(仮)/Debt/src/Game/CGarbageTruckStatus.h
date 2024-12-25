@@ -2,27 +2,32 @@
 #include "CCarStatus.h"
 
 // ゴミ収集車のステータス
-// 車のステータスに追加でこのステータスを付与
 class CGarbageTruckStatus : public CCarStatus
 {
 public:
+	// コンストラクタ
 	CGarbageTruckStatus();
+	// デストラクタ
 	~CGarbageTruckStatus();
 
 	// 撤退までの時間を取得
-	float GetBackTime();
-	// 撤退までの時間を設定
-	void SetBackTime(float backTime);
-	// 撤退までの時間をカウント
+	float GetBackTime() const;
+	// 撤退までの時間を初期値に設定
+	void SetBackTime();
+	// 撤退までの時間が経過したかどうか
+	bool IsElapsedBackTime() const;
+	// 撤退までの時間をカウントダウン
 	void CountBackTime();
 
 	// 回収範囲の半径を取得する
-	float GetCollectRadius();
+	float GetCollectRadius() const;
 
 	// 回収員の人数を取得する
-	int GetCollectors();
-	// 回収員の人数を設定する
-	void SetCollectors(int collectors);
+	int GetCollectors() const;
+	// 回収員の人数を初期値に設定する
+	void SetCollectors();
+	// 回収員の人数を1減らす
+	void DecreaseCollectors();
 private:
 	float mBackTime;		// 撤退までの時間
 	float mCollectRadius;	// 回収範囲の半径

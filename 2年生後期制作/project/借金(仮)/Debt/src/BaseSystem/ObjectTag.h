@@ -13,8 +13,7 @@ enum class ETag
 
 	ePlayer,// プレイヤー
 	eEnemy,	// エネミー
-	eCar,	// 車
-	eGarbageTruck, // ゴミ収集車
+	eVehicle,		// 車両
 	eSpawnZone,		// 生成場所
 
 	eTrashBag, // ゴミ袋

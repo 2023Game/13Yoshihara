@@ -85,6 +85,7 @@
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp" />
+    <ClCompile Include="src\Game\CVehicleBase.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
     <ClCompile Include="src\Game\CCarStatus.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
@@ -222,6 +223,7 @@
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h" />
+    <ClInclude Include="src\Game\CVehicleBase.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />
     <ClInclude Include="src\Game\CCarStatus.h" />
     <ClInclude Include="src\Game\CComputer.h" />

@@ -30,7 +30,7 @@ public:
 	/// <param name="self">衝突した自身のコライダー</param>
 	/// <param name="other">衝突した相手のコライダー</param>
 	/// <param name="hit">衝突した時の情報</param>
-	virtual void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 
 	// 描画
 	void Render();
