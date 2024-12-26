@@ -157,8 +157,12 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 
 				// 相手のステータスを取得
 				CTrashStatusBase* status = dynamic_cast<CTrashStatusBase*>(other->Owner());
-				// プレイヤーが受けるノックバック速度に、相手が与えるノックバック速度を設定
-				SetKnockbackReceived(status->GetKnockbackDealt());
+				// 相手からプレイヤーの方向
+				CVector direction = Position() - other->Owner()->Position();
+				direction = direction.Normalized();
+				// プレイヤーが受けるノックバック速度に、
+				// 相手が与えるノックバック速度を相手からプレイヤーの方向に設定
+				SetKnockbackReceived(direction * status->GetKnockbackDealt());
 
 				// 攻撃を受けていなければ被弾開始アニメーションに変更
 				if (!mIsDamage)
@@ -230,17 +234,6 @@ void CTrashPlayer::ActionInput()
 		else
 			ChangeAnimation((int)EAnimType::eCritical_Start);
 	}
-	if (CInput::PushKey('2'))
-	{
-		mIsDamage = true;
-		mMoveSpeed = CVector::zero;
-		SetKnockbackReceived(GetKnockbackDealt());
-		ChangeState(EState::eDamageStart);
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eDamage_Close_Start);
-		else
-			ChangeAnimation((int)EAnimType::eDamage_Open_Start);
-	}
 }
 
 // 待機状態
@@ -298,8 +291,8 @@ void CTrashPlayer::UpdateDamageStart()
 		TakeDamage(1,nullptr);
 		// ノックバック速度の設定
 		mMoveSpeedY = GetJumpSpeed();
-		// 後ろ方向にノックバックさせる
-		mMoveSpeed = -VectorZ() * GetKnockbackReceived();
+		// 攻撃相手の向いている方向にノックバックさせる
+		mMoveSpeed = GetKnockbackReceived();
 		mIsGrounded = false;
 
 		ChangeState(EState::eDamage);
@@ -343,7 +336,7 @@ void CTrashPlayer::UpdateDamageEnd()
 		UpdateMove();
 
 		mIsDamage = false;
-		SetKnockbackReceived(0.0f);
+		SetKnockbackReceived(CVector::zero);
 	}
 
 	// アニメーションが終了したら待機へ

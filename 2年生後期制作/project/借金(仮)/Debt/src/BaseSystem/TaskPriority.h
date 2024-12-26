@@ -12,6 +12,7 @@ enum class ETaskPriority
 	eEnemy,		// 敵
 	eWeapon,	// 武器
 	eVehicle,	// 車両
+	eSpawnZone,	// 生成場所
 
 	eEffect,	// エフェクト
 	eBillboard,	// ビルボードイメージ

@@ -1,11 +1,11 @@
 #pragma once
 #include "CModel.h"
 #include "CColliderMesh.h"
-#include "CTrashVehicleSpawnZone.h"
 #include "CVehicleBase.h"
 
 class CCar;
 class CGarbageTruck;
+class CTrashVehicleSpawnZone;
 
 // 位置
 #define CAR_LEFT_POS1 CVector(-60.0f,0.0f,300.0f)	// 左から1番
@@ -15,7 +15,7 @@ class CGarbageTruck;
 
 // 回転
 #define CAR_LEFT_ROTATION CVector(0.0f,180.0f,0.0f)	// 左道路の方向
-#define CAR_RIGHT_ROTATION CVector(0.0f,.0f,0.0f)	// 右道路の方向
+#define CAR_RIGHT_ROTATION CVector(0.0f,0.0f,0.0f)	// 右道路の方向
 
 // 車両管理クラス
 class CVehicleManager
@@ -52,10 +52,20 @@ public:
 	/// <param name="popPos">出現する場所</param>
 	void RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos);
 
-	// 指定した道に停止している車両がいるかチェックする
+	/// <summary>
+	/// 指定した道に停止している車両がいるかチェックする
+	/// </summary>
+	/// <param name="roadType">どの道にいるか</param>
+	/// <returns>trueならば、いる</returns>
 	bool IsVehicle(CVehicleBase::ERoadType roadType);
+	/// <summary>
+	/// 指定した道の生成場所に車両がいるかチェックする
+	/// </summary>
+	/// <param name="roadType">どの道にいるか</param>
+	/// <returns>trueならば、いる</returns>
+	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
 private:
-	CTrashVehicleSpawnZone mSpawnZone;	// 生成場所に車がいるか判断するクラス
+	CTrashVehicleSpawnZone* mpSpawnZone;	// 生成場所に車がいるか判断するクラス
 
 	CModel* mpCarModel;	// 車のモデル
 

@@ -6,6 +6,8 @@
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
 #define FRONT_WIDTH		30.0f	// 前方判定の幅
 #define FRONT_RADIUS	12.0f	// 前方判定の半径
+#define TURN_SPEED		CVector(0.0f,0.5f,0.0f)	// 車両の方向転換速度
+#define TURN_MAX		CVector(0.0f,22.5f,0.0f)// 車両の方向転換の最大値
 
 // コンストラクタ
 CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
@@ -51,21 +53,6 @@ void CVehicleBase::Update()
 // 衝突処理
 void CVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	// 本体コライダ―
-	if (self == mpBodyCol)
-	{
-		// 衝突した相手がプレイヤーの場合
-		if (other->Layer() == ELayer::ePlayer)
-		{
-			// 横方向だけに押し戻す
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-	}
 }
 
 // 描画
@@ -77,10 +64,8 @@ void CVehicleBase::Render()
 // 移動中かどうか
 bool CVehicleBase::IsMove() const
 {
-	// 各軸への移動速度のいずれかが0より大きいなら移動中
-	if (mMoveSpeed.X() > 0.0f) return true;
-	if (mMoveSpeed.Y() > 0.0f) return true;
-	if (mMoveSpeed.Z() > 0.0f) return true;
+	// 移動速度の2乗の長さが0より大きいなら移動中
+	if (mMoveSpeed.LengthSqr() > 0.0f) return true;
 	// 全て0以下なら移動していない
 	return false;
 }
@@ -89,54 +74,139 @@ bool CVehicleBase::IsMove() const
 void CVehicleBase::ChangeRoad(float moveSpeed, bool& isEnd)
 {
 	isEnd = false;
+	// 正面へ移動する
+	mMoveSpeed = VectorZ() * moveSpeed;
+
+	// 左の道同士のX距離
+	float xDistLeft = std::abs(CAR_LEFT_POS1.X() - CAR_LEFT_POS2.X());
+	// 右の道同士のX距離
+	float xDistRight = std::abs(CAR_RIGHT_POS1.X() - CAR_RIGHT_POS2.X());
+
+	// 左の道同士の中間点のX座標
+	float leftMid = CAR_LEFT_POS1.X() + xDistLeft;
+	// 右の道同士の中間点のX座標
+	float rightMid = CAR_RIGHT_POS1.X() - xDistLeft;
+
 	// 今いる道によって処理
 	switch (GetRoadType())
 	{
 	// 左から一番目の道
 	case ERoadType::eLeft1:
-		// 自分から見て右へ移動
-		mMoveSpeed = VectorX() * moveSpeed;
+		// まだ左の道同士の中間点を超えていないかつ
+		// 回転が、左の道の初期値 + 方向転換の最大値より小さければ
+		if (Position().X() <= leftMid &&
+			EulerAngles().Y() <= CAR_LEFT_ROTATION.Y() + TURN_MAX.Y())
+		{
+			// 右を向く
+			Rotation(EulerAngles() + TURN_SPEED);
+		}
+		// 中間点を超えているかつ
+		// 元の方向を超えていない
+		else if (Position().X() >= leftMid &&
+			EulerAngles().Y() >= CAR_LEFT_ROTATION.Y())
+		{
+			// 左の方向に戻していく
+			Rotation(EulerAngles() - TURN_SPEED);
+		}
+
 		// X座標が左から二番目の道の座標以上になれば
 		if (Position().X() >= CAR_LEFT_POS2.X())
 		{
 			// 今いる道の状態を左から二番目の道に変更
 			ChangeRoadType(ERoadType::eLeft2);
+			Rotation(CAR_LEFT_ROTATION);
 			isEnd = true;
 		}
 		break;
 	// 左から二番目の道
 	case ERoadType::eLeft2:
-		// 自分から見て左へ移動
-		mMoveSpeed = -VectorX() * moveSpeed;
+		// まだ左の道同士の中間点を超えていないかつ
+		// 回転が、左の道の初期値 - 方向転換の最大値より大きければ
+		if (Position().X() >= leftMid &&
+			EulerAngles().Y() >= CAR_LEFT_ROTATION.Y() - TURN_MAX.Y())
+		{
+			// 左を向く
+			Rotation(EulerAngles() - TURN_SPEED);
+		}
+		// 中間点を超えているかつ
+		// 元の方向を超えていない
+		else if (Position().X() <= leftMid &&
+			EulerAngles().Y() <= CAR_LEFT_ROTATION.Y())
+		{
+			// 右の方向に戻していく
+			Rotation(EulerAngles() + TURN_SPEED);
+		}
+
 		// X座標が左から一番目の道の座標以下になれば
 		if (Position().X() <= CAR_LEFT_POS1.X())
 		{
 			// 今いる道の状態を左から一番目の道に変更
 			ChangeRoadType(ERoadType::eLeft1);
+			Rotation(CAR_LEFT_ROTATION);
 			isEnd = true;
 		}
 		break;
 	// 右から一番目の道
 	case ERoadType::eRight1:
-		// 自分から見て左へ移動
-		mMoveSpeed = VectorX() * moveSpeed;
+		// まだ右の道同士の中間点を超えていないかつ
+		// 回転が、右の道の初期値 + 方向転換の最大値より小さければ
+		if (Position().X() >= rightMid &&
+			EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y() + TURN_MAX.Y())
+		{
+			// 右を向く
+			Rotation(EulerAngles() + TURN_SPEED);
+		}
+		// 中間点を超えているかつ
+		// 元の方向を超えていない
+		else if (Position().X() <= rightMid &&
+			EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y())
+		{
+			// 左の方向に戻していく
+			Rotation(EulerAngles() - TURN_SPEED);
+		}
+
 		// X座標が右から二番目の道の座標以下になれば
 		if (Position().X() <= CAR_RIGHT_POS2.X())
 		{
 			// 今いる道の状態を右から二番目の道に変更
 			ChangeRoadType(ERoadType::eRight2);
+			Rotation(CAR_RIGHT_ROTATION);
 			isEnd = true;
 		}
 		break;
 	// 右から二番目の道
 	case ERoadType::eRight2:
-		// 自分から見て右へ移動
-		mMoveSpeed = -VectorX() * moveSpeed;
+		// まだ右の道同士の中間点を超えていないかつ
+		// 回転が、右の道の初期値 - 方向転換の最大値より大きければ
+		if (Position().X() <= rightMid &&
+			EulerAngles().Y() >= CAR_RIGHT_ROTATION.Y() - TURN_MAX.Y())
+		{
+			// 左を向く
+			Rotation(EulerAngles() - TURN_SPEED);
+		}
+		// 中間点を超えているかつ
+		// 元の方向を超えていない
+		else if (Position().X() >= rightMid &&
+			EulerAngles().Y() >= CAR_RIGHT_ROTATION.Y())
+		{
+			// 右の方向に戻していく
+			Rotation(EulerAngles() + TURN_SPEED);
+		}
+
+		// まだ中間点を超えていないかつ
+		// 回転が、右の道の初期値 - 方向転換の最大値より小さくなければ
+		else if (!(EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y() - TURN_MAX.Y()))
+		{
+			// 左を向く
+			Rotation(EulerAngles() - TURN_SPEED);
+		}
+
 		// X座標が右から一番目の道の座標以上になれば
 		if (Position().X() >= CAR_RIGHT_POS1.X())
 		{
 			// 今いる道の状態を右から一番目の道に変更
 			ChangeRoadType(ERoadType::eRight1);
+			Rotation(CAR_RIGHT_ROTATION);
 			isEnd = true;
 		}
 		break;

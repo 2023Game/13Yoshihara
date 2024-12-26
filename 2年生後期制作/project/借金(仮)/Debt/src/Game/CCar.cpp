@@ -40,13 +40,13 @@ void CCar::Update()
 	switch (mState)
 	{
 	// 移動
-	case EState::eMove:		UpdateMove();	break;
+	case EState::eMove:			UpdateMove();		break;
 	// 停止
-	case EState::eStop:		UpdateStop();	break;
+	case EState::eStop:			UpdateStop();		break;
 	// 壊れた
-	case EState::eBroken:	UpdateBroken();	break;
+	case EState::eBroken:		UpdateBroken();		break;
 	// 車線変更
-	case EState::eChangeRoad: UpdateChangeRoad(); break;
+	case EState::eChangeRoad:	UpdateChangeRoad(); break;
 	}
 
 	CVehicleBase::Update();
@@ -77,13 +77,17 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 衝突した相手が車両の場合
 		if (other->Layer() == ELayer::eVehicle)
 		{
-			// 車両クラスを取得
-			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
-			// 相手が動いていなければ
-			if (!vehicle->IsMove())
+			// 壊れていなければ
+			if (mState != EState::eBroken)
 			{
-				// 車線変更状態へ
-				ChangeState(EState::eChangeRoad);
+				// 車両クラスを取得
+				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+				// 相手が動いていなければ
+				if (!vehicle->IsMove())
+				{
+					// 車線変更状態へ
+					ChangeState(EState::eChangeRoad);
+				}
 			}
 		}
 	}
@@ -157,10 +161,11 @@ std::string CCar::GetStateStr(EState state) const
 {
 	switch (state)
 	{
-	case EState::eMove:		return "移動中";
-	case EState::eStop:		return "停止中";
-	case EState::eBroken:	return "壊れている";
-	default:				return "";
+	case EState::eMove:			return "移動中";
+	case EState::eStop:			return "停止中";
+	case EState::eBroken:		return "壊れている";
+	case EState::eChangeRoad:	return "車線変更";
+	default:					return "";
 	}
 }
 #endif

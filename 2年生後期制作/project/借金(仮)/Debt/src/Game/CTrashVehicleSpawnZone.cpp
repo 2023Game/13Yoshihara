@@ -1,61 +1,68 @@
 #include "CTrashVehicleSpawnZone.h"
+#include "CVehicleBase.h"
 
-CTrashVehicleSpawnZone::CTrashVehicleSpawnZone(float left1, float left2, float right1, float right2)
-	: CCharaBase(ETag::eSpawnZone, ETaskPriority::eDefault)
-	, mLeft1PosX(left1)
-	, mLeft2PosX(left2)
-	, mRight1PosX(right1)
-	, mRight2PosX(right2)
+// コンストラクタ
+CTrashVehicleSpawnZone::CTrashVehicleSpawnZone()
+	: CObjectBase(ETag::eSpawnZone, ETaskPriority::eSpawnZone, 0, ETaskPauseType::eGame)
 {
+	// 車両とだけ衝突する
 	// 車両の生成場所のコライダ
-	mpSpawnZoneColliderMesh = new CColliderMesh(this, ELayer::eSpawnZone, CResourceManager::Get<CModel>("TrashStage_SpawnZone_Collision"), true);
+	mpSpawnZoneColliderMesh = new CColliderMesh
+	(
+		this, ELayer::eSpawnZone,
+		CResourceManager::Get<CModel>("TrashStage_SpawnZone_Collision"),
+		true
+	);
+	mpSpawnZoneColliderMesh->SetCollisionTags({ ETag::eVehicle });
+	mpSpawnZoneColliderMesh->SetCollisionLayers({ ELayer::eVehicle });
+
 }
 
+// デストラクタ
 CTrashVehicleSpawnZone::~CTrashVehicleSpawnZone()
 {
-	if (mpSpawnZoneColliderMesh != nullptr)
-	{
-		delete mpSpawnZoneColliderMesh;
-		mpSpawnZoneColliderMesh = nullptr;
-	}
+	SAFE_DELETE(mpSpawnZoneColliderMesh);
 }
 
 void CTrashVehicleSpawnZone::Update()
 {
-	SetLeft1CanPop(false);
-	SetLeft2CanPop(false);
-	SetRight1CanPop(false);
-	SetRight2CanPop(false);
+	SetLeft1CanPop(true);
+	SetLeft2CanPop(true);
+	SetRight1CanPop(true);
+	SetRight2CanPop(true);
 }
 
 void CTrashVehicleSpawnZone::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
+	// 生成場所のコライダ
 	if (self == mpSpawnZoneColliderMesh)
 	{
 		// 衝突相手が車両の場合
 		if (other->Layer() == ELayer::eVehicle)
 		{
-			// X座標を見て道を特定
-			// 対応するboolをtrueにする
+			// 車両クラスを取得
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			
+			// 相手がいる道に生成できないのでfalse
 			// 左から1番の道なら
-			if (other->Owner()->Position().X() == mLeft1PosX)
+			if (vehicle->GetRoadType() == CVehicleBase::ERoadType::eLeft1)
 			{
-				SetLeft1CanPop(true);
+				SetLeft1CanPop(false);
 			}
 			// 左から2番の道なら
-			else if (other->Owner()->Position().X() == mLeft2PosX)
+			else if (vehicle->GetRoadType() == CVehicleBase::ERoadType::eLeft2)
 			{
-				SetLeft2CanPop(true);
+				SetLeft2CanPop(false);
 			}
 			// 右から1番の道なら
-			else if (other->Owner()->Position().X() == mRight1PosX)
+			else if (vehicle->GetRoadType() == CVehicleBase::ERoadType::eRight1)
 			{
-				SetRight1CanPop(true);
+				SetRight1CanPop(false);
 			}
 			// 右から2番の道なら
 			else
 			{
-				SetRight2CanPop(true);
+				SetRight2CanPop(false);
 			}
 		}
 	}

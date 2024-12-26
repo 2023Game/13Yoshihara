@@ -19,15 +19,15 @@ public:
 	// 与えるノックバック速度を取得
 	float GetKnockbackDealt() const;
 
-	// 受けるノックバック速度を取得
-	float GetKnockbackReceived() const;
-	// 受けるノックバック速度を設定
-	void SetKnockbackReceived(float knockbackReceived);
+	// 受けるノックバックを取得
+	CVector GetKnockbackReceived() const;
+	// 受けるノックバックを設定
+	void SetKnockbackReceived(CVector knockbackReceived);
 
 	// ゴミを落とす力を取得
 	int GetPower() const;
 private:
 	float mKnockbackDealt;		// 与えるノックバック速度
-	float mKnockbackReceived;	// 受けるノックバック速度
+	CVector mKnockbackReceived;	// 受けるノックバック
 	int mPower;					// ゴミを落とす力
 };

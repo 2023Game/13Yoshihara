@@ -30,6 +30,8 @@ private:
 	void UpdateBroken();
 	// 回収処理
 	void UpdateCollect();
+	// 車線変更処理
+	void UpdateChangeRoad();
 
 	// トラックの状態
 	enum class EState
@@ -38,6 +40,7 @@ private:
 		eStop,		// 停止
 		eBroken,	// 壊れる
 		eCollect,	// 回収
+		eChangeRoad,// 車線変更
 	};
 	// 状態切り替え
 	void ChangeState(EState state);

@@ -1,15 +1,16 @@
 #pragma once
-#include "CCharaBase.h"
+#include "CObjectBase.h"
 #include "CColliderMesh.h"
 
 // 車両の生成場所に車がいるか判断するためのクラス
-class CTrashVehicleSpawnZone : public CCharaBase
+class CTrashVehicleSpawnZone : public CObjectBase
 {
 
 private:
 	CColliderMesh* mpSpawnZoneColliderMesh;
 
 	// 生成可能かのデータ
+	// trueならば、生成可能
 	struct IsCanPops
 	{
 		bool IsLeft1CanPop;		// 左から1番目の道に生成可能か
@@ -18,21 +19,10 @@ private:
 		bool IsRight2CanPop;	// 右から2番目の道に生成可能か
 	};
 	IsCanPops mIsCanPops;	// 生成可能かのデータ
-
-	const float mLeft1PosX;	// 左から1番のX座標
-	const float mLeft2PosX;	// 左から2番のX座標
-	const float mRight1PosX;// 右から1番のX座標
-	const float mRight2PosX;// 右から2番のX座標
-
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="left1">左から1番のX座標</param>
-	/// <param name="left2">左から2番のX座標</param>
-	/// <param name="right1">右から1番のX座標</param>
-	/// <param name="right2">右から2番のX座標</param>
-	CTrashVehicleSpawnZone(float left1, float left2, float right1, float right2);
+	// コンストラクタ
+	CTrashVehicleSpawnZone();
+	// デストラクタ
 	~CTrashVehicleSpawnZone();
 
 	void Update();
@@ -44,7 +34,10 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-	// 生成可能かのデータを取得
+	/// <summary>
+	/// 生成可能かのデータを取得
+	/// </summary>
+	/// <returns>データはtrueならば、生成可能</returns>
 	IsCanPops GetCanPops() const;
 
 	// 生成可能かを設定

@@ -4,7 +4,7 @@
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		27.0f	// トラックの幅
-#define TRUCK_RADIUS	12.0f	// トラックの半径
+#define TRUCK_RADIUS	15.0f	// トラックの半径
 
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
@@ -18,7 +18,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		this,ELayer::eVehicle,
 		CVector(0.0f,TRUCK_HEIGHT,TRUCK_WIDTH - TRUCK_RADIUS),
 		CVector(0.0f,TRUCK_HEIGHT,-TRUCK_WIDTH + TRUCK_RADIUS),
-		TRUCK_RADIUS
+		TRUCK_RADIUS, true
 	);
 	mpBodyCol->Position(0.0f, 0.0f, -2.0f);
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
@@ -43,13 +43,15 @@ void CGarbageTruck::Update()
 	switch (mState)
 	{
 	// 移動
-	case EState::eMove:		UpdateMove();		break;
+	case EState::eMove:			UpdateMove();		break;
 	// 停止
-	case EState::eStop:		UpdateStop();		break;
+	case EState::eStop:			UpdateStop();		break;
 	// 壊れた
-	case EState::eBroken:	UpdateBroken();		break;
+	case EState::eBroken:		UpdateBroken();		break;
 	// 回収
-	case EState::eCollect:	UpdateCollect();	break;
+	case EState::eCollect:		UpdateCollect();	break;
+	// 車線変更
+	case EState::eChangeRoad:	UpdateChangeRoad();	break;
 	}
 
 	CVehicleBase::Update();
@@ -72,6 +74,26 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		{
 			// 状態を停止に変更
 			ChangeState(EState::eStop);
+		}
+	}
+	// 前方判定コライダ―
+	if (self == mpFrontCol)
+	{
+		// 衝突した相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			// 壊れていなければ
+			if (mState != EState::eBroken)
+			{
+				// 車両クラスを取得
+				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+				// 相手が動いていなければ
+				if (!vehicle->IsMove())
+				{
+					// 車線変更状態へ
+					ChangeState(EState::eChangeRoad);
+				}
+			}
 		}
 	}
 }
@@ -119,6 +141,21 @@ void CGarbageTruck::UpdateCollect()
 {
 }
 
+// 車線変更処理
+void CGarbageTruck::UpdateChangeRoad()
+{
+	bool isEnd = false;
+	// 車線変更移動
+	ChangeRoad(GetBaseMoveSpeed(), isEnd);
+
+	// trueならば、車線変更が終わった
+	if (isEnd)
+	{
+		// 移動状態に戻す
+		ChangeState(EState::eMove);
+	}
+}
+
 // 状態切り替え
 void CGarbageTruck::ChangeState(EState state)
 {
@@ -134,11 +171,12 @@ std::string CGarbageTruck::GetStateStr(EState state) const
 {
 	switch (state)
 	{
-	case EState::eMove:		return "移動中";
-	case EState::eStop:		return "停止中";
-	case EState::eBroken:	return "壊れている";
-	case EState::eCollect:	return "回収中";
-	default:				return "";
+	case EState::eMove:			return "移動中";
+	case EState::eStop:			return "停止中";
+	case EState::eBroken:		return "壊れている";
+	case EState::eCollect:		return "回収中";
+	case EState::eChangeRoad:	return "車線変更";
+	default:					return "";
 	}
 }
 #endif

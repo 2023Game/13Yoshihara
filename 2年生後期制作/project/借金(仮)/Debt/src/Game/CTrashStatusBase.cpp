@@ -5,7 +5,7 @@ CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpe
 	: CCharaStatusBase(maxHp, baseMoveSpeed, jumpSpeed)
 	, mKnockbackDealt(knockbackDealt)
 	, mPower(power)
-	, mKnockbackReceived(0)
+	, mKnockbackReceived(CVector::zero)
 {
 }
 
@@ -25,14 +25,14 @@ int CTrashStatusBase::GetPower() const
 	return mPower;
 }
 
-// 受けるノックバック速度を取得
-float CTrashStatusBase::GetKnockbackReceived() const
+// 受けるノックバックを取得
+CVector CTrashStatusBase::GetKnockbackReceived() const
 {
 	return mKnockbackReceived;
 }
 
-// 受けるノックバック速度を設定
-void CTrashStatusBase::SetKnockbackReceived(float knockbackReceived)
+// 受けるノックバックを設定
+void CTrashStatusBase::SetKnockbackReceived(CVector knockbackReceived)
 {
 	mKnockbackReceived = knockbackReceived;
 }

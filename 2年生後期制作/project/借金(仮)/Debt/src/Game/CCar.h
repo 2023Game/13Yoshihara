@@ -18,7 +18,7 @@ public:
 	// 衝突処理
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 
-protected:
+private:
 	// 移動処理
 	void UpdateMove();
 	// 停止処理
@@ -36,7 +36,7 @@ protected:
 		eBroken,	// 壊れる
 		eChangeRoad,// 車線変更
 	};
-	// ステートを変更
+	// 状態切り替え
 	void ChangeState(EState state);
 	EState mState;	// 車の状態
 

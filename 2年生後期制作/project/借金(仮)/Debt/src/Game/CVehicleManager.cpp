@@ -1,6 +1,7 @@
 #include "CVehicleManager.h"
 #include "CCar.h"
 #include "CGarbageTruck.h"
+#include "CTrashVehicleSpawnZone.h"
 #include <random>
 
 // 出現までの時間
@@ -9,13 +10,18 @@
 #define BLACK_POP_TIME 3.0f		// お仕置きトラック
 
 CVehicleManager::CVehicleManager()
-	: mSpawnZone(CAR_LEFT_POS1.X(), CAR_LEFT_POS2.X(), CAR_RIGHT_POS1.X(), CAR_RIGHT_POS2.X())
 {
+	// 生成場所
+	mpSpawnZone = new CTrashVehicleSpawnZone();
+
+	// 車のモデル
 	mpCarModel = CResourceManager::Get<CModel>("Car");
 
+	// 車両の作成
 	CreateVehicle(CResourceManager::Get<CModel>("Car"),
 		CResourceManager::Get<CModel>("GarbageTruck"),
 		CResourceManager::Get<CModel>("BlackTruck"));
+
 	// 車の出現までの時間を設定
 	mCarPopTime = CAR_POP_TIME;
 	// トラックの出現までの時間を設定
@@ -99,6 +105,12 @@ void CVehicleManager::SpawnVehicle()
 
 			// ランダムに場所を決定
 			RandomDecidePopPosition(punishRoadType, punishPopPos);
+			// 生成場所に車両がいたら抽選しなおし
+			if (IsSpawnZone(punishRoadType))
+			{
+				// ランダムに場所を決定
+				RandomDecidePopPosition(punishRoadType, punishPopPos);
+			}
 			//// 停止している車両がいる道で生成されるとき抽選しなおし
 			//while (IsVehicle(punishRoadType))
 			//{
@@ -141,6 +153,12 @@ void CVehicleManager::SpawnVehicle()
 
 		// ランダムに場所を決定
 		RandomDecidePopPosition(carRoadType, carPopPos);
+		// 生成場所に車両がいたら抽選しなおし
+		if (IsSpawnZone(carRoadType))
+		{
+			// ランダムに場所を決定
+			RandomDecidePopPosition(carRoadType, carPopPos);
+		}
 		//// 停止している車両がいる道で生成されるとき抽選しなおし
 		//while (IsVehicle(carRoadType))
 		//{
@@ -204,6 +222,12 @@ void CVehicleManager::SpawnVehicle()
 
 			// ランダムに場所を決定
 			RandomDecidePopPosition(truckRoadType, truckPopPos);
+			// 生成場所に車両がいたら抽選しなおし
+			if (IsSpawnZone(truckRoadType))
+			{
+				// ランダムに場所を決定
+				RandomDecidePopPosition(truckRoadType, truckPopPos);
+			}
 			//// 停止している車両がいる道で生成されるとき抽選しなおし
 			//while (IsVehicle(truckRoadType))
 			//{
@@ -327,4 +351,29 @@ bool CVehicleManager::IsVehicle(CVehicleBase::ERoadType roadType)
 
 	// 停止している車両がいないのでfalse
 	return false;
+}
+
+// 指定した道の生成場所に車両がいるかチェックする
+bool CVehicleManager::IsSpawnZone(CVehicleBase::ERoadType roadType)
+{
+	// 左から一番目の道
+	if (roadType == CVehicleBase::ERoadType::eLeft1)
+	{
+		return !mpSpawnZone->GetCanPops().IsLeft1CanPop;
+	}
+	// 左から二番目の道
+	else if (roadType == CVehicleBase::ERoadType::eLeft2)
+	{
+		return !mpSpawnZone->GetCanPops().IsLeft2CanPop;
+	}
+	// 右から一番目の道
+	else if (roadType == CVehicleBase::ERoadType::eRight1)
+	{
+		return !mpSpawnZone->GetCanPops().IsRight1CanPop;
+	}
+	// 右から二番目の道
+	else
+	{
+		return !mpSpawnZone->GetCanPops().IsRight2CanPop;
+	}
 }
