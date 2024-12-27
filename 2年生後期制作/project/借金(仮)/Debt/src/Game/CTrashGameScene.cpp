@@ -9,6 +9,7 @@
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 #include "CVehicleManager.h"
+#include "CTrashEnemy.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -62,7 +63,9 @@ void CTrashGameScene::Load()
 	new CTrashField();
 
 
-
+	CTrashEnemy* enemy = new CTrashEnemy();
+	enemy->Position(0.0f, 0.0f, 5.0f);
+	enemy->Scale(0.1f, 0.1f, 0.1f);
 
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Scale(0.1f, 0.1f, 0.1f);

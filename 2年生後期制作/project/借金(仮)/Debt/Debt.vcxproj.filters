@@ -137,6 +137,9 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
       <UniqueIdentifier>{b25a58a6-0c85-4166-89ca-ea7ba91db312}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Debug">
+      <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -448,9 +451,6 @@
     <ClCompile Include="src\Game\CGarbageTruck.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CEnemy.cpp">
-      <Filter>ソース ファイル\Game\Character</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CInteractUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
@@ -481,7 +481,7 @@
     <ClCompile Include="src\Game\CWeapon.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CCarStatus.cpp">
+    <ClCompile Include="src\Game\CVehicleStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
@@ -519,6 +519,18 @@
     </ClCompile>
     <ClCompile Include="src\Game\CVehicleBase.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyBase.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDebugFieldOfView.cpp">
+      <Filter>ソース ファイル\Game\Debug</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -858,9 +870,6 @@
     <ClInclude Include="src\Game\CGarbageTruck.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CEnemy.h">
-      <Filter>ソース ファイル\Game\Character</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CInteractUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
@@ -891,7 +900,7 @@
     <ClInclude Include="src\Game\CSword.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CCarStatus.h">
+    <ClInclude Include="src\Game\CVehicleStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashPlayerStatus.h">
@@ -929,6 +938,18 @@
     </ClInclude>
     <ClInclude Include="src\Game\CVehicleBase.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyBase.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemy.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDebugFieldOfView.h">
+      <Filter>ソース ファイル\Game\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

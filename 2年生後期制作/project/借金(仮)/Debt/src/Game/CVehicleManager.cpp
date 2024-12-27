@@ -220,14 +220,17 @@ void CVehicleManager::SpawnVehicle()
 			// どの道にいるか
 			CVehicleBase::ERoadType truckRoadType;
 
-			// ランダムに場所を決定
-			RandomDecidePopPosition(truckRoadType, truckPopPos);
-			// 生成場所に車両がいたら抽選しなおし
-			if (IsSpawnZone(truckRoadType))
-			{
-				// ランダムに場所を決定
-				RandomDecidePopPosition(truckRoadType, truckPopPos);
-			}
+			truckPopPos = CAR_RIGHT_POS1;
+			truckRoadType = CVehicleBase::ERoadType::eRight1;
+
+			//// ランダムに場所を決定
+			//RandomDecidePopPosition(truckRoadType, truckPopPos);
+			//// 生成場所に車両がいたら抽選しなおし
+			//if (IsSpawnZone(truckRoadType))
+			//{
+			//	// ランダムに場所を決定
+			//	RandomDecidePopPosition(truckRoadType, truckPopPos);
+			//}
 			//// 停止している車両がいる道で生成されるとき抽選しなおし
 			//while (IsVehicle(truckRoadType))
 			//{

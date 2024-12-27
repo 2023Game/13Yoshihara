@@ -12,7 +12,7 @@
 #define COLLECTORS 3		// âÒé˚àıÇÃêlêî
 
 CGarbageTruckStatus::CGarbageTruckStatus()
-	: CCarStatus(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
+	: CVehicleStatus(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
 	, mBackTime(BACK_TIME)
 	, mCollectRadius(COLLECT_RADIUS)
 	, mCollectors(COLLECTORS)

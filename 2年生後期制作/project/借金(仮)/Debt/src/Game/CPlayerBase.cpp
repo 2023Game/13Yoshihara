@@ -201,10 +201,13 @@ void CPlayerBase::Update()
 	mNearInteractObjs.clear();
 }
 
-// 衝突処理
+/*
+衝突処理
+本体コライダと地形の衝突処理
+*/
 void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	// 体との衝突判定
+	// 本体コライダとの衝突判定
 	if (self == mpBodyCol)
 	{
 		// 衝突した相手がフィールドの場合

@@ -1,8 +1,8 @@
 #pragma once
-#include "CCarStatus.h"
+#include "CVehicleStatus.h"
 
 // ゴミ収集車のステータス
-class CGarbageTruckStatus : public CCarStatus
+class CGarbageTruckStatus : public CVehicleStatus
 {
 public:
 	// コンストラクタ

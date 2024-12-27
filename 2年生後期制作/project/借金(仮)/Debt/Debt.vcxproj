@@ -74,6 +74,8 @@
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
+    <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
+    <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
@@ -84,10 +86,11 @@
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
+    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp" />
     <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp" />
     <ClCompile Include="src\Game\CVehicleBase.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
-    <ClCompile Include="src\Game\CCarStatus.cpp" />
+    <ClCompile Include="src\Game\CVehicleStatus.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
     <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
@@ -96,7 +99,7 @@
     <ClCompile Include="src\Game\CHomePlayer.cpp" />
     <ClCompile Include="src\Game\CTrashField.cpp" />
     <ClCompile Include="src\Game\CTrashGameScene.cpp" />
-    <ClCompile Include="src\Game\CEnemy.cpp" />
+    <ClCompile Include="src\Game\CTrashEnemy.cpp" />
     <ClCompile Include="src\Game\CGameMenu.cpp" />
     <ClCompile Include="src\Game\CHomeField.cpp" />
     <ClCompile Include="src\Game\CFlame.cpp" />
@@ -212,6 +215,8 @@
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
+    <ClInclude Include="src\Game\CDebugFieldOfView.h" />
+    <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
@@ -222,10 +227,11 @@
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
+    <ClInclude Include="src\Game\CTrashEnemyStatus.h" />
     <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h" />
     <ClInclude Include="src\Game\CVehicleBase.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />
-    <ClInclude Include="src\Game\CCarStatus.h" />
+    <ClInclude Include="src\Game\CVehicleStatus.h" />
     <ClInclude Include="src\Game\CComputer.h" />
     <ClInclude Include="src\Game\CDeliveryStatus.h" />
     <ClInclude Include="src\Game\CDoor.h" />
@@ -234,7 +240,7 @@
     <ClInclude Include="src\Game\CHomePlayer.h" />
     <ClInclude Include="src\Game\CTrashField.h" />
     <ClInclude Include="src\Game\CTrashGameScene.h" />
-    <ClInclude Include="src\Game\CEnemy.h" />
+    <ClInclude Include="src\Game\CTrashEnemy.h" />
     <ClInclude Include="src\Game\CGameMenu.h" />
     <ClInclude Include="src\Game\CHomeField.h" />
     <ClInclude Include="src\Game\CFlame.h" />

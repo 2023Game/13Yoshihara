@@ -1,11 +1,11 @@
 #pragma once
 #include "CTrashStatusBase.h"
 
-class CCarStatus : public CTrashStatusBase
+class CVehicleStatus : public CTrashStatusBase
 {
 public:
 	// コンストラクタ
-	CCarStatus();
+	CVehicleStatus();
 	/// <summary>
 	/// コンストラクタ
 	/// このクラスを継承したキャラのステータスを設定する用
@@ -15,10 +15,10 @@ public:
 	/// <param name="jumpSpeed">ジャンプ速度</param>
 	/// <param name="knockback">ノックバック速度</param>
 	/// <param name="power">ゴミを落とす力</param>
-	CCarStatus(int maxHp, float baseMoveSpeed,
+	CVehicleStatus(int maxHp, float baseMoveSpeed,
 		float jumpSpeed, float knockback, int power);
 	// デストラクタ
-	~CCarStatus();
+	~CVehicleStatus();
 
 	// 消滅までの時間を取得する
 	float GetDeleteTime() const;

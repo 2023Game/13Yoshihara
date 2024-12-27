@@ -4,7 +4,7 @@
 #include "CVehicleManager.h"
  
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
-#define FRONT_WIDTH		30.0f	// 前方判定の幅
+#define FRONT_WIDTH		40.0f	// 前方判定の幅
 #define FRONT_RADIUS	12.0f	// 前方判定の半径
 #define TURN_SPEED		CVector(0.0f,0.5f,0.0f)	// 車両の方向転換速度
 #define TURN_MAX		CVector(0.0f,22.5f,0.0f)// 車両の方向転換の最大値
@@ -17,18 +17,20 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	, mpFrontCol(nullptr)
 	, mpSideCol(nullptr)
 	, mRoadType(road)
+	, mCurrentRoadRotation(rotation)
+	, mState(EState::eMove)
 {
 	// 車両と衝突判定する前方判定コライダ―
 	mpFrontCol = new CColliderCapsule
 	(
-		this, ELayer::eVehicle,
+		this, ELayer::eTest,
 		CVector(0.0f, FRONT_HEIGHT, FRONT_WIDTH),
 		CVector(0.0f, FRONT_HEIGHT, -FRONT_WIDTH),
 		FRONT_RADIUS
 	);
 	mpFrontCol->Position(0.0f, 0.0f, FRONT_WIDTH * 2);
-	mpFrontCol->SetCollisionTags({ETag::eVehicle });
-	mpFrontCol->SetCollisionLayers({ELayer::eVehicle,});
+	mpFrontCol->SetCollisionTags({ETag::eVehicle,ETag::ePlayer });
+	mpFrontCol->SetCollisionLayers({ELayer::eVehicle,ELayer::ePlayer});
 
 	Position(pos);
 	Rotation(rotation);
@@ -53,6 +55,33 @@ void CVehicleBase::Update()
 // 衝突処理
 void CVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
+	// 前方判定コライダ―
+	if (self == mpFrontCol)
+	{
+		// 衝突した相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			// 壊れていなければ
+			if (mState != EState::eBroken)
+			{
+				// 車両クラスを取得
+				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+				// 相手が動いていなければ
+				if (!vehicle->IsMove())
+				{
+					// 車線変更状態へ
+					ChangeState(EState::eChangeRoad);
+				}
+			}
+		}
+		else if (other->Layer() == ELayer::ePlayer)
+		{
+			if (mState != EState::eBroken)
+			{
+				ChangeState(EState::eChangeRoad);
+			}
+		}
+	}
 }
 
 // 描画
@@ -66,16 +95,16 @@ bool CVehicleBase::IsMove() const
 {
 	// 移動速度の2乗の長さが0より大きいなら移動中
 	if (mMoveSpeed.LengthSqr() > 0.0f) return true;
-	// 全て0以下なら移動していない
+	// 0以下なら移動していない
 	return false;
 }
 
 // 車線を変更する
-void CVehicleBase::ChangeRoad(float moveSpeed, bool& isEnd)
+void CVehicleBase::ChangeRoad(bool& isEnd)
 {
 	isEnd = false;
 	// 正面へ移動する
-	mMoveSpeed = VectorZ() * moveSpeed;
+	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
 
 	// 左の道同士のX距離
 	float xDistLeft = std::abs(CAR_LEFT_POS1.X() - CAR_LEFT_POS2.X());
@@ -83,9 +112,9 @@ void CVehicleBase::ChangeRoad(float moveSpeed, bool& isEnd)
 	float xDistRight = std::abs(CAR_RIGHT_POS1.X() - CAR_RIGHT_POS2.X());
 
 	// 左の道同士の中間点のX座標
-	float leftMid = CAR_LEFT_POS1.X() + xDistLeft;
+	float leftMid = CAR_LEFT_POS1.X() + xDistLeft / 2;
 	// 右の道同士の中間点のX座標
-	float rightMid = CAR_RIGHT_POS1.X() - xDistLeft;
+	float rightMid = CAR_RIGHT_POS1.X() - xDistLeft / 2;
 
 	// 今いる道によって処理
 	switch (GetRoadType())
@@ -151,15 +180,14 @@ void CVehicleBase::ChangeRoad(float moveSpeed, bool& isEnd)
 		// まだ右の道同士の中間点を超えていないかつ
 		// 回転が、右の道の初期値 + 方向転換の最大値より小さければ
 		if (Position().X() >= rightMid &&
-			EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y() + TURN_MAX.Y())
+			 EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y() + TURN_MAX.Y())
 		{
 			// 右を向く
 			Rotation(EulerAngles() + TURN_SPEED);
 		}
 		// 中間点を超えているかつ
 		// 元の方向を超えていない
-		else if (Position().X() <= rightMid &&
-			EulerAngles().Y() <= CAR_RIGHT_ROTATION.Y())
+		else if (Position().X() <= rightMid)
 		{
 			// 左の方向に戻していく
 			Rotation(EulerAngles() - TURN_SPEED);
@@ -171,6 +199,7 @@ void CVehicleBase::ChangeRoad(float moveSpeed, bool& isEnd)
 			// 今いる道の状態を右から二番目の道に変更
 			ChangeRoadType(ERoadType::eRight2);
 			Rotation(CAR_RIGHT_ROTATION);
+			mCurrentRoadRotation = CAR_RIGHT_ROTATION;
 			isEnd = true;
 		}
 		break;
@@ -227,3 +256,84 @@ CVehicleBase::ERoadType CVehicleBase::GetRoadType() const
 {
 	return mRoadType;
 }
+
+// 移動処理
+void CVehicleBase::UpdateMove()
+{
+	// 正面へ移動
+	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
+}
+
+// 停止処理
+void CVehicleBase::UpdateStop()
+{
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+}
+
+// 壊れた処理
+// 移動を停止して消滅時間が経ったら表示を消す
+void CVehicleBase::UpdateBroken()
+{
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+
+	// 消滅するまでの時間をカウントダウン
+	CountDeleteTime();
+
+	// 消滅までの時間が経過したら
+	if (IsElapsedDeleteTime())
+	{
+		// 消滅までの時間を初期値に戻す
+		SetDeleteTime();
+		// 状態を移動に戻しておく
+		ChangeState(EState::eMove);
+
+		// 非表示
+		SetEnable(false);
+		SetShow(false);
+	}
+}
+
+// 車線変更処理
+void CVehicleBase::UpdateChangeRoad()
+{
+	bool isEnd = false;
+	// 車線変更移動
+	ChangeRoad(isEnd);
+
+	// trueならば、車線変更が終わった
+	if (isEnd)
+	{
+		// 移動状態に戻す
+		ChangeState(EState::eMove);
+	}
+}
+
+// 状態切り替え
+void CVehicleBase::ChangeState(EState state)
+{
+	// 同じなら処理しない
+	if (state == mState) return;
+
+	mState = state;
+}
+
+#if _DEBUG
+// 状態の文字列を取得
+std::string CVehicleBase::GetStateStr(EState state) const
+{
+	switch (state)
+	{
+	// 共通
+	case EState::eMove:			return "移動中";
+	case EState::eStop:			return "停止中";
+	case EState::eBroken:		return "壊れている";
+	case EState::eChangeRoad:	return "車線変更";
+
+	// トラック
+	case EState::eCollect:		return "回収中";
+	default:					return "";
+	}
+}
+#endif

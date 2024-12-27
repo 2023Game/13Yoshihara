@@ -1,10 +1,11 @@
 #pragma once
 #include "CCharaBase.h"
+#include "CVehicleStatus.h"
 
 class CModel;
 
 // 車両の基底クラス
-class CVehicleBase : public CCharaBase
+class CVehicleBase : public CCharaBase , public CVehicleStatus
 {
 public:
 	// どの道にいる状態か
@@ -40,17 +41,47 @@ public:
 	/// <summary>
 	/// 車線を変更する
 	/// </summary>
-	/// <param name="moveSpeed">移動速度</param>
 	/// <param name="isEnd">trueならば、終了した</param>
-	void ChangeRoad(float moveSpeed, bool& isEnd);
+	void ChangeRoad(bool& isEnd);
 
 	// どの道にいる状態かを変更する
 	void ChangeRoadType(ERoadType roadType);
 	// 今どの道にいるか取得する
 	ERoadType GetRoadType() const;
 protected:
+	// 移動処理
+	void UpdateMove();
+	// 停止処理
+	void UpdateStop();
+	// 壊れた処理
+	void UpdateBroken();
+	// 車線変更処理
+	void UpdateChangeRoad();
+
+	// トラックの状態
+	enum class EState
+	{
+		//	共通
+		eMove,		// 移動
+		eStop,		// 停止
+		eBroken,	// 壊れる
+		eChangeRoad,// 車線変更
+
+		// トラック
+		eCollect,	// 回収
+	};
+	// 状態切り替え
+	void ChangeState(EState state);
+	EState mState;	// 車両の状態
+#if _DEBUG
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
+#endif
+
 	// どの道にいる状態か
 	ERoadType mRoadType;
+	// 今の道の進む方向
+	CVector mCurrentRoadRotation;
 
 	// 移動速度
 	CVector mMoveSpeed;

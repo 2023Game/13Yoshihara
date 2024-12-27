@@ -1,4 +1,4 @@
-#include "CTrashPlayerStatus.h"
+#include "CTrashEnemyStatus.h"
 
 #define MAX_HP 3						// 最大HP
 #define MOVE_SPEED 0.375f * 2.0f		// 移動速度
@@ -7,14 +7,12 @@
 #define POWER 1							// ゴミを落とすパワー
 
 // コンストラクタ
-CTrashPlayerStatus::CTrashPlayerStatus()
+CTrashEnemyStatus::CTrashEnemyStatus()
 	: CTrashStatusBase(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
 {
 }
 
 // デストラクタ
-CTrashPlayerStatus::~CTrashPlayerStatus()
+CTrashEnemyStatus::~CTrashEnemyStatus()
 {
 }
-
-

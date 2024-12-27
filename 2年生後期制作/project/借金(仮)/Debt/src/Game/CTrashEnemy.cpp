@@ -1,7 +1,7 @@
-#include "CTrashPlayer.h"
+#include "CTrashEnemy.h"
+
+// TODO：後で消すテスト用
 #include "CInput.h"
-#include "CCamera.h"
-#include "Maths.h"
 
 // 衝突相手の車両基底クラスを取得するための
 // 車両の基底クラスのインクルード
@@ -13,12 +13,12 @@
 // アニメーションのパス
 #define ANIM_PATH "Character\\TrashBox\\anim\\"
 /*
- プレイヤーのアニメーションデータのテーブル
+ 敵のアニメーションデータのテーブル
  (と)＝蓋が閉じている状態からのアニメーション
  (開)＝蓋が開いている状態からのアニメーション
  (開閉)＝両方の状態兼用のアニメーション
 */
-const std::vector<CPlayerBase::AnimData> ANIM_DATA =
+const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 {
 	{ "",								true,	0.0f,	1.0f},	// Tポーズ
 	{ ANIM_PATH"Idle_Close.x",			true,	30.0f,	1.0f},	// 待機					（と）
@@ -51,52 +51,62 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 #define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
 #define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
-// モーションブラーを掛ける時間
-#define MOTION_BLUR_TIME 3.0f
-// モーションブラーの幅
-#define MOTION_BLUR_WIDTH 1.0f
-// モーションブラーの反復回数
-#define MOTION_BLUR_COUNT 5
+#define FOV_ANGLE 45.0f				// 視野範囲の角度
+#define FOV_LENGTH 100.0f * 10.0f	// 視野範囲の距離
 
 // コンストラクタ
-CTrashPlayer::CTrashPlayer()
-	: CPlayerBase()
+CTrashEnemy::CTrashEnemy()
+	: CEnemyBase(FOV_ANGLE, FOV_LENGTH)
 	, mState(EState::eIdle)
+	, mStateStep(0)
+	, mElapsedTime(0.0f)
 	, mIsOpen(false)
 	, mIsJump(false)
 {
 	// アニメーションとモデルの初期化
-	InitAnimationModel("TrashPlayer", &ANIM_DATA);
+	InitAnimationModel("TrashEnemy", &ANIM_DATA);
 
-	// 地形、敵、攻撃、車両
+	// 地形、プレイヤー、敵、攻撃、車両
 	// と衝突判定をする本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
-		this, ELayer::ePlayer,
+		this, ELayer::eEnemy,
 		CVector(BODY_WIDTH - BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
 		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle });
 	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject,
-		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
+		ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle_Close);
 }
 
 // デストラクタ
-CTrashPlayer::~CTrashPlayer()
+CTrashEnemy::~CTrashEnemy()
 {
 }
 
 // 更新
-void CTrashPlayer::Update()
+void CTrashEnemy::Update()
 {
+	if (CInput::PushKey('U'))
+	{
+		ChangeState(EState::eChase);
+	}
+	if (CInput::PushKey('L'))
+	{
+		ChangeState(EState::ePatrol);
+	}
+
 	// 現在の状態に合わせて更新処理を切り替え
 	switch (mState)
 	{
 	case EState::eIdle:				UpdateIdle();			break;
+	case EState::ePatrol:			UpdatePatrol();			break;
+	case EState::eChase:			UpdateChase();			break;
+	case EState::eLost:				UpdateLost();			break;
 	case EState::eDamageStart:		UpdateDamageStart();	break;
 	case EState::eDamage:			UpdateDamage();			break;
 	case EState::eDamageEnd:		UpdateDamageEnd();		break;
@@ -112,32 +122,26 @@ void CTrashPlayer::Update()
 	case EState::eOpenClose:		UpdateOpenClose();		break;
 	}
 
-	// 待機中とジャンプ中は、移動処理を行う
-	if (mState == EState::eIdle
-		|| mState == EState::eJump)
-	{
-		UpdateMove();
-	}
 
 	// 地面に接しているならジャンプしていない
 	if (mIsGrounded)
 		mIsJump = false;
 
 	// キャラクターの更新
-	CPlayerBase::Update();
+	CEnemyBase::Update();
 
 #if _DEBUG
-	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
-	CDebugPrint::Print("PlayerIsOpen:%s\n", mIsOpen ? "true" : "false");
-	CDebugPrint::Print("PlayerIsJump:%s\n", mIsJump ? "true" : "false");
+	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
+	CDebugPrint::Print("EnemyIsOpen:%s\n", mIsOpen ? "true" : "false");
+	CDebugPrint::Print("EnemyIsJump:%s\n", mIsJump ? "true" : "false");
 #endif
 }
 
 // 衝突処理
-void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	// 基底クラスの衝突処理
-	CPlayerBase::Collision(self, other, hit);
+	CEnemyBase::Collision(self, other, hit);
 
 	// 本体コライダ―
 	if (self == mpBodyCol)
@@ -165,6 +169,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				// 相手から自分の方向
 				CVector direction = Position() - other->Owner()->Position();
 				direction = direction.Normalized();
+				direction.Y(0.0f);
 				// 自分が受けるノックバック速度に、
 				// 相手が与えるノックバック速度を相手から自分の方向に設定
 				SetKnockbackReceived(direction * vehicle->GetKnockbackDealt());
@@ -186,8 +191,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				ChangeState(EState::eDamageStart);
 			}
 		}
-		// 衝突した相手が敵なら
-		else if (other->Layer() == ELayer::eEnemy)
+		// 衝突した相手がプレイヤーなら
+		else if (other->Layer() == ELayer::ePlayer)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
@@ -199,111 +204,31 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 	}
 }
 
-// アクションのキー入力
-void CTrashPlayer::ActionInput()
-{
-	// スペースでジャンプ
-	if (CInput::PushKey(VK_SPACE))
-	{
-		ChangeState(EState::eJumpStart);
-
-		// 閉じた状態のジャンプ
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eJump_Close_Start);
-		// 開いた状態のジャンプ
-		else
-			ChangeAnimation((int)EAnimType::eJump_Open_Start);
-	}
-	// 左クリックで攻撃
-	if (CInput::PushKey(VK_LBUTTON))
-	{
-		mMoveSpeed = CVector::zero;
-		ChangeState(EState::eAttackStart);
-
-		// 閉じていたら開く
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eOpen);
-		else
-			ChangeAnimation((int)EAnimType::eAttack_Start);
-	}
-	// 右クリックで蓋の開閉
-	if (CInput::PushKey(VK_RBUTTON))
-	{
-		mMoveSpeed = CVector::zero;
-		ChangeState(EState::eOpenClose);
-
-		// 閉じていたら蓋を開く
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eOpen);
-		// 開いていたら蓋を閉じる
-		else
-			ChangeAnimation((int)EAnimType::eClose);
-	}
-	if (CInput::PushKey('1'))
-	{
-		mMoveSpeed = CVector::zero;
-		ChangeState(EState::eCriticalStart);
-		// 閉じていたら開く
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eOpen);
-		else
-			ChangeAnimation((int)EAnimType::eCritical_Start);
-	}
-}
-
 // 待機状態
-void CTrashPlayer::UpdateIdle()
+void CTrashEnemy::UpdateIdle()
 {
-	if (mIsGrounded)
-	{
-		ActionInput();
-	}
 }
 
-// 移動
-void CTrashPlayer::UpdateMove()
+void CTrashEnemy::UpdatePatrol()
 {
-	mMoveSpeed = CVector::zero;
+}
 
-	// プレイヤーの移動ベクトルを求める
-	CVector move = CalcMoveVec();
-	// 求めた移動ベクトルの長さで入力されているか判定
-	if (move.LengthSqr() > 0.0f)
-	{
-		mMoveSpeed += move * GetBaseMoveSpeed();
+void CTrashEnemy::UpdateChase()
+{
+}
 
-		// ジャンプ状態でなければ、移動アニメーションに切り替え
-		if (mState != EState::eJump)
-		{
-			ChangeState(EState::eIdle);
-			if (!mIsOpen)
-				ChangeAnimation((int)EAnimType::eMove_Close);
-			else
-				ChangeAnimation((int)EAnimType::eMove_Open);
-		}
-	}
-	// 移動キーを入力していない
-	else
-	{
-		// 待機状態であれば、待機アニメーションに切り替え
-		if (mState == EState::eIdle)
-		{
-			if (!mIsOpen)
-				ChangeAnimation((int)EAnimType::eIdle_Close);
-			else
-				ChangeAnimation((int)EAnimType::eIdle_Open);
-		}
-	}
+void CTrashEnemy::UpdateLost()
+{
 }
 
 // 被弾開始
-void CTrashPlayer::UpdateDamageStart()
+void CTrashEnemy::UpdateDamageStart()
 {
 	// アニメーションが終了したら被弾ノックバックへ
 	if (IsAnimationFinished())
 	{
 		// ダメージを1受ける
-		TakeDamage(1,nullptr);		
+		TakeDamage(1, nullptr);
 		// ノックバック時の飛び上がりの速度を
 		// 受けるノックバック速度の半分に設定
 		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f;
@@ -321,7 +246,7 @@ void CTrashPlayer::UpdateDamageStart()
 }
 
 // 被弾ノックバック
-void CTrashPlayer::UpdateDamage()
+void CTrashEnemy::UpdateDamage()
 {
 	mIsOpen = true;
 
@@ -338,7 +263,7 @@ void CTrashPlayer::UpdateDamage()
 }
 
 // 被弾終了
-void CTrashPlayer::UpdateDamageEnd()
+void CTrashEnemy::UpdateDamageEnd()
 {
 	// 被弾終了時は移動をゼロ
 	mMoveSpeed = CVector::zero;
@@ -346,10 +271,7 @@ void CTrashPlayer::UpdateDamageEnd()
 	// アニメーションが60%進行したら
 	if (GetAnimationFrameRatio() >= 0.60f)
 	{
-		// 入力可能
-		ActionInput();
 		// 移動可能
-		UpdateMove();
 
 		mIsDamage = false;
 		SetKnockbackReceived(CVector::zero);
@@ -363,7 +285,7 @@ void CTrashPlayer::UpdateDamageEnd()
 }
 
 // ジャンプ開始
-void CTrashPlayer::UpdateJumpStart()
+void CTrashEnemy::UpdateJumpStart()
 {
 	// ジャンプ開始時は移動をゼロ
 	mMoveSpeed = CVector::zero;
@@ -385,202 +307,46 @@ void CTrashPlayer::UpdateJumpStart()
 	}
 }
 
-// ジャンプ中
-void CTrashPlayer::UpdateJump()
+void CTrashEnemy::UpdateJump()
 {
-	mIsJump = true;
-	// ジャンプ中は移動しながら開閉可能
-	// 右クリックで蓋の開閉
-	if (CInput::PushKey(VK_RBUTTON))
-	{
-		ChangeState(EState::eOpenClose);
-		// 閉じていたら蓋を開く
-		if (!mIsOpen)
-		{
-			ChangeAnimation((int)EAnimType::eOpen);
-		}
-		// 開いていたら蓋を閉じる
-		else
-		{
-			ChangeAnimation((int)EAnimType::eClose);
-		}
-	}
-	// 地面に付いたら
-	if (mIsGrounded)
-	{
-		ChangeState(EState::eJumpEnd);
-		// 閉じた状態のジャンプ終了へ
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eJump_Close_End);
-		// 開いた状態のジャンプ終了へ
-		else
-			ChangeAnimation((int)EAnimType::eJump_Open_End);
-	}
+
 }
 
-// ジャンプ終了
-void CTrashPlayer::UpdateJumpEnd()
+void CTrashEnemy::UpdateJumpEnd()
 {
-	// 着地中は移動をゼロ
-	mMoveSpeed = CVector::zero;
-	// アニメーションが50%以上進行したら
-	if (GetAnimationFrameRatio() >= 0.50f)
-	{
-		// 入力可能
-		ActionInput();
-		// 移動可能
-		UpdateMove();
-	}
 
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
-	{
-		ChangeState(EState::eIdle);
-	}
 }
 
-// 攻撃開始
-void CTrashPlayer::UpdateAttackStart()
+void CTrashEnemy::UpdateAttackStart()
 {
-	// 開いていなければ開くアニメーションの再生をしているので
-	// 終わってから攻撃の最初へ
-	if (!mIsOpen)
-	{
-		if (IsAnimationFinished())
-		{
-			mIsOpen = true;
-			ChangeAnimation((int)EAnimType::eAttack_Start);
-		}
-	}
-	// 開いているなら攻撃の最初のアニメーションが終了したので攻撃中へ
-	else
-	{
-		if (IsAnimationFinished())
-		{
-			ChangeState(EState::eAttack);
-			ChangeAnimation((int)EAnimType::eAttack);
-		}
-	}
 }
 
-// 攻撃中
-void CTrashPlayer::UpdateAttack()
+void CTrashEnemy::UpdateAttack()
 {
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
-	{
-		// 攻撃終了へ
-		ChangeState(EState::eAttackEnd);
-		ChangeAnimation((int)EAnimType::eAttack_End);
-	}
 }
 
-// 攻撃終了
-void CTrashPlayer::UpdateAttackEnd()
+void CTrashEnemy::UpdateAttackEnd()
 {
-	// アニメーションが52%以上進行したら
-	if (GetAnimationFrameRatio() >= 0.52f)
-	{
-		// 入力可能
-		ActionInput();
-		// 移動可能
-		UpdateMove();
-	}
-
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
-	{
-		// 最後は蓋が開いた状態
-		ChangeState(EState::eIdle);
-		mIsOpen = true;
-	}
 }
 
-// クリティカル攻撃開始
-void CTrashPlayer::UpdateCriticalStart()
+void CTrashEnemy::UpdateCriticalStart()
 {
-	// 開いていなければ開くアニメーションの再生をしているので
-	// 終わってからクリティカルの最初へ
-	if (!mIsOpen)
-	{
-		if (IsAnimationFinished())
-		{
-			mIsOpen = true;
-			ChangeAnimation((int)EAnimType::eCritical_Start);
-		}
-	}
-	// 開いているならクリティカルの最初のアニメーションが終了したのでクリティカルへ
-	else
-	{
-		if (IsAnimationFinished())
-		{
-			ChangeState(EState::eCritical);
-			ChangeAnimation((int)EAnimType::eCritical);
-		}
-	}
 }
 
-// クリティカル攻撃中
-void CTrashPlayer::UpdateCritical()
+void CTrashEnemy::UpdateCritical()
 {
-	// アニメーションが終了したらクリティカル終了へ
-	if (IsAnimationFinished())
-	{
-		ChangeState(EState::eCriticalEnd);
-		ChangeAnimation((int)EAnimType::eCritical_End);
-	}
 }
 
-// クリティカル攻撃終了
-void CTrashPlayer::UpdateCriticalEnd()
+void CTrashEnemy::UpdateCriticalEnd()
 {
-	// アニメーションが52%以上進行したら
-	if (GetAnimationFrameRatio() >= 0.52f)
-	{
-		// 入力可能
-		ActionInput();
-		// 移動可能
-		UpdateMove();
-	}
-
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
-	{
-		// 最後は蓋が開いた状態
-		ChangeState(EState::eIdle);
-		mIsOpen = true;
-	}
 }
 
-// 蓋を開閉する
-void CTrashPlayer::UpdateOpenClose()
+void CTrashEnemy::UpdateOpenClose()
 {
-	if (IsAnimationFinished())
-	{
-		// 開き状態を変更
-		mIsOpen = !mIsOpen;
-		// ジャンプしていないなら待機へ
-		if (!mIsJump)
-		{
-			ChangeState(EState::eIdle);
-		}
-		// ジャンプしているならジャンプへ戻る
-		else
-		{
-			ChangeState(EState::eJump);
-			// 閉じた状態のジャンプ
-			if (!mIsOpen)
-				ChangeAnimation((int)EAnimType::eJump_Close);
-			// 開いた状態のジャンプ
-			else
-				ChangeAnimation((int)EAnimType::eJump_Open);
-		}
-
-	}
 }
 
 // 状態切り替え
-void CTrashPlayer::ChangeState(EState state)
+void CTrashEnemy::ChangeState(EState state)
 {
 	// 既に同じ状態であれば、処理しない
 	if (state == mState) return;
@@ -590,11 +356,14 @@ void CTrashPlayer::ChangeState(EState state)
 
 #if _DEBUG
 // 状態の文字列を取得
-std::string CTrashPlayer::GetStateStr(EState state) const
+std::string CTrashEnemy::GetStateStr(EState state) const
 {
 	switch (state)
 	{
 	case EState::eIdle:				return "待機";
+	case EState::ePatrol:			return "巡回";
+	case EState::eChase:			return "追跡";
+	case EState::eLost:				return "見失う";
 	case EState::eDamageStart:		return "被弾開始";
 	case EState::eDamage:			return "被弾中";
 	case EState::eDamageEnd:		return "被弾終了";
@@ -611,4 +380,31 @@ std::string CTrashPlayer::GetStateStr(EState state) const
 	}
 	return "";
 }
+
+// 状態の色を取得
+CColor CTrashEnemy::GetStateColor(EState state) const
+{
+	switch (state)
+	{
+	case EState::eIdle:				return CColor::white;
+	case EState::ePatrol:			return CColor::green;
+	case EState::eChase:			return CColor::red;
+	case EState::eLost:				return CColor::yellow;
+	case EState::eDamageStart:		return CColor::blue;
+	case EState::eDamage:			return CColor::blue;
+	case EState::eDamageEnd:		return CColor::blue;
+	case EState::eJumpStart:		return CColor::gray;
+	case EState::eJump:				return CColor::gray;
+	case EState::eJumpEnd:			return CColor::gray;
+	case EState::eAttackStart:		return CColor::magenta;
+	case EState::eAttack:			return CColor::magenta;
+	case EState::eAttackEnd:		return CColor::magenta;
+	case EState::eCriticalStart:	return CColor::black;
+	case EState::eCritical:			return CColor::black;
+	case EState::eCriticalEnd:		return CColor::black;
+	case EState::eOpenClose:		return CColor::white;
+	}
+	return CColor::white;
+}
+
 #endif

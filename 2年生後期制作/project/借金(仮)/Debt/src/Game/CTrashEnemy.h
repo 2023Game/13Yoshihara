@@ -1,21 +1,20 @@
 #pragma once
-//プレイヤー基底クラスのインクルード
-#include "CPlayerBase.h"
-// プレイヤーのステータスクラスのインクルード
-#include "CTrashPlayerStatus.h"
+// 敵基底クラスのインクルード
+#include "CEnemyBase.h"
+// 敵のステータスクラスのインクルード
+#include "CTrashEnemyStatus.h"
 
 /*
-ゴミ拾いゲームのプレイヤークラス
-プレイヤー基底クラスと
-プレイヤーのステータスクラスを継承
+ゴミ拾いゲームの敵クラス
+敵基底クラスと
+敵のステータスクラスを継承
 */
-class CTrashPlayer : public CPlayerBase , public CTrashPlayerStatus
+class CTrashEnemy : public CEnemyBase, public CTrashEnemyStatus
 {
 public:
 	// コンストラクタ
-	CTrashPlayer();
-	// デストラクタ
-	~CTrashPlayer();
+	CTrashEnemy();
+	~CTrashEnemy();
 
 	// 更新
 	void Update();
@@ -29,9 +28,6 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
-	// アクションのキー入力
-	void ActionInput();
-
 	/*
 	アニメーションの種類
 	(と)＝蓋が閉じている状態からのアニメーション
@@ -72,11 +68,13 @@ private:
 		Num
 	};
 
-	// プレイヤーの状態
+	// 敵の状態
 	enum class EState
 	{
 		eIdle,			// 待機
-		eMove,			// 移動
+		ePatrol,		// 巡回
+		eChase,			// 追跡
+		eLost,			// 見失う
 		eDamageStart,	// 被弾開始
 		eDamage,		// 被弾ノックバック
 		eDamageEnd,		// 被弾終了
@@ -94,8 +92,12 @@ private:
 
 	// 待機状態
 	void UpdateIdle();
-	// 移動処理
-	void UpdateMove();
+	// 巡回処理
+	void UpdatePatrol();
+	// 追跡処理
+	void UpdateChase();
+	// 見失う処理
+	void UpdateLost();
 	// 被弾開始
 	void UpdateDamageStart();
 	// 被弾ノックバック
@@ -125,11 +127,15 @@ private:
 
 	// 状態切り替え
 	void ChangeState(EState state);
-	EState mState;	// プレイヤーの状態
+	EState mState;	// 敵の状態
+	int mStateStep;	// 状態内のステップ数
+	float mElapsedTime;	// 経過時間
 
 #if _DEBUG
 	// 状態の文字列を取得
 	std::string GetStateStr(EState state) const;
+	// 状態の色を取得
+	CColor GetStateColor(EState state) const;
 #endif
 
 	// 蓋が開いているか

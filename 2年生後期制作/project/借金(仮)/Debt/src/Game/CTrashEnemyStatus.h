@@ -3,14 +3,14 @@
 #include "CTrashStatusBase.h"
 
 /*
-ゴミ拾いゲームのプレイヤーステータス
+ゴミ拾いゲームの敵ステータス
 ゴミ拾いゲームのステータス基底クラスを継承
 */
-class CTrashPlayerStatus : public CTrashStatusBase
+class CTrashEnemyStatus : public CTrashStatusBase
 {
 public:
 	// コンストラクタ
-	CTrashPlayerStatus();
+	CTrashEnemyStatus();
 	// デストラクタ
-	~CTrashPlayerStatus();
+	~CTrashEnemyStatus();
 };
