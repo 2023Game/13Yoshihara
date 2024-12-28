@@ -164,6 +164,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
 				// 相手から自分の方向
 				CVector direction = Position() - other->Owner()->Position();
+				direction.Y(0.0f);
 				direction = direction.Normalized();
 				// 自分が受けるノックバック速度に、
 				// 相手が与えるノックバック速度を相手から自分の方向に設定

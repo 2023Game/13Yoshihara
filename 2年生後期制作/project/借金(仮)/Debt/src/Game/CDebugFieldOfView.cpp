@@ -39,6 +39,9 @@ void CDebugFieldOfView::Set(float angle, float length)
 // 更新
 void CDebugFieldOfView::Update()
 {
+	// 表示対象のスケール以外を適用
+	Position(mpOwner->Position());
+	Rotation(mpOwner->Rotation());
 }
 
 // 描画
@@ -50,13 +53,20 @@ void CDebugFieldOfView::Render()
 	// デブステストをオフ
 	glDisable(GL_DEPTH_TEST);
 
+	// 強制的に半透明
+	mColor.A(0.5f);
+
 	// 視野範囲の扇形を描画
 	Primitive::DrawSector
 	(
-		mpOwner->Matrix(),		// 表示対象の行列
-		-mFovAngle,mFovAngle,	// -視野角度 ～ +視野角度の範囲を設定
-		mFovLength,				// 視野距離
-		mColor					// 扇形の色
+		// 表示対象のスケールを無視した行列
+		Matrix(),
+		// -視野角度 ～ +視野角度の範囲を設定
+		-mFovAngle, mFovAngle,				
+		// 視野距離
+		mFovLength,
+		// 扇形の色
+		mColor								
 	);
 
 	// デプステストを元に戻す

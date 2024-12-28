@@ -60,4 +60,14 @@ protected:
 	float mFovAngle;	// 視野範囲の角度
 	float mFovLength;	// 視野範囲の距離
 	CDebugFieldOfView* mpDebugFov;	// 視野範囲のデバッグ表示
+
+	CVector mLostPlayerPos;	// プレイヤーを見失った座標
+
+	// オブジェクトが視界範囲内に入ったかどうか
+	bool IsFoundObject(CObjectBase* obj) const;
+	// プレイヤーが視野範囲内に入ったかどうか
+	bool IsFoundPlayer() const;
+
+	// 指定した位置まで移動する
+	bool MoveTo(const CVector& targetPos, float speed);
 };

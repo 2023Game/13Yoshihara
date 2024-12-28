@@ -11,7 +11,7 @@
 
 #define SEARCH_RADIUS 10.0f	// 調べるオブジェクトの探知範囲の半径
 
-#define MOVE_SPEED 0.375f * 2.0f
+#define MOVE_SPEED 0.375f * 2.0f		// 移動速度
 
 #define ANIM_PATH "Character\\Player\\anim\\"
 

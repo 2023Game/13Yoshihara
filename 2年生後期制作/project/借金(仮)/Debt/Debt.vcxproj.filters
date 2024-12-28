@@ -481,19 +481,7 @@
     <ClCompile Include="src\Game\CWeapon.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CVehicleStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTrashStatusBase.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CCharaStatusBase.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Test\CColMesh.cpp">
@@ -526,11 +514,23 @@
     <ClCompile Include="src\Game\CTrashEnemy.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp">
       <Filter>ソース ファイル\Game\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashStatusBase.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CVehicleStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -900,19 +900,7 @@
     <ClInclude Include="src\Game\CSword.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CVehicleStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashPlayerStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashStatusBase.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CCharaStatusBase.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CGarbageTruckStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Test\CColMesh.h">
@@ -945,11 +933,23 @@
     <ClInclude Include="src\Game\CTrashEnemy.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CDebugFieldOfView.h">
       <Filter>ソース ファイル\Game\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGarbageTruckStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashStatusBase.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CVehicleStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

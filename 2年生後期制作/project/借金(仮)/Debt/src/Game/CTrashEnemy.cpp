@@ -1,4 +1,7 @@
 #include "CTrashEnemy.h"
+#include "CDebugFieldOfView.h"
+#include "CPlayerBase.h"
+#include "Primitive.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -51,8 +54,8 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
 #define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
-#define FOV_ANGLE 45.0f				// 視野範囲の角度
-#define FOV_LENGTH 100.0f * 10.0f	// 視野範囲の距離
+#define FOV_ANGLE 45.0f		// 視野範囲の角度
+#define FOV_LENGTH 100.0f	// 視野範囲の距離
 
 // コンストラクタ
 CTrashEnemy::CTrashEnemy()
@@ -131,6 +134,9 @@ void CTrashEnemy::Update()
 	CEnemyBase::Update();
 
 #if _DEBUG
+	// 現在の状態に合わせて視野範囲の色を変更
+	mpDebugFov->SetColor(GetStateColor(mState));
+
 	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("EnemyIsOpen:%s\n", mIsOpen ? "true" : "false");
 	CDebugPrint::Print("EnemyIsJump:%s\n", mIsJump ? "true" : "false");
@@ -204,21 +210,104 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 	}
 }
 
+// 描画
+void CTrashEnemy::Render()
+{
+	CEnemyBase::Render();
+
+	// 見失った状態であれば、
+	if (mState == EState::eLost)
+	{
+		// プレイヤーを見失った位置にデバッグ表示
+		float rad = 2.0f;
+		CMatrix m;
+		m.Translate(mLostPlayerPos + CVector(0.0f, rad, 0.0f));
+		Primitive::DrawWireSphere(m, rad, CColor::blue);
+	}
+}
+
 // 待機状態
 void CTrashEnemy::UpdateIdle()
 {
+	// プレイヤーが視野範囲内に入ったら、追跡状態へ移行
+	if (IsFoundPlayer())
+	{
+		ChangeState(EState::eChase);
+		return;
+	}
+
+	// 待機アニメーションを再生
+	if (!mIsOpen)
+	{
+		ChangeAnimation((int)EAnimType::eIdle_Close);
+	}
+	else
+	{
+		ChangeAnimation((int)EAnimType::eIdle_Open);
+	}
 }
 
+// 巡回処理
 void CTrashEnemy::UpdatePatrol()
 {
 }
 
+// 追跡処理
 void CTrashEnemy::UpdateChase()
 {
+	// プレイヤーが視野範囲外に出たら、見失った状態へ移行
+	if (!IsFoundPlayer())
+	{
+		ChangeState(EState::eLost);
+		return;
+	}
+
+	// 移動アニメーションを再生
+	if (!mIsOpen)
+	{
+		ChangeAnimation((int)EAnimType::eMove_Close);
+	}
+	else
+	{
+		ChangeAnimation((int)EAnimType::eMove_Open);
+	}
+
+	// プレイヤーの座標へ向けて移動する
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector playerPos = player->Position();
+	mLostPlayerPos = playerPos;	// プレイヤーを最後に見た座標を更新
+	if (MoveTo(playerPos, GetBaseMoveSpeed()))
+	{
+
+	}
 }
 
+// 見失う処理
 void CTrashEnemy::UpdateLost()
 {
+	// プレイヤーが視野範囲内に入ったら、追跡状態へ移行
+	if (IsFoundPlayer())
+	{
+		ChangeState(EState::eChase);
+		return;
+	}
+
+	// 移動アニメーションを再生
+	if (!mIsOpen)
+	{
+		ChangeAnimation((int)EAnimType::eMove_Close);
+	}
+	else
+	{
+		ChangeAnimation((int)EAnimType::eMove_Open);
+	}
+
+	// プレイヤーを見失った位置まで移動
+	if (MoveTo(mLostPlayerPos, GetBaseMoveSpeed()))
+	{
+		// 移動が終われば、待機状態へ移行
+		ChangeState(EState::eIdle);
+	}
 }
 
 // 被弾開始
