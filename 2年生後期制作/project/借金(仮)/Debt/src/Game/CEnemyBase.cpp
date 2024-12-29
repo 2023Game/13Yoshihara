@@ -5,9 +5,11 @@
 
 #define GRAVITY 0.0625f
 #define ROTATE_SPEED 6.0f	// 回転速度
+#define ATTACK_RANGE 18.0f	// 攻撃範囲
 
 // コンストラクタ
-CEnemyBase::CEnemyBase(float fovAngle, float fovLength)
+CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
+	std::vector<CVector> patrolPoints)
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
@@ -19,6 +21,8 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength)
 	, mFovLength(fovLength)
 	, mpDebugFov(nullptr)
 	, mLostPlayerPos(CVector::zero)
+	, mNextPatrolIndex(-1)
+	, mPatrolPoints(patrolPoints)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -222,6 +226,24 @@ bool CEnemyBase::IsFoundPlayer() const
 	return IsFoundObject(player);
 }
 
+// プレイヤーを攻撃できるかどうか
+bool CEnemyBase::CanAttackPlayer() const
+{
+	// プレイヤーがいない場合は、攻撃できない
+	CPlayerBase* player = CPlayerBase::Instance();
+	if (player == nullptr) return false;
+
+	// プレイヤーまでの距離が攻撃範囲外であれば、攻撃できない
+	CVector playerPos = player->Position();
+	CVector vec = playerPos - Position();
+	vec.Y(0.0f);
+	float dist = vec.Length();
+	if (dist > ATTACK_RANGE) return false;
+
+	// 全ての条件をクリアしたので、攻撃できる
+	return true;
+}
+
 // 指定した位置まで移動する
 bool CEnemyBase::MoveTo(const CVector& targetPos, float speed)
 {
@@ -260,4 +282,42 @@ bool CEnemyBase::MoveTo(const CVector& targetPos, float speed)
 
 	// 目的地には到着しなかった
 	return false;
+}
+
+// 次に巡回するポイントを変更
+void CEnemyBase::ChangePatrolPoint()
+{
+	// 巡回ポイントが設定されていない場合は、処理しない
+	int size = mPatrolPoints.size();
+	if (size == 0) return;
+
+	// 巡回開始時であれば、一番近い巡回ポイントを選択
+	if (mNextPatrolIndex == -1)
+	{
+		int nearIndex = -1;	// 一番近い巡回ポイントの番号
+		float nearDist = 0.0f;	// 一番近い巡回ポイントまでの距離
+		// 全ての巡回ポイントの距離を調べ、一番近い巡回ポイントを探す
+		for (int i = 0; i < size; i++)
+		{
+			CVector point = mPatrolPoints[i];
+			CVector vec = point - Position();
+			vec.Y(0.0f);
+			float dist = vec.Length();
+			// 一番最初の巡回ポイントもしくは、
+			// 現在一番近い巡回ポイントよりさらに近い場合は、
+			// 巡回ポイントの番号を置き換える
+			if (nearIndex < 0 || dist < nearDist)
+			{
+				nearIndex = i;
+				nearDist = dist;
+			}
+		}
+		mNextPatrolIndex = nearIndex;
+	}
+	// 巡回中だった場合、次の巡回ポイントを指定
+	else
+	{
+		mNextPatrolIndex++;
+		if (mNextPatrolIndex >= size) mNextPatrolIndex -= size;
+	}
 }

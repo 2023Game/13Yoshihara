@@ -57,9 +57,28 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
 
+#define PATROL_INTERVAL	3.0f// 次の巡回ポイントに移動開始するまでの時間
+#define IDLE_TIME 5.0f		// 待機状態の時間
+
+#define PATROL_POS0 CVector(50.0f,0.0f,0.0f)
+#define PATROL_POS1 CVector(0.0f,0.0f,0.0f)
+#define PATROL_POS2 CVector(0.0f,0.0f,100.0f)
+#define PATROL_POS3 CVector(50.0f,0.0f,100.0f)
+
+
 // コンストラクタ
 CTrashEnemy::CTrashEnemy()
-	: CEnemyBase(FOV_ANGLE, FOV_LENGTH)
+	: CEnemyBase
+	(
+		FOV_ANGLE,
+		FOV_LENGTH,
+		{ 
+			PATROL_POS0,
+			PATROL_POS1,
+			PATROL_POS2,
+			PATROL_POS3
+		}
+	)
 	, mState(EState::eIdle)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
@@ -245,11 +264,77 @@ void CTrashEnemy::UpdateIdle()
 	{
 		ChangeAnimation((int)EAnimType::eIdle_Open);
 	}
+
+	if (mElapsedTime < IDLE_TIME)
+	{
+		mElapsedTime += Times::DeltaTime();
+	}
+	else
+	{
+		// 待機時間が経過したら、巡回状態へ移行
+		ChangeState(EState::ePatrol);
+		mElapsedTime = 0.0f;
+	}
 }
 
 // 巡回処理
 void CTrashEnemy::UpdatePatrol()
 {
+	if (IsFoundPlayer())
+	{
+		ChangeState(EState::eChase);
+		return;
+	}
+
+	// ステップごとに処理を切り替える
+	switch (mStateStep)
+	{
+	// ステップ0：巡回開始時の巡回ポイントを求める
+	case 0:
+		mNextPatrolIndex = -1;
+		ChangePatrolPoint();
+		mStateStep++;
+		break;
+	// ステップ1：巡回ポイントまで移動
+	case 1:
+		// 移動アニメーションを再生
+		if (!mIsOpen)
+		{
+			ChangeAnimation((int)EAnimType::eMove_Close);
+		}
+		else
+		{
+			ChangeAnimation((int)EAnimType::eMove_Open);
+		}
+
+		if (MoveTo(mPatrolPoints[mNextPatrolIndex], GetBaseMoveSpeed()))
+		{
+			mStateStep++;
+		}
+		break;
+	// ステップ2：移動後の待機
+	case 2:
+		// 待機アニメーションを再生
+		if (!mIsOpen)
+		{
+			ChangeAnimation((int)EAnimType::eIdle_Close);
+		}
+		else
+		{
+			ChangeAnimation((int)EAnimType::eIdle_Open);
+		}
+
+		if (mElapsedTime < PATROL_INTERVAL)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		else
+		{
+			ChangePatrolPoint();
+			mStateStep = 1;
+			mElapsedTime = 0.0f;
+		}
+	}
 }
 
 // 追跡処理
@@ -259,6 +344,23 @@ void CTrashEnemy::UpdateChase()
 	if (!IsFoundPlayer())
 	{
 		ChangeState(EState::eLost);
+		return;
+	}
+	// プレイヤーに攻撃できるならば、攻撃状態へ移行
+	if (CanAttackPlayer())
+	{
+		ChangeState(EState::eAttackStart);
+
+		// 閉じていたら開くアニメーションを再生
+		if (!mIsOpen)
+		{
+			ChangeAnimation((int)EAnimType::eOpen);
+		}
+		// 開いていたらすぐ攻撃アニメーションを再生
+		else
+		{
+			ChangeAnimation((int)EAnimType::eAttack_Start);
+		}
 		return;
 	}
 
@@ -406,16 +508,52 @@ void CTrashEnemy::UpdateJumpEnd()
 
 }
 
+// 攻撃開始
 void CTrashEnemy::UpdateAttackStart()
 {
+	// 開いていなければ開くアニメーションの再生をしているので
+	// 終わってから攻撃の最初へ
+	if (!mIsOpen)
+	{
+		if (IsAnimationFinished())
+		{
+			mIsOpen = true;
+			ChangeAnimation((int)EAnimType::eAttack_Start);
+		}
+	}
+	// 開いているなら攻撃の最初のアニメーションが終了したので攻撃中へ
+	else
+	{
+		if (IsAnimationFinished())
+		{
+			ChangeState(EState::eAttack);
+			ChangeAnimation((int)EAnimType::eAttack);
+		}
+	}
 }
 
+// 攻撃中
 void CTrashEnemy::UpdateAttack()
 {
+	// アニメーションが終了したら
+	if (IsAnimationFinished())
+	{
+		// 攻撃終了へ
+		ChangeState(EState::eAttackEnd);
+		ChangeAnimation((int)EAnimType::eAttack_End);
+	}
 }
 
+// 攻撃終了
 void CTrashEnemy::UpdateAttackEnd()
 {
+	// アニメーションが終了したら待機へ
+	if (IsAnimationFinished())
+	{
+		// 最後は蓋が開いた状態
+		ChangeState(EState::eIdle);
+		mIsOpen = true;
+	}
 }
 
 void CTrashEnemy::UpdateCriticalStart()

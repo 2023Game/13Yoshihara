@@ -18,7 +18,8 @@ public:
 	/// </summary>
 	/// <param name="fovAngle">視野範囲の角度</param>
 	/// <param name="fovLength">視野範囲の距離</param>
-	CEnemyBase(float fovAngle, float fovLength);
+	/// <param name="patrolPoints">巡回ポイントのリスト</param>
+	CEnemyBase(float fovAngle, float fovLength, std::vector<CVector> patrolPoints);
 	// デストラクタ
 	~CEnemyBase();
 
@@ -67,7 +68,15 @@ protected:
 	bool IsFoundObject(CObjectBase* obj) const;
 	// プレイヤーが視野範囲内に入ったかどうか
 	bool IsFoundPlayer() const;
+	// プレイヤーを攻撃できるかどうか
+	bool CanAttackPlayer() const;
 
 	// 指定した位置まで移動する
 	bool MoveTo(const CVector& targetPos, float speed);
+	// 次に巡回するポイントを変更
+	void ChangePatrolPoint();
+	
+	// 巡回ポイントのリスト
+	std::vector<CVector> mPatrolPoints;
+	int mNextPatrolIndex;	// 次に巡回するポイントの番号
 };

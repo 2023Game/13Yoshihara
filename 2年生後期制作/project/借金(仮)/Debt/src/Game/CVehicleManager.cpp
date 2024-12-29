@@ -6,7 +6,7 @@
 
 // 出現までの時間
 #define CAR_POP_TIME 3.0f		// 車
-#define TRUCK_POP_TIME 1.0f	// トラック
+#define TRUCK_POP_TIME 1.0f		// トラック
 #define BLACK_POP_TIME 3.0f		// お仕置きトラック
 
 CVehicleManager::CVehicleManager()
@@ -46,7 +46,7 @@ void CVehicleManager::Update()
 
 
 	// 出現までの時間が0以下なら出現
-	SpawnVehicle();
+	//SpawnVehicle();
 }
 
 // 使用するトラックを全て生成
