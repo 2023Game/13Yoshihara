@@ -4,8 +4,6 @@
 #include "Maths.h"
 
 #define GRAVITY 0.0625f
-#define ROTATE_SPEED 6.0f	// 回転速度
-#define ATTACK_RANGE 18.0f	// 攻撃範囲
 
 // コンストラクタ
 CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
@@ -227,7 +225,7 @@ bool CEnemyBase::IsFoundPlayer() const
 }
 
 // プレイヤーを攻撃できるかどうか
-bool CEnemyBase::CanAttackPlayer() const
+bool CEnemyBase::CanAttackPlayer(float attackRange) const
 {
 	// プレイヤーがいない場合は、攻撃できない
 	CPlayerBase* player = CPlayerBase::Instance();
@@ -238,14 +236,14 @@ bool CEnemyBase::CanAttackPlayer() const
 	CVector vec = playerPos - Position();
 	vec.Y(0.0f);
 	float dist = vec.Length();
-	if (dist > ATTACK_RANGE) return false;
+	if (dist > attackRange) return false;
 
 	// 全ての条件をクリアしたので、攻撃できる
 	return true;
 }
 
 // 指定した位置まで移動する
-bool CEnemyBase::MoveTo(const CVector& targetPos, float speed)
+bool CEnemyBase::MoveTo(const CVector& targetPos, float speed,float rotateSpeed)
 {
 	// 目的地までのベクトルを求める
 	CVector pos = Position();
@@ -259,7 +257,7 @@ bool CEnemyBase::MoveTo(const CVector& targetPos, float speed)
 	(
 		VectorZ(),	// 現在の正面方向
 		moveDir,	// 移動方向
-		ROTATE_SPEED * Times::DeltaTime()
+		rotateSpeed * Times::DeltaTime()
 	);
 	Rotation(CQuaternion::LookRotation(forward));
 
@@ -285,7 +283,7 @@ bool CEnemyBase::MoveTo(const CVector& targetPos, float speed)
 }
 
 // 次に巡回するポイントを変更
-void CEnemyBase::ChangePatrolPoint()
+void CEnemyBase::ChangePatrolPoint(float nearDist)
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
 	int size = mPatrolPoints.size();
@@ -303,6 +301,8 @@ void CEnemyBase::ChangePatrolPoint()
 			CVector vec = point - Position();
 			vec.Y(0.0f);
 			float dist = vec.Length();
+			// 巡回ポイントが近すぎる場合は、スルー
+			if (dist < nearDist) continue;
 			// 一番最初の巡回ポイントもしくは、
 			// 現在一番近い巡回ポイントよりさらに近い場合は、
 			// 巡回ポイントの番号を置き換える

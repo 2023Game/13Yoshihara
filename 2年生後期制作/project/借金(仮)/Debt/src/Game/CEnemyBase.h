@@ -69,12 +69,12 @@ protected:
 	// プレイヤーが視野範囲内に入ったかどうか
 	bool IsFoundPlayer() const;
 	// プレイヤーを攻撃できるかどうか
-	bool CanAttackPlayer() const;
+	bool CanAttackPlayer(float attackRange) const;
 
 	// 指定した位置まで移動する
-	bool MoveTo(const CVector& targetPos, float speed);
+	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
 	// 次に巡回するポイントを変更
-	void ChangePatrolPoint();
+	void ChangePatrolPoint(float nearDist);
 	
 	// 巡回ポイントのリスト
 	std::vector<CVector> mPatrolPoints;

@@ -21,24 +21,9 @@ CTrashField::CTrashField()
 
 CTrashField::~CTrashField()
 {
-	if (mpGroundColliderMesh != nullptr)
-	{
-		delete mpGroundColliderMesh;
-		mpGroundColliderMesh = nullptr;
-	}
-	if (mpWallColliderMesh != nullptr)
-	{
-		delete mpWallColliderMesh;
-		mpWallColliderMesh = nullptr;
-	}
-	if (mpObjectColliderMesh != nullptr)
-	{
-		delete mpObjectColliderMesh;
-		mpObjectColliderMesh = nullptr;
-	}
-
-
-
+	SAFE_DELETE(mpGroundColliderMesh);
+	SAFE_DELETE(mpWallColliderMesh);
+	SAFE_DELETE(mpObjectColliderMesh);
 }
 
 void CTrashField::CreateFieldObjects()

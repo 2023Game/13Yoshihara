@@ -57,8 +57,12 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
 
-#define PATROL_INTERVAL	3.0f// 次の巡回ポイントに移動開始するまでの時間
-#define IDLE_TIME 5.0f		// 待機状態の時間
+#define ROTATE_SPEED 6.0f	// 回転速度
+#define ATTACK_RANGE 18.0f	// 攻撃範囲
+
+#define PATROL_INTERVAL	3.0f	// 次の巡回ポイントに移動開始するまでの時間
+#define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
+#define IDLE_TIME 5.0f			// 待機状態の時間
 
 #define PATROL_POS0 CVector(50.0f,0.0f,0.0f)
 #define PATROL_POS1 CVector(0.0f,0.0f,0.0f)
@@ -234,8 +238,22 @@ void CTrashEnemy::Render()
 {
 	CEnemyBase::Render();
 
+	// 巡回状態であれば、
+	if (mState == EState::ePatrol)
+	{
+		float rad = 1.0f;
+		// 巡回ポイントを全て描画
+		int size = mPatrolPoints.size();
+		for (int i = 0; i < size; i++)
+		{
+			CMatrix m;
+			m.Translate(mPatrolPoints[i] + CVector(0.0f, rad * 2.0f, 0.0f));
+			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
+			Primitive::DrawWireSphere(m, rad, c);
+		}
+	}
 	// 見失った状態であれば、
-	if (mState == EState::eLost)
+	else if (mState == EState::eLost)
 	{
 		// プレイヤーを見失った位置にデバッグ表示
 		float rad = 2.0f;
@@ -292,7 +310,7 @@ void CTrashEnemy::UpdatePatrol()
 	// ステップ0：巡回開始時の巡回ポイントを求める
 	case 0:
 		mNextPatrolIndex = -1;
-		ChangePatrolPoint();
+		ChangePatrolPoint(PATROL_NEAR_DIST);
 		mStateStep++;
 		break;
 	// ステップ1：巡回ポイントまで移動
@@ -307,7 +325,7 @@ void CTrashEnemy::UpdatePatrol()
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
 
-		if (MoveTo(mPatrolPoints[mNextPatrolIndex], GetBaseMoveSpeed()))
+		if (MoveTo(mPatrolPoints[mNextPatrolIndex], GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			mStateStep++;
 		}
@@ -330,7 +348,7 @@ void CTrashEnemy::UpdatePatrol()
 		}
 		else
 		{
-			ChangePatrolPoint();
+			ChangePatrolPoint(PATROL_NEAR_DIST);
 			mStateStep = 1;
 			mElapsedTime = 0.0f;
 		}
@@ -347,7 +365,7 @@ void CTrashEnemy::UpdateChase()
 		return;
 	}
 	// プレイヤーに攻撃できるならば、攻撃状態へ移行
-	if (CanAttackPlayer())
+	if (CanAttackPlayer(ATTACK_RANGE))
 	{
 		ChangeState(EState::eAttackStart);
 
@@ -378,7 +396,7 @@ void CTrashEnemy::UpdateChase()
 	CPlayerBase* player = CPlayerBase::Instance();
 	CVector playerPos = player->Position();
 	mLostPlayerPos = playerPos;	// プレイヤーを最後に見た座標を更新
-	if (MoveTo(playerPos, GetBaseMoveSpeed()))
+	if (MoveTo(playerPos, GetBaseMoveSpeed(), ROTATE_SPEED))
 	{
 
 	}
@@ -405,7 +423,7 @@ void CTrashEnemy::UpdateLost()
 	}
 
 	// プレイヤーを見失った位置まで移動
-	if (MoveTo(mLostPlayerPos, GetBaseMoveSpeed()))
+	if (MoveTo(mLostPlayerPos, GetBaseMoveSpeed(), ROTATE_SPEED))
 	{
 		// 移動が終われば、待機状態へ移行
 		ChangeState(EState::eIdle);
