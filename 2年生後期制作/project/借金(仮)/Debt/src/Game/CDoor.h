@@ -2,8 +2,6 @@
 #include "CInteractObject.h"
 #include "CModel.h"
 
-class CStageSelectMenu;
-
 class CDoor : public CInteractObject
 {
 public:
@@ -24,5 +22,4 @@ public:
 private:
 	CModel* mpModel;
 	CCollider* mpCollider;
-	CStageSelectMenu* mpStageSelectMenu;	// ステージ選択メニュー
 };

@@ -532,6 +532,9 @@
     <ClCompile Include="src\Game\CVehicleStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CFieldBase.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -950,6 +953,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CVehicleStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFieldBase.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

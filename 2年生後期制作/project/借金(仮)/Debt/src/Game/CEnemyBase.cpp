@@ -2,12 +2,14 @@
 #include "CDebugFieldOfView.h"
 #include "CPlayerBase.h"
 #include "Maths.h"
+#include "CFieldBase.h"
 
 #define GRAVITY 0.0625f
 
 // コンストラクタ
 CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
-	std::vector<CVector> patrolPoints)
+	std::vector<CVector> patrolPoints,
+	float eyeHeight)
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
@@ -21,6 +23,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mLostPlayerPos(CVector::zero)
 	, mNextPatrolIndex(-1)
 	, mPatrolPoints(patrolPoints)
+	, mEyeHeight(eyeHeight)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -178,23 +181,27 @@ void CEnemyBase::ChangeAnimation(int type, bool restart)
 	CXCharacter::SetAnimationSpeed(data.speed);
 }
 
-// オブジェクトが視界範囲内に入ったかどうか
-bool CEnemyBase::IsFoundObject(CObjectBase* obj) const
+// プレイヤーが視野範囲内に入ったかどうか
+bool CEnemyBase::IsFoundPlayer() const
 {
-	// オブジェクト座標を取得
-	CVector objectPos = obj->Position();
+	// プレイヤーが存在しない場合は、視野範囲外とする
+	CPlayerBase* player = CPlayerBase::Instance();
+	if (player == nullptr) return false;
+
+	// プレイヤー座標を取得
+	CVector playerPos = player->Position();
 	// 自分自身の座標を取得
 	CVector pos = Position();
-	// 自分からオブジェクトまでのベクトルを求める
-	CVector vec = objectPos - pos;
-	vec.Y(0.0f);	// オブジェクトとの高さの差を考慮しない
+	// 自分からプレイヤーまでのベクトルを求める
+	CVector vec = playerPos - pos;
+	vec.Y(0.0f);	// プレイヤーとの高さの差を考慮しない
 
 	// ①視野角度内か求める
 	// ベクトルを正規化して長さを1にする
 	CVector dir = vec.Normalized();
 	// 自身の正面方向ベクトルを取得
 	CVector forward = VectorZ();
-	// オブジェクトまでのベクトルと
+	// プレイヤーまでのベクトルと
 	// 自身の正面方向ベクトルの内積を求めて角度を出す
 	float dot = CVector::Dot(dir, forward);
 	// 視野範囲のラジアンを取得
@@ -203,25 +210,39 @@ bool CEnemyBase::IsFoundObject(CObjectBase* obj) const
 	if (dot < cosf(angleR)) return false;
 
 	// ②視野距離内か求める
-	// オブジェクトまでの距離と視野距離で、視野範囲内か判断する
+	// プレイヤーまでの距離と視野距離で、視野範囲内か判断する
 	float dist = vec.Length();
 	if (dist > mFovLength) return false;
 
-	// TODO：オブジェクトとの間に遮蔽物がないかチェックする
+	// プレイヤーとの間に遮蔽物がないかチェックする
+	if (!IsLookPlayer()) return false;
 
 	// 全ての条件をクリアしたので、視野範囲内である
 	return true;
 }
 
-// プレイヤーが視野範囲内に入ったかどうか
-bool CEnemyBase::IsFoundPlayer() const
+// 現在位置からプレイヤーが見えているかどうか
+bool CEnemyBase::IsLookPlayer() const
 {
-	// プレイヤーが存在しない場合は、視野範囲外とする
+	// プレイヤーが存在しない場合は、見えない
 	CPlayerBase* player = CPlayerBase::Instance();
 	if (player == nullptr) return false;
+	// フィールドが存在しない場合は、遮蔽物がないので見える
+	CFieldBase* field = CFieldBase::Instance();
+	if (field == nullptr) return true;
 
-	// プレイヤーが視界内に入ったかどうか
-	return IsFoundObject(player);
+	CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
+	// プレイヤーの座標を取得
+	CVector playerPos = player->Position() + offsetPos;
+	// 自分自身の座標を取得
+	CVector selfPos = Position() + offsetPos;
+
+	CHitInfo hit;
+	// フィールドとレイ判定を行い、遮蔽物が存在した場合は、プレイヤーが見えない
+	if (field->CollisionRay(selfPos, playerPos, &hit)) return false;
+
+	// プレイヤーとの間に遮蔽物がないので、プレイヤーが見えている
+	return true;
 }
 
 // プレイヤーを攻撃できるかどうか

@@ -1,27 +1,20 @@
 #pragma once
-#include "CObjectBase.h"
-#include "CColliderMesh.h"
+#include "CFieldBase.h"
 
-class CVehicleManager;
-
-class CTrashField : public CObjectBase
+class CTrashField : public CFieldBase
 {
 public:
+	// コンストラクタ
 	CTrashField();
+	// デストラクタ
 	~CTrashField();
 
+	// 更新
 	void Update();
+	// 描画
 	void Render();
 
 private:
-	void CreateFieldObjects();
-
-	CModel* mpModel;
-	CColliderMesh* mpGroundColliderMesh;
-	CColliderMesh* mpWallColliderMesh;
-	CColliderMesh* mpObjectColliderMesh;
-
-	CModel* mpCube;
-
-	TexAnimData mEffectAnimData;
+	// フィールドのオブジェクト生成
+	void CreateFieldObjects() override;
 };

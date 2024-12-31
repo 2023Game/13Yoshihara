@@ -5,16 +5,19 @@
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 
+// コンストラクタ
 CGameMenu::CGameMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_ITEM1, MENU_ITEM1, MENU_CLOSE}, MENU_SELECT)
 {
 
 }
 
+// デストラクタ
 CGameMenu::~CGameMenu()
 {
 }
 
+// 決定処理
 void CGameMenu::Decide(int select)
 {
 	switch (select)
@@ -32,6 +35,7 @@ void CGameMenu::Decide(int select)
 	}
 }
 
+// 更新
 void CGameMenu::Update()
 {
 	CGameMenuBase::Update();

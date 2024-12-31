@@ -1,32 +1,18 @@
 #pragma once
-#include "CObjectBase.h"
-#include "CColliderMesh.h"
+#include "CFieldBase.h"
 
-class CHomeField : public CObjectBase
+class CHomeField : public CFieldBase
 {
 public:
 	CHomeField();
 	~CHomeField();
 
-	void Update();
-	void Render();
+	void Update() override;
+	void Render() override;
 
 private:
-	void CreateFieldObjects();
+	void CreateFieldObjects() override;
 
-	CModel* mpModel;
-	CColliderMesh* mpGroundColliderMesh;
-	CColliderMesh* mpWallColliderMesh;
-	CColliderMesh* mpObjectColliderMesh;
-
-	CModel* mpBed;
-	CModel* mpChair;
 	CModel* mpComputer;
-	CModel* mpDesk;
 	CModel* mpDoor;
-	CModel* mpRack;
-	
-	CModel* mpCube;
-
-	TexAnimData mEffectAnimData;
 };

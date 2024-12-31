@@ -5,11 +5,12 @@
 
 #define MENU_ALPHA 0.75f
 
+// コンストラクタ
 CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
 	, mSelectIndex(0)
 	, mIsOpened(false)
-	, mPrevMenu(nullptr)
+	, mpPrevMenu(nullptr)
 {
 	int menuItemMax = menuItemPathList.size();
 
@@ -53,10 +54,12 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::str
 	SetShow(false);
 }
 
+// デストラクタ
 CGameMenuBase::~CGameMenuBase()
 {
 }
 
+// メニューを開く
 void CGameMenuBase::Open()
 {
 	SetEnable(true);
@@ -66,6 +69,7 @@ void CGameMenuBase::Open()
 	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
 }
 
+// メニューを閉じる
 void CGameMenuBase::Close()
 {
 	SetEnable(false);
@@ -74,6 +78,7 @@ void CGameMenuBase::Close()
 	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 }
 
+// メニューが開いているかどうか
 bool CGameMenuBase::IsOpened() const
 {
 	return mIsOpened;
@@ -84,6 +89,7 @@ void CGameMenuBase::Decide(int select)
 {
 }
 
+// 更新
 void CGameMenuBase::Update()
 {
 	int itemCount = mMenuItems.size();
@@ -111,6 +117,7 @@ void CGameMenuBase::Update()
 	mpSelectFrame->Update();
 }
 
+// 描画
 void CGameMenuBase::Render()
 {
 	mpBackground->Render();

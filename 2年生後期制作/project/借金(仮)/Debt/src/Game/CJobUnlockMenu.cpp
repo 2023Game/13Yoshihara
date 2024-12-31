@@ -7,16 +7,19 @@
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 
+// コンストラクタ
 CJobUnlockMenu::CJobUnlockMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_UNLOCK_TRASH, MENU_UNLOCK_DELIVERY, MENU_CLOSE}, MENU_SELECT)
 {
-	mPrevMenu = prevMenu;
+	mpPrevMenu = prevMenu;
 }
 
+// デストラクタ
 CJobUnlockMenu::~CJobUnlockMenu()
 {
 }
 
+// 決定処理
 void CJobUnlockMenu::Decide(int select)
 {
 	switch (select)
@@ -29,11 +32,12 @@ void CJobUnlockMenu::Decide(int select)
 		break;
 	default:	// 一つ前のメニューへ戻る
 		Close();
-		mPrevMenu->Open();
+		mpPrevMenu->Open();
 		break;
 	}
 }
 
+// 更新
 void CJobUnlockMenu::Update()
 {
 	CGameMenuBase::Update();

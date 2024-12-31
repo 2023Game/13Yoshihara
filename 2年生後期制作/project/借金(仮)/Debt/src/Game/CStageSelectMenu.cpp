@@ -7,26 +7,29 @@
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 
-CStageSelectMenu::CStageSelectMenu()
+// コンストラクタ
+CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_STAGE_TRASH, MENU_STAGE_DELIVERY, MENU_CLOSE}, MENU_SELECT)
 {
-
+	mpPrevMenu = prevMenu;
 }
 
+// デストラクタ
 CStageSelectMenu::~CStageSelectMenu()
 {
 }
 
+// 決定処理
 void CStageSelectMenu::Decide(int select)
 {
 	switch (select)
 	{
-	case 0:		// ゴミ拾いシーンへ移動
-		// ゴミ拾いがアンロック済みだったら移動
+	case 0:
+		// ゴミ拾いがアンロック済みだったら
 		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eTrash))
 		{
-			Close();
-			CSceneManager::Instance()->LoadScene(EScene::eTrashGame);
+			// 選択されている仕事をゴミ拾いに設定
+			CJobStatusManager::Instance()->SetSelectJob(EJobType::eTrash);
 		}
 		// アンロックしていないならブザー音を再生
 		else
@@ -34,12 +37,12 @@ void CStageSelectMenu::Decide(int select)
 			// TODO : ブザー音を再生
 		}
 		break;
-	case 1:		// 配達シーンへ移動
-		// 配達がアンロック済みだったら移動
+	case 1:
+		// 配達がアンロック済みだったら
 		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eDelivery))
 		{
-			Close();
-			CSceneManager::Instance()->LoadScene(EScene::eTitle);
+			// 選択されている仕事を配達に設定
+			CJobStatusManager::Instance()->SetSelectJob(EJobType::eDelivery);
 		}
 		// アンロックしていないならブザー音を再生
 		else
@@ -47,12 +50,14 @@ void CStageSelectMenu::Decide(int select)
 			// TODO : ブザー音を再生
 		}
 		break;
-	default:	// 一番下はメニューを閉じる
+	default:	// 一つ前のメニューに戻る
 		Close();
+		mpPrevMenu->Open();
 		break;
 	}
 }
 
+// 更新
 void CStageSelectMenu::Update()
 {
 	CGameMenuBase::Update();

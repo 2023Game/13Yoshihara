@@ -62,15 +62,14 @@ void CTrashGameScene::Load()
 
 	new CTrashField();
 
+	CTrashPlayer* player = new CTrashPlayer();
+	player->Scale(0.1f, 0.1f, 0.1f);
 
 	CTrashEnemy* enemy = new CTrashEnemy();
 	enemy->Position(0.0f, 0.0f, 5.0f);
 	enemy->Scale(0.1f, 0.1f, 0.1f);
 
-	CTrashPlayer* player = new CTrashPlayer();
-	player->Scale(0.1f, 0.1f, 0.1f);
-
-	// 車とトラックの管理クラス作成
+	// 車両の管理クラス作成
 	mpCVehicleManager =
 		new CVehicleManager();
 

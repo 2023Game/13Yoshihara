@@ -19,7 +19,10 @@ public:
 	/// <param name="fovAngle">視野範囲の角度</param>
 	/// <param name="fovLength">視野範囲の距離</param>
 	/// <param name="patrolPoints">巡回ポイントのリスト</param>
-	CEnemyBase(float fovAngle, float fovLength, std::vector<CVector> patrolPoints);
+	/// <param name="eyeHeight">視点の高さ</param>
+	CEnemyBase(float fovAngle, float fovLength, 
+		std::vector<CVector> patrolPoints,
+		float eyeHeight);
 	// デストラクタ
 	~CEnemyBase();
 
@@ -62,12 +65,14 @@ protected:
 	float mFovLength;	// 視野範囲の距離
 	CDebugFieldOfView* mpDebugFov;	// 視野範囲のデバッグ表示
 
+	float mEyeHeight;	// 視点の高さ
+
 	CVector mLostPlayerPos;	// プレイヤーを見失った座標
 
-	// オブジェクトが視界範囲内に入ったかどうか
-	bool IsFoundObject(CObjectBase* obj) const;
 	// プレイヤーが視野範囲内に入ったかどうか
 	bool IsFoundPlayer() const;
+	// 現在位置からプレイヤーが見えているかどうか
+	bool IsLookPlayer() const;
 	// プレイヤーを攻撃できるかどうか
 	bool CanAttackPlayer(float attackRange) const;
 

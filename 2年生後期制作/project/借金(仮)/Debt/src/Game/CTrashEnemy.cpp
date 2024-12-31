@@ -1,6 +1,7 @@
 #include "CTrashEnemy.h"
 #include "CDebugFieldOfView.h"
 #include "CPlayerBase.h"
+#include "CFieldBase.h"
 #include "Primitive.h"
 
 // TODO：後で消すテスト用
@@ -56,6 +57,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
+#define EYE_HEIGHT 5.0f	// 視点の高さ
 
 #define ROTATE_SPEED 6.0f	// 回転速度
 #define ATTACK_RANGE 18.0f	// 攻撃範囲
@@ -81,7 +83,8 @@ CTrashEnemy::CTrashEnemy()
 			PATROL_POS1,
 			PATROL_POS2,
 			PATROL_POS3
-		}
+		},
+		EYE_HEIGHT		
 	)
 	, mState(EState::eIdle)
 	, mStateStep(0)
@@ -260,6 +263,39 @@ void CTrashEnemy::Render()
 		CMatrix m;
 		m.Translate(mLostPlayerPos + CVector(0.0f, rad, 0.0f));
 		Primitive::DrawWireSphere(m, rad, CColor::blue);
+	}
+
+	CPlayerBase* player = CPlayerBase::Instance();
+	CFieldBase* field = CFieldBase::Instance();
+	if (player != nullptr && field != nullptr)
+	{
+		CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
+		CVector playerPos = player->Position() + offsetPos;
+		CVector selfPos = Position() + offsetPos;
+
+		// プレイヤーとの間に遮蔽物が存在する場合
+		CHitInfo hit;
+		if (field->CollisionRay(selfPos, playerPos, &hit))
+		{
+			// 衝突した位置まで赤線を描画
+			Primitive::DrawLine
+			(
+				selfPos, hit.cross,
+				CColor::red,
+				2.0f
+			);
+		}
+		// 遮蔽物が存在しなかった場合
+		else
+		{
+			// プレイヤーの位置まで緑線を描画
+			Primitive::DrawLine
+			(
+				selfPos,playerPos,
+				CColor::green,
+				2.0f
+			);
+		}
 	}
 }
 

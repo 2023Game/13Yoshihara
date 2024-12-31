@@ -46,7 +46,7 @@ void CVehicleManager::Update()
 
 
 	// 出現までの時間が0以下なら出現
-	//SpawnVehicle();
+	SpawnVehicle();
 }
 
 // 使用するトラックを全て生成

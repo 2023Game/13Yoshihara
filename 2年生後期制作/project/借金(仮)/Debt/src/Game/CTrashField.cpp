@@ -1,14 +1,8 @@
 #include "CTrashField.h"
-#include "CMoveFloor.h"
-#include "CRotateFloor.h"
-#include "CLineEffect.h"
-#include "CCar.h"
-#include "CGarbageTruck.h"
-#include "CVehicleManager.h"
-
+ 
+// コンストラクタ
 CTrashField::CTrashField()
-	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
-	, mEffectAnimData(1, 11, true, 11, 0.03f)
+	: CFieldBase()
 {
 	mpModel = CResourceManager::Get<CModel>("TrashStage");
 
@@ -19,22 +13,22 @@ CTrashField::CTrashField()
 	CreateFieldObjects();
 }
 
+// デストラクタ
 CTrashField::~CTrashField()
 {
-	SAFE_DELETE(mpGroundColliderMesh);
-	SAFE_DELETE(mpWallColliderMesh);
-	SAFE_DELETE(mpObjectColliderMesh);
 }
 
+// フィールドのオブジェクト生成
 void CTrashField::CreateFieldObjects()
 {
-	mpCube = CResourceManager::Get<CModel>("FieldCube");
 }
 
+// 更新
 void CTrashField::Update()
 {
 }
 
+// 描画
 void CTrashField::Render()
 {
 	mpModel->Render(Matrix());

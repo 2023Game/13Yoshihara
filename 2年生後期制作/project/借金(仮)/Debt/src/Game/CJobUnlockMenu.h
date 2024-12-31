@@ -11,7 +11,9 @@ public:
 	CJobUnlockMenu(CGameMenuBase* prevMenu);
 	~CJobUnlockMenu();
 
+	// Œˆ’èˆ—
 	void Decide(int select) override;
 
+	// XV
 	void Update();
 };

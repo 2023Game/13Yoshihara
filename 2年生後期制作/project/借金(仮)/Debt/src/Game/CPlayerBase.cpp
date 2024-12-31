@@ -7,6 +7,7 @@
 #include "CSlash.h"
 #include "Maths.h"
 #include "CInteractObject.h"
+#include "CSceneManager.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -35,17 +36,21 @@ CPlayerBase::CPlayerBase()
 	, mpSearchCol(nullptr)
 {
 	spInstance = this;
-
-
 }
 
+// デストラクタ
 CPlayerBase::~CPlayerBase()
 {
 	// コライダ―を削除
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpSearchCol);
 
-	spInstance = nullptr;
+	// インスタンスのシーンタイプと
+	// 今削除しているプレイヤーのシーンタイプが一致すればnullptrにする
+	if (spInstance->GetSceneType() == GetSceneType())
+	{
+		spInstance = nullptr;
+	}
 }
 
 CPlayerBase* CPlayerBase::Instance()

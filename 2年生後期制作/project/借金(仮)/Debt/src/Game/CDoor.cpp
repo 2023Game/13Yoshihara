@@ -1,11 +1,11 @@
 #include "CDoor.h"
 #include "CColliderMesh.h"
-#include "CStageSelectMenu.h"
 #include "CJobStatusManager.h"
 #include "CSceneManager.h"
 
 #define UI_OFFSET_Y 10.0f
 
+// コンストラクタ
 CDoor::CDoor(CModel* model, const CVector& pos,
 	const CVector& scale, const CVector& rotation)
 	: CInteractObject()
@@ -27,11 +27,9 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	Rotate(rotation);
 
 	mInteractStr = "仕事へ行く";
-
-	// ステージ選択メニューを作成
-	mpStageSelectMenu = new CStageSelectMenu();
 }
 
+// デストラクタ
 CDoor::~CDoor()
 {
 	SAFE_DELETE(mpCollider);
@@ -72,6 +70,7 @@ void CDoor::Interact()
 	}
 }
 
+// 描画
 void CDoor::Render()
 {
 	mpModel->Render(Matrix());

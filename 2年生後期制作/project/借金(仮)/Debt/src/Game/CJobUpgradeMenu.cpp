@@ -8,16 +8,19 @@
 #define MENU_SELECT "UI/menu_select.png"
 #define UPGRADE_FLOAT 0.1f
 
+// コンストラクタ
 CJobUpgradeMenu::CJobUpgradeMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_UPGRADE_TRASH, MENU_UPGRADE_DELIVERY, MENU_CLOSE}, MENU_SELECT)
 {
-	mPrevMenu = prevMenu;
+	mpPrevMenu = prevMenu;
 }
 
+// デストラクタ
 CJobUpgradeMenu::~CJobUpgradeMenu()
 {
 }
 
+// 決定処理
 void CJobUpgradeMenu::Decide(int select)
 {
 	switch (select)
@@ -32,11 +35,12 @@ void CJobUpgradeMenu::Decide(int select)
 		break;
 	default:	// 一つ前のメニューに戻る
 		Close();
-		mPrevMenu->Open();
+		mpPrevMenu->Open();
 		break;
 	}
 }
 
+// 更新
 void CJobUpgradeMenu::Update()
 {
 	CGameMenuBase::Update();
