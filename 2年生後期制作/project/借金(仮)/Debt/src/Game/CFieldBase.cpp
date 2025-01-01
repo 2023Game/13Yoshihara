@@ -30,9 +30,8 @@ CFieldBase::~CFieldBase()
 	SAFE_DELETE(mpWallColliderMesh);
 	SAFE_DELETE(mpObjectColliderMesh);
 
-	// インスタンスのシーンタイプと
-	// 今削除しているフィールドのシーンタイプが一致すればnullptrにする
-	if (GetSceneType() == CSceneManager::Instance()->GetCurrentScene())
+	// インスタンスと削除しているフィールドが同一なら削除
+	if (spInstance == this)
 	{
 		spInstance = nullptr;
 	}

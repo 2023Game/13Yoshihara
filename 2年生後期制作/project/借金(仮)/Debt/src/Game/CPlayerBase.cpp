@@ -45,9 +45,8 @@ CPlayerBase::~CPlayerBase()
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpSearchCol);
 
-	// インスタンスのシーンタイプと
-	// 今削除しているプレイヤーのシーンタイプが一致すればnullptrにする
-	if (spInstance->GetSceneType() == GetSceneType())
+	// インスタンスと削除しているプレイヤーが同一なら削除
+	if (spInstance == this)
 	{
 		spInstance = nullptr;
 	}

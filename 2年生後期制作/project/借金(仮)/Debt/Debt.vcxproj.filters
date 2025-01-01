@@ -140,6 +140,9 @@
     <Filter Include="ソース ファイル\Game\Debug">
       <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Navigation">
+      <UniqueIdentifier>{bdfd0c47-7480-4b01-b8e4-e2a8b8c71ad8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -534,6 +537,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CFieldBase.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CNavNode.cpp">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CNavManager.cpp">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -956,6 +965,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CFieldBase.h">
       <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CNavNode.h">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CNavManager.h">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
