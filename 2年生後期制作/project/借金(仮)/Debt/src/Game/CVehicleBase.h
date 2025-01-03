@@ -3,6 +3,7 @@
 #include "CVehicleStatus.h"
 
 class CModel;
+class CNavNode;
 
 // 車両の基底クラス
 class CVehicleBase : public CCharaBase , public CVehicleStatus
@@ -48,6 +49,9 @@ public:
 	void ChangeRoadType(ERoadType roadType);
 	// 今どの道にいるか取得する
 	ERoadType GetRoadType() const;
+
+	// 本体コライダ―を取得する
+	CCollider* GetBodyCol() const;
 protected:
 	// 移動処理
 	void UpdateMove();
@@ -82,11 +86,19 @@ protected:
 	ERoadType mRoadType;
 	// 今の道の進む方向
 	CVector mCurrentRoadRotation;
+	// 移動しているか
+	bool mIsMove;
 
 	// 移動速度
 	CVector mMoveSpeed;
 
 	CModel* mpModel;
+
+	// 車両の周りのノード
+	CNavNode* mpNode0;
+	CNavNode* mpNode1;
+	CNavNode* mpNode2;
+	CNavNode* mpNode3;
 
 	// 本体のコライダ―
 	CCollider* mpBodyCol;

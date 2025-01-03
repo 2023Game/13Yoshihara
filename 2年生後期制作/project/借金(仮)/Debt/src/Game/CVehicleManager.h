@@ -21,11 +21,24 @@ class CTrashVehicleSpawnZone;
 class CVehicleManager
 {
 public:
+	// 車両管理クラスのインスタンスを取得
+	static CVehicleManager* Instance();
 	// コンストラクタ
 	CVehicleManager();
 	// デストラクタ
 	~CVehicleManager();
+
+	/// <summary>
+	/// レイと全ての車両との衝突判定
+	/// </summary>
+	/// <param name="start">レイの開始位置</param>
+	/// <param name="end">レイの終了位置</param>
+	/// <param name="hit">衝突情報返却用</param>
+	/// <returns>衝突していたら、trueを返す</returns>
+	bool CollisionRay(const CVector& start, const CVector& end,
+		CHitInfo* hit);
 	
+	// 更新
 	void Update();
 	// 使用するトラックを全て生成
 	void CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck);
@@ -64,8 +77,17 @@ public:
 	/// <param name="roadType">どの道にいるか</param>
 	/// <returns>trueならば、いる</returns>
 	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
+
+	/// <summary>
+	/// 止まっている車両のリストを取得
+	/// </summary>
+	/// <returns>止まっている車両のリスト</returns>
+	std::list<CVehicleBase*> StopVehicle();
 private:
-	CTrashVehicleSpawnZone* mpSpawnZone;	// 生成場所に車がいるか判断するクラス
+	// 車両管理クラスのインスタンスへのポインタ
+	static CVehicleManager* spInstance;
+	// 生成場所に車がいるか判断するクラス
+	CTrashVehicleSpawnZone* mpSpawnZone;
 
 	CModel* mpCarModel;	// 車のモデル
 
@@ -76,5 +98,5 @@ private:
 	// 出現までの時間
 	float mCarPopTime;			// 車
 	float mTruckPopTime;		// トラック
-	float mBlackTruckPopTime;	// お仕置きトラック
+	float mPunishTruckPopTime;	// お仕置きトラック
 };

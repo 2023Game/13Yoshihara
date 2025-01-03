@@ -4,13 +4,28 @@
 #include "CTrashVehicleSpawnZone.h"
 #include <random>
 
+CVehicleManager* CVehicleManager::spInstance = nullptr;
+
 // 出現までの時間
 #define CAR_POP_TIME 3.0f		// 車
 #define TRUCK_POP_TIME 1.0f		// トラック
-#define BLACK_POP_TIME 3.0f		// お仕置きトラック
+#define PUNISH_POP_TIME 3.0f		// お仕置きトラック
 
-CVehicleManager::CVehicleManager()
+// 車両管理クラスのインスタンスを取得
+CVehicleManager* CVehicleManager::Instance()
 {
+	return spInstance;
+}
+
+// コンストラクタ
+CVehicleManager::CVehicleManager()
+	: mCarPopTime(CAR_POP_TIME)
+	, mTruckPopTime(TRUCK_POP_TIME)
+	, mPunishTruckPopTime(PUNISH_POP_TIME)
+	, mpGarbageTruck(nullptr)
+	, mpPunishTruck(nullptr)
+{
+	spInstance = this;
 	// 生成場所
 	mpSpawnZone = new CTrashVehicleSpawnZone();
 
@@ -21,19 +36,76 @@ CVehicleManager::CVehicleManager()
 	CreateVehicle(CResourceManager::Get<CModel>("Car"),
 		CResourceManager::Get<CModel>("GarbageTruck"),
 		CResourceManager::Get<CModel>("BlackTruck"));
-
-	// 車の出現までの時間を設定
-	mCarPopTime = CAR_POP_TIME;
-	// トラックの出現までの時間を設定
-	mTruckPopTime = TRUCK_POP_TIME;
-	// お仕置きトラックの出現までの時間を設定
-	mBlackTruckPopTime = BLACK_POP_TIME;
 }
 
+// デストラクタ
 CVehicleManager::~CVehicleManager()
 {
+	if (spInstance == this)
+	{
+		spInstance = nullptr;
+	}
 }
 
+//レイと全ての車両の衝突判定
+bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHitInfo* hit)
+{
+	// 衝突情報保存用
+	CHitInfo tHit;
+	// 衝突したかどうかフラグ
+	bool isHit = false;
+	// 全ての車との衝突をチェック
+	for (CCar* car : mCars)
+	{
+		// 車との衝突判定
+		if (CCollider::CollisionRay(car->GetBodyCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	// トラックが存在するなら
+	if (mpGarbageTruck != nullptr)
+	{
+		// トラックとの衝突判定
+		if (CCollider::CollisionRay(mpGarbageTruck->GetBodyCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	// お仕置きトラックが存在するなら
+	if (mpPunishTruck != nullptr)
+	{
+		// お仕置きトラックとの衝突判定
+		if (CCollider::CollisionRay(mpPunishTruck->GetBodyCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	return isHit;
+}
+
+// 更新
 void CVehicleManager::Update()
 {
 	// ステージ外へ行った乗り物を非表示
@@ -46,16 +118,13 @@ void CVehicleManager::Update()
 
 
 	// 出現までの時間が0以下なら出現
-	//SpawnVehicle();
+	SpawnVehicle();
 }
 
 // 使用するトラックを全て生成
 void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck)
 {
-	//mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION));	// 左から1番	：0
-	//mCars.push_back(new CCar(car, CAR_LEFT_POS2, CAR_LEFT_ROTATION));	// 左から2番	：1
-	//mCars.push_back(new CCar(car, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION));	// 右から1番	：2
-	//mCars.push_back(new CCar(car, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION));	// 右から2番	：3
+	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1));
 
 	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight1);
 	mpPunishTruck = new CGarbageTruck(blackTruck, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight2);
@@ -93,7 +162,7 @@ void CVehicleManager::SpawnVehicle()
 {
 	// TODO：お仕置きだけ違う処理
 	// お仕置きトラックの出現時間が0以下なら出現
-	if (mBlackTruckPopTime <= 0.0f)
+	if (mPunishTruckPopTime <= 0.0f)
 	{
 		// お仕置きトラックが無効なら出現させる
 		if (!mpPunishTruck->IsEnable())
@@ -139,7 +208,7 @@ void CVehicleManager::SpawnVehicle()
 			mpPunishTruck->SetShow(true);
 
 			// 出現までの時間を設定しなおす
-			mBlackTruckPopTime = BLACK_POP_TIME;
+			mPunishTruckPopTime = PUNISH_POP_TIME;
 		}
 	}
 
@@ -279,7 +348,7 @@ void CVehicleManager::CountTruckPopTime()
 // お仕置きトラックの出現までの時間をカウント
 void CVehicleManager::CountBlackTruckPopTime()
 {
-	mBlackTruckPopTime -= Times::DeltaTime();
+	mPunishTruckPopTime -= Times::DeltaTime();
 }
 
 // ランダムで車両を出現させる場所を決める
@@ -379,4 +448,37 @@ bool CVehicleManager::IsSpawnZone(CVehicleBase::ERoadType roadType)
 	{
 		return !mpSpawnZone->GetCanPops().IsRight2CanPop;
 	}
+}
+
+// 止まっている車両のリストを取得
+std::list<CVehicleBase*> CVehicleManager::StopVehicle()
+{
+	std::list<CVehicleBase*> stopVehicle;
+	
+	// 全ての車をチェック
+	for (CCar* car : mCars)
+	{
+		// 動いていたら次へ
+		if (car->IsMove()) continue;
+
+		// 動いていないのでリストへ追加
+		stopVehicle.push_back(car);
+	}
+
+	// ゴミ収集車が動いていないなら
+	if (!mpGarbageTruck->IsMove())
+	{
+		// リストへ追加
+		stopVehicle.push_back(mpGarbageTruck);
+	}
+
+	// お仕置きトラックが動いていないなら
+	if (!mpPunishTruck->IsMove())
+	{
+		// リストへ追加
+		stopVehicle.push_back(mpPunishTruck);
+	}
+
+	// 止まっている車両のリストを返す
+	return stopVehicle;
 }

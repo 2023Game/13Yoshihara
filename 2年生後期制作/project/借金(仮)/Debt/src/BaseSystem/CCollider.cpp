@@ -2068,6 +2068,16 @@ bool CCollider::CollisionRay(CCollider* c, const CVector& start, const CVector& 
 			sphere->Get(&sp, &sr);
 			return CollisionSphereLine(sp, sr, start, end, hit, false);
 		}
+		// カプセルコライダーとの衝突
+		case EColliderType::eCapsule:
+		{
+			CColliderCapsule* capsule = dynamic_cast<CColliderCapsule*>(c);
+			CVector cs, ce;
+			float cr;
+			capsule->Get(&cs, &ce);
+			cr = capsule->Radius();
+			return CollisionCapsuleLine(cs, ce, cr, start, end, hit, false);
+		}
 		// 三角形コライダーとの衝突
 		case EColliderType::eTriangle:
 		{

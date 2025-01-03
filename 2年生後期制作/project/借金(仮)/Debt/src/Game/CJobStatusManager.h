@@ -19,7 +19,6 @@ public:
 
 	void Update();
 
-	// TODO
 	// 各仕事のアンロック状態を取得する
 	bool GetUnlock(EJobType jobType) const;
 	/// <summary>

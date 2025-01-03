@@ -30,6 +30,8 @@ public:
 protected:
 	// フィールドのオブジェクトを生成
 	virtual void CreateFieldObjects() = 0;
+	// 経路探索用のノードを作成
+	virtual void CreateNavNodes();
 
 	// フィールドのインスタンス
 	static CFieldBase* spInstance;

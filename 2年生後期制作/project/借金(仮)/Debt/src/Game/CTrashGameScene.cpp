@@ -10,6 +10,7 @@
 #include "CLineEffect.h"
 #include "CVehicleManager.h"
 #include "CTrashEnemy.h"
+#include "CNavManager.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -60,7 +61,15 @@ void CTrashGameScene::Load()
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
 
+	// 経路探索管理クラスを作成
+	new CNavManager();
+
+	// ゴミ拾いのフィールドクラスを作成
 	new CTrashField();
+
+	// 車両の管理クラス作成
+	mpCVehicleManager =
+		new CVehicleManager();
 
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Scale(0.1f, 0.1f, 0.1f);
@@ -68,10 +77,6 @@ void CTrashGameScene::Load()
 	CTrashEnemy* enemy = new CTrashEnemy();
 	enemy->Position(0.0f, 0.0f, 5.0f);
 	enemy->Scale(0.1f, 0.1f, 0.1f);
-
-	// 車両の管理クラス作成
-	mpCVehicleManager =
-		new CVehicleManager();
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

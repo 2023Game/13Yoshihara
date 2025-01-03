@@ -88,3 +88,8 @@ void CFieldBase::Render()
 {
 	mpModel->Render(Matrix());
 }
+
+// Œo˜H’Tõ—p‚Ìƒm[ƒh‚ğì¬
+void CFieldBase::CreateNavNodes()
+{
+}

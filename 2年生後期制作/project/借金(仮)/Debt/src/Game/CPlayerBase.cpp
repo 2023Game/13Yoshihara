@@ -8,6 +8,8 @@
 #include "Maths.h"
 #include "CInteractObject.h"
 #include "CSceneManager.h"
+#include "CNavNode.h"
+#include "CNavManager.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -36,6 +38,10 @@ CPlayerBase::CPlayerBase()
 	, mpSearchCol(nullptr)
 {
 	spInstance = this;
+
+	// 経路探索用のノードを作成
+	mpNavNode = new CNavNode(Position(), true);
+	mpNavNode->SetColor(CColor::red);
 }
 
 // デストラクタ
@@ -44,6 +50,13 @@ CPlayerBase::~CPlayerBase()
 	// コライダ―を削除
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpSearchCol);
+
+	// 経路探索用のノードを削除
+	CNavManager* navMgr = CNavManager::Instance();
+	if (navMgr != nullptr)
+	{
+		SAFE_DELETE(mpNavNode);
+	}
 
 	// インスタンスと削除しているプレイヤーが同一なら削除
 	if (spInstance == this)
@@ -192,6 +205,12 @@ void CPlayerBase::Update()
 
 	// キャラクターの更新
 	CXCharacter::Update();
+
+	// 経路探索用のノードが存在すれば、座標を更新
+	if (mpNavNode != nullptr)
+	{
+		mpNavNode->SetPos(Position());
+	}
 
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("Wall:%s\n", mIsWall ? "true" : "false");

@@ -1,6 +1,8 @@
 #pragma once
 #include "CFieldBase.h"
 
+class CVehicleBase;
+
 class CTrashField : public CFieldBase
 {
 public:
@@ -17,4 +19,6 @@ public:
 private:
 	// フィールドのオブジェクト生成
 	void CreateFieldObjects() override;
+	// 経路探索用のノードを生成
+	void CreateNavNodes() override;
 };

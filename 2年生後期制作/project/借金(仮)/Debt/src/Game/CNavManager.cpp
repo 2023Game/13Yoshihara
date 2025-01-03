@@ -2,6 +2,8 @@
 #include "CNavNode.h"
 #include "CInput.h"
 #include <assert.h>
+#include "CFieldBase.h"
+#include "CVehicleManager.h"
 
 CNavManager* CNavManager::spInstance = nullptr;
 
@@ -46,6 +48,55 @@ void CNavManager::AddNode(CNavNode* node)
 void CNavManager::RemoveNode(CNavNode* node)
 {
 	mNodes.remove(node);
+}
+
+// 指定したノードに接続できるノードを検索して設定
+int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
+{
+	// 現在の接続先の情報をすべてクリアしておく
+	node->ClearConnects();
+
+	for (CNavNode* findNode : mNodes)
+	{
+		// 自分自身であれば、スルー
+		if (findNode == node) continue;
+
+		// 指定された距離の限界値を超える場合は、スルー
+		float dist = (findNode->GetPos() - node->GetPos()).Length();
+		if (dist > distance) continue;
+
+		// フィールドと車両とのレイ判定で遮蔽物チェックを行う
+		CVector start = node->GetOffsetPos();
+		CVector end = findNode->GetOffsetPos();
+		CHitInfo hit;
+
+		CFieldBase* fieldBase = CFieldBase::Instance();
+		CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+
+		// フィールドがあるなら衝突判定をする
+		if (fieldBase != nullptr)
+		{
+			if (fieldBase->CollisionRay(start, end, &hit))
+			{
+				// 何かにヒットした場合は、遮蔽物があるので接続できない
+				continue;
+			}
+		}
+		// 車両管理クラスがあるなら衝突判定をする
+		if (vehicleMgr != nullptr)
+		{
+			if (vehicleMgr->CollisionRay(start, end, &hit))
+			{
+				// 何かにヒットした場合は、遮蔽物があるので接続できない
+				continue;
+			}
+		}
+
+		// 両方の条件を満たしたノードを接続リストに追加
+		node->AddConnect(findNode);
+	}
+
+	return node->mConnectData.size();
 }
 
 // 全てのノードと経路を描画

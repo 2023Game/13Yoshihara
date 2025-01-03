@@ -2,6 +2,8 @@
 #include "CModel.h"
 #include "CColliderCapsule.h"
 #include "CVehicleManager.h"
+#include "CNavManager.h"
+#include "CNavNode.h"
  
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
 #define FRONT_WIDTH		40.0f	// 前方判定の幅
@@ -32,6 +34,25 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	mpFrontCol->SetCollisionTags({ETag::eVehicle,ETag::ePlayer });
 	mpFrontCol->SetCollisionLayers({ELayer::eVehicle,ELayer::ePlayer});
 
+	// 経路管理クラスがあるなら車両の周り用のノードを生成
+	CNavManager* navMgr = CNavManager::Instance();
+	if (navMgr != nullptr)
+	{
+		mpNode0 = new CNavNode(Position(), this);
+		mpNode1 = new CNavNode(Position(), this);
+		mpNode2 = new CNavNode(Position(), this);
+		mpNode3 = new CNavNode(Position(), this);
+	}
+	// 最初はノードを無効
+	mpNode0->SetEnable(false);
+	mpNode1->SetEnable(false);
+	mpNode2->SetEnable(false);
+	mpNode3->SetEnable(false);
+
+	// 最初は描画、更新しない
+	SetEnable(false);
+	SetShow(false);
+
 	Position(pos);
 	Rotation(rotation);
 }
@@ -39,6 +60,7 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 // デストラクタ
 CVehicleBase::~CVehicleBase()
 {
+	// コライダ―の削除
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpFrontCol);
 	SAFE_DELETE(mpSideCol);
@@ -74,13 +96,6 @@ void CVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				}
 			}
 		}
-		else if (other->Layer() == ELayer::ePlayer)
-		{
-			if (mState != EState::eBroken)
-			{
-				ChangeState(EState::eChangeRoad);
-			}
-		}
 	}
 }
 
@@ -93,10 +108,7 @@ void CVehicleBase::Render()
 // 移動中かどうか
 bool CVehicleBase::IsMove() const
 {
-	// 移動速度の2乗の長さが0より大きいなら移動中
-	if (mMoveSpeed.LengthSqr() > 0.0f) return true;
-	// 0以下なら移動していない
-	return false;
+	return mIsMove;
 }
 
 // 車線を変更する
@@ -257,9 +269,17 @@ CVehicleBase::ERoadType CVehicleBase::GetRoadType() const
 	return mRoadType;
 }
 
+// 本体コライダ―を取得する
+CCollider* CVehicleBase::GetBodyCol() const
+{
+	return mpBodyCol;
+}
+
 // 移動処理
 void CVehicleBase::UpdateMove()
 {
+	// 動いている
+	mIsMove = true;
 	// 正面へ移動
 	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
 }
@@ -267,6 +287,8 @@ void CVehicleBase::UpdateMove()
 // 停止処理
 void CVehicleBase::UpdateStop()
 {
+	// 動いていない
+	mIsMove = false;
 	// 移動速度をゼロにする
 	mMoveSpeed = CVector::zero;
 }
@@ -275,6 +297,8 @@ void CVehicleBase::UpdateStop()
 // 移動を停止して消滅時間が経ったら表示を消す
 void CVehicleBase::UpdateBroken()
 {
+	// 動いていない
+	mIsMove = false;
 	// 移動速度をゼロにする
 	mMoveSpeed = CVector::zero;
 
@@ -298,6 +322,8 @@ void CVehicleBase::UpdateBroken()
 // 車線変更処理
 void CVehicleBase::UpdateChangeRoad()
 {
+	// 動いている
+	mIsMove = true;
 	bool isEnd = false;
 	// 車線変更移動
 	ChangeRoad(isEnd);

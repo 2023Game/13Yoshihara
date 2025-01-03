@@ -3,6 +3,8 @@
 #include "CPlayerBase.h"
 #include "Maths.h"
 #include "CFieldBase.h"
+#include "CNavNode.h"
+#include "CNavManager.h"
 
 #define GRAVITY 0.0625f
 
@@ -27,6 +29,10 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
+
+	// 経路探索用のノードを作成
+	mpNavNode = new CNavNode(Position(), true);
+	mpNavNode->SetColor(CColor::blue);
 }
 
 // デストラクタ
@@ -39,6 +45,13 @@ CEnemyBase::~CEnemyBase()
 	{
 		mpDebugFov->SetOwner(nullptr);
 		mpDebugFov->Kill();
+	}
+
+	// 経路探索用のノードを削除
+	CNavManager* navMgr = CNavManager::Instance();
+	if (navMgr != nullptr)
+	{
+		SAFE_DELETE(mpNavNode);
 	}
 }
 
@@ -79,6 +92,12 @@ void CEnemyBase::Update()
 
 	// キャラクターの更新
 	CXCharacter::Update();
+
+	// 経路探索用のノードが存在すれば、座標を更新
+	if (mpNavNode != nullptr)
+	{
+		mpNavNode->SetPos(Position());
+	}
 
 	mIsGrounded = false;
 	mIsWall = false;
