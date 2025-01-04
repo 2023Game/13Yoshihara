@@ -34,9 +34,10 @@ public:
 	/// <param name="start">レイの開始位置</param>
 	/// <param name="end">レイの終了位置</param>
 	/// <param name="hit">衝突情報返却用</param>
+	/// <param name="alreadyHit">既に衝突しているか</param>
 	/// <returns>衝突していたら、trueを返す</returns>
 	bool CollisionRay(const CVector& start, const CVector& end,
-		CHitInfo* hit);
+		CHitInfo* hit, bool alreadyHit);
 	
 	// 更新
 	void Update();

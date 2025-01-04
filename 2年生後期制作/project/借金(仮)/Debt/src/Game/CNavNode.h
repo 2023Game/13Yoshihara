@@ -54,11 +54,17 @@ public:
 	void Render();
 
 private:
+	// 最短経路計算用のデータをリセット
+	void ResetCalcData();
 	// 経路探索時に経由できない目的地専用のノードかどうか
 	bool mIsDestNode;
 	CVector mPosition;	// ノードの座標
 	// 接続しているノードの情報リスト
 	std::list<CNavConnectData> mConnectData;
+
+	// 最短経路計算時に記憶しておく情報
+	float mCalcMoveCost;		// 開始ノードからこのノードまでにかかった移動コスト
+	CNavNode* mpCalcFromNode;	// 最短経路での前のノードのポインタ
 
 	bool mIsEnable;	// 有効かどうか
 

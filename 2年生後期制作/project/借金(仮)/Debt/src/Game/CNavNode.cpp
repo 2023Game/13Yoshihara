@@ -12,6 +12,8 @@ CNavNode::CNavNode(const CVector& pos, bool isDestNode)
 	: mIsDestNode(isDestNode)
 	, mPosition(pos)
 	, mIsEnable(true)
+	, mCalcMoveCost(-1.0f)
+	, mpCalcFromNode(nullptr)
 	, mColor(0.0f, 1.0f, 0.0f, 1.0f)
 {
 	// 管理クラスのリストに自身を追加
@@ -33,6 +35,13 @@ CNavNode::~CNavNode()
 	{
 		navMgr->RemoveNode(this);
 	}
+}
+
+// 最短経路計算用のデータをリセット
+void CNavNode::ResetCalcData()
+{
+	mCalcMoveCost = -1.0f;
+	mpCalcFromNode = nullptr;
 }
 
 // ノードの座標を取得

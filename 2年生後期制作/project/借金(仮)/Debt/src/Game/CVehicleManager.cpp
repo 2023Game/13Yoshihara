@@ -48,15 +48,18 @@ CVehicleManager::~CVehicleManager()
 }
 
 //レイと全ての車両の衝突判定
-bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHitInfo* hit)
+bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHitInfo* hit, bool alreadyHit)
 {
 	// 衝突情報保存用
 	CHitInfo tHit;
 	// 衝突したかどうかフラグ
-	bool isHit = false;
+	bool isHit = alreadyHit;
 	// 全ての車との衝突をチェック
 	for (CCar* car : mCars)
 	{
+		// 無効なら次へ
+		if (!car->IsEnable()) continue;
+
 		// 車との衝突判定
 		if (CCollider::CollisionRay(car->GetBodyCol(), start, end, &tHit))
 		{
@@ -70,8 +73,8 @@ bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHi
 			}
 		}
 	}
-	// トラックが存在するなら
-	if (mpGarbageTruck != nullptr)
+	// トラックが存在するかつ有効なら
+	if (mpGarbageTruck != nullptr && mpGarbageTruck->IsEnable())
 	{
 		// トラックとの衝突判定
 		if (CCollider::CollisionRay(mpGarbageTruck->GetBodyCol(), start, end, &tHit))
@@ -86,8 +89,8 @@ bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHi
 			}
 		}
 	}
-	// お仕置きトラックが存在するなら
-	if (mpPunishTruck != nullptr)
+	// お仕置きトラックが存在するかつ有効なら
+	if (mpPunishTruck != nullptr && mpPunishTruck->IsEnable())
 	{
 		// お仕置きトラックとの衝突判定
 		if (CCollider::CollisionRay(mpPunishTruck->GetBodyCol(), start, end, &tHit))

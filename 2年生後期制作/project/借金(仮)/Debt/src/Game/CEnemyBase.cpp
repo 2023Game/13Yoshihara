@@ -5,6 +5,7 @@
 #include "CFieldBase.h"
 #include "CNavNode.h"
 #include "CNavManager.h"
+#include "CVehicleManager.h"
 
 #define GRAVITY 0.0625f
 
@@ -26,6 +27,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mNextPatrolIndex(-1)
 	, mPatrolPoints(patrolPoints)
 	, mEyeHeight(eyeHeight)
+	, mNextMoveIndex(0)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -249,6 +251,9 @@ bool CEnemyBase::IsLookPlayer() const
 	// フィールドが存在しない場合は、遮蔽物がないので見える
 	CFieldBase* field = CFieldBase::Instance();
 	if (field == nullptr) return true;
+	// 車両管理クラスが存在しない場合は、車両がないので見える
+	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	if (vehicleMgr == nullptr) return true;
 
 	CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
 	// プレイヤーの座標を取得
@@ -257,8 +262,11 @@ bool CEnemyBase::IsLookPlayer() const
 	CVector selfPos = Position() + offsetPos;
 
 	CHitInfo hit;
-	// フィールドとレイ判定を行い、遮蔽物が存在した場合は、プレイヤーが見えない
-	if (field->CollisionRay(selfPos, playerPos, &hit)) return false;
+	bool isHit = false;
+	// フィールドと車両とのレイ判定を行い、
+	// 遮蔽物が存在した場合は、プレイヤーが見えない
+	if (isHit = field->CollisionRay(selfPos, playerPos, &hit) ||
+		vehicleMgr->CollisionRay(selfPos, playerPos, &hit, isHit)) return false;
 
 	// プレイヤーとの間に遮蔽物がないので、プレイヤーが見えている
 	return true;

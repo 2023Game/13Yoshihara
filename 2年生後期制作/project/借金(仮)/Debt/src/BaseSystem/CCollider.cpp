@@ -769,6 +769,14 @@ bool CCollider::CollisionCapsuleLine(
 		CVector n = (C1 - C2).Normalized();
 		float length = cr - dist;
 		hit->adjust = n * length;
+		if (isLeftMain)
+		{
+			hit->cross = C1;
+		}
+		else
+		{
+			hit->cross = C2;
+		}
 
 		return true;
 	}
@@ -2073,9 +2081,8 @@ bool CCollider::CollisionRay(CCollider* c, const CVector& start, const CVector& 
 		{
 			CColliderCapsule* capsule = dynamic_cast<CColliderCapsule*>(c);
 			CVector cs, ce;
-			float cr;
 			capsule->Get(&cs, &ce);
-			cr = capsule->Radius();
+			float cr = capsule->Radius();
 			return CollisionCapsuleLine(cs, ce, cr, start, end, hit, false);
 		}
 		// 三角形コライダーとの衝突

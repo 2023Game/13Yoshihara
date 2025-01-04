@@ -3,6 +3,9 @@
 #include "CPlayerBase.h"
 #include "CFieldBase.h"
 #include "Primitive.h"
+#include "CNavManager.h"
+#include "CNavNode.h"
+#include "CVehicleManager.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -267,6 +270,7 @@ void CTrashEnemy::Render()
 
 	CPlayerBase* player = CPlayerBase::Instance();
 	CFieldBase* field = CFieldBase::Instance();
+	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
 	if (player != nullptr && field != nullptr)
 	{
 		CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
@@ -275,7 +279,18 @@ void CTrashEnemy::Render()
 
 		// プレイヤーとの間に遮蔽物が存在する場合
 		CHitInfo hit;
+		bool isHit = false;
+		// フィールドとのレイ判定
 		if (field->CollisionRay(selfPos, playerPos, &hit))
+		{
+			isHit = true;
+		}
+		// 車両とのレイ判定
+		if (vehicleMgr->CollisionRay(selfPos, playerPos, &hit, isHit))
+		{
+			isHit = true;
+		}
+		if (isHit)
 		{
 			// 衝突した位置まで赤線を描画
 			Primitive::DrawLine
@@ -394,29 +409,29 @@ void CTrashEnemy::UpdatePatrol()
 // 追跡処理
 void CTrashEnemy::UpdateChase()
 {
-	// プレイヤーが視野範囲外に出たら、見失った状態へ移行
-	if (!IsFoundPlayer())
-	{
-		ChangeState(EState::eLost);
-		return;
-	}
-	// プレイヤーに攻撃できるならば、攻撃状態へ移行
-	if (CanAttackPlayer(ATTACK_RANGE))
-	{
-		ChangeState(EState::eAttackStart);
+	//// プレイヤーが視野範囲外に出たら、見失った状態へ移行
+	//if (!IsFoundPlayer())
+	//{
+	//	ChangeState(EState::eLost);
+	//	return;
+	//}
+	//// プレイヤーに攻撃できるならば、攻撃状態へ移行
+	//if (CanAttackPlayer(ATTACK_RANGE))
+	//{
+	//	ChangeState(EState::eAttackStart);
 
-		// 閉じていたら開くアニメーションを再生
-		if (!mIsOpen)
-		{
-			ChangeAnimation((int)EAnimType::eOpen);
-		}
-		// 開いていたらすぐ攻撃アニメーションを再生
-		else
-		{
-			ChangeAnimation((int)EAnimType::eAttack_Start);
-		}
-		return;
-	}
+	//	// 閉じていたら開くアニメーションを再生
+	//	if (!mIsOpen)
+	//	{
+	//		ChangeAnimation((int)EAnimType::eOpen);
+	//	}
+	//	// 開いていたらすぐ攻撃アニメーションを再生
+	//	else
+	//	{
+	//		ChangeAnimation((int)EAnimType::eAttack_Start);
+	//	}
+	//	return;
+	//}
 
 	// 移動アニメーションを再生
 	if (!mIsOpen)
@@ -430,9 +445,24 @@ void CTrashEnemy::UpdateChase()
 
 	// プレイヤーの座標へ向けて移動する
 	CPlayerBase* player = CPlayerBase::Instance();
-	CVector playerPos = player->Position();
-	mLostPlayerPos = playerPos;	// プレイヤーを最後に見た座標を更新
-	if (MoveTo(playerPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	CVector targetPos = player->Position();
+	mLostPlayerPos = targetPos;	// プレイヤーを最後に見た座標を更新
+
+	// 経路探索管理クラスが存在すれば
+	CNavManager* navMgr = CNavManager::Instance();
+	if (navMgr != nullptr)
+	{
+		// 自身のノードからプレイヤーのノードまでの最短経路を求める
+		CNavNode* playerNode = player->GetNavNode();
+		if (navMgr->Navigate(mpNavNode, playerNode, mMoveRoute))
+		{
+			// 自身のノードからプレイヤーのノードまで繋がっていたら、
+			// 移動する位置を次のノードの位置に設定
+			targetPos = mMoveRoute[1]->GetPos();
+		}
+	}
+	// 移動処理
+	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
 	{
 
 	}

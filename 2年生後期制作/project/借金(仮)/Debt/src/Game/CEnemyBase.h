@@ -6,6 +6,7 @@
 // 視野範囲のデバッグ表示クラスの前宣言
 class CDebugFieldOfView;
 class CGaugeUI3D;
+class CNavNode;
 /*
 エネミークラス
 キャラクタクラスを継承
@@ -84,4 +85,7 @@ protected:
 	// 巡回ポイントのリスト
 	std::vector<CVector> mPatrolPoints;
 	int mNextPatrolIndex;	// 次に巡回するポイントの番号
+
+	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用
+	int mNextMoveIndex;					// 次に移動するノードのインデックス値
 };
