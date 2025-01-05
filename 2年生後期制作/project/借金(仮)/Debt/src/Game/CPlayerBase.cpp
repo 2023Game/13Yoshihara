@@ -214,6 +214,7 @@ void CPlayerBase::Update()
 
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("Wall:%s\n", mIsWall ? "true" : "false");
+	CDebugPrint::Print("Pos:%f,%f,%f\n", Position().X(), Position().Y(), Position().Z());
 
 	mIsGrounded = false;
 	mIsWall = false;

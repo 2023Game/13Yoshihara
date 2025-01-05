@@ -4,7 +4,7 @@
 #include "CNavNode.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
-#define TRUCK_WIDTH		27.0f	// トラックの幅
+#define TRUCK_WIDTH		30.0f	// トラックの幅
 #define TRUCK_RADIUS	15.0f	// トラックの半径
 
 // ノードの座標
@@ -32,6 +32,15 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eSpawnZone,ELayer::eVehicle,
 		ELayer::eField,ELayer::eWall,ELayer::eObject });
+
+	// 経路探索用のコライダ―作成
+	mpNavCol = new CColliderCapsule
+	(
+		this, ELayer::eNone,
+		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH * 1.2f - TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH * 1.2f + TRUCK_RADIUS),
+		TRUCK_RADIUS, true
+	);
 }
 
 // デストラクタ

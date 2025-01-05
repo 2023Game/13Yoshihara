@@ -38,6 +38,17 @@ public:
 	/// <returns>衝突していたら、trueを返す</returns>
 	bool CollisionRay(const CVector& start, const CVector& end,
 		CHitInfo* hit, bool alreadyHit);
+
+	/// <summary>
+	/// レイと全ての車両との衝突判定（経路探索用）
+	/// </summary>
+	/// <param name="start">レイの開始位置</param>
+	/// <param name="end">レイの終了位置</param>
+	/// <param name="hit">衝突情報返却用</param>
+	/// <param name="alreadyHit">既に衝突しているか</param>
+	/// <returns>衝突していたら、trueを返す</returns>
+	bool NavCollisionRay(const CVector& start, const CVector& end,
+		CHitInfo* hit, bool alreadyHit);
 	
 	// 更新
 	void Update();
@@ -79,11 +90,6 @@ public:
 	/// <returns>trueならば、いる</returns>
 	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
 
-	/// <summary>
-	/// 止まっている車両のリストを取得
-	/// </summary>
-	/// <returns>止まっている車両のリスト</returns>
-	std::list<CVehicleBase*> StopVehicle();
 private:
 	// 車両管理クラスのインスタンスへのポインタ
 	static CVehicleManager* spInstance;

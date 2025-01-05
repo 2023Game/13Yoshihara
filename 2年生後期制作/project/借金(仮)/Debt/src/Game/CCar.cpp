@@ -23,13 +23,22 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, ERoadType
 		this,ELayer::eVehicle,
 		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH - CAR_RADIUS),
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
-		CAR_RADIUS
+		CAR_RADIUS, true
 	);
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eSpawnZone,ELayer::eVehicle,
 		ELayer::eField,ELayer::eWall,ELayer::eObject });
+
+	// 経路探索用のコライダ―作成
+	mpNavCol = new CColliderCapsule
+	(
+		this, ELayer::eNone,
+		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH * 1.2f - CAR_RADIUS),
+		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH * 1.2f + CAR_RADIUS),
+		CAR_RADIUS, true
+	);
 }
 
 CCar::~CCar()

@@ -23,9 +23,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mFovAngle(fovAngle)
 	, mFovLength(fovLength)
 	, mpDebugFov(nullptr)
-	, mLostPlayerPos(CVector::zero)
 	, mNextPatrolIndex(-1)
-	, mPatrolPoints(patrolPoints)
 	, mEyeHeight(eyeHeight)
 	, mNextMoveIndex(0)
 {
@@ -35,6 +33,16 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	// 経路探索用のノードを作成
 	mpNavNode = new CNavNode(Position(), true);
 	mpNavNode->SetColor(CColor::blue);
+
+	// プレイヤーを見失った位置のノードを作成
+	mpLostPlayerNode = new CNavNode(CVector::zero, true);
+	
+	// 巡回ポイントに経路探索用のノードを配置
+	for (CVector point : patrolPoints)
+	{
+		CNavNode* node = new CNavNode(point, true);
+		mPatrolPoints.push_back(node);
+	}
 }
 
 // デストラクタ
@@ -54,6 +62,17 @@ CEnemyBase::~CEnemyBase()
 	if (navMgr != nullptr)
 	{
 		SAFE_DELETE(mpNavNode);
+		SAFE_DELETE(mpLostPlayerNode);
+
+		// 巡回ポイントに配置したノードも全て削除
+		auto itr = mPatrolPoints.begin();
+		auto end = mPatrolPoints.end();
+		while (itr != end)
+		{
+			CNavNode* del = *itr;
+			itr = mPatrolPoints.erase(itr);
+			delete del;
+		}
 	}
 }
 
@@ -345,7 +364,7 @@ void CEnemyBase::ChangePatrolPoint(float nearDist)
 		// 全ての巡回ポイントの距離を調べ、一番近い巡回ポイントを探す
 		for (int i = 0; i < size; i++)
 		{
-			CVector point = mPatrolPoints[i];
+			CVector point = mPatrolPoints[i]->GetPos();
 			CVector vec = point - Position();
 			vec.Y(0.0f);
 			float dist = vec.Length();
@@ -367,5 +386,26 @@ void CEnemyBase::ChangePatrolPoint(float nearDist)
 	{
 		mNextPatrolIndex++;
 		if (mNextPatrolIndex >= size) mNextPatrolIndex -= size;
+	}
+
+	// 次に巡回するポイントが決まった場合
+	if (mNextPatrolIndex >= 0)
+	{
+		CNavManager* navMgr = CNavManager::Instance();
+		if (navMgr != nullptr)
+		{
+			// 巡回ポイントの経路探索ノードの位置を設定しなおすことで、
+			// 各ノードへの接続情報を更新
+			for (CNavNode* node : mPatrolPoints)
+			{
+				node->SetPos(node->GetPos());
+			}
+			// 巡回ポイントまでの最短経路を求める
+			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute));
+			{
+				// 次の目的地のインデックスを設定
+				mNextMoveIndex = 1;
+			}
+		}
 	}
 }

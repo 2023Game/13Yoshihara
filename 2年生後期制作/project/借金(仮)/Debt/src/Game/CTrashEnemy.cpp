@@ -60,7 +60,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
-#define EYE_HEIGHT 5.0f	// 視点の高さ
+#define EYE_HEIGHT 5.0f		// 視点の高さ
 
 #define ROTATE_SPEED 6.0f	// 回転速度
 #define ATTACK_RANGE 18.0f	// 攻撃範囲
@@ -69,10 +69,14 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
 #define IDLE_TIME 5.0f			// 待機状態の時間
 
-#define PATROL_POS0 CVector(50.0f,0.0f,0.0f)
-#define PATROL_POS1 CVector(0.0f,0.0f,0.0f)
-#define PATROL_POS2 CVector(0.0f,0.0f,100.0f)
-#define PATROL_POS3 CVector(50.0f,0.0f,100.0f)
+#define PATROL_POS0 CVector( 40.0f,0.0f,  0.0f)
+#define PATROL_POS1 CVector( 40.0f,0.0f,100.0f)
+#define PATROL_POS2 CVector(  0.0f,0.0f,100.0f)
+#define PATROL_POS3 CVector(-40.0f,0.0f,100.0f)
+#define PATROL_POS4 CVector(-40.0f,0.0f,  0.0f)
+#define PATROL_POS5 CVector(-40.0f,0.0f,-100.0f)
+#define PATROL_POS6 CVector(  0.0f,0.0f,-100.0f)
+#define PATROL_POS7 CVector( 40.0f,0.0f,-100.0f)
 
 
 // コンストラクタ
@@ -85,7 +89,11 @@ CTrashEnemy::CTrashEnemy()
 			PATROL_POS0,
 			PATROL_POS1,
 			PATROL_POS2,
-			PATROL_POS3
+			PATROL_POS3,
+			PATROL_POS4,
+			PATROL_POS5,
+			PATROL_POS6,
+			PATROL_POS7
 		},
 		EYE_HEIGHT		
 	)
@@ -123,15 +131,6 @@ CTrashEnemy::~CTrashEnemy()
 // 更新
 void CTrashEnemy::Update()
 {
-	if (CInput::PushKey('U'))
-	{
-		ChangeState(EState::eChase);
-	}
-	if (CInput::PushKey('L'))
-	{
-		ChangeState(EState::ePatrol);
-	}
-
 	// 現在の状態に合わせて更新処理を切り替え
 	switch (mState)
 	{
@@ -253,7 +252,7 @@ void CTrashEnemy::Render()
 		for (int i = 0; i < size; i++)
 		{
 			CMatrix m;
-			m.Translate(mPatrolPoints[i] + CVector(0.0f, rad * 2.0f, 0.0f));
+			m.Translate(mPatrolPoints[i]->GetPos() + CVector(0.0f, rad * 2.0f, 0.0f));
 			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
 			Primitive::DrawWireSphere(m, rad, c);
 		}
@@ -264,7 +263,7 @@ void CTrashEnemy::Render()
 		// プレイヤーを見失った位置にデバッグ表示
 		float rad = 2.0f;
 		CMatrix m;
-		m.Translate(mLostPlayerPos + CVector(0.0f, rad, 0.0f));
+		m.Translate(mpLostPlayerNode->GetPos() + CVector(0.0f, rad, 0.0f));
 		Primitive::DrawWireSphere(m, rad, CColor::blue);
 	}
 
@@ -343,6 +342,7 @@ void CTrashEnemy::UpdateIdle()
 		// 待機時間が経過したら、巡回状態へ移行
 		ChangeState(EState::ePatrol);
 		mElapsedTime = 0.0f;
+		mStateStep = 0;
 	}
 }
 
@@ -366,6 +366,7 @@ void CTrashEnemy::UpdatePatrol()
 		break;
 	// ステップ1：巡回ポイントまで移動
 	case 1:
+	{
 		// 移動アニメーションを再生
 		if (!mIsOpen)
 		{
@@ -375,12 +376,21 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
+		// 最短経路の次のノードまで移動
+		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
 
-		if (MoveTo(mPatrolPoints[mNextPatrolIndex], GetBaseMoveSpeed(), ROTATE_SPEED))
+		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
-			mStateStep++;
+			// 移動が終われば、次のノードへ切り替え
+			mNextMoveIndex++;
+			// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
+			if (mNextMoveIndex >= mMoveRoute.size())
+			{
+				mStateStep++;
+			}
 		}
 		break;
+	}
 	// ステップ2：移動後の待機
 	case 2:
 		// 待機アニメーションを再生
@@ -409,29 +419,36 @@ void CTrashEnemy::UpdatePatrol()
 // 追跡処理
 void CTrashEnemy::UpdateChase()
 {
-	//// プレイヤーが視野範囲外に出たら、見失った状態へ移行
-	//if (!IsFoundPlayer())
-	//{
-	//	ChangeState(EState::eLost);
-	//	return;
-	//}
-	//// プレイヤーに攻撃できるならば、攻撃状態へ移行
-	//if (CanAttackPlayer(ATTACK_RANGE))
-	//{
-	//	ChangeState(EState::eAttackStart);
+	// プレイヤーの座標へ向けて移動する
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector targetPos = player->Position();
 
-	//	// 閉じていたら開くアニメーションを再生
-	//	if (!mIsOpen)
-	//	{
-	//		ChangeAnimation((int)EAnimType::eOpen);
-	//	}
-	//	// 開いていたらすぐ攻撃アニメーションを再生
-	//	else
-	//	{
-	//		ChangeAnimation((int)EAnimType::eAttack_Start);
-	//	}
-	//	return;
-	//}
+	// プレイヤーが見えなくなったら、見失った状態へ移行
+	if (!IsLookPlayer())
+	{
+		// 見失った位置にノードを配置
+		mpLostPlayerNode->SetPos(targetPos);
+		ChangeState(EState::eLost);
+		mStateStep = 0;
+		return;
+	}
+	// プレイヤーに攻撃できるならば、攻撃状態へ移行
+	if (CanAttackPlayer(ATTACK_RANGE))
+	{
+		ChangeState(EState::eAttackStart);
+
+		// 閉じていたら開くアニメーションを再生
+		if (!mIsOpen)
+		{
+			ChangeAnimation((int)EAnimType::eOpen);
+		}
+		// 開いていたらすぐ攻撃アニメーションを再生
+		else
+		{
+			ChangeAnimation((int)EAnimType::eAttack_Start);
+		}
+		return;
+	}
 
 	// 移動アニメーションを再生
 	if (!mIsOpen)
@@ -442,11 +459,6 @@ void CTrashEnemy::UpdateChase()
 	{
 		ChangeAnimation((int)EAnimType::eMove_Open);
 	}
-
-	// プレイヤーの座標へ向けて移動する
-	CPlayerBase* player = CPlayerBase::Instance();
-	CVector targetPos = player->Position();
-	mLostPlayerPos = targetPos;	// プレイヤーを最後に見た座標を更新
 
 	// 経路探索管理クラスが存在すれば
 	CNavManager* navMgr = CNavManager::Instance();
@@ -471,8 +483,14 @@ void CTrashEnemy::UpdateChase()
 // 見失う処理
 void CTrashEnemy::UpdateLost()
 {
-	// プレイヤーが視野範囲内に入ったら、追跡状態へ移行
-	if (IsFoundPlayer())
+	CNavManager* navMgr = CNavManager::Instance();
+	if (navMgr == nullptr)
+	{
+		ChangeState(EState::eIdle);
+		return;
+	}
+	// プレイヤーが見えたら、追跡状態へ移行
+	if (IsLookPlayer())
 	{
 		ChangeState(EState::eChase);
 		return;
@@ -488,11 +506,35 @@ void CTrashEnemy::UpdateLost()
 		ChangeAnimation((int)EAnimType::eMove_Open);
 	}
 
-	// プレイヤーを見失った位置まで移動
-	if (MoveTo(mLostPlayerPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	// ステップごとに処理を切り替える
+	switch (mStateStep)
 	{
-		// 移動が終われば、待機状態へ移行
-		ChangeState(EState::eIdle);
+	// ステップ0：見失った位置までの最短経路を求める
+	case 0:
+		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mMoveRoute))
+		{
+			// 見失った位置まで経路が繋がっていたら、次のステップへ
+			mNextMoveIndex = 1;
+			mStateStep++;
+		}
+		else
+		{
+			// 経路が繋がっていなければ、待機状態へ戻す
+			ChangeState(EState::eIdle);
+		}
+		break;
+	case 1:
+		// プレイヤーを見失った位置まで移動
+		if (MoveTo(mMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+			mNextMoveIndex++;
+			if (mNextMoveIndex >= mMoveRoute.size())
+			{
+				// 移動が終われば、待機状態へ移行
+				ChangeState(EState::eIdle);
+			}
+		}
+		break;
 	}
 }
 

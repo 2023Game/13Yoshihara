@@ -16,32 +16,18 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	: CCharaBase(ETag::eVehicle, ETaskPriority::eVehicle)
 	, mpModel(model)
 	, mpBodyCol(nullptr)
-	, mpFrontCol(nullptr)
-	, mpSideCol(nullptr)
 	, mRoadType(road)
 	, mCurrentRoadRotation(rotation)
 	, mState(EState::eMove)
 {
-	// 車両と衝突判定する前方判定コライダ―
-	mpFrontCol = new CColliderCapsule
-	(
-		this, ELayer::eTest,
-		CVector(0.0f, FRONT_HEIGHT, FRONT_WIDTH),
-		CVector(0.0f, FRONT_HEIGHT, -FRONT_WIDTH),
-		FRONT_RADIUS
-	);
-	mpFrontCol->Position(0.0f, 0.0f, FRONT_WIDTH * 2);
-	mpFrontCol->SetCollisionTags({ETag::eVehicle,ETag::ePlayer });
-	mpFrontCol->SetCollisionLayers({ELayer::eVehicle,ELayer::ePlayer});
-
 	// 経路管理クラスがあるなら車両の周り用のノードを生成
 	CNavManager* navMgr = CNavManager::Instance();
 	if (navMgr != nullptr)
 	{
-		mpNode0 = new CNavNode(Position(), this);
-		mpNode1 = new CNavNode(Position(), this);
-		mpNode2 = new CNavNode(Position(), this);
-		mpNode3 = new CNavNode(Position(), this);
+		mpNode0 = new CNavNode(Position());
+		mpNode1 = new CNavNode(Position());
+		mpNode2 = new CNavNode(Position());
+		mpNode3 = new CNavNode(Position());
 	}
 	// 最初はノードを無効
 	mpNode0->SetEnable(false);
@@ -62,8 +48,7 @@ CVehicleBase::~CVehicleBase()
 {
 	// コライダ―の削除
 	SAFE_DELETE(mpBodyCol);
-	SAFE_DELETE(mpFrontCol);
-	SAFE_DELETE(mpSideCol);
+	SAFE_DELETE(mpNavCol);
 }
 
 // 更新
@@ -77,26 +62,6 @@ void CVehicleBase::Update()
 // 衝突処理
 void CVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	// 前方判定コライダ―
-	if (self == mpFrontCol)
-	{
-		// 衝突した相手が車両の場合
-		if (other->Layer() == ELayer::eVehicle)
-		{
-			// 壊れていなければ
-			if (mState != EState::eBroken)
-			{
-				// 車両クラスを取得
-				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
-				// 相手が動いていなければ
-				if (!vehicle->IsMove())
-				{
-					// 車線変更状態へ
-					ChangeState(EState::eChangeRoad);
-				}
-			}
-		}
-	}
 }
 
 // 描画
@@ -273,6 +238,12 @@ CVehicleBase::ERoadType CVehicleBase::GetRoadType() const
 CCollider* CVehicleBase::GetBodyCol() const
 {
 	return mpBodyCol;
+}
+
+// 経路探索用コライダ―を取得する
+CCollider* CVehicleBase::GetNavCol() const
+{
+	return mpNavCol;
 }
 
 // 移動処理

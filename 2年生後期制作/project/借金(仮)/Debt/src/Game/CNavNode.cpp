@@ -82,6 +82,12 @@ void CNavNode::SetEnable(bool isEnable)
 {
 	// “¯‚¶‚È‚çˆ—‚ğ‚µ‚È‚¢
 	if (mIsEnable == isEnable) return;
+	// false‚É‚È‚é‚È‚çÚ‘±‚µ‚Ä‚¢‚é‘S‚Ä‚Ìƒm[ƒh‚ğ‰ğœ
+	if (isEnable == false)
+	{
+		ClearConnects();
+	}
+
 	mIsEnable = isEnable;
 }
 

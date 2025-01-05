@@ -108,6 +108,75 @@ bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHi
 	return isHit;
 }
 
+// レイと全ての車両との衝突判定（経路探索用）
+bool CVehicleManager::NavCollisionRay(const CVector& start, const CVector& end, CHitInfo* hit, bool alreadyHit)
+{
+	// 衝突情報保存用
+	CHitInfo tHit;
+	// 衝突したかどうかフラグ
+	bool isHit = alreadyHit;
+	// 全ての車との衝突をチェック
+	for (CCar* car : mCars)
+	{
+		// 無効なら次へ
+		if (!car->IsEnable()) continue;
+		// 移動中なら次へ
+		if (car->IsMove()) continue;
+
+		// 車との衝突判定
+		if (CCollider::CollisionRay(car->GetNavCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	// トラックが存在し、
+	// 有効かつ移動していないなら
+	if (mpGarbageTruck != nullptr &&
+		mpGarbageTruck->IsEnable() &&
+		!mpGarbageTruck->IsMove())
+	{
+		// トラックとの衝突判定
+		if (CCollider::CollisionRay(mpGarbageTruck->GetNavCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	// お仕置きトラックが存在し、
+	// 有効かつ移動していないなら
+	if (mpPunishTruck != nullptr &&
+		mpPunishTruck->IsEnable()&&
+		!mpPunishTruck->IsMove())
+	{
+		// お仕置きトラックとの衝突判定
+		if (CCollider::CollisionRay(mpPunishTruck->GetNavCol(), start, end, &tHit))
+		{
+			// まだ他に衝突していない場合か、
+			// 既に衝突しているコライダ―より近い場合は、
+			if (!isHit || tHit.dist < hit->dist)
+			{
+				// 衝突情報を更新
+				*hit = tHit;
+				isHit = true;
+			}
+		}
+	}
+	return isHit;
+}
+
 // 更新
 void CVehicleManager::Update()
 {
@@ -292,8 +361,8 @@ void CVehicleManager::SpawnVehicle()
 			// どの道にいるか
 			CVehicleBase::ERoadType truckRoadType;
 
-			truckPopPos = CAR_RIGHT_POS1;
-			truckRoadType = CVehicleBase::ERoadType::eRight1;
+			truckPopPos = CAR_RIGHT_POS2;
+			truckRoadType = CVehicleBase::ERoadType::eRight2;
 
 			//// ランダムに場所を決定
 			//RandomDecidePopPosition(truckRoadType, truckPopPos);
@@ -451,37 +520,4 @@ bool CVehicleManager::IsSpawnZone(CVehicleBase::ERoadType roadType)
 	{
 		return !mpSpawnZone->GetCanPops().IsRight2CanPop;
 	}
-}
-
-// 止まっている車両のリストを取得
-std::list<CVehicleBase*> CVehicleManager::StopVehicle()
-{
-	std::list<CVehicleBase*> stopVehicle;
-	
-	// 全ての車をチェック
-	for (CCar* car : mCars)
-	{
-		// 動いていたら次へ
-		if (car->IsMove()) continue;
-
-		// 動いていないのでリストへ追加
-		stopVehicle.push_back(car);
-	}
-
-	// ゴミ収集車が動いていないなら
-	if (!mpGarbageTruck->IsMove())
-	{
-		// リストへ追加
-		stopVehicle.push_back(mpGarbageTruck);
-	}
-
-	// お仕置きトラックが動いていないなら
-	if (!mpPunishTruck->IsMove())
-	{
-		// リストへ追加
-		stopVehicle.push_back(mpPunishTruck);
-	}
-
-	// 止まっている車両のリストを返す
-	return stopVehicle;
 }

@@ -68,7 +68,7 @@ protected:
 
 	float mEyeHeight;	// 視点の高さ
 
-	CVector mLostPlayerPos;	// プレイヤーを見失った座標
+	CNavNode* mpLostPlayerNode;	// プレイヤーを見失った位置のノード
 
 	// プレイヤーが視野範囲内に入ったかどうか
 	bool IsFoundPlayer() const;
@@ -83,7 +83,7 @@ protected:
 	void ChangePatrolPoint(float nearDist);
 	
 	// 巡回ポイントのリスト
-	std::vector<CVector> mPatrolPoints;
+	std::vector<CNavNode*> mPatrolPoints;
 	int mNextPatrolIndex;	// 次に巡回するポイントの番号
 
 	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用

@@ -52,6 +52,8 @@ public:
 
 	// 本体コライダ―を取得する
 	CCollider* GetBodyCol() const;
+	// 経路探索用コライダ―を取得する
+	CCollider* GetNavCol() const;
 protected:
 	// 移動処理
 	void UpdateMove();
@@ -102,8 +104,6 @@ protected:
 
 	// 本体のコライダ―
 	CCollider* mpBodyCol;
-	// 前方判定コライダ―
-	CCollider* mpFrontCol;
-	// 横判定コライダ―
-	CCollider* mpSideCol;
+	// 経路探索用のコライダ―
+	CCollider* mpNavCol;
 };

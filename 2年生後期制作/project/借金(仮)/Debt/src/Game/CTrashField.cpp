@@ -35,10 +35,10 @@ void CTrashField::CreateNavNodes()
 	CNavManager* navMgr = CNavManager::Instance();
 	if (navMgr != nullptr)
 	{
-		new CNavNode(CVector( 10.0f, 0.0f,  40.0f), this);
-		new CNavNode(CVector(-10.0f, 0.0f,  40.0f), this);
-		new CNavNode(CVector(-10.0f, 0.0f, -40.0f), this);
-		new CNavNode(CVector( 10.0f, 0.0f, -40.0f), this);
+		//new CNavNode(CVector( 40.0f, 0.0f,  40.0f));
+		//new CNavNode(CVector(-40.0f, 0.0f,  40.0f));
+		//new CNavNode(CVector(-40.0f, 0.0f, -40.0f));
+		//new CNavNode(CVector( 40.0f, 0.0f, -40.0f));
 	}
 }
 

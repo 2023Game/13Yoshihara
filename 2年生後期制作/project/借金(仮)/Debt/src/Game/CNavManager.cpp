@@ -61,6 +61,8 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 	{
 		// 自分自身であれば、スルー
 		if (findNode == node) continue;
+		// 無効であれば、スルー
+		if (!findNode->IsEnable()) continue;
 
 		// 目的地専用ノードは距離を考慮しない
 		if (!node->mIsDestNode)
@@ -73,7 +75,7 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 		CVector start = node->GetOffsetPos();
 		CVector end = findNode->GetOffsetPos();
 		CHitInfo hit;
-		bool isHit;
+		bool isHit = false;
 
 		CFieldBase* fieldBase = CFieldBase::Instance();
 		CVehicleManager* vehicleMgr = CVehicleManager::Instance();
@@ -81,20 +83,24 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 		// フィールドがあるなら衝突判定をする
 		if (fieldBase != nullptr)
 		{
-			if (isHit = fieldBase->CollisionRay(start, end, &hit))
+			if (fieldBase->CollisionRay(start, end, &hit))
 			{
-				// 何かにヒットした場合は、遮蔽物があるので接続できない
-				continue;
+				isHit = true;
 			}
 		}
 		// 車両管理クラスがあるなら衝突判定をする
 		if (vehicleMgr != nullptr)
 		{
-			if (vehicleMgr->CollisionRay(start, end, &hit, isHit))
+			if (vehicleMgr->NavCollisionRay(start, end, &hit, isHit))
 			{
-				// 何かにヒットした場合は、遮蔽物があるので接続できない
-				continue;
+				isHit = true;
 			}
+		}
+
+		// 何かにヒットした場合は、遮蔽物があるので接続できない
+		if (isHit)
+		{
+			continue;
 		}
 
 		// 両方の条件を満たしたノードを接続リストに追加
