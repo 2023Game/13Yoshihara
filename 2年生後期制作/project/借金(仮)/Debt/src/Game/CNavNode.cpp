@@ -82,7 +82,7 @@ void CNavNode::SetEnable(bool isEnable)
 {
 	// 同じなら処理をしない
 	if (mIsEnable == isEnable) return;
-	// falseになるなら接続している全てのノードを解除
+	// 無効になるなら接続している全てのノードを解除
 	if (isEnable == false)
 	{
 		ClearConnects();

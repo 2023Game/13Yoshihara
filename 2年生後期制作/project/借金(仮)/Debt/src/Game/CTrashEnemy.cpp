@@ -63,7 +63,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define EYE_HEIGHT 5.0f		// 視点の高さ
 
 #define ROTATE_SPEED 6.0f	// 回転速度
-#define ATTACK_RANGE 18.0f	// 攻撃範囲
+#define ATTACK_RANGE 18.0f	// 攻撃する距離
 
 #define PATROL_INTERVAL	3.0f	// 次の巡回ポイントに移動開始するまでの時間
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
@@ -77,6 +77,8 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define PATROL_POS5 CVector(-40.0f,0.0f,-100.0f)
 #define PATROL_POS6 CVector(  0.0f,0.0f,-100.0f)
 #define PATROL_POS7 CVector( 40.0f,0.0f,-100.0f)
+
+#define ROAD_X_AREA 90.0f	// 車道のXの範囲
 
 
 // コンストラクタ
@@ -316,8 +318,13 @@ void CTrashEnemy::Render()
 // 待機状態
 void CTrashEnemy::UpdateIdle()
 {
-	// プレイヤーが視野範囲内に入ったら、追跡状態へ移行
-	if (IsFoundPlayer())
+	// プレイヤーの座標を取得
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector playerPos = player->Position();
+	// プレイヤーが視野範囲内かつ、道路内なら、
+	// 追跡状態へ移行
+	if (IsFoundPlayer()&&
+		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
 	{
 		ChangeState(EState::eChase);
 		return;
@@ -349,7 +356,13 @@ void CTrashEnemy::UpdateIdle()
 // 巡回処理
 void CTrashEnemy::UpdatePatrol()
 {
-	if (IsFoundPlayer())
+	// プレイヤーの座標を取得
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector playerPos = player->Position();
+	// プレイヤーが視野範囲内かつ、道路内なら、
+	// 追跡状態へ移行
+	if (IsFoundPlayer() &&
+		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
 	{
 		ChangeState(EState::eChase);
 		return;
@@ -422,7 +435,13 @@ void CTrashEnemy::UpdateChase()
 	// プレイヤーの座標へ向けて移動する
 	CPlayerBase* player = CPlayerBase::Instance();
 	CVector targetPos = player->Position();
-
+	// プレイヤーの座標が道路外なら追いかけるのをやめる
+	if (targetPos.X() >= ROAD_X_AREA ||
+		targetPos.X() <= -ROAD_X_AREA)
+	{
+		ChangeState(EState::eIdle);
+		return;
+	}
 	// プレイヤーが見えなくなったら、見失った状態へ移行
 	if (!IsLookPlayer())
 	{

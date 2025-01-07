@@ -35,6 +35,7 @@ CPlayerBase::CPlayerBase()
 	, mMotionBlurRemainTime(0.0f)
 	, mIsDamage(false)
 	, mpBodyCol(nullptr)
+	, mpAttackCol(nullptr)
 	, mpSearchCol(nullptr)
 {
 	spInstance = this;
@@ -49,6 +50,7 @@ CPlayerBase::~CPlayerBase()
 {
 	// コライダ―を削除
 	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpAttackCol);
 	SAFE_DELETE(mpSearchCol);
 
 	// 経路探索用のノードを削除

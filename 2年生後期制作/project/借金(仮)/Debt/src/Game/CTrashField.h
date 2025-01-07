@@ -12,9 +12,9 @@ public:
 	~CTrashField();
 
 	// 更新
-	void Update();
+	void Update() override;
 	// 描画
-	void Render();
+	void Render() override;
 
 private:
 	// フィールドのオブジェクト生成

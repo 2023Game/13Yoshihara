@@ -60,6 +60,7 @@ protected:
 	CVector mWallNormal;	// 壁に接触している時の法線
 
 	CCollider* mpBodyCol;	// 本体のコライダ―
+	CCollider* mpAttackCol;	// 攻撃のコライダ―
 
 	CTransform* mpRideObject;
 

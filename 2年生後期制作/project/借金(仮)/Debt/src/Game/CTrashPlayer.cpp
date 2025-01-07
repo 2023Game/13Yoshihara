@@ -51,6 +51,12 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 #define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
 #define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
+#define ATTACK_COL_RADIUS 1.0f	// 攻撃コライダ―の半径
+#define ATTACK_COL_HEIGHT 11.0f	// 攻撃コライダーの高さ
+#define ATTACK_COL_WIDTH 5.0f	// 攻撃コライダーの幅
+// 攻撃のコライダーのオフセット座標
+#define ATTACK_COL_OFFSET_POS CVector(0.0f,5.0f,0.0f)
+
 // モーションブラーを掛ける時間
 #define MOTION_BLUR_TIME 3.0f
 // モーションブラーの幅
@@ -80,6 +86,24 @@ CTrashPlayer::CTrashPlayer()
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
 	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject,
 		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
+
+	// 敵と車両と衝突判定をする攻撃コライダー
+	mpAttackCol = new CColliderCapsule
+	(
+		this, ELayer::eAttackCol,
+		CVector(ATTACK_COL_WIDTH - ATTACK_COL_RADIUS * 10, ATTACK_COL_HEIGHT, 0.0f),
+		CVector(-ATTACK_COL_WIDTH + ATTACK_COL_RADIUS * 10, ATTACK_COL_HEIGHT, 0.0f),
+		ATTACK_COL_RADIUS
+	);
+	mpAttackCol->SetCollisionTags({ ETag::eEnemy,ETag::eVehicle });
+	mpAttackCol->SetCollisionLayers({ ELayer::eEnemy,ELayer::eVehicle });
+	// ハンマーの行列にアタッチ
+	CModelXFrame* frame = mpModel->FinedFrame("Armature_Hammer");
+	mpAttackCol->SetAttachMtx(&frame->CombinedMatrix());
+	// ハンマーのヘッドに位置調整
+	//mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
+	// 攻撃コライダーは最初はオフにしておく
+	mpAttackCol->SetEnable(false);
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle_Close);
@@ -112,11 +136,20 @@ void CTrashPlayer::Update()
 	case EState::eOpenClose:		UpdateOpenClose();		break;
 	}
 
-	// 待機中とジャンプ中は、移動処理を行う
-	if (mState == EState::eIdle
-		|| mState == EState::eJump)
+	// 待機中とジャンプ中と攻撃開始終了は、移動処理を行う
+	if (mState == EState::eIdle ||
+		mState == EState::eJump ||
+		mState == EState::eAttackStart ||
+		mState == EState::eAttackEnd)
 	{
 		UpdateMove();
+	}
+
+	// 攻撃開始、攻撃中以外は、攻撃コライダーをオフ
+	if (mState != EState::eAttackStart &&
+		mState != EState::eAttack)
+	{
+		mpAttackCol->SetEnable(false);
 	}
 
 	// 地面に接しているならジャンプしていない
@@ -125,6 +158,9 @@ void CTrashPlayer::Update()
 
 	// キャラクターの更新
 	CPlayerBase::Update();
+
+	// 攻撃コライダーの行列を更新
+	mpAttackCol->Update();
 
 #if _DEBUG
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
@@ -218,7 +254,6 @@ void CTrashPlayer::ActionInput()
 	// 左クリックで攻撃
 	if (CInput::PushKey(VK_LBUTTON))
 	{
-		mMoveSpeed = CVector::zero;
 		ChangeState(EState::eAttackStart);
 
 		// 閉じていたら開く
@@ -273,8 +308,10 @@ void CTrashPlayer::UpdateMove()
 	{
 		mMoveSpeed += move * GetBaseMoveSpeed();
 
-		// ジャンプ状態でなければ、移動アニメーションに切り替え
-		if (mState != EState::eJump)
+		// ジャンプか攻撃開始終了の状態でなければ、移動アニメーションに切り替え
+		if (mState != EState::eJump&&
+			mState!=EState::eAttackStart&&
+			mState != EState::eAttackEnd)
 		{
 			ChangeState(EState::eIdle);
 			if (!mIsOpen)
@@ -456,10 +493,17 @@ void CTrashPlayer::UpdateAttackStart()
 	// 開いているなら攻撃の最初のアニメーションが終了したので攻撃中へ
 	else
 	{
+		// アニメーションが60%以上進行したら攻撃コライダ―をオン
+		if (GetAnimationFrameRatio() >= 0.60f)
+		{
+			mpAttackCol->SetEnable(true);
+		}
+
 		if (IsAnimationFinished())
 		{
 			ChangeState(EState::eAttack);
 			ChangeAnimation((int)EAnimType::eAttack);
+			mMoveSpeed = CVector::zero;
 		}
 	}
 }
@@ -484,8 +528,6 @@ void CTrashPlayer::UpdateAttackEnd()
 	{
 		// 入力可能
 		ActionInput();
-		// 移動可能
-		UpdateMove();
 	}
 
 	// アニメーションが終了したら待機へ

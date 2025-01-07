@@ -2,6 +2,11 @@
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "CVehicleManager.h"
+#include "CSky.h"
+
+#define SKY_POS			CVector(0.0f,0.0f,0.0f)
+#define SKY_SCALE		CVector(4.0f,4.0f,4.0f)
+#define SKY_ROTATION	CVector(0.0f,0.0f,0.0f)
 
 // コンストラクタ
 CTrashField::CTrashField()
@@ -27,6 +32,9 @@ CTrashField::~CTrashField()
 // フィールドのオブジェクト生成
 void CTrashField::CreateFieldObjects()
 {
+	mpSky = CResourceManager::Get<CModel>("Sky");
+	
+	new CSky(mpSky, SKY_POS, SKY_SCALE, SKY_ROTATION);
 }
 
 // 経路探索用のノードを生成
@@ -50,5 +58,5 @@ void CTrashField::Update()
 // 描画
 void CTrashField::Render()
 {
-	mpModel->Render(Matrix());
+	CFieldBase::Render();
 }

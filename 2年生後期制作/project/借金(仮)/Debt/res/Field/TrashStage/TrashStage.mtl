@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.500000
 d 1.000000
 illum 2
-map_Kd C:/Users/yuji/OneDrive/デスクトップ/3dモデル/TrashStage/BackDoor&Wall.png
+map_Kd BackDoor&Wall.png
 
 newmtl Road
 Ns 250.000000
