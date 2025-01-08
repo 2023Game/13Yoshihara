@@ -14,9 +14,10 @@ public:
 	/// <param name="baseMoveSpeed">基礎移動速度</param>
 	/// <param name="jumpSpeed">ジャンプ速度</param>
 	/// <param name="knockback">ノックバック速度</param>
+	/// <param name="attackPower">攻撃力</param>
 	/// <param name="power">ゴミを落とす力</param>
-	CVehicleStatus(int maxHp, float baseMoveSpeed,
-		float jumpSpeed, float knockback, int power);
+	CVehicleStatus(int maxHp, float baseMoveSpeed, float jumpSpeed,
+		float knockback, int attackPower, int power);
 	// デストラクタ
 	~CVehicleStatus();
 

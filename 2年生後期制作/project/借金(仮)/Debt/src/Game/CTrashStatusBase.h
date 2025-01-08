@@ -11,9 +11,10 @@ public:
 	/// <param name="baseMoveSpeed">	基礎移動速度</param>
 	/// <param name="jumpSpeed">		ジャンプ速度</param>
 	/// <param name="knockbackDealt">	与えるノックバック速度</param>
+	/// <param name="attackPower">		攻撃力</param>
 	/// <param name="power">			ゴミを落とす力</param>
 	CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed,
-		float knockbackDealt, int power);
+		float knockbackDealt, int attackPower, int power);
 	~CTrashStatusBase();
 
 	// 与えるノックバック速度を取得

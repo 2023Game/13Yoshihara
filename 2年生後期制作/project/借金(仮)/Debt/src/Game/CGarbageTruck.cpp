@@ -16,6 +16,7 @@
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
 	: CVehicleBase(model, pos, rotation, road)
+	, CGarbageTruckStatus()
 {
 	// プレイヤー、敵、生成場所、車両、地形
 	// と衝突判定する本体コライダ―
@@ -117,6 +118,49 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// 状態を停止に変更
 			ChangeState(EState::eStop);
 		}
+	}
+}
+
+// 移動処理
+void CGarbageTruck::UpdateMove()
+{
+	// 動いている
+	mIsMove = true;
+	// 正面へ移動
+	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
+}
+
+// 停止処理
+void CGarbageTruck::UpdateStop()
+{
+	// 動いていない
+	mIsMove = false;
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+}
+
+// 壊れた処理
+void CGarbageTruck::UpdateBroken()
+{
+	// 動いていない
+	mIsMove = false;
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+
+	// 消滅するまでの時間をカウントダウン
+	CountDeleteTime();
+
+	// 消滅までの時間が経過したら
+	if (IsElapsedDeleteTime())
+	{
+		// 消滅までの時間を初期値に戻す
+		SetDeleteTime();
+		// 状態を移動に戻しておく
+		ChangeState(EState::eMove);
+
+		// 非表示
+		SetEnable(false);
+		SetShow(false);
 	}
 }
 

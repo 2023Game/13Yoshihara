@@ -15,6 +15,7 @@
 
 CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
 	: CVehicleBase(model, pos, rotation, road)
+	, CVehicleStatus()
 {
 	// プレイヤー、敵、生成場所、車両、地形
 	// と衝突判定する本体コライダ―
@@ -111,5 +112,48 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 壊れた状態に変更
 			ChangeState(EState::eBroken);
 		}
+	}
+}
+
+// 移動処理
+void CCar::UpdateMove()
+{
+	// 動いている
+	mIsMove = true;
+	// 正面へ移動
+	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
+}
+
+// 停止処理
+void CCar::UpdateStop()
+{
+	// 動いていない
+	mIsMove = false;
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+}
+
+// 壊れた処理
+void CCar::UpdateBroken()
+{
+	// 動いていない
+	mIsMove = false;
+	// 移動速度をゼロにする
+	mMoveSpeed = CVector::zero;
+
+	// 消滅するまでの時間をカウントダウン
+	CountDeleteTime();
+
+	// 消滅までの時間が経過したら
+	if (IsElapsedDeleteTime())
+	{
+		// 消滅までの時間を初期値に戻す
+		SetDeleteTime();
+		// 状態を移動に戻しておく
+		ChangeState(EState::eMove);
+
+		// 非表示
+		SetEnable(false);
+		SetShow(false);
 	}
 }

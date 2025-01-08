@@ -20,6 +20,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mpRideObject(nullptr)
 	, mIsDamage(false)
 	, mpBodyCol(nullptr)
+	, mpAttackCol(nullptr)
 	, mFovAngle(fovAngle)
 	, mFovLength(fovLength)
 	, mpDebugFov(nullptr)

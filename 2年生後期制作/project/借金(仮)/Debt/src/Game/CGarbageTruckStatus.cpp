@@ -5,6 +5,7 @@
 #define MOVE_SPEED 0.375f * 5.0f		// 移動速度
 #define JUMP_SPEED 0.0f					// ジャンプ速度
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
+#define ATTACK_POWER 1					// 攻撃力
 #define POWER 1							// ゴミを落とすパワー
 
 #define BACK_TIME 10.0f		// 撤退までの時間
@@ -12,7 +13,8 @@
 #define COLLECTORS 3		// 回収員の人数
 
 CGarbageTruckStatus::CGarbageTruckStatus()
-	: CVehicleStatus(MAX_HP, MOVE_SPEED, JUMP_SPEED, KNOCKBACK_SPEED, POWER)
+	: CVehicleStatus(MAX_HP, MOVE_SPEED, JUMP_SPEED,
+		KNOCKBACK_SPEED, ATTACK_POWER, POWER)
 	, mBackTime(BACK_TIME)
 	, mCollectRadius(COLLECT_RADIUS)
 	, mCollectors(COLLECTORS)

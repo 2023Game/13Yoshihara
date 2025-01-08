@@ -17,6 +17,9 @@ public:
 	// デストラクタ
 	~CTrashPlayer();
 
+	// ダメージを受ける
+	void TakeDamage(int damage, CObjectBase* causer) override;
+
 	// 更新
 	void Update();
 

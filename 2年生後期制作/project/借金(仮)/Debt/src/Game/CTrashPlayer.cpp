@@ -2,6 +2,7 @@
 #include "CInput.h"
 #include "CCamera.h"
 #include "Maths.h"
+#include "CTrashEnemy.h"
 
 // 衝突相手の車両基底クラスを取得するための
 // 車両の基底クラスのインクルード
@@ -9,6 +10,7 @@
 
 // コライダのインクルード
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TrashBox\\anim\\"
@@ -51,7 +53,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 #define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
 #define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
-#define ATTACK_COL_RADIUS 1.0f	// 攻撃コライダ―の半径
+#define ATTACK_COL_RADIUS 5.0f	// 攻撃コライダ―の半径
 #define ATTACK_COL_HEIGHT 11.0f	// 攻撃コライダーの高さ
 #define ATTACK_COL_WIDTH 5.0f	// 攻撃コライダーの幅
 // 攻撃のコライダーのオフセット座標
@@ -88,11 +90,9 @@ CTrashPlayer::CTrashPlayer()
 		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 敵と車両と衝突判定をする攻撃コライダー
-	mpAttackCol = new CColliderCapsule
+	mpAttackCol = new CColliderSphere
 	(
 		this, ELayer::eAttackCol,
-		CVector(ATTACK_COL_WIDTH - ATTACK_COL_RADIUS * 10, ATTACK_COL_HEIGHT, 0.0f),
-		CVector(-ATTACK_COL_WIDTH + ATTACK_COL_RADIUS * 10, ATTACK_COL_HEIGHT, 0.0f),
 		ATTACK_COL_RADIUS
 	);
 	mpAttackCol->SetCollisionTags({ ETag::eEnemy,ETag::eVehicle });
@@ -101,7 +101,7 @@ CTrashPlayer::CTrashPlayer()
 	CModelXFrame* frame = mpModel->FinedFrame("Armature_Hammer");
 	mpAttackCol->SetAttachMtx(&frame->CombinedMatrix());
 	// ハンマーのヘッドに位置調整
-	//mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
+	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
 	// 攻撃コライダーは最初はオフにしておく
 	mpAttackCol->SetEnable(false);
 
@@ -112,6 +112,19 @@ CTrashPlayer::CTrashPlayer()
 // デストラクタ
 CTrashPlayer::~CTrashPlayer()
 {
+}
+
+// ダメージを受ける
+void CTrashPlayer::TakeDamage(int damage, CObjectBase* causer)
+{
+	CCharaStatusBase::TakeDamage(damage, causer);
+
+	// 死亡していなければ
+	if (!IsDeath())
+	{
+		// 被弾開始状態へ移行
+		ChangeState(EState::eDamageStart);
+	}
 }
 
 // 更新
@@ -196,10 +209,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				// 移動速度をゼロにする
 				mMoveSpeed = CVector::zero;
 
-				// 車両クラスを取得
-				CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
 				// 相手から自分の方向
-				CVector direction = Position() - other->Owner()->Position();
+				CVector direction = Position() - vehicle->Position();
 				direction.Y(0.0f);
 				direction = direction.Normalized();
 				// 自分が受けるノックバック速度に、
@@ -232,6 +243,26 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
+		}
+	}
+	// 攻撃コライダー
+	else if (self == mpAttackCol)
+	{
+		// 衝突した相手が敵なら
+		if (other->Layer() == ELayer::eEnemy)
+		{
+			// 敵クラスを取得
+			CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
+
+			// 自分から相手の方向
+			CVector direction = enemy->Position() - Position();
+			direction = direction.Normalized();
+			direction.Y(0.0f);
+			// 相手が受けるノックバック速度に、
+			// 自分が与えるノックバック速度を自分から相手の方向に設定
+			enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+			// 攻撃力分のダメージを与える
+			enemy->TakeDamage(GetAttackPower(), this);
 		}
 	}
 }

@@ -1,8 +1,8 @@
 #include "CTrashStatusBase.h"
 
-CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed, float knockbackDealt,
-	int power)
-	: CCharaStatusBase(maxHp, baseMoveSpeed, jumpSpeed)
+CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed,
+	float knockbackDealt, int attackPower, int power)
+	: CCharaStatusBase(maxHp, baseMoveSpeed, jumpSpeed, attackPower)
 	, mKnockbackDealt(knockbackDealt)
 	, mPower(power)
 	, mKnockbackReceived(CVector::zero)

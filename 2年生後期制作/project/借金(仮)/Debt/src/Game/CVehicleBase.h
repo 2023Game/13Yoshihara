@@ -1,12 +1,11 @@
 #pragma once
 #include "CCharaBase.h"
-#include "CVehicleStatus.h"
 
 class CModel;
 class CNavNode;
 
 // 車両の基底クラス
-class CVehicleBase : public CCharaBase , public CVehicleStatus
+class CVehicleBase : public CCharaBase
 {
 public:
 	// どの道にいる状態か
@@ -55,12 +54,6 @@ public:
 	// 経路探索用コライダ―を取得する
 	CCollider* GetNavCol() const;
 protected:
-	// 移動処理
-	void UpdateMove();
-	// 停止処理
-	void UpdateStop();
-	// 壊れた処理
-	void UpdateBroken();
 	// 車線変更処理
 	void UpdateChangeRoad();
 

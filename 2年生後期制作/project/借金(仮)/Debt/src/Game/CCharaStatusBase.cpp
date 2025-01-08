@@ -1,11 +1,13 @@
 #include "CCharaStatusBase.h"
 
 // コンストラクタ
-CCharaStatusBase::CCharaStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed)
+CCharaStatusBase::CCharaStatusBase(int maxHp, float baseMoveSpeed,
+	float jumpSpeed, int attackPower)
 	: mMaxHp(maxHp)
 	, mHp(mMaxHp)
 	, mBaseMoveSpeed(baseMoveSpeed)
 	, mJumpSpeed(jumpSpeed)
+	, mAttackPower(attackPower)
 {
 }
 
@@ -68,4 +70,10 @@ float CCharaStatusBase::GetBaseMoveSpeed() const
 float CCharaStatusBase::GetJumpSpeed() const
 {
 	return mJumpSpeed;
+}
+
+// 攻撃力を取得
+int CCharaStatusBase::GetAttackPower() const
+{
+	return mAttackPower;
 }

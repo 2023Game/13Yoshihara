@@ -22,7 +22,12 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 
 private:
-
+	// ˆÚ“®ˆ—
+	void UpdateMove();
+	// ’â~ˆ—
+	void UpdateStop();
+	// ‰ó‚ê‚½ˆ—
+	void UpdateBroken();
 	// ‰ñûˆ—
 	void UpdateCollect();
 

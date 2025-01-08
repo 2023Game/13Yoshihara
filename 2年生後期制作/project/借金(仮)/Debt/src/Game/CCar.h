@@ -1,10 +1,11 @@
 #pragma once
 #include "CVehicleBase.h"
+#include "CVehicleStatus.h"
 
 class CModel;
 
 // 車のクラス
-class CCar : public CVehicleBase
+class CCar : public CVehicleBase, public CVehicleStatus
 {
 public:
 	// コンストラクタ
@@ -18,4 +19,10 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 
 private:
+	// 移動処理
+	void UpdateMove();
+	// 停止処理
+	void UpdateStop();
+	// 壊れた処理
+	void UpdateBroken();
 };
