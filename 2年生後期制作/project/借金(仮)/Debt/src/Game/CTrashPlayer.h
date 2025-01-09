@@ -17,8 +17,17 @@ public:
 	// デストラクタ
 	~CTrashPlayer();
 
+	// 攻撃中か
+	bool IsAttacking() const override;
+	// 攻撃開始
+	void AttackStart() override;
+	// 攻撃終了
+	void AttackEnd() override;
+
 	// ダメージを受ける
 	void TakeDamage(int damage, CObjectBase* causer) override;
+	// クリティカルダメージを受ける
+	void TakeCritical(int damage, CObjectBase* causer);
 
 	// 更新
 	void Update();
@@ -117,11 +126,11 @@ private:
 	void UpdateAttack();
 	// 攻撃終了
 	void UpdateAttackEnd();
-	// クリティカル攻撃開始
+	// クリティカル開始
 	void UpdateCriticalStart();
-	// クリティカル攻撃中
+	// クリティカル中
 	void UpdateCritical();
-	// クリティカル攻撃終了
+	// クリティカル終了
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
@@ -129,11 +138,16 @@ private:
 	// 状態切り替え
 	void ChangeState(EState state);
 	EState mState;	// プレイヤーの状態
+	int mStateStep;				// 状態内のステップ管理用
+	float mElapsedTime;			// 経過時間計測用
 
 #if _DEBUG
 	// 状態の文字列を取得
 	std::string GetStateStr(EState state) const;
 #endif
+
+	// クリティカル攻撃コライダ―
+	CCollider* mpCriticalCol;
 
 	// 蓋が開いているか
 	bool mIsOpen;

@@ -2,6 +2,8 @@
 #include "CColliderCapsule.h"
 #include "CModel.h"
 #include "CNavNode.h"
+#include "CTrashPlayer.h"
+#include "CTrashEnemy.h"
 
 #define CAR_HEIGHT		9.0f	// 車の高さ
 #define CAR_WIDTH		25.0f	// 車の幅
@@ -103,14 +105,48 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 衝突した相手がプレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
-			// 壊れた状態に変更
-			ChangeState(EState::eBroken);
+			// 移動していたら
+			if (IsMove())
+			{
+				// プレイヤークラスを取得
+				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
+
+				// 自分から相手の方向
+				CVector direction = player->Position() - Position();
+				direction = direction.Normalized();
+				direction.Y(0.0f);
+				// 相手が受けるノックバック速度に、
+				// 自分が与えるノックバック速度を自分から相手の方向に設定
+				player->SetKnockbackReceived(direction * GetKnockbackDealt());
+				// 攻撃力分のダメージを与える
+				player->TakeDamage(GetAttackPower(), this);
+
+				// 壊れた状態に変更
+				ChangeState(EState::eBroken);
+			}
 		}
 		// 衝突した相手が敵の場合
 		else if (other->Layer() == ELayer::eEnemy)
-		{
-			// 壊れた状態に変更
-			ChangeState(EState::eBroken);
+		{	
+			// 移動していたら
+			if (IsMove())
+			{
+				// 敵クラスを取得
+				CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
+
+				// 自分から相手の方向
+				CVector direction = enemy->Position() - Position();
+				direction = direction.Normalized();
+				direction.Y(0.0f);
+				// 相手が受けるノックバック速度に、
+				// 自分が与えるノックバック速度を自分から相手の方向に設定
+				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+				// 攻撃力分のダメージを与える
+				enemy->TakeDamage(GetAttackPower(), this);
+
+				// 壊れた状態に変更
+				ChangeState(EState::eBroken);
+			}
 		}
 	}
 }

@@ -1,20 +1,28 @@
 #include "CTrashEnemyStatus.h"
 
-#define MAX_HP 3						// 最大HP
+#define MAX_HP 10						// 最大HP
 #define MOVE_SPEED 0.375f * 2.0f * 20.0f// 移動速度
 #define JUMP_SPEED 1.5f					// ジャンプ速度
 #define KNOCKBACK_SPEED 0.375f * 2.0f	// ノックバック速度
 #define ATTACK_POWER 1					// 攻撃力
 #define POWER 1							// ゴミを落とすパワー
+#define CRITICAL_CHANCE 10				// クリティカル確率
 
 // コンストラクタ
 CTrashEnemyStatus::CTrashEnemyStatus()
 	: CTrashStatusBase(MAX_HP, MOVE_SPEED, JUMP_SPEED,
 		KNOCKBACK_SPEED, ATTACK_POWER, POWER)
+	, mCriticalChance(CRITICAL_CHANCE)
 {
 }
 
 // デストラクタ
 CTrashEnemyStatus::~CTrashEnemyStatus()
 {
+}
+
+// クリティカル確率を取得
+int CTrashEnemyStatus::GetCriticalChance()
+{
+	return mCriticalChance;
 }

@@ -3,6 +3,7 @@
 #include "CGarbageTruck.h"
 #include "CTrashVehicleSpawnZone.h"
 #include <random>
+#include "Maths.h"
 
 CVehicleManager* CVehicleManager::spInstance = nullptr;
 
@@ -426,12 +427,8 @@ void CVehicleManager::CountBlackTruckPopTime()
 // ランダムで車両を出現させる場所を決める
 void CVehicleManager::RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos)
 {
-	// ランダムエンジンの初期化
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dist(0, 3);	// 0~3までの範囲
-
-	int randomNumber = dist(gen);
+	// 0から3の乱数
+	int randomNumber = Math::Rand(0, 3);
 
 	// 0なら左から1番
 	if (randomNumber == 0)

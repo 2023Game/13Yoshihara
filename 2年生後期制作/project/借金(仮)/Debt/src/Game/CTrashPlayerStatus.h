@@ -13,4 +13,11 @@ public:
 	CTrashPlayerStatus();
 	// デストラクタ
 	~CTrashPlayerStatus();
+
+	// クリティカル確率を取得
+	int GetCriticalChance();
+
+private:
+	// クリティカル確率
+	int mCriticalChance;
 };

@@ -143,6 +143,9 @@ private:
 	CColor GetStateColor(EState state) const;
 #endif
 
+	// クリティカル攻撃コライダ―
+	CCollider* mpCriticalCol;
+
 	// 蓋が開いているか
 	bool mIsOpen;
 	// ジャンプしているか

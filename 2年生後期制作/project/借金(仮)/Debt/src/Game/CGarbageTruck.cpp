@@ -2,6 +2,9 @@
 #include "CColliderCapsule.h"
 #include "CModel.h"
 #include "CNavNode.h"
+#include "CTrashPlayer.h"
+#include "CTrashEnemy.h"
+
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		30.0f	// トラックの幅
@@ -109,14 +112,48 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		// 衝突した相手がプレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
-			// 状態を停止に変更
-			ChangeState(EState::eStop);
+			// 移動していたら
+			if (IsMove())
+			{
+				// プレイヤークラスを取得
+				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
+
+				// 自分から相手の方向
+				CVector direction = player->Position() - Position();
+				direction = direction.Normalized();
+				direction.Y(0.0f);
+				// 相手が受けるノックバック速度に、
+				// 自分が与えるノックバック速度を自分から相手の方向に設定
+				player->SetKnockbackReceived(direction * GetKnockbackDealt());
+				// 攻撃力分のダメージを与える
+				player->TakeDamage(GetAttackPower(), this);
+
+				// 状態を停止に変更
+				ChangeState(EState::eStop);
+			}
 		}
 		// 衝突した相手が敵の場合
 		if (other->Layer() == ELayer::eEnemy)
 		{
-			// 状態を停止に変更
-			ChangeState(EState::eStop);
+			// 移動していたら
+			if (IsMove())
+			{
+				// 敵クラスを取得
+				CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
+
+				// 自分から相手の方向
+				CVector direction = enemy->Position() - Position();
+				direction = direction.Normalized();
+				direction.Y(0.0f);
+				// 相手が受けるノックバック速度に、
+				// 自分が与えるノックバック速度を自分から相手の方向に設定
+				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+				// 攻撃力分のダメージを与える
+				enemy->TakeDamage(GetAttackPower(), this);
+
+				// 状態を停止に変更
+				ChangeState(EState::eStop);
+			}
 		}
 	}
 }

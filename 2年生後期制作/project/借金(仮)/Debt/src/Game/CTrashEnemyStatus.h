@@ -13,4 +13,10 @@ public:
 	CTrashEnemyStatus();
 	// デストラクタ
 	~CTrashEnemyStatus();
+
+	// クリティカル確率を取得
+	int GetCriticalChance();
+private:
+	// クリティカル確率
+	int mCriticalChance;
 };
