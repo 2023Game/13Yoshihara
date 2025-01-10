@@ -6,7 +6,7 @@
 #define KNOCKBACK_SPEED 0.375f * 2.0f	// ノックバック速度
 #define ATTACK_POWER 1					// 攻撃力
 #define POWER 1							// ゴミを落とすパワー
-#define CRITICAL_CHANCE 100				// クリティカル確率
+#define CRITICAL_CHANCE 10				// クリティカル確率
 
 // コンストラクタ
 CTrashPlayerStatus::CTrashPlayerStatus()

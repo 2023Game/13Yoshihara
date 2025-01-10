@@ -60,11 +60,9 @@ private:
 		eMove_Close,		// 移動					（と）
 		eMove_Open,			// 移動					（開）
 		eDamage_Close_Start,// 被弾開始				（と）
-		eDamage_Close,		// 被弾ノックバック		（と）
-		eDamage_Close_End,	// 被弾終了				（と）
 		eDamage_Open_Start,	// 被弾開始				（開）
-		eDamage_Open,		// 被弾ノックバック		（開）
-		eDamage_Open_End,	// 被弾終了				（開）
+		eDamage,			// 被弾ノックバック		（開閉）
+		eDamage_End,		// 被弾終了				（開閉）
 		eJump_Close_Start,	// ジャンプ開始			（と）
 		eJump_Close,		// ジャンプ中			（と）
 		eJump_Close_End,	// ジャンプ終了			（と）

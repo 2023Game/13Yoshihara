@@ -36,11 +36,9 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Move_Close.x",			true,	80.0f,	1.0f},	// 移動					（と）
 	{ ANIM_PATH"Move_Open.x",			true,	80.0f,	1.0f},	// 移動					（開）
 	{ ANIM_PATH"Damage_Close_Start.x",	false,	10.0f,	1.0f},	// 被弾開始				（と）
-	{ ANIM_PATH"Damage_Close.x",		true,	11.0f,	1.0f},	// 被弾ノックバック		（と）
-	{ ANIM_PATH"Damage_Close_End.x",	false,	51.0f,	1.0f},	// 被弾終了				（と）
 	{ ANIM_PATH"Damage_Open_Start.x",	false,	10.0f,	1.0f},	// 被弾開始				（開）
-	{ ANIM_PATH"Damage_Open.x",			true,	11.0f,	1.0f},	// 被弾ノックバック		（開）
-	{ ANIM_PATH"Damage_Open_End.x",		false,	51.0f,	1.0f},	// 被弾終了				（開）
+	{ ANIM_PATH"Damage.x",				true,	11.0f,	1.0f},	// 被弾ノックバック		（開閉）
+	{ ANIM_PATH"Damage_End.x",			false,	51.0f,	1.0f},	// 被弾終了				（開閉）
 	{ ANIM_PATH"Jump_Close_Start.x",	false,	20.0f,	1.0f},	// ジャンプ開始			（と）
 	{ ANIM_PATH"Jump_Close.x",			true,	11.0f,	1.0f},	// ジャンプ中			（と）
 	{ ANIM_PATH"Jump_Close_End.x",		false,	21.0f,	1.0f},	// ジャンプ終了			（と）
@@ -83,15 +81,19 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 #define ROAD_X_AREA 90.0f	// 車道のXの範囲
 
-// 攻撃コライダ―の半径
-#define ATTACK_COL_RADIUS 55.0f
-// 攻撃のコライダーのオフセット座標
-#define ATTACK_COL_OFFSET_POS CVector(0.0f,0.0f,55.0f)
+// 攻撃コライダ―
+#define ATTACK_COL_RADIUS	2.0f	// 半径
+#define ATTACK_COL_HEIGHT	25.0f	// 高さ
+#define ATTACK_COL_WIDTH	70.0f	// 幅
+// オフセット座標
+#define ATTACK_COL_OFFSET_POS CVector(0.0f,0.0f,100.0f)
 
-// クリティカル攻撃コライダーの半径
-#define CRITICAL_COL_RADIUS 55.0f
-// クリティカル攻撃コライダ―のオフセット座標
-#define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,55.0f)
+// クリティカル攻撃コライダー
+#define CRITICAL_COL_RADIUS		3.0f		// 半径
+#define CRITICAL_COL_HEIGHT		25.0f		// 高さ
+#define CRITICAL_COL_WIDTH		140.0f		// 幅
+// オフセット座標
+#define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,160.0f)
 
 // コンストラクタ
 CTrashEnemy::CTrashEnemy()
@@ -134,25 +136,29 @@ CTrashEnemy::CTrashEnemy()
 		ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 攻撃コライダー
-	mpAttackCol = new CColliderSphere
+	mpAttackCol = new CColliderCapsule
 	(
 		this, ELayer::eAttackCol,
+		CVector(0.0f, ATTACK_COL_HEIGHT, ATTACK_COL_WIDTH - ATTACK_COL_RADIUS * 10),
+		CVector(0.0f, ATTACK_COL_HEIGHT, -ATTACK_COL_WIDTH + ATTACK_COL_RADIUS * 10),
 		ATTACK_COL_RADIUS
 	);
 	// クリティカル攻撃コライダー
-	mpCriticalCol = new CColliderSphere
+	mpCriticalCol = new CColliderCapsule
 	(
 		this, ELayer::eAttackCol,
+		CVector(0.0f, CRITICAL_COL_HEIGHT, CRITICAL_COL_WIDTH - CRITICAL_COL_RADIUS * 10),
+		CVector(0.0f, CRITICAL_COL_HEIGHT, -CRITICAL_COL_WIDTH + CRITICAL_COL_RADIUS * 10),
 		CRITICAL_COL_RADIUS
 	);
 
-	// 敵と車両と衝突判定するように設定
+	// プレイヤーと敵と車両と衝突判定するように設定
 	mpAttackCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eVehicle });
 	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eVehicle });
 	mpCriticalCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eVehicle });
 	mpCriticalCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eVehicle });
 
-	// プレイヤーの前に位置調整
+	// 自分の前に位置調整
 	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
 	mpCriticalCol->Position(CRITICAL_COL_OFFSET_POS);
 
@@ -167,42 +173,6 @@ CTrashEnemy::CTrashEnemy()
 // デストラクタ
 CTrashEnemy::~CTrashEnemy()
 {
-}
-
-// ダメージを受ける
-void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer)
-{
-	// 開いていればダメージを受ける
-	if (mIsOpen)
-	{
-		// TODO：Death()の処理を追加
-		CCharaStatusBase::TakeDamage(damage, causer);
-
-		// 死亡していなければ
-		if (!IsDeath())
-		{
-			// 蓋が開いている状態からの被弾開始アニメーション
-			ChangeAnimation((int)EAnimType::eDamage_Open_Start);
-
-			// 攻撃を受けている
-			mIsDamage = true;
-			// 移動速度をゼロにする
-			mMoveSpeed = CVector::zero;
-			// 被弾開始状態へ移行
-			ChangeState(EState::eDamageStart);
-		}
-	}
-	// 閉じていればノーダメージで蓋が開くのみ
-	else
-	{
-		// 蓋を開く
-		ChangeAnimation((int)EAnimType::eOpen);
-
-		// 移動速度をゼロにする
-		mMoveSpeed = CVector::zero;
-		// 開閉状態へ移行
-		ChangeState(EState::eOpenClose);
-	}
 }
 
 // 更新
@@ -229,22 +199,6 @@ void CTrashEnemy::Update()
 	case EState::eCriticalEnd:		UpdateCriticalEnd();	break;
 	case EState::eOpenClose:		UpdateOpenClose();		break;
 	}
-
-
-	// 攻撃中以外は、攻撃コライダーをオフ
-	if (mState != EState::eAttack)
-	{
-		mpAttackCol->SetEnable(false);
-	}
-	// クリティカル攻撃中以外は、攻撃コライダーをオフ
-	if (mState != EState::eCritical)
-	{
-		mpCriticalCol->SetEnable(false);
-	}
-
-	// 地面に接しているならジャンプしていない
-	if (mIsGrounded)
-		mIsJump = false;
 
 	// キャラクターの更新
 	CEnemyBase::Update();
@@ -662,9 +616,29 @@ void CTrashEnemy::UpdateLost()
 // 被弾開始
 void CTrashEnemy::UpdateDamageStart()
 {
-	// アニメーションが終了したら被弾ノックバックへ
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
+	case 0:
+		// ジャンプ中に攻撃されたときのためfalse
+		mIsJump = false;
+		mIsDamage = true;
+		mMoveSpeed = CVector::zero;
+		// 閉じていたら
+		if (!mIsOpen)
+		{
+			// 閉じた被弾開始アニメーション再生
+			ChangeAnimation((int)EAnimType::eDamage_Close_Start);
+		}
+		// 開いていたら
+		else
+		{
+			// 開いた被弾開始アニメーション再生
+			ChangeAnimation((int)EAnimType::eDamage_Open_Start);
+		}
+		mStateStep++;
+		break;
+
+	case 1:
 		// ノックバック時の飛び上がりの速度を
 		// 受けるノックバック速度の半分に設定
 		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f;
@@ -672,220 +646,522 @@ void CTrashEnemy::UpdateDamageStart()
 		mMoveSpeed = GetKnockbackReceived();
 		mIsGrounded = false;
 
+		// 被弾状態へ
 		ChangeState(EState::eDamage);
-
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eDamage_Close);
-		else
-			ChangeAnimation((int)EAnimType::eDamage_Open);
+		break;
 	}
 }
 
 // 被弾ノックバック
 void CTrashEnemy::UpdateDamage()
 {
-	mIsOpen = true;
-
-	// 地面に付いたら被弾終了へ
-	if (mIsGrounded)
+	switch (mStateStep)
 	{
-		ChangeState(EState::eDamageEnd);
+	case 0:
+		// 開いている
+		mIsOpen = true;
+		// 被弾アニメーション再生
+		ChangeAnimation((int)EAnimType::eDamage);
+		mStateStep++;
+		break;
 
-		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eDamage_Close_End);
-		else
-			ChangeAnimation((int)EAnimType::eDamage_Open_End);
+	case 1:
+		// 地面についたら
+		if (mIsGrounded)
+		{
+			// 被弾終了状態へ
+			ChangeState(EState::eDamageEnd);
+		}
+		break;
 	}
 }
 
 // 被弾終了
 void CTrashEnemy::UpdateDamageEnd()
 {
-	// 被弾終了時は移動をゼロ
-	mMoveSpeed = CVector::zero;
-
-	// アニメーションが60%進行したら
-	if (GetAnimationFrameRatio() >= 0.60f)
+	switch (mStateStep)
 	{
-		// 移動可能
-
-		mIsDamage = false;
+	case 0:
+		// 受けるノックバックをリセット
 		SetKnockbackReceived(CVector::zero);
-	}
+		// 移動をゼロ
+		mMoveSpeed = CVector::zero;
+		// 被弾終了アニメーション再生
+		ChangeAnimation((int)EAnimType::eDamage_End);
+		mStateStep++;
+		break;
 
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
-	{
-		ChangeState(EState::eIdle);
+	case 1:
+		// アニメーションが60%進行したら
+		if (GetAnimationFrameRatio() >= 0.60f)
+		{
+			mIsDamage = false;
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		// アニメーションが終了したら待機へ
+		if (IsAnimationFinished())
+		{
+			ChangeState(EState::eIdle);
+		}
+		break;
 	}
 }
 
 // ジャンプ開始
 void CTrashEnemy::UpdateJumpStart()
 {
-	// ジャンプ開始時は移動をゼロ
-	mMoveSpeed = CVector::zero;
-
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// ジャンプ速度の設定
-		mMoveSpeedY = GetJumpSpeed();
-		mIsGrounded = false;
-
-		ChangeState(EState::eJump);
-		// 閉じた状態のジャンプ中へ
+	case 0:
+		// ジャンプ開始時は移動をゼロ
+		mMoveSpeed = CVector::zero;
+		// 閉じていたら
 		if (!mIsOpen)
-			ChangeAnimation((int)EAnimType::eJump_Close);
-		// 開いた状態のジャンプ中へ
+		{
+			// 閉じているジャンプアニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Close_Start);
+		}
+		// 開いていたら
 		else
-			ChangeAnimation((int)EAnimType::eJump_Open);
+		{
+			// 開いているジャンプアニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Open_Start);
+		}
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// ジャンプ速度の設定
+			mMoveSpeedY = GetJumpSpeed();
+			mIsGrounded = false;
+			mIsJump = true;
+			// ジャンプ中状態へ
+			ChangeState(EState::eJump);
+		}
+		break;
 	}
 }
 
+// ジャンプ中
 void CTrashEnemy::UpdateJump()
 {
+	switch (mStateStep)
+	{
+	case 0:
+		// 閉じていたら
+		if (!mIsOpen)
+		{
+			// 閉じているジャンプ中アニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Close);
+		}
+		// 開いていたら
+		else
+		{
+			// 開いているジャンプ中アニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Open);
+		}
+		mStateStep++;
+		break;
 
+	case 1:
+		// 地面に付いたら
+		if (mIsGrounded)
+		{
+			// ジャンプ終了状態へ
+			ChangeState(EState::eJumpEnd);
+		}
+		break;
+	}
 }
 
+// ジャンプ終了
 void CTrashEnemy::UpdateJumpEnd()
 {
+	switch (mStateStep)
+	{
+	case 0:
+		mIsJump = false;
+		// 移動をゼロ
+		mMoveSpeed = CVector::zero;
+		// 閉じていたら
+		if (!mIsOpen)
+		{
+			// 閉じているジャンプ終了アニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Close_End);
+		}
+		// 開いていたら
+		else
+		{
+			// 開いているジャンプ終了アニメーション再生
+			ChangeAnimation((int)EAnimType::eJump_Open_End);
+		}
+		mStateStep++;
+		break;
 
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+		}
+		break;
+	}
 }
 
 // 攻撃開始
 void CTrashEnemy::UpdateAttackStart()
 {
-	// 開いていなければ開くアニメーションの再生をしているので
-	// 終わってから攻撃の最初へ
-	if (!mIsOpen)
+	switch (mStateStep)
 	{
-		if (IsAnimationFinished())
+	case 0:
+		// 閉じているとき
+		if (!mIsOpen)
 		{
-			mIsOpen = true;
+			// 開くアニメーション再生
+			ChangeAnimation((int)EAnimType::eOpen);
+			// 次のステップへ
+			mStateStep++;
+		}
+		// 開いているとき
+		else
+		{
+			// 攻撃開始アニメーション再生
 			ChangeAnimation((int)EAnimType::eAttack_Start);
+			// ステップ2へ
+			mStateStep = 2;
 		}
-	}
-	// 開いているなら
-	// 攻撃の最初のアニメーションが終了したので攻撃中へ
-	else
-	{
+		break;
+
+	case 1:
+		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 攻撃がヒットしたリストを初期化
-			AttackStart();
-			// 攻撃コライダーを有効
-			mpAttackCol->SetEnable(true);
-			ChangeState(EState::eAttack);
-			ChangeAnimation((int)EAnimType::eAttack);
+			// 攻撃開始アニメーションを再生
+			ChangeAnimation((int)EAnimType::eAttack_Start);
+			mStateStep++;
 		}
+		break;
+
+	case 2:
+		// 攻撃開始アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// 攻撃中へ
+			ChangeState(EState::eAttack);
+			mMoveSpeed = CVector::zero;
+		}
+		break;
 	}
 }
 
 // 攻撃中
 void CTrashEnemy::UpdateAttack()
 {
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// 攻撃終了へ
-		ChangeState(EState::eAttackEnd);
-		ChangeAnimation((int)EAnimType::eAttack_End);
+	case 0:
+		// 攻撃アニメーション再生
+		ChangeAnimation((int)EAnimType::eAttack);
+		AttackStart();
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// 攻撃終了へ
+			ChangeState(EState::eAttackEnd);
+		}
+		break;
 	}
 }
 
 // 攻撃終了
 void CTrashEnemy::UpdateAttackEnd()
 {
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// 最後は蓋が開いた状態
-		ChangeState(EState::eIdle);
+	case 0:
 		mIsOpen = true;
+		// 攻撃終了アニメーション再生
+		ChangeAnimation((int)EAnimType::eAttack_End);
+		AttackEnd();
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+		}
+		break;
 	}
 }
 
 // クリティカル攻撃開始
 void CTrashEnemy::UpdateCriticalStart()
 {
-	// 開いていなければ開くアニメーションの再生をしているので
-	// 終わってからクリティカルの最初へ
-	if (!mIsOpen)
+	switch (mStateStep)
 	{
-		if (IsAnimationFinished())
+	case 0:
+		// 閉じているとき
+		if (!mIsOpen)
 		{
-			mIsOpen = true;
-			ChangeAnimation((int)EAnimType::eCritical_Start);
+			// 開くアニメーション再生
+			ChangeAnimation((int)EAnimType::eOpen);
+			// 次のステップへ
+			mStateStep++;
 		}
-	}
-	// 開いているなら
-	// クリティカルの最初のアニメーションが終了したのでクリティカル中へ
-	else
-	{
+		// 開いているとき
+		else
+		{
+			// クリティカル開始アニメーション再生
+			ChangeAnimation((int)EAnimType::eCritical_Start);
+			// ステップ2へ
+			mStateStep = 2;
+		}
+		break;
+
+	case 1:
+		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 攻撃がヒットしたリストを初期化
-			AttackStart();
-			// クリティカル攻撃コライダーを有効
-			mpCriticalCol->SetEnable(true);
+			// クリティカル開始アニメーションを再生
+			ChangeAnimation((int)EAnimType::eCritical_Start);
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		// クリティカル開始アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// クリティカル中へ
 			ChangeState(EState::eCritical);
-			ChangeAnimation((int)EAnimType::eCritical);
 			mMoveSpeed = CVector::zero;
 		}
+		break;
 	}
 }
 
 // クリティカル攻撃中
 void CTrashEnemy::UpdateCritical()
 {
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// クリティカル終了へ
-		ChangeState(EState::eCriticalEnd);
-		ChangeAnimation((int)EAnimType::eCritical_End);
+	case 0:
+		// クリティカルアニメーション再生
+		ChangeAnimation((int)EAnimType::eCritical);
+		AttackStart();
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// クリティカル終了へ
+			ChangeState(EState::eCriticalEnd);
+		}
+		break;
 	}
 }
 
 // クリティカル攻撃終了
 void CTrashEnemy::UpdateCriticalEnd()
 {
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// 最後は蓋が開いた状態
-		ChangeState(EState::eIdle);
-		mIsOpen = true;
+	case 0:
+		// クリティカル終了アニメーション再生
+		ChangeAnimation((int)EAnimType::eCritical_End);
+		AttackEnd();
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+		}
+		break;
 	}
 }
 
 // 蓋を開閉する
 void CTrashEnemy::UpdateOpenClose()
 {
-	// アニメーションが終了したら
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		// 開き状態を変更
-		mIsOpen = !mIsOpen;
-		// ジャンプしていないなら待機へ
+	case 0:
+		// ジャンプしていなければ
 		if (!mIsJump)
 		{
-			ChangeState(EState::eIdle);
+			// 移動をゼロ
+			mMoveSpeed = CVector::zero;
 		}
-		// ジャンプしているならジャンプへ戻る
+
+		// 閉じていたら
+		if (!mIsOpen)
+		{
+			// 開くアニメーション再生
+			ChangeAnimation((int)EAnimType::eOpen);
+		}
+		// 開いていたら
 		else
 		{
-			ChangeState(EState::eJump);
-			// 閉じた状態のジャンプ
-			if (!mIsOpen)
-				ChangeAnimation((int)EAnimType::eJump_Close);
-			// 開いた状態のジャンプ
-			else
-				ChangeAnimation((int)EAnimType::eJump_Open);
+			// 閉じるアニメーション再生
+			ChangeAnimation((int)EAnimType::eClose);
 		}
+		mStateStep++;
+		break;
+
+	case 1:
+		// アニメーションが50%以上進行したら
+		if (GetAnimationFrameRatio() >= 0.50f)
+		{
+			// 開き状態を変更
+			mIsOpen = !mIsOpen;
+			mStateStep++;
+		}
+		break;
+
+	case 2:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			// ジャンプしていないなら
+			if (!mIsJump)
+			{
+				// 待機状態へ
+				ChangeState(EState::eIdle);
+			}
+			// ジャンプしているならジャンプへ戻る
+			else
+			{
+				// ジャンプ状態へ
+				ChangeState(EState::eJump);
+			}
+		}
+		break;
 	}
 }
+
+
+// 攻撃中か
+bool CTrashEnemy::IsAttacking() const
+{
+	// 攻撃中
+	if (mState == EState::eAttack) return true;
+	// クリティカル攻撃中
+	if (mState == EState::eCritical) return true;
+
+	// 攻撃中でない
+	return false;
+}
+
+// 攻撃開始
+void CTrashEnemy::AttackStart()
+{
+	// ベースクラスの攻撃開始処理を呼び出し
+	CXCharacter::AttackStart();
+
+	// 攻撃中なら、攻撃コライダーをオン
+	if (mState == EState::eAttack)
+	{
+		mpAttackCol->SetEnable(true);
+	}
+	// クリティカル攻撃中なら、クリティカルコライダ―をオン
+	else if (mState == EState::eCritical)
+	{
+		mpCriticalCol->SetEnable(true);
+	}
+}
+
+// 攻撃終了
+void CTrashEnemy::AttackEnd()
+{
+	// ベースクラスの攻撃終了処理を呼び出し
+	CXCharacter::AttackEnd();
+
+	// 攻撃コライダーをオフ
+	mpAttackCol->SetEnable(false);
+	mpCriticalCol->SetEnable(false);
+}
+
+// ダメージを受ける
+void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer)
+{
+	// 開いていればダメージを受ける
+	if (mIsOpen)
+	{
+		// TODO：Death()の処理を追加
+		CCharaStatusBase::TakeDamage(damage, causer);
+
+		// 死亡していなければ
+		if (!IsDeath())
+		{
+			// 攻撃を加えた相手の方向へ向く
+			CVector targetPos = causer->Position();
+			CVector vec = targetPos - Position();
+			vec.Y(0.0f);
+			Rotation(CQuaternion::LookRotation(vec.Normalized()));
+
+			// 被弾開始状態へ移行
+			ChangeState(EState::eDamageStart);
+		}
+	}
+	// 閉じていればノーダメージで蓋が開くのみ
+	else
+	{
+		// 開閉状態へ移行
+		ChangeState(EState::eOpenClose);
+	}
+}
+
+// クリティカルダメージを受ける
+void CTrashEnemy::TakeCritical(int damage, CObjectBase* causer)
+{
+	// 開いていれば2倍のダメージを受ける
+	if (mIsOpen)
+	{
+		// 攻撃力の2倍のダメージ
+		int CriticalDamage = damage * 2;
+		CCharaStatusBase::TakeDamage(CriticalDamage, causer);
+	}
+	// 閉じていても通常のダメージを受ける
+	else
+	{
+		// TODO：Death()の処理を追加
+		CCharaStatusBase::TakeDamage(damage, causer);
+	}
+
+	// 死亡していなければ
+	if (!IsDeath())
+	{
+		// 攻撃を加えた相手の方向へ向く
+		CVector targetPos = causer->Position();
+		CVector vec = targetPos - Position();
+		vec.Y(0.0f);
+		Rotation(CQuaternion::LookRotation(vec.Normalized()));
+
+		// 被弾開始状態へ移行
+		ChangeState(EState::eDamageStart);
+	}
+}
+
 
 // 状態切り替え
 void CTrashEnemy::ChangeState(EState state)
@@ -893,7 +1169,16 @@ void CTrashEnemy::ChangeState(EState state)
 	// 既に同じ状態であれば、処理しない
 	if (state == mState) return;
 
+	// 攻撃中に他の状態に変わるとき
+	// 攻撃終了処理を呼ぶ
+	if (IsAttacking())
+	{
+		AttackEnd();
+	}
+
 	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
 }
 
 #if _DEBUG
