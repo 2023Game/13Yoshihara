@@ -7,6 +7,7 @@
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "CVehicleManager.h"
+#include "Maths.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -374,6 +375,7 @@ void CTrashEnemy::Render()
 // 待機状態
 void CTrashEnemy::UpdateIdle()
 {
+	mMoveSpeed = CVector::zero;
 	// プレイヤーの座標を取得
 	CPlayerBase* player = CPlayerBase::Instance();
 	CVector playerPos = player->Position();
@@ -433,6 +435,7 @@ void CTrashEnemy::UpdatePatrol()
 		ChangePatrolPoint(PATROL_NEAR_DIST);
 		mStateStep++;
 		break;
+
 	// ステップ1：巡回ポイントまで移動
 	case 1:
 	{
@@ -462,6 +465,7 @@ void CTrashEnemy::UpdatePatrol()
 	}
 	// ステップ2：移動後の待機
 	case 2:
+		mMoveSpeed = CVector::zero;
 		// 待機アニメーションを再生
 		if (!mIsOpen)
 		{
@@ -510,17 +514,17 @@ void CTrashEnemy::UpdateChase()
 	// プレイヤーに攻撃できるならば、攻撃状態へ移行
 	if (CanAttackPlayer(ATTACK_RANGE))
 	{
-		ChangeState(EState::eAttackStart);
-
-		// 閉じていたら開くアニメーションを再生
-		if (!mIsOpen)
+		// 1から100までの100個の数から乱数を取得
+		int random = Math::Rand(1, 100);
+		// クリティカル確率以下の値ならクリティカル攻撃
+		if (random <= GetCriticalChance())
 		{
-			ChangeAnimation((int)EAnimType::eOpen);
+			ChangeState(EState::eCriticalStart);
 		}
-		// 開いていたらすぐ攻撃アニメーションを再生
+		// それ以外の時は通常攻撃
 		else
 		{
-			ChangeAnimation((int)EAnimType::eAttack_Start);
+			ChangeState(EState::eAttackStart);
 		}
 		return;
 	}
@@ -818,6 +822,14 @@ void CTrashEnemy::UpdateJumpEnd()
 // 攻撃開始
 void CTrashEnemy::UpdateAttackStart()
 {
+	// プレイヤーの座標
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector targetPos = player->Position();
+	// プレイヤーの方向へ移動
+	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	{
+
+	}
 	switch (mStateStep)
 	{
 	case 0:

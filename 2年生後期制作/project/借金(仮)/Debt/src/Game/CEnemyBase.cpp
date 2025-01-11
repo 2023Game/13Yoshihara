@@ -351,7 +351,7 @@ bool CEnemyBase::MoveTo(const CVector& targetPos, float speed,float rotateSpeed)
 }
 
 // 次に巡回するポイントを変更
-void CEnemyBase::ChangePatrolPoint(float nearDist)
+void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
 	int size = mPatrolPoints.size();
@@ -370,7 +370,7 @@ void CEnemyBase::ChangePatrolPoint(float nearDist)
 			vec.Y(0.0f);
 			float dist = vec.Length();
 			// 巡回ポイントが近すぎる場合は、スルー
-			if (dist < nearDist) continue;
+			if (dist < patrolNearDist) continue;
 			// 一番最初の巡回ポイントもしくは、
 			// 現在一番近い巡回ポイントよりさらに近い場合は、
 			// 巡回ポイントの番号を置き換える

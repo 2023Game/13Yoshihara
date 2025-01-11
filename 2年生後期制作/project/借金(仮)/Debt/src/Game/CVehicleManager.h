@@ -6,6 +6,7 @@
 class CCar;
 class CGarbageTruck;
 class CTrashVehicleSpawnZone;
+class CNavNode;
 
 // 位置
 #define CAR_LEFT_POS1 CVector(-60.0f,0.0f,300.0f)	// 左から1番
@@ -52,8 +53,26 @@ public:
 	
 	// 更新
 	void Update();
+
+	/// <summary>
+	/// 指定した道に停止している車両がいるかチェックする
+	/// </summary>
+	/// <param name="roadType">どの道にいるか</param>
+	/// <returns>trueならば、いる</returns>
+	bool IsVehicle(CVehicleBase::ERoadType roadType);
+	/// <summary>
+	/// 指定した道の生成場所に車両がいるかチェックする
+	/// </summary>
+	/// <param name="roadType">どの道にいるか</param>
+	/// <returns>trueならば、いる</returns>
+	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
+
+private:
 	// 使用するトラックを全て生成
 	void CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck);
+	// 経路探索用のノードを作成
+	void CreateNavNodes();
+	
 	// ステージ範囲外の車、トラックの更新、描画を止める
 	void HideVehicle();
 	// 乗り物を出現させる
@@ -77,20 +96,7 @@ public:
 	/// <param name="popPos">出現する場所</param>
 	void RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos);
 
-	/// <summary>
-	/// 指定した道に停止している車両がいるかチェックする
-	/// </summary>
-	/// <param name="roadType">どの道にいるか</param>
-	/// <returns>trueならば、いる</returns>
-	bool IsVehicle(CVehicleBase::ERoadType roadType);
-	/// <summary>
-	/// 指定した道の生成場所に車両がいるかチェックする
-	/// </summary>
-	/// <param name="roadType">どの道にいるか</param>
-	/// <returns>trueならば、いる</returns>
-	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
 
-private:
 	// 車両管理クラスのインスタンスへのポインタ
 	static CVehicleManager* spInstance;
 	// 生成場所に車がいるか判断するクラス
@@ -106,4 +112,10 @@ private:
 	float mCarPopTime;			// 車
 	float mTruckPopTime;		// トラック
 	float mPunishTruckPopTime;	// お仕置きトラック
+
+	// 巡回ポイントのリスト
+	std::vector<CNavNode*> mPatrolPointsL1;	// 左から1番道路
+	std::vector<CNavNode*> mPatrolPointsL2; // 左から2番道路
+	std::vector<CNavNode*> mPatrolPointsR1; // 右から1番道路
+	std::vector<CNavNode*> mPatrolPointsR2; // 右から2番道路
 };

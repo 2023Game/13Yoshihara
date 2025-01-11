@@ -1,7 +1,7 @@
 #include "CVehicleStatus.h"
 
 #define MAX_HP 0						// 最大HP（未使用）
-#define BASE_MOVE_SPEED 0.375f * 5.0f	// 移動速度
+#define BASE_MOVE_SPEED 0.375f * 5.0f * 20.0f	// 移動速度
 #define JUMP_SPEED 0.0f					// ジャンプ速度（未使用）
 #define KNOCKBACK_SPEED 0.375f * 5.0f	// ノックバック速度
 #define ATTACK_POWER 1					// 攻撃力

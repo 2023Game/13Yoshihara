@@ -80,8 +80,11 @@ protected:
 
 	// 指定した位置まで移動する
 	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
-	// 次に巡回するポイントを変更
-	void ChangePatrolPoint(float nearDist);
+	/// <summary>
+	/// 次に巡回するポイントを変更
+	/// </summary>
+	/// <param name="patrolNearDist">設定できる最短距離</param>
+	void ChangePatrolPoint(float patrolNearDist);
 	
 	// 巡回ポイントのリスト
 	std::vector<CNavNode*> mPatrolPoints;

@@ -12,23 +12,29 @@
 #define TURN_MAX		CVector(0.0f,22.5f,0.0f)// 車両の方向転換の最大値
 
 // コンストラクタ
-CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
+CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
+	ERoadType road, std::vector<CNavNode*> patrolPoints)
 	: CCharaBase(ETag::eVehicle, ETaskPriority::eVehicle)
 	, mpModel(model)
 	, mpBodyCol(nullptr)
 	, mRoadType(road)
 	, mCurrentRoadRotation(rotation)
-	, mState(EState::eMove)
+	, mNextPatrolIndex(-1)
+	, mNextMoveIndex(0)
+	, mPatrolPoints(patrolPoints)
+	, mIsMoveEnd(false)
+	, mIsMovePause(false)
+	, mIsChangeRoad(false)
 {
-	// 経路管理クラスがあるなら車両の周り用のノードを生成
-	CNavManager* navMgr = CNavManager::Instance();
-	if (navMgr != nullptr)
-	{
-		mpNode0 = new CNavNode(Position());
-		mpNode1 = new CNavNode(Position());
-		mpNode2 = new CNavNode(Position());
-		mpNode3 = new CNavNode(Position());
-	}
+	// 経路探索用のノードを作成
+	mpNavNode = new CNavNode(Position(), true);
+	mpNavNode->SetColor(CColor::blue);
+
+	// 車両の周り用のノードを生成
+	mpNode0 = new CNavNode(Position());
+	mpNode1 = new CNavNode(Position());
+	mpNode2 = new CNavNode(Position());
+	mpNode3 = new CNavNode(Position());
 	// 最初はノードを無効
 	mpNode0->SetEnable(false);
 	mpNode1->SetEnable(false);
@@ -57,6 +63,12 @@ void CVehicleBase::Update()
 	CVector moveSpeed = mMoveSpeed;
 
 	Position(Position() + moveSpeed);
+
+	// 経路探索用のノードが存在すれば、座標を更新
+	if (mpNavNode != nullptr)
+	{
+		mpNavNode->SetPos(Position());
+	}
 }
 
 // 衝突処理
@@ -74,6 +86,12 @@ void CVehicleBase::Render()
 bool CVehicleBase::IsMove() const
 {
 	return mIsMove;
+}
+
+// 最後の巡回ポイントまでの移動が終了したかどうか
+bool CVehicleBase::GetMoveEnd() const
+{
+	return mIsMoveEnd;
 }
 
 // 車線を変更する
@@ -109,47 +127,135 @@ CCollider* CVehicleBase::GetNavCol() const
 	return mpNavCol;
 }
 
-// 車線変更処理
-void CVehicleBase::UpdateChangeRoad()
+// 巡回ポイントのリストを設定する
+void CVehicleBase::SetPatrolPoints(std::vector<CNavNode*> patrolPoints)
 {
-	// 動いている
-	mIsMove = true;
-	bool isEnd = false;
-	// 車線変更移動
-	ChangeRoad(isEnd);
+	mPatrolPoints = patrolPoints;
+}
 
-	// trueならば、車線変更が終わった
-	if (isEnd)
+// 車両の有効無効を切り替える
+void CVehicleBase::SetOnOff(bool setOnOff)
+{
+	SetEnable(setOnOff);
+	SetShow(setOnOff);
+	// 移動終了をリセット
+	mIsMoveEnd = false;
+}
+
+// mNextPatrolIndexをリセット
+void CVehicleBase::ResetNextPatrolIndex()
+{
+	mNextPatrolIndex = -1;
+}
+
+// 指定した位置まで移動する
+bool CVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpeed)
+{
+	// 目的地までのベクトルを求める
+	CVector pos = Position();
+	CVector vec = targetPos - pos;
+	vec.Y(0.0f);
+	// 移動方向ベクトルを求める
+	CVector moveDir = vec.Normalized();
+
+	// 徐々に移動方向へ向ける
+	CVector forward = CVector::Slerp
+	(
+		VectorZ(),	// 現在の正面方向
+		moveDir,	// 移動方向
+		rotateSpeed * Times::DeltaTime()
+	);
+	Rotation(CQuaternion::LookRotation(forward));
+
+	// 今回の移動距離を求める
+	float moveDist = speed * Times::DeltaTime();
+	// 目的地までの残りの距離を求める
+	float remainDist = vec.Length();
+	// 残りの距離が移動距離より短い
+	if (remainDist <= moveDist)
 	{
-		// 移動状態に戻す
-		ChangeState(EState::eMove);
+		pos = CVector(targetPos.X(), pos.Y(), targetPos.Z());
+		Position(pos);
+		return true;	// 目的地に到着したので、trueを返す
+	}
+
+	// 残りの距離が移動距離より長い場合は
+	// 移動距離分目的地へ移動
+	pos += moveDir * moveDist;
+	Position(pos);
+
+	// 目的地には到着しなかった
+	return false;
+}
+
+// 次に巡回するポイントを変更
+void CVehicleBase::ChangePatrolPoint(float patrolNearDist)
+{
+	// 巡回ポイントが設定されていない場合は、処理しない
+	int size = mPatrolPoints.size();
+	if (size == 0) return;
+
+	// 巡回開始時であれば、一番近い巡回ポイントを選択
+	if (mNextPatrolIndex == -1)
+	{
+		int nearIndex = -1;	// 一番近い巡回ポイントの番号
+		float nearDist = 0.0f;	// 一番近い巡回ポイントまでの距離
+		// 全ての巡回ポイントの距離を調べ、一番近い巡回ポイントを探す
+		for (int i = 0; i < size; i++)
+		{
+			CVector point = mPatrolPoints[i]->GetPos();
+			CVector vec = point - Position();
+			vec.Y(0.0f);
+			float dist = vec.Length();
+			// 巡回ポイントが近すぎる場合は、スルー
+			if (dist < patrolNearDist) continue;
+			// 一番最初の巡回ポイントもしくは、
+			// 現在一番近い巡回ポイントよりさらに近い場合は、
+			// 巡回ポイントの番号を置き換える
+			if (nearIndex < 0 || dist < nearDist)
+			{
+				nearIndex = i;
+				nearDist = dist;
+			}
+		}
+		mNextPatrolIndex = nearIndex;
+	}
+	// 巡回する道が変更されていたら、
+	// 巡回ポイントの番号を変更しない
+	else if (mIsChangeRoad)
+	{
+
+	}
+	// 巡回中だった場合、次の巡回ポイントを指定
+	// 全ての巡回ポイントを通った場合自分を移動が終了した
+	else
+	{
+		mNextPatrolIndex++;
+		if (mNextPatrolIndex >= size)
+		{
+			mIsMoveEnd = true;
+			return;
+		}
+	}
+
+	// 次に巡回するポイントが決まった場合
+	if (mNextPatrolIndex >= 0)
+	{
+		CNavManager* navMgr = CNavManager::Instance();
+		if (navMgr != nullptr)
+		{
+			// 巡回ポイントの経路探索ノードの位置を設定しなおすことで、
+			// 各ノードへの接続情報を更新
+			for (CNavNode* node : mPatrolPoints)
+			{
+				node->SetPos(node->GetPos());
+			}
+			// 巡回ポイントまでの最短経路を求める
+			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute));
+			{
+				// 次の目的地のインデックスを設定
+				mNextMoveIndex = 1;
+			}
+		}
 	}
 }
-
-// 状態切り替え
-void CVehicleBase::ChangeState(EState state)
-{
-	// 同じなら処理しない
-	if (state == mState) return;
-
-	mState = state;
-}
-
-#if _DEBUG
-// 状態の文字列を取得
-std::string CVehicleBase::GetStateStr(EState state) const
-{
-	switch (state)
-	{
-	// 共通
-	case EState::eMove:			return "移動中";
-	case EState::eStop:			return "停止中";
-	case EState::eBroken:		return "壊れている";
-	case EState::eChangeRoad:	return "車線変更";
-
-	// トラック
-	case EState::eCollect:		return "回収中";
-	default:					return "";
-	}
-}
-#endif

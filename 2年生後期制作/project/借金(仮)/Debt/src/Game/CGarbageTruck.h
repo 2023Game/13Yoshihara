@@ -12,7 +12,8 @@ class CGarbageTruck : public CVehicleBase , public CGarbageTruckStatus
 {
 public:
 	// コンストラクタ
-	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road);
+	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, 
+		ERoadType road, std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
 	~CGarbageTruck();
 
@@ -28,7 +29,28 @@ private:
 	void UpdateStop();
 	// 壊れた処理
 	void UpdateBroken();
+	// 車線変更処理
+	void UpdateChangeRoad();
 	// 回収処理
 	void UpdateCollect();
 
+	// 車の状態
+	enum class EState
+	{
+		eMove,		// 移動
+		eStop,		// 停止
+		eBroken,	// 壊れる
+		eChangeRoad,// 車線変更
+		eCollect,	// 回収
+	};
+	// 状態切り替え
+	void ChangeState(EState state);
+	EState mState;	// 車両の状態
+	int mStateStep;	// 状態内のステップ数
+	float mElapsedTime;	// 経過時間
+
+#if _DEBUG
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
+#endif
 };

@@ -21,7 +21,8 @@ public:
 	};
 
 	// コンストラクタ
-	CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road);
+	CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
+		ERoadType road, std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
 	~CVehicleBase();
 
@@ -37,6 +38,8 @@ public:
 	/// </summary>
 	/// <returns>trueならば、移動中</returns>
 	bool IsMove() const;
+	// 最後の巡回ポイントまでの移動が終了したかどうか
+	bool GetMoveEnd() const;
 
 	/// <summary>
 	/// 車線を変更する
@@ -53,30 +56,15 @@ public:
 	CCollider* GetBodyCol() const;
 	// 経路探索用コライダ―を取得する
 	CCollider* GetNavCol() const;
+
+	// 巡回ポイントのリストを設定する
+	void SetPatrolPoints(std::vector<CNavNode*> patrolPoints);
+
+	// 車両の有効無効を切り替える
+	void SetOnOff(bool setOnOff);
+	// mNextPatrolIndexをリセット
+	void ResetNextPatrolIndex();
 protected:
-	// 車線変更処理
-	void UpdateChangeRoad();
-
-	// トラックの状態
-	enum class EState
-	{
-		//	共通
-		eMove,		// 移動
-		eStop,		// 停止
-		eBroken,	// 壊れる
-		eChangeRoad,// 車線変更
-
-		// トラック
-		eCollect,	// 回収
-	};
-	// 状態切り替え
-	void ChangeState(EState state);
-	EState mState;	// 車両の状態
-#if _DEBUG
-	// 状態の文字列を取得
-	std::string GetStateStr(EState state) const;
-#endif
-
 	// どの道にいる状態か
 	ERoadType mRoadType;
 	// 今の道の進む方向
@@ -99,4 +87,23 @@ protected:
 	CCollider* mpBodyCol;
 	// 経路探索用のコライダ―
 	CCollider* mpNavCol;
+
+	// 指定した位置まで移動する
+	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
+	/// <summary>
+	/// 次に巡回するポイントを変更
+	/// </summary>
+	/// <param name="patrolNearDist">設定できる最短距離</param>
+	void ChangePatrolPoint(float patrolNearDist);
+
+	// 巡回ポイントのリスト
+	std::vector<CNavNode*> mPatrolPoints;
+	int mNextPatrolIndex;	// 次に巡回するポイントの番号
+
+	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用
+	int mNextMoveIndex;					// 次に移動するノードのインデックス値
+
+	bool mIsMoveEnd;	// 最後まで移動したかどうか
+	bool mIsMovePause;	// 移動の中断中かどうか
+	bool mIsChangeRoad;	// 道が変更されたかどうか
 };

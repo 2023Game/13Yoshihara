@@ -16,10 +16,17 @@
 #define NODE_POS2	CVector(-20.0f,0.0f,-35.0f)
 #define NODE_POS3	CVector( 20.0f,0.0f,-35.0f)
 
+#define PATROL_NEAR_DIST 0.0f	// 巡回開始時に選択される巡回ポイントの最短距離
+#define ROTATE_SPEED 6.0f	// 回転速度
+
 // コンストラクタ
-CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, ERoadType road)
-	: CVehicleBase(model, pos, rotation, road)
+CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
+	ERoadType road, std::vector<CNavNode*> patrolPoints)
+	: CVehicleBase(model, pos, rotation, road, patrolPoints)
 	, CGarbageTruckStatus()
+	, mState(EState::eMove)
+	, mStateStep(0)
+	, mElapsedTime(0.0f)
 {
 	// プレイヤー、敵、生成場所、車両、地形
 	// と衝突判定する本体コライダ―
@@ -161,10 +168,45 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
-	// 動いている
-	mIsMove = true;
-	// 正面へ移動
-	mMoveSpeed = VectorZ() * GetBaseMoveSpeed();
+	// ステップごとに処理を切り替える
+	switch (mStateStep)
+	{
+		// ステップ0：移動開始時の巡回ポイントを求める
+	case 0:
+		// 巡回ポイントを求める
+		ChangePatrolPoint(PATROL_NEAR_DIST);
+		mStateStep++;
+		break;
+
+		// ステップ1：巡回ポイントまで移動
+	case 1:
+	{
+		// 最短経路の次のノードまで移動
+		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
+
+		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+			// 移動が終われば、次のノードへ切り替え
+			mNextMoveIndex++;
+			// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
+			if (mNextMoveIndex >= mMoveRoute.size())
+			{
+				mStateStep++;
+			}
+		}
+		break;
+	}
+	// 次の巡回ポイントを求める
+	case 2:
+		ChangePatrolPoint(PATROL_NEAR_DIST);
+		// 全ての巡回ポイントへの移動が終わったなら終了
+		if (mIsMoveEnd)
+		{
+			return;
+		}
+		mStateStep = 1;
+		break;
+	}
 }
 
 // 停止処理
@@ -201,9 +243,61 @@ void CGarbageTruck::UpdateBroken()
 	}
 }
 
+// 車線変更処理
+void CGarbageTruck::UpdateChangeRoad()
+{
+	// 動いている
+	mIsMove = true;
+	bool isEnd = false;
+	// 車線変更移動
+	ChangeRoad(isEnd);
+
+	// trueならば、車線変更が終わった
+	if (isEnd)
+	{
+		// 移動状態に戻す
+		ChangeState(EState::eMove);
+	}
+}
+
 
 // 回収処理
 void CGarbageTruck::UpdateCollect()
 {
 }
+
+// 状態切り替え
+void CGarbageTruck::ChangeState(EState state)
+{
+	// 同じなら処理しない
+	if (state == mState) return;
+
+	// 移動から破壊以外に変更されるとき
+	// 移動の中断中
+	if (mState == EState::eMove &&
+		state != EState::eBroken)
+	{
+		mIsMovePause = true;
+	}
+
+	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+}
+
+#if _DEBUG
+// 状態の文字列を取得
+std::string CGarbageTruck::GetStateStr(EState state) const
+{
+	switch (state)
+	{
+	case EState::eMove:			return "移動中";
+	case EState::eStop:			return "停止中";
+	case EState::eBroken:		return "壊れている";
+	case EState::eChangeRoad:	return "車線変更";
+	case EState::eCollect:		return "回収中";
+	default:					return "";
+	}
+}
+#endif
 
