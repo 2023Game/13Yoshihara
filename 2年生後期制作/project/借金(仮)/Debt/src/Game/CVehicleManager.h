@@ -9,10 +9,10 @@ class CTrashVehicleSpawnZone;
 class CNavNode;
 
 // 位置
-#define CAR_LEFT_POS1 CVector(-60.0f,0.0f,300.0f)	// 左から1番
-#define CAR_LEFT_POS2 CVector(-20.0f,0.0f,300.0f)	// 左から2番
-#define CAR_RIGHT_POS1 CVector(60.0f,0.0f,-300.0f)	// 右から1番
-#define CAR_RIGHT_POS2 CVector(20.0f,0.0f,-300.0f)	// 右から2番
+#define CAR_LEFT_POS1  CVector(-300.0f,0.0f, 500.0f)	// 左から1番
+#define CAR_LEFT_POS2  CVector( 300.0f,0.0f, 580.0f)	// 左から2番
+#define CAR_RIGHT_POS1 CVector( 300.0f,0.0f,-500.0f)	// 右から1番
+#define CAR_RIGHT_POS2 CVector(-300.0f,0.0f,-580.0f)	// 右から2番
 
 // 回転
 #define CAR_LEFT_ROTATION CVector(0.0f,180.0f,0.0f)	// 左道路の方向

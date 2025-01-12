@@ -62,8 +62,8 @@ public:
 
 	// 車両の有効無効を切り替える
 	void SetOnOff(bool setOnOff);
-	// mNextPatrolIndexをリセット
-	void ResetNextPatrolIndex();
+	// 変数をリセット
+	virtual void Reset();
 protected:
 	// どの道にいる状態か
 	ERoadType mRoadType;
@@ -90,11 +90,8 @@ protected:
 
 	// 指定した位置まで移動する
 	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
-	/// <summary>
-	/// 次に巡回するポイントを変更
-	/// </summary>
-	/// <param name="patrolNearDist">設定できる最短距離</param>
-	void ChangePatrolPoint(float patrolNearDist);
+	// 次に巡回するポイントを変更
+	void ChangePatrolPoint();
 
 	// 巡回ポイントのリスト
 	std::vector<CNavNode*> mPatrolPoints;

@@ -138,14 +138,13 @@ void CVehicleBase::SetOnOff(bool setOnOff)
 {
 	SetEnable(setOnOff);
 	SetShow(setOnOff);
-	// 移動終了をリセット
-	mIsMoveEnd = false;
 }
 
-// mNextPatrolIndexをリセット
-void CVehicleBase::ResetNextPatrolIndex()
+// 変数をリセット
+void CVehicleBase::Reset()
 {
 	mNextPatrolIndex = -1;
+	mIsMoveEnd = false;
 }
 
 // 指定した位置まで移動する
@@ -189,36 +188,17 @@ bool CVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpe
 }
 
 // 次に巡回するポイントを変更
-void CVehicleBase::ChangePatrolPoint(float patrolNearDist)
+void CVehicleBase::ChangePatrolPoint()
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
 	int size = mPatrolPoints.size();
 	if (size == 0) return;
 
-	// 巡回開始時であれば、一番近い巡回ポイントを選択
+	// 巡回開始時であれば、一番最初の巡回ポイントを選択
 	if (mNextPatrolIndex == -1)
 	{
-		int nearIndex = -1;	// 一番近い巡回ポイントの番号
-		float nearDist = 0.0f;	// 一番近い巡回ポイントまでの距離
-		// 全ての巡回ポイントの距離を調べ、一番近い巡回ポイントを探す
-		for (int i = 0; i < size; i++)
-		{
-			CVector point = mPatrolPoints[i]->GetPos();
-			CVector vec = point - Position();
-			vec.Y(0.0f);
-			float dist = vec.Length();
-			// 巡回ポイントが近すぎる場合は、スルー
-			if (dist < patrolNearDist) continue;
-			// 一番最初の巡回ポイントもしくは、
-			// 現在一番近い巡回ポイントよりさらに近い場合は、
-			// 巡回ポイントの番号を置き換える
-			if (nearIndex < 0 || dist < nearDist)
-			{
-				nearIndex = i;
-				nearDist = dist;
-			}
-		}
-		mNextPatrolIndex = nearIndex;
+		// 一番最初の巡回ポイントに設定する
+		mNextPatrolIndex = 0;
 	}
 	// 巡回する道が変更されていたら、
 	// 巡回ポイントの番号を変更しない
@@ -227,7 +207,7 @@ void CVehicleBase::ChangePatrolPoint(float patrolNearDist)
 
 	}
 	// 巡回中だった場合、次の巡回ポイントを指定
-	// 全ての巡回ポイントを通った場合自分を移動が終了した
+	// 全ての巡回ポイントを通った場合移動が終了
 	else
 	{
 		mNextPatrolIndex++;

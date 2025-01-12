@@ -22,6 +22,8 @@ public:
 	// Õ“Ëˆ—
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
 
+	// •Ï”‚ğƒŠƒZƒbƒg
+	void Reset() override;
 private:
 	// ˆÚ“®ˆ—
 	void UpdateMove();

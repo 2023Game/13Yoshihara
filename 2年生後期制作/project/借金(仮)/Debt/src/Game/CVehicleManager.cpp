@@ -421,6 +421,8 @@ void CVehicleManager::SpawnVehicle()
 			mpPunishTruck->ChangeRoadType(punishRoadType);
 			// 巡回ポイントのリストを設定
 			mpPunishTruck->SetPatrolPoints(patrolPoints);
+			// 変数をリセット
+			mpPunishTruck->Reset();
 
 			// 描画更新開始
 			mpPunishTruck->SetOnOff(true);
@@ -505,6 +507,8 @@ void CVehicleManager::SpawnVehicle()
 			car->ChangeRoadType(carRoadType);
 			// 巡回ポイントのリストを設定
 			car->SetPatrolPoints(patrolPoints);
+			// 変数をリセット
+			car->Reset();
 
 			// 描画更新開始
 			car->SetOnOff(true);
@@ -598,6 +602,8 @@ void CVehicleManager::SpawnVehicle()
 			mpGarbageTruck->ChangeRoadType(truckRoadType);
 			// 巡回ポイントのリストを設定
 			mpGarbageTruck->SetPatrolPoints(patrolPoints);
+			// 変数をリセット
+			mpGarbageTruck->Reset();
 
 			// 描画更新開始
 			mpGarbageTruck->SetOnOff(true);

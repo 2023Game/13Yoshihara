@@ -165,47 +165,55 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	}
 }
 
+// 変数をリセット
+void CGarbageTruck::Reset()
+{
+	CVehicleBase::Reset();
+
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+}
+
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
-	// ステップごとに処理を切り替える
-	switch (mStateStep)
+	// 全ての巡回ポイントへの移動が終わっていないなら
+	if (!mIsMoveEnd)
 	{
-		// ステップ0：移動開始時の巡回ポイントを求める
-	case 0:
-		// 巡回ポイントを求める
-		ChangePatrolPoint(PATROL_NEAR_DIST);
-		mStateStep++;
-		break;
-
-		// ステップ1：巡回ポイントまで移動
-	case 1:
-	{
-		// 最短経路の次のノードまで移動
-		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
-
-		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		// ステップごとに処理を切り替える
+		switch (mStateStep)
 		{
-			// 移動が終われば、次のノードへ切り替え
-			mNextMoveIndex++;
-			// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
-			if (mNextMoveIndex >= mMoveRoute.size())
+			// ステップ0：移動開始時の巡回ポイントを求める
+		case 0:
+			// 巡回ポイントを求める
+			ChangePatrolPoint();
+			mStateStep++;
+			break;
+
+			// ステップ1：巡回ポイントまで移動
+		case 1:
+		{
+			// 最短経路の次のノードまで移動
+			CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
+
+			if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 			{
-				mStateStep++;
+				// 移動が終われば、次のノードへ切り替え
+				mNextMoveIndex++;
+				// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
+				if (mNextMoveIndex >= mMoveRoute.size())
+				{
+					mStateStep++;
+				}
 			}
+			break;
 		}
-		break;
-	}
-	// 次の巡回ポイントを求める
-	case 2:
-		ChangePatrolPoint(PATROL_NEAR_DIST);
-		// 全ての巡回ポイントへの移動が終わったなら終了
-		if (mIsMoveEnd)
-		{
-			return;
+		// 次の巡回ポイントを求める
+		case 2:
+			ChangePatrolPoint();
+			mStateStep = 1;
+			break;
 		}
-		mStateStep = 1;
-		break;
 	}
 }
 
