@@ -27,6 +27,9 @@ public:
 	// デストラクタ
 	~CEnemyBase();
 
+	// 本体コライダ―を取得
+	CCollider* GetBodyCol() const;
+
 	// オブジェクト削除処理
 	void DeleteObject(CObjectBase* obj) override;
 	// 更新

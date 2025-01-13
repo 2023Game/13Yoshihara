@@ -14,7 +14,7 @@ CTrashField::CTrashField()
 {
 	mpModel = CResourceManager::Get<CModel>("TrashStage");
 
-	mpGroundColliderMesh = new CColliderMesh(this, ELayer::eField, CResourceManager::Get<CModel>("TrashStage_Ground_Collision"), true);
+	mpGroundColliderMesh = new CColliderMesh(this, ELayer::eGround, CResourceManager::Get<CModel>("TrashStage_Ground_Collision"), true);
 	mpWallColliderMesh = new CColliderMesh(this, ELayer::eWall, CResourceManager::Get<CModel>("TrashStage_Wall_Collision"), true);
 	mpObjectColliderMesh = new CColliderMesh(this, ELayer::eObject, CResourceManager::Get<CModel>("TrashStage_Object_Collision"), true);
 
@@ -59,4 +59,22 @@ void CTrashField::Update()
 void CTrashField::Render()
 {
 	CFieldBase::Render();
+}
+
+// 地面のコライダ―取得
+CCollider* CTrashField::GetGroundCol()
+{
+	return mpGroundColliderMesh;
+}
+
+// 壁のコライダ―取得
+CCollider* CTrashField::GetWallCol()
+{
+	return mpWallColliderMesh;
+}
+
+// オブジェクトのコライダ―取得
+CCollider* CTrashField::GetObjCol()
+{
+	return mpObjectColliderMesh;
 }

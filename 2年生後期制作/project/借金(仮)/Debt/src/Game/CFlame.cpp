@@ -27,7 +27,7 @@ CFlame::CFlame(ETag tag)
 		1.0f
 	);
 	mpCollider->SetCollisionTags({ ETag::eField, ETag::eRideableObject });
-	mpCollider->SetCollisionLayers({ ELayer::eField });
+	mpCollider->SetCollisionLayers({ ELayer::eGround });
 }
 
 // デストラクタ
@@ -68,7 +68,7 @@ void CFlame::SetBlendType(EBlend type)
 // 衝突処理
 void CFlame::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	if (other->Layer() == ELayer::eField)
+	if (other->Layer() == ELayer::eGround)
 	{
 		float length = mMoveSpeed.Length();
 		CVector n = hit.adjust.Normalized();

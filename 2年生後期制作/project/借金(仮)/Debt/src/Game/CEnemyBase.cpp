@@ -77,6 +77,12 @@ CEnemyBase::~CEnemyBase()
 	}
 }
 
+// 本体コライダ―を取得
+CCollider* CEnemyBase::GetBodyCol() const
+{
+	return mpBodyCol;
+}
+
 // オブジェクト削除処理
 void CEnemyBase::DeleteObject(CObjectBase* obj)
 {
@@ -141,7 +147,7 @@ void CEnemyBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 	if (self == mpBodyCol)
 	{
 		// 衝突した相手がフィールドの場合
-		if (other->Layer() == ELayer::eField)
+		if (other->Layer() == ELayer::eGround)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
@@ -402,7 +408,7 @@ void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 				node->SetPos(node->GetPos());
 			}
 			// 巡回ポイントまでの最短経路を求める
-			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute));
+			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute))
 			{
 				// 次の目的地のインデックスを設定
 				mNextMoveIndex = 1;

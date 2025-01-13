@@ -237,7 +237,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 	if (self == mpBodyCol)
 	{
 		// 衝突した相手がフィールドの場合
-		if (other->Layer() == ELayer::eField)
+		if (other->Layer() == ELayer::eGround)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;

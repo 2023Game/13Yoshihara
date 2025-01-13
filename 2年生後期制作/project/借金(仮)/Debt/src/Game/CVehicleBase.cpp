@@ -145,6 +145,12 @@ void CVehicleBase::Reset()
 {
 	mNextPatrolIndex = -1;
 	mIsMoveEnd = false;
+
+	// 経路探索用のノードがあれば、座標を更新
+	if (mpNavNode != nullptr)
+	{
+		mpNavNode->SetPos(Position());
+	}
 }
 
 // 指定した位置まで移動する
@@ -231,7 +237,7 @@ void CVehicleBase::ChangePatrolPoint()
 				node->SetPos(node->GetPos());
 			}
 			// 巡回ポイントまでの最短経路を求める
-			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute));
+			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute))
 			{
 				// 次の目的地のインデックスを設定
 				mNextMoveIndex = 1;

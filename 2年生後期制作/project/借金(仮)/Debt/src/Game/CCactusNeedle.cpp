@@ -26,7 +26,7 @@ CCactusNeedle::CCactusNeedle(float speed, float dist)
 	);
 	// プレイヤーとフィールドと衝突するように設定
 	mpCollider->SetCollisionTags({ ETag::ePlayer/*, ETag::eField*/ });
-	mpCollider->SetCollisionLayers({ ELayer::ePlayer, ELayer::eField });
+	mpCollider->SetCollisionLayers({ ELayer::ePlayer, ELayer::eGround });
 }
 
 // デストラクタ

@@ -39,7 +39,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 		ETag::eVehicle,ETag::eField, });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eSpawnZone,ELayer::eVehicle,
-		ELayer::eField,ELayer::eWall,ELayer::eObject });
+		ELayer::eGround,ELayer::eWall,ELayer::eObject });
 
 	// 経路探索用のコライダ―作成
 	mpNavCol = new CColliderCapsule

@@ -92,7 +92,7 @@ CTrashPlayer::CTrashPlayer()
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject,
+	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,
 		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 攻撃コライダー

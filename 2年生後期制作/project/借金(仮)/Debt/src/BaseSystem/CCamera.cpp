@@ -7,6 +7,9 @@ std::list<CCamera*> CCamera::spCameraList;
 CCamera* CCamera::spMainCamera = nullptr;
 CCamera* CCamera::spCurrentCamera = nullptr;
 
+// カメラが衝突したときの調整値
+#define Camera_HIT_POSY 1.0f
+
 // コンストラクタ
 CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)
 	: CObjectBase(ETag::eCamera, ETaskPriority::eCamera)
@@ -339,6 +342,8 @@ void CCamera::ApplyCollision()
 	if (isHit)
 	{
 		mEye = rayStart + (rayEnd - rayStart).Normalized() * nearDist * mHitColRatio;
+		// 少し上に上げる
+		mEye += CVector(0.0f, Camera_HIT_POSY, 0.0f);
 	}
 }
 

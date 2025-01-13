@@ -39,7 +39,7 @@ CHomePlayer::CHomePlayer()
 		CAPSULE_RADIUS
 	);
 	//フィールド、壁、オブジェクトとだけ衝突
-	mpBodyCol->SetCollisionLayers({ ELayer::eField, ELayer::eWall, ELayer::eObject });
+	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject });
 
 	// 調べるオブジェクトを探知するコライダ―
 	mpSearchCol = new CColliderSphere

@@ -42,7 +42,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		ETag::eVehicle,ETag::eField, });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eSpawnZone,ELayer::eVehicle,
-		ELayer::eField,ELayer::eWall,ELayer::eObject });
+		ELayer::eGround,ELayer::eWall,ELayer::eObject });
 
 	// 経路探索用のコライダ―作成
 	mpNavCol = new CColliderCapsule
@@ -172,6 +172,8 @@ void CGarbageTruck::Reset()
 
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
+
+	mState = EState::eMove;
 }
 
 // 移動処理

@@ -66,7 +66,7 @@ void CTrashGameScene::Load()
 	new CNavManager();
 
 	// ゴミ拾いのフィールドクラスを作成
-	new CTrashField();
+	CTrashField* field = new CTrashField();
 
 	// 車両の管理クラス作成
 	mpCVehicleManager =
@@ -94,6 +94,10 @@ void CTrashGameScene::Load()
 		atPos + CVector(0.0f, 0.0f, 50.0f),
 		atPos
 	);
+	// 衝突判定するコライダ―を追加
+	mainCamera->AddCollider(field->GetGroundCol());
+	mainCamera->AddCollider(field->GetWallCol());
+	mainCamera->AddCollider(field->GetObjCol());
 
 	mainCamera->SetFollowTargetTf(player);
 

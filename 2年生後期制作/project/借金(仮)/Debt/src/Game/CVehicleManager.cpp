@@ -273,7 +273,7 @@ void CVehicleManager::Update()
 
 
 	// 出現までの時間が0以下なら出現
-	SpawnVehicle();
+	//SpawnVehicle();
 }
 
 // 使用するトラックを全て生成
@@ -348,8 +348,6 @@ void CVehicleManager::HideVehicle()
 // 乗り物を出現させる
 void CVehicleManager::SpawnVehicle()
 {
-	/*
-
 	// TODO：お仕置きだけ違う処理
 	// お仕置きトラックの出現時間が0以下なら出現
 	if (mPunishTruckPopTime <= 0.0f)
@@ -526,8 +524,6 @@ void CVehicleManager::SpawnVehicle()
 		// 出現までの時間を設定しなおす
 		mCarPopTime = CAR_POP_TIME;
 	}
-
-	*/
 
 	// トラックの出現時間が0以下なら出現
 	if (mTruckPopTime <= 0.0f)

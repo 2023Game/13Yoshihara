@@ -6,7 +6,7 @@ enum class ELayer
 {
 	eNone = -1,
 	eTest,
-	eField,
+	eGround,
 	eWall,
 	eObject,
 	eInteractObj,	// 調べるオブジェクト
