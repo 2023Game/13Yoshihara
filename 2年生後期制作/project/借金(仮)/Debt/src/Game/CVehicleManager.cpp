@@ -273,12 +273,38 @@ void CVehicleManager::Update()
 
 
 	// 出現までの時間が0以下なら出現
-	//SpawnVehicle();
+	SpawnVehicle();
+}
+
+// 道のX座標を取得
+float CVehicleManager::GetRoadPosX(std::string road)
+{
+	// 左から1番目の道
+	if (road == "L1")
+	{
+		return PATROLPOINT_L1_2.X();
+	}
+	// 左から2番目の道
+	else if (road == "L2")
+	{
+		return PATROLPOINT_L2_2.X();
+	}
+	// 右から1番目の道
+	else if (road == "R1")
+	{
+		return PATROLPOINT_R1_2.X();
+	}
+	// 右から2番目の道
+	else
+	{
+		return PATROLPOINT_R2_2.X();
+	}
 }
 
 // 使用するトラックを全て生成
 void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck)
 {
+	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
 	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
 
 	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight1, mPatrolPointsR1);
@@ -348,6 +374,7 @@ void CVehicleManager::HideVehicle()
 // 乗り物を出現させる
 void CVehicleManager::SpawnVehicle()
 {
+	/*
 	// TODO：お仕置きだけ違う処理
 	// お仕置きトラックの出現時間が0以下なら出現
 	if (mPunishTruckPopTime <= 0.0f)
@@ -364,12 +391,12 @@ void CVehicleManager::SpawnVehicle()
 
 			// ランダムに場所を決定
 			RandomDecidePopPosition(punishRoadType, punishPopPos);
-			// 生成場所に車両がいたら抽選しなおし
-			if (IsSpawnZone(punishRoadType))
-			{
-				// ランダムに場所を決定
-				RandomDecidePopPosition(punishRoadType, punishPopPos);
-			}
+			//// 生成場所に車両がいたら抽選しなおし
+			//if (IsSpawnZone(punishRoadType))
+			//{
+			//	// ランダムに場所を決定
+			//	RandomDecidePopPosition(punishRoadType, punishPopPos);
+			//}
 			//// 停止している車両がいる道で生成されるとき抽選しなおし
 			//while (IsVehicle(punishRoadType))
 			//{
@@ -442,12 +469,12 @@ void CVehicleManager::SpawnVehicle()
 
 		// ランダムに場所を決定
 		RandomDecidePopPosition(carRoadType, carPopPos);
-		// 生成場所に車両がいたら抽選しなおし
-		if (IsSpawnZone(carRoadType))
-		{
-			// ランダムに場所を決定
-			RandomDecidePopPosition(carRoadType, carPopPos);
-		}
+		//// 生成場所に車両がいたら抽選しなおし
+		//if (IsSpawnZone(carRoadType))
+		//{
+		//	// ランダムに場所を決定
+		//	RandomDecidePopPosition(carRoadType, carPopPos);
+		//}
 		//// 停止している車両がいる道で生成されるとき抽選しなおし
 		//while (IsVehicle(carRoadType))
 		//{
@@ -510,20 +537,21 @@ void CVehicleManager::SpawnVehicle()
 
 			// 描画更新開始
 			car->SetOnOff(true);
-			// 車を生成した
-			isPop = true;
+			// 出現までの時間を設定しなおす
+			mCarPopTime = CAR_POP_TIME;
 			break;
 		}
-		// 車を生成できていなければ
-		if (!isPop)
-		{
-			// 新しい車を追加して描画更新開始
-			mCars.push_back(new CCar(mpCarModel, carPopPos, popRotation, carRoadType, patrolPoints));
-			mCars.back()->SetOnOff(true);
-		}
-		// 出現までの時間を設定しなおす
-		mCarPopTime = CAR_POP_TIME;
+		//// 車を生成できていなければ
+		//if (!isPop)
+		//{
+		//	// 新しい車を追加して描画更新開始
+		//	mCars.push_back(new CCar(mpCarModel, carPopPos, popRotation, carRoadType, patrolPoints));
+		//	mCars.back()->SetOnOff(true);
+		//}
+
 	}
+
+	*/
 
 	// トラックの出現時間が0以下なら出現
 	if (mTruckPopTime <= 0.0f)

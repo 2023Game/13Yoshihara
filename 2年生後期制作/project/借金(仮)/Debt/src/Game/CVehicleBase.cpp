@@ -4,6 +4,7 @@
 #include "CVehicleManager.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
+#include "Maths.h"
  
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
 #define FRONT_WIDTH		40.0f	// 前方判定の幅
@@ -17,6 +18,8 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	: CCharaBase(ETag::eVehicle, ETaskPriority::eVehicle)
 	, mpModel(model)
 	, mpBodyCol(nullptr)
+	, mpFrontCol(nullptr)
+	, mpSideCol(nullptr)
 	, mRoadType(road)
 	, mCurrentRoadRotation(rotation)
 	, mNextPatrolIndex(-1)
@@ -40,6 +43,11 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	mpNode1->SetEnable(false);
 	mpNode2->SetEnable(false);
 	mpNode3->SetEnable(false);
+
+	// 車線変更用のノードを生成
+	mpChangeRoadPoint = new CNavNode(Position(), true);
+	// 最初はノードを無効
+	mpChangeRoadPoint->SetEnable(false);
 
 	// 最初は描画、更新しない
 	SetEnable(false);
@@ -243,5 +251,67 @@ void CVehicleBase::ChangePatrolPoint()
 				mNextMoveIndex = 1;
 			}
 		}
+	}
+}
+
+// 車線変更で移動するノードの座標を設定する
+void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
+{
+	// 前の車の座標
+	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	if (vehicleMgr == nullptr) return;
+	CVector frontVehiclePos = frontVehicle->Position();
+	CVector pos;
+	float roadPosX;
+
+	switch (mRoadType)
+	{
+	// 左から1番目の道
+	case ERoadType::eLeft1:
+		// 自分と前の車の中間地点を計算
+		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
+
+		// 変更先の道のX座標
+		roadPosX = vehicleMgr->GetRoadPosX("L2");
+		pos = CVector(roadPosX, 0.0f, pos.Z());
+		// 車線変更用のノードの座標を設定
+		mpChangeRoadPoint->SetPos(pos);
+		break;
+
+	// 左から2番目の道
+	case ERoadType::eLeft2:
+		// 自分と前の車の中間地点を計算
+		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
+
+		// 変更先の道のX座標
+		roadPosX = vehicleMgr->GetRoadPosX("L1");
+		pos = CVector(roadPosX, 0.0f, pos.Z());
+		// 車線変更用のノードの座標を設定
+		mpChangeRoadPoint->SetPos(pos);
+		break;
+
+	// 右から1番目の道
+	case ERoadType::eRight1:
+		// 自分と前の車の中間地点を計算
+		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
+
+		// 変更先の道のX座標
+		roadPosX = vehicleMgr->GetRoadPosX("R1");
+		pos = CVector(roadPosX, 0.0f, pos.Z());
+		// 車線変更用のノードの座標を設定
+		mpChangeRoadPoint->SetPos(pos);
+		break;
+
+	// 右から2番目の道
+	case ERoadType::eRight2:
+		// 自分と前の車の中間地点を計算
+		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
+
+		// 変更先の道のX座標
+		roadPosX = vehicleMgr->GetRoadPosX("R2");
+		pos = CVector(roadPosX, 0.0f, pos.Z());
+		// 車線変更用のノードの座標を設定
+		mpChangeRoadPoint->SetPos(pos);
+		break;
 	}
 }

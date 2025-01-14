@@ -67,6 +67,18 @@ public:
 	/// <returns>trueならば、いる</returns>
 	bool IsSpawnZone(CVehicleBase::ERoadType roadType);
 
+	/// <summary>
+	/// 道のX座標を取得
+	/// </summary>
+	/// <param name="road">道の指定
+	/// L1 = 左から1番目の道
+	/// L2 = 左から2番目の道
+	/// R1 = 右から1番目の道
+	/// R2 = 右から2番目の道
+	/// </param>
+	/// <returns></returns>
+	float GetRoadPosX(std::string road);
+
 private:
 	// 使用するトラックを全て生成
 	void CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck);

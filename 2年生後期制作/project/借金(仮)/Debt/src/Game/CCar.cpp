@@ -158,6 +158,17 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	}
 }
 
+// •Ï”‚ğƒŠƒZƒbƒg
+void CCar::Reset()
+{
+	CVehicleBase::Reset();
+
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+
+	mState = EState::eMove;
+}
+
 // ˆÚ“®ˆ—
 void CCar::UpdateMove()
 {

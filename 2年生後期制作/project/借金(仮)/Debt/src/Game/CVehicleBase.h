@@ -85,6 +85,10 @@ protected:
 
 	// 本体のコライダ―
 	CCollider* mpBodyCol;
+	// 前方に車がいるかの確認用コライダ―
+	CCollider* mpFrontCol;
+	// 横に車がいるかの確認用コライダ―
+	CCollider* mpSideCol;
 	// 経路探索用のコライダ―
 	CCollider* mpNavCol;
 
@@ -92,6 +96,14 @@ protected:
 	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
 	// 次に巡回するポイントを変更
 	void ChangePatrolPoint();
+	/// <summary>
+	/// 車線変更で移動するノードの座標を設定する
+	/// </summary>
+	/// <param name="frontVehicle">前にいる車のポインタ</param>
+	void SetChangeRoadPoint(CVehicleBase* frontVehicle);
+
+	// 車線変更時の移動先のノード
+	CNavNode* mpChangeRoadPoint;
 
 	// 巡回ポイントのリスト
 	std::vector<CNavNode*> mPatrolPoints;

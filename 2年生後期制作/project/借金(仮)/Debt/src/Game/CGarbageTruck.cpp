@@ -10,6 +10,12 @@
 #define TRUCK_WIDTH		30.0f	// トラックの幅
 #define TRUCK_RADIUS	15.0f	// トラックの半径
 
+// 前方コライダ―の座標
+#define FRONT_COL_POS CVector(0.0f,0.0f,60.0f)
+// 横コライダーの座標
+#define LEFT_COL_POS	CVector(-40.0f,0.0f,0.0f)	// 左
+#define RIGHT_COL_POS	CVector( 40.0f,0.0f,0.0f)	// 右
+
 // ノードの座標
 #define NODE_POS0	CVector( 20.0f,0.0f, 35.0f)
 #define NODE_POS1	CVector(-20.0f,0.0f, 35.0f)
@@ -17,7 +23,7 @@
 #define NODE_POS3	CVector( 20.0f,0.0f,-35.0f)
 
 #define PATROL_NEAR_DIST 0.0f	// 巡回開始時に選択される巡回ポイントの最短距離
-#define ROTATE_SPEED 6.0f	// 回転速度
+#define ROTATE_SPEED 3.0f	// 回転速度
 
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
@@ -43,6 +49,41 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eSpawnZone,ELayer::eVehicle,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject });
+
+	// 車両と衝突判定する前方向コライダ―
+	mpFrontCol = new CColliderCapsule
+	(
+		this, ELayer::eVehicleSearch,
+		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
+		TRUCK_RADIUS, true
+	);
+	mpFrontCol->Position(FRONT_COL_POS);
+	mpFrontCol->SetCollisionTags({ ETag::eVehicle });
+	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
+
+	// 車両と衝突判定する横方向コライダ―
+	mpSideCol = new CColliderCapsule
+	(
+		this, ELayer::eVehicleSearch,
+		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
+		TRUCK_RADIUS, true
+	);
+
+	// もう一つの車道が右にある車道
+	if (mRoadType == ERoadType::eLeft1 ||
+		mRoadType == ERoadType::eRight1)
+	{
+		mpSideCol->Position(RIGHT_COL_POS);
+	}	
+	// もう一つの車道が左にある車道
+	else
+	{
+		mpSideCol->Position(LEFT_COL_POS);
+	}
+	mpSideCol->SetCollisionTags({ ETag::eVehicle });
+	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
 
 	// 経路探索用のコライダ―作成
 	mpNavCol = new CColliderCapsule
