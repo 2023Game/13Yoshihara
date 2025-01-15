@@ -232,7 +232,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				direction.Y(0.0f);
 				// 相手が受けるノックバック速度に、
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+				enemy->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				enemy->TakeDamage(GetAttackPower(), this);
 			}
@@ -257,7 +257,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				direction.Y(0.0f);
 				// 相手が受けるノックバック速度に、
 				// 自分が与えるノックバック速度の2倍を自分から相手の方向に設定
-				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt() * 2.0f);
+				enemy->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// クリティカルダメージを与える
 				enemy->TakeCritical(GetAttackPower(), this);
 			}

@@ -128,5 +128,6 @@ void CTrashGameScene::Update()
 		}
 	}
 
+	// 車両管理クラスの更新
 	mpCVehicleManager->Update();
 }

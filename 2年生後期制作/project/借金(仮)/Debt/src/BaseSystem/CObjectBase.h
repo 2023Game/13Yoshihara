@@ -83,6 +83,8 @@ public:
 	// 経路探索用のノードを取得
 	CNavNode* GetNavNode() const;
 
+	// 攻撃を受けているかどうか
+	bool IsDamaging() const;
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
 	bool mIsEnableCol;	// 衝突判定を行うかどうか
@@ -107,4 +109,7 @@ protected:
 	std::list<CObjectBase*> mAttackHitObjects;
 
 	CNavNode* mpNavNode;	// 経路探索用のノードのポインタ
+
+	// 攻撃を受けているか
+	bool mIsDamage;
 };

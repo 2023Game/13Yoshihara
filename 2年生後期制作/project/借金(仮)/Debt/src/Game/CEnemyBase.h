@@ -63,9 +63,6 @@ protected:
 
 	CTransform* mpRideObject;
 
-	// 攻撃を受けているか
-	bool mIsDamage;
-
 	float mFovAngle;	// 視野範囲の角度
 	float mFovLength;	// 視野範囲の距離
 	CDebugFieldOfView* mpDebugFov;	// 視野範囲のデバッグ表示
@@ -95,4 +92,7 @@ protected:
 
 	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用
 	int mNextMoveIndex;					// 次に移動するノードのインデックス値
+
+	// 攻撃をしてきた相手記憶用
+	CObjectBase* mDamageCauser;
 };

@@ -64,7 +64,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
 #define EYE_HEIGHT 5.0f		// 視点の高さ
 
-#define ROTATE_SPEED 6.0f	// 回転速度
+#define ROTATE_SPEED 9.0f	// 回転速度
 #define ATTACK_RANGE 18.0f	// 攻撃する距離
 
 #define PATROL_INTERVAL	3.0f	// 次の巡回ポイントに移動開始するまでの時間
@@ -288,10 +288,10 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				direction = direction.Normalized();
 				direction.Y(0.0f);
 				// 相手が受けるノックバック速度に、
-				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				player->SetKnockbackReceived(direction * GetKnockbackDealt());
+				// 自分が与えるノックバック速度の2倍を自分から相手の方向に設定
+				player->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// 攻撃力分のダメージを与える
-				player->TakeDamage(GetAttackPower(), this);
+				player->TakeCritical(GetAttackPower(), this);
 			}
 		}
 	}
@@ -305,25 +305,29 @@ void CTrashEnemy::Render()
 	// 巡回状態であれば、
 	if (mState == EState::ePatrol)
 	{
-		float rad = 1.0f;
 		// 巡回ポイントを全て描画
 		int size = mPatrolPoints.size();
 		for (int i = 0; i < size; i++)
 		{
-			CMatrix m;
-			m.Translate(mPatrolPoints[i]->GetPos() + CVector(0.0f, rad * 2.0f, 0.0f));
 			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
-			Primitive::DrawWireSphere(m, rad, c);
+			Primitive::DrawWireBox
+			(
+				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				CVector::one,
+				c
+			);
 		}
 	}
 	// 見失った状態であれば、
 	else if (mState == EState::eLost)
 	{
 		// プレイヤーを見失った位置にデバッグ表示
-		float rad = 2.0f;
-		CMatrix m;
-		m.Translate(mpLostPlayerNode->GetPos() + CVector(0.0f, rad, 0.0f));
-		Primitive::DrawWireSphere(m, rad, CColor::blue);
+		Primitive::DrawWireBox
+		(
+			mpLostPlayerNode->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+			CVector::one,
+			CColor::blue
+		);
 	}
 
 	CPlayerBase* player = CPlayerBase::Instance();
@@ -448,6 +452,10 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
+		if (mMoveRoute.size() == 1)
+		{
+			mNextMoveIndex = 0;
+		}
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
 
@@ -507,6 +515,7 @@ void CTrashEnemy::UpdateChase()
 	{
 		// 見失った位置にノードを配置
 		mpLostPlayerNode->SetPos(targetPos);
+		mpLostPlayerNode->SetEnable(true);
 		ChangeState(EState::eLost);
 		mStateStep = 0;
 		return;
@@ -543,6 +552,9 @@ void CTrashEnemy::UpdateChase()
 	CNavManager* navMgr = CNavManager::Instance();
 	if (navMgr != nullptr)
 	{
+		// 経路探索用のノードの座標を更新
+		mpNavNode->SetPos(Position());
+
 		// 自身のノードからプレイヤーのノードまでの最短経路を求める
 		CNavNode* playerNode = player->GetNavNode();
 		if (navMgr->Navigate(mpNavNode, playerNode, mMoveRoute))
@@ -590,6 +602,9 @@ void CTrashEnemy::UpdateLost()
 	{
 	// ステップ0：見失った位置までの最短経路を求める
 	case 0:
+		// 経路探索用のノードの座標を更新
+		mpNavNode->SetPos(Position());
+
 		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mMoveRoute))
 		{
 			// 見失った位置まで経路が繋がっていたら、次のステップへ
@@ -600,6 +615,7 @@ void CTrashEnemy::UpdateLost()
 		{
 			// 経路が繋がっていなければ、待機状態へ戻す
 			ChangeState(EState::eIdle);
+			mpLostPlayerNode->SetEnable(false);
 		}
 		break;
 	case 1:
@@ -611,6 +627,7 @@ void CTrashEnemy::UpdateLost()
 			{
 				// 移動が終われば、待機状態へ移行
 				ChangeState(EState::eIdle);
+				mpLostPlayerNode->SetEnable(false);
 			}
 		}
 		break;
@@ -708,7 +725,18 @@ void CTrashEnemy::UpdateDamageEnd()
 		// アニメーションが終了したら待機へ
 		if (IsAnimationFinished())
 		{
-			ChangeState(EState::eIdle);
+			// 攻撃してきた相手がプレイヤーなら追跡状態へ
+			if (mDamageCauser = CPlayerBase::Instance())
+			{
+				ChangeState(EState::eChase);
+			}
+			// それ以外なら待機状態へ
+			else
+			{
+				ChangeState(EState::eIdle);
+			}
+			// 攻撃してきた相手の記憶をリセットする
+			mDamageCauser = nullptr;
 		}
 		break;
 	}
@@ -913,8 +941,8 @@ void CTrashEnemy::UpdateAttackEnd()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 待機状態へ
-			ChangeState(EState::eIdle);
+			// 追跡状態へ
+			ChangeState(EState::eChase);
 		}
 		break;
 	}
@@ -923,6 +951,15 @@ void CTrashEnemy::UpdateAttackEnd()
 // クリティカル攻撃開始
 void CTrashEnemy::UpdateCriticalStart()
 {
+	// プレイヤーの座標
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector targetPos = player->Position();
+	// プレイヤーの方向へ移動
+	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	{
+
+	}
+
 	switch (mStateStep)
 	{
 	case 0:
@@ -1005,8 +1042,8 @@ void CTrashEnemy::UpdateCriticalEnd()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 待機状態へ
-			ChangeState(EState::eIdle);
+			// 追跡状態へ
+			ChangeState(EState::eChase);
 		}
 		break;
 	}
@@ -1054,11 +1091,23 @@ void CTrashEnemy::UpdateOpenClose()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// ジャンプしていないなら
+			// ジャンプしていない
 			if (!mIsJump)
 			{
-				// 待機状態へ
-				ChangeState(EState::eIdle);
+				// プレイヤーに攻撃されていたら
+				if (mDamageCauser == CPlayerBase::Instance())
+				{
+					// 追跡状態へ
+					ChangeState(EState::eChase);
+					// 攻撃してきた相手の記憶をリセット
+					mDamageCauser = nullptr;
+				}
+				// それ以外なら
+				else
+				{
+					// 待機状態へ
+					ChangeState(EState::eIdle);
+				}
 			}
 			// ジャンプしているならジャンプへ戻る
 			else
@@ -1135,12 +1184,13 @@ void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer)
 			ChangeState(EState::eDamageStart);
 		}
 	}
-	// 閉じていればノーダメージで蓋が開くのみ
+	// 閉じていればノーダメージで蓋が開く
 	else
 	{
 		// 開閉状態へ移行
 		ChangeState(EState::eOpenClose);
 	}
+	mDamageCauser = causer;
 }
 
 // クリティカルダメージを受ける

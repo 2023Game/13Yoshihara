@@ -20,6 +20,8 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	, mpBodyCol(nullptr)
 	, mpFrontCol(nullptr)
 	, mpSideCol(nullptr)
+	, mIsMove(false)
+	, mIsBroken(false)
 	, mRoadType(road)
 	, mCurrentRoadRotation(rotation)
 	, mNextPatrolIndex(-1)
@@ -27,11 +29,13 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	, mPatrolPoints(patrolPoints)
 	, mIsMoveEnd(false)
 	, mIsMovePause(false)
-	, mIsChangeRoad(false)
+	, mIsFrontVehicle(false)
+	, mIsSideVehicle(false)
 {
 	// 経路探索用のノードを作成
 	mpNavNode = new CNavNode(Position(), true);
 	mpNavNode->SetColor(CColor::blue);
+	mpNavNode->SetEnable(false);
 
 	// 車両の周り用のノードを生成
 	mpNode0 = new CNavNode(Position());
@@ -72,11 +76,8 @@ void CVehicleBase::Update()
 
 	Position(Position() + moveSpeed);
 
-	// 経路探索用のノードが存在すれば、座標を更新
-	if (mpNavNode != nullptr)
-	{
-		mpNavNode->SetPos(Position());
-	}
+	mIsFrontVehicle = false;
+	mIsSideVehicle = false;
 }
 
 // 衝突処理
@@ -102,6 +103,18 @@ bool CVehicleBase::GetMoveEnd() const
 	return mIsMoveEnd;
 }
 
+// 壊れているか
+bool CVehicleBase::IsBroken() const
+{
+	return mIsBroken;
+}
+
+// 前方に停止している車両がいるかどうか
+bool CVehicleBase::GetIsFrontVehicle() const
+{
+	return mIsFrontVehicle;
+}
+
 // 車線を変更する
 void CVehicleBase::ChangeRoad(bool& isEnd)
 {
@@ -115,6 +128,18 @@ void CVehicleBase::ChangeRoadType(ERoadType roadType)
 	if (roadType == mRoadType) return;
 
 	mRoadType = roadType;
+	// 横方向コライダ―の位置も設定
+	// もう一つの車道が右にある車道
+	if (mRoadType == ERoadType::eLeft1 ||
+		mRoadType == ERoadType::eRight1)
+	{
+		mpSideCol->Position(RIGHT_COL_POS);
+	}
+	// もう一つの車道が左にある車道
+	else
+	{
+		mpSideCol->Position(LEFT_COL_POS);
+	}
 }
 
 // 今どの道にいるか取得する
@@ -146,6 +171,7 @@ void CVehicleBase::SetOnOff(bool setOnOff)
 {
 	SetEnable(setOnOff);
 	SetShow(setOnOff);
+	mpNavNode->SetEnable(true);
 }
 
 // 変数をリセット
@@ -214,11 +240,11 @@ void CVehicleBase::ChangePatrolPoint()
 		// 一番最初の巡回ポイントに設定する
 		mNextPatrolIndex = 0;
 	}
-	// 巡回する道が変更されていたら、
+	// 移動が中断されていたら、
 	// 巡回ポイントの番号を変更しない
-	else if (mIsChangeRoad)
+	else if (mIsMovePause)
 	{
-
+		mIsMovePause = false;
 	}
 	// 巡回中だった場合、次の巡回ポイントを指定
 	// 全ての巡回ポイントを通った場合移動が終了
@@ -238,18 +264,15 @@ void CVehicleBase::ChangePatrolPoint()
 		CNavManager* navMgr = CNavManager::Instance();
 		if (navMgr != nullptr)
 		{
-			// 巡回ポイントの経路探索ノードの位置を設定しなおすことで、
-			// 各ノードへの接続情報を更新
-			for (CNavNode* node : mPatrolPoints)
-			{
-				node->SetPos(node->GetPos());
-			}
-			// 巡回ポイントまでの最短経路を求める
-			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute))
-			{
-				// 次の目的地のインデックスを設定
-				mNextMoveIndex = 1;
-			}
+			// 経路探索用のノードの座標を更新
+			mpNavNode->SetPos(Position());
+
+			// 次に巡回するポイントの経路を設定
+			mMoveRoute.clear();
+			mMoveRoute.push_back(mpNavNode);
+			mMoveRoute.push_back(mPatrolPoints[mNextPatrolIndex]);
+			// 次の目的地インデックスを設定
+			mNextMoveIndex = 1;
 		}
 	}
 }
@@ -272,7 +295,7 @@ void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
 		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
 
 		// 変更先の道のX座標
-		roadPosX = vehicleMgr->GetRoadPosX("L2");
+		roadPosX = vehicleMgr->GetRoadPosX(ERoadType::eLeft2);
 		pos = CVector(roadPosX, 0.0f, pos.Z());
 		// 車線変更用のノードの座標を設定
 		mpChangeRoadPoint->SetPos(pos);
@@ -284,7 +307,7 @@ void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
 		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
 
 		// 変更先の道のX座標
-		roadPosX = vehicleMgr->GetRoadPosX("L1");
+		roadPosX = vehicleMgr->GetRoadPosX(ERoadType::eLeft1);
 		pos = CVector(roadPosX, 0.0f, pos.Z());
 		// 車線変更用のノードの座標を設定
 		mpChangeRoadPoint->SetPos(pos);
@@ -296,7 +319,7 @@ void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
 		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
 
 		// 変更先の道のX座標
-		roadPosX = vehicleMgr->GetRoadPosX("R1");
+		roadPosX = vehicleMgr->GetRoadPosX(ERoadType::eRight2);
 		pos = CVector(roadPosX, 0.0f, pos.Z());
 		// 車線変更用のノードの座標を設定
 		mpChangeRoadPoint->SetPos(pos);
@@ -308,7 +331,7 @@ void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
 		pos = CVector::Lerp(Position(), frontVehiclePos, 0.5f);
 
 		// 変更先の道のX座標
-		roadPosX = vehicleMgr->GetRoadPosX("R2");
+		roadPosX = vehicleMgr->GetRoadPosX(ERoadType::eRight1);
 		pos = CVector(roadPosX, 0.0f, pos.Z());
 		// 車線変更用のノードの座標を設定
 		mpChangeRoadPoint->SetPos(pos);

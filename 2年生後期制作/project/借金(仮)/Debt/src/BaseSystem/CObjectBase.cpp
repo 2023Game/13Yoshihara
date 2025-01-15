@@ -14,6 +14,7 @@ CObjectBase::CObjectBase(ETag tag,
 	, mDepth(0.0f)
 	, mColor(CColor::white)
 	, mpNavNode(nullptr)
+	, mIsDamage(false)
 {
 }
 
@@ -120,6 +121,12 @@ void CObjectBase::AttackEnd()
 CNavNode* CObjectBase::GetNavNode() const
 {
 	return mpNavNode;
+}
+
+// 攻撃を受けているかどうか
+bool CObjectBase::IsDamaging() const
+{
+	return mIsDamage;
 }
 
 // 攻撃がヒットしたオブジェクトを追加

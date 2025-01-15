@@ -4,17 +4,13 @@
 #include "CNavNode.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
+#include "Primitive.h"
+#include "CVehicleManager.h"
 
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		30.0f	// トラックの幅
 #define TRUCK_RADIUS	15.0f	// トラックの半径
-
-// 前方コライダ―の座標
-#define FRONT_COL_POS CVector(0.0f,0.0f,60.0f)
-// 横コライダーの座標
-#define LEFT_COL_POS	CVector(-40.0f,0.0f,0.0f)	// 左
-#define RIGHT_COL_POS	CVector( 40.0f,0.0f,0.0f)	// 右
 
 // ノードの座標
 #define NODE_POS0	CVector( 20.0f,0.0f, 35.0f)
@@ -34,27 +30,27 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 {
-	// プレイヤー、敵、生成場所、車両、地形
+	// プレイヤー、敵、生成場所、車両、車両探知用、地形
 	// と衝突判定する本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this,ELayer::eVehicle,
-		CVector(0.0f,TRUCK_HEIGHT,TRUCK_WIDTH - TRUCK_RADIUS),
+		CVector(0.0f,TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
 		CVector(0.0f,TRUCK_HEIGHT,-TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
 	mpBodyCol->Position(0.0f, 0.0f, -2.0f);
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
-	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eSpawnZone,ELayer::eVehicle,
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,
+		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject });
 
 	// 車両と衝突判定する前方向コライダ―
 	mpFrontCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
-		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT,  TRUCK_WIDTH - TRUCK_RADIUS),
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
@@ -66,7 +62,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	mpSideCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
-		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT,  TRUCK_WIDTH - TRUCK_RADIUS),
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
@@ -160,12 +156,14 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		// 衝突した相手がプレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
-			// 移動していたら
+			// 自分が移動していたら
 			if (IsMove())
 			{
 				// プレイヤークラスを取得
 				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
 
+				// 攻撃を受けているなら処理しない
+				if (player->IsDamaging()) return;
 				// 自分から相手の方向
 				CVector direction = player->Position() - Position();
 				direction = direction.Normalized();
@@ -175,20 +173,19 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				player->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				player->TakeDamage(GetAttackPower(), this);
-
-				// 状態を停止に変更
-				ChangeState(EState::eStop);
 			}
 		}
 		// 衝突した相手が敵の場合
-		if (other->Layer() == ELayer::eEnemy)
+		else if (other->Layer() == ELayer::eEnemy)
 		{
-			// 移動していたら
+			// 自分が移動していたら
 			if (IsMove())
 			{
 				// 敵クラスを取得
 				CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
 
+				// 攻撃を受けているなら処理しない
+				if (enemy->IsDamaging()) return;
 				// 自分から相手の方向
 				CVector direction = enemy->Position() - Position();
 				direction = direction.Normalized();
@@ -198,11 +195,120 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				enemy->TakeDamage(GetAttackPower(), this);
-
-				// 状態を停止に変更
-				ChangeState(EState::eStop);
 			}
 		}
+		// 車両とぶつかったら止まる
+		else if (other->Layer() == ELayer::eVehicle)
+		{
+			// 止まる状態へ移行
+			ChangeState(EState::eStop);
+		}
+		//TODO：テスト用
+		else if (other->Layer() == ELayer::eAttackCol)
+		{
+			// 壊れた状態へ移行
+			ChangeState(EState::eBroken);
+		}
+	}
+	// 前方コライダ―
+	else if (self == mpFrontCol)
+	{
+		// 相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			// 車両クラスを取得
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+
+			// 相手が動いていないかつ壊れていない場合
+			// 壊れていたら壊れたら進めるので待つ
+			if (!vehicle->IsMove()&&
+				!vehicle->IsBroken())
+			{
+				mIsFrontVehicle = true;
+				// 横方向に車両がいないかつ
+				// 前方の車のさらに前に停止している車両がない場合
+				if (!mIsSideVehicle&&
+					!vehicle->GetIsFrontVehicle())
+				{
+					// 車線変更の移動先を設定
+					SetChangeRoadPoint(vehicle);
+					// 車線変更状態へ移行
+					ChangeState(EState::eChangeRoad);
+				}
+				// 横方向に車両がいるなら
+				else
+				{
+					// 停止状態へ移行
+					ChangeState(EState::eStop);
+				}
+			}
+		}
+	}
+	// 横方向コライダ―
+	else if (self == mpSideCol)
+	{
+		// 相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			mIsSideVehicle = true;
+		}
+	}
+}
+
+// 描画
+void CGarbageTruck::Render()
+{
+	CVehicleBase::Render();
+	// 移動状態であれば
+	if (mState == EState::eMove)
+	{
+		// 巡回ポイントを全て描画
+		int size = mPatrolPoints.size();
+		for (int i = 0; i < size; i++)
+		{
+			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
+			Primitive::DrawWireBox
+			(
+				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				CVector::one,
+				c
+			);
+		}
+		// 巡回ポイントまで移動のステップなら
+		if (mStateStep == 1)
+		{
+			CVector offsetPos = CVector(0.0f, TRUCK_HEIGHT, 0.0f);
+			CVector selfPos = Position() + offsetPos;
+			CVector targetPos = mMoveRoute[mNextMoveIndex]->GetPos() + offsetPos;
+			// 次巡回するポイントまで緑線を描画
+			Primitive::DrawLine
+			(
+				selfPos, targetPos,
+				CColor::green,
+				2.0f
+			);
+		}
+	}
+	// 車線変更状態の場合
+	else if (mState == EState::eChangeRoad)
+	{
+		// 車線変更で移動するポイントを描画
+		Primitive::DrawWireBox
+		(
+			mpChangeRoadPoint->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+			CVector::one,
+			CColor::gray
+		);
+		CVector offsetPos = CVector(0.0f, TRUCK_HEIGHT, 0.0f);
+		CVector selfPos = Position() + offsetPos;
+		CVector targetPos = mpChangeRoadPoint->GetPos() + offsetPos;
+		// 車線変更の移動先ポイントまで青線を描画
+		Primitive::DrawLine
+		(
+			selfPos, targetPos,
+			CColor::blue,
+			2.0f
+		);
 	}
 }
 
@@ -220,6 +326,8 @@ void CGarbageTruck::Reset()
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
+	// 動いている
+	mIsMove = true;
 	// 全ての巡回ポイントへの移動が終わっていないなら
 	if (!mIsMoveEnd)
 	{
@@ -267,6 +375,13 @@ void CGarbageTruck::UpdateStop()
 	mIsMove = false;
 	// 移動速度をゼロにする
 	mMoveSpeed = CVector::zero;
+
+	// 前に車両がいないなら
+	if (!mIsFrontVehicle)
+	{
+		// 移動状態へ
+		ChangeState(EState::eMove);
+	}
 }
 
 // 壊れた処理
@@ -285,8 +400,6 @@ void CGarbageTruck::UpdateBroken()
 	{
 		// 消滅までの時間を初期値に戻す
 		SetDeleteTime();
-		// 状態を移動に戻しておく
-		ChangeState(EState::eMove);
 
 		// 非表示
 		SetEnable(false);
@@ -297,17 +410,61 @@ void CGarbageTruck::UpdateBroken()
 // 車線変更処理
 void CGarbageTruck::UpdateChangeRoad()
 {
-	// 動いている
-	mIsMove = true;
-	bool isEnd = false;
-	// 車線変更移動
-	ChangeRoad(isEnd);
-
-	// trueならば、車線変更が終わった
-	if (isEnd)
+	switch (mStateStep)
 	{
-		// 移動状態に戻す
+	// 移動していることを設定
+	case 0:
+		mIsMove = true;
+		mStateStep++;
+		break;
+
+	// 車線変更の移動先のノードまで移動
+	case 1:
+		// 移動が終わったら
+		if (MoveTo(mpChangeRoadPoint->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+			CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+			if (vehicleMgr == nullptr) return;
+
+			/*
+			どの道にいるかの状態の変更
+			*/
+			// 左から1番目の道の場合
+			if (mRoadType == ERoadType::eLeft1)
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eLeft2;
+			}
+			// 左から2番目の道の場合
+			else if (mRoadType == ERoadType::eLeft2)
+			{
+				// 左から1番目の道に移動したので変更
+				mRoadType = ERoadType::eLeft1;
+			}
+			// 右から1番目の道の場合
+			else if (mRoadType == ERoadType::eRight1)
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eRight2;
+			}
+			// 右から2番目の道の場合
+			else
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eRight1;
+			}
+
+			// 巡回ポイントのリストを変更された道のものに変更する
+			mPatrolPoints = vehicleMgr->GetPatrolPoints(mRoadType);
+			mStateStep++;
+		}
+		break;
+
+	// 車線変更が終了
+	case 2:
+		// 終わったので移動状態に移行
 		ChangeState(EState::eMove);
+		break;
 	}
 }
 

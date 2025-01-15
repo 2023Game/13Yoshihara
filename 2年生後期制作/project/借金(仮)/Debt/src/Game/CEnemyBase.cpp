@@ -18,7 +18,6 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mIsGrounded(false)
 	, mIsWall(false)
 	, mpRideObject(nullptr)
-	, mIsDamage(false)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
 	, mFovAngle(fovAngle)
@@ -27,6 +26,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mNextPatrolIndex(-1)
 	, mEyeHeight(eyeHeight)
 	, mNextMoveIndex(0)
+	, mDamageCauser(nullptr)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -37,6 +37,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 
 	// プレイヤーを見失った位置のノードを作成
 	mpLostPlayerNode = new CNavNode(CVector::zero, true);
+	mpLostPlayerNode->SetEnable(false);
 	
 	// 巡回ポイントに経路探索用のノードを配置
 	for (CVector point : patrolPoints)
@@ -120,12 +121,6 @@ void CEnemyBase::Update()
 
 	// キャラクターの更新
 	CXCharacter::Update();
-
-	// 経路探索用のノードが存在すれば、座標を更新
-	if (mpNavNode != nullptr)
-	{
-		mpNavNode->SetPos(Position());
-	}
 
 	mIsGrounded = false;
 	mIsWall = false;
@@ -401,6 +396,9 @@ void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 		CNavManager* navMgr = CNavManager::Instance();
 		if (navMgr != nullptr)
 		{
+			// 経路探索用のノードの座標を更新
+			mpNavNode->SetPos(Position());
+
 			// 巡回ポイントの経路探索ノードの位置を設定しなおすことで、
 			// 各ノードへの接続情報を更新
 			for (CNavNode* node : mPatrolPoints)

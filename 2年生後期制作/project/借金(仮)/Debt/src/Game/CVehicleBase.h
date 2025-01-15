@@ -3,10 +3,18 @@
 
 class CModel;
 class CNavNode;
+class CVehicleManager;
+
+// 前方コライダ―の座標
+#define FRONT_COL_POS CVector(0.0f,0.0f,60.0f)
+// 横コライダーの座標
+#define LEFT_COL_POS	CVector(-40.0f,0.0f,0.0f)	// 左
+#define RIGHT_COL_POS	CVector( 40.0f,0.0f,0.0f)	// 右
 
 // 車両の基底クラス
 class CVehicleBase : public CCharaBase
 {
+	friend CVehicleManager;
 public:
 	// どの道にいる状態か
 	enum class ERoadType
@@ -41,6 +49,12 @@ public:
 	// 最後の巡回ポイントまでの移動が終了したかどうか
 	bool GetMoveEnd() const;
 
+	// 壊れているか
+	bool IsBroken() const;
+
+	// 前方に停止している車両がいるかどうか
+	bool GetIsFrontVehicle() const;
+
 	/// <summary>
 	/// 車線を変更する
 	/// </summary>
@@ -71,6 +85,8 @@ protected:
 	CVector mCurrentRoadRotation;
 	// 移動しているか
 	bool mIsMove;
+	// 壊れているか
+	bool mIsBroken;
 
 	// 移動速度
 	CVector mMoveSpeed;
@@ -114,5 +130,7 @@ protected:
 
 	bool mIsMoveEnd;	// 最後まで移動したかどうか
 	bool mIsMovePause;	// 移動の中断中かどうか
-	bool mIsChangeRoad;	// 道が変更されたかどうか
+
+	bool mIsFrontVehicle;	// 前方に停止している車両がいるかどうか
+	bool mIsSideVehicle;	// 横に車両がいるかどうか
 };

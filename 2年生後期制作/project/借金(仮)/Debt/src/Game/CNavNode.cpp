@@ -72,7 +72,7 @@ void CNavNode::SetPos(const CVector& pos)
 }
 
 // ノードが有効かどうかを取得
-bool CNavNode::IsEnable()
+bool CNavNode::IsEnable() const
 {
 	return mIsEnable;
 }
@@ -80,14 +80,6 @@ bool CNavNode::IsEnable()
 // ノードが有効かどうかを設定
 void CNavNode::SetEnable(bool isEnable)
 {
-	// 同じなら処理をしない
-	if (mIsEnable == isEnable) return;
-	// 無効になるなら接続している全てのノードを解除
-	if (isEnable == false)
-	{
-		ClearConnects();
-	}
-
 	mIsEnable = isEnable;
 }
 
@@ -152,6 +144,9 @@ void CNavNode::Render()
 		// 接続先のノードまでのラインを描画
 		for (CNavConnectData& connect : mConnectData)
 		{
+			// 接続先のノードが無効であれば、スルー
+			if (!connect.node->IsEnable()) continue;
+
 			Primitive::DrawLine
 			(
 				GetOffsetPos(),
@@ -163,6 +158,11 @@ void CNavNode::Render()
 		// ノードの座標に球を描画
 		CMatrix m;
 		m.Translate(GetOffsetPos());
-		Primitive::DrawWireSphere(m, 1.0f, mColor);
+		Primitive::DrawWireBox
+		(
+			GetOffsetPos(),
+			CVector::one,
+			mColor
+		);
 	}
 }

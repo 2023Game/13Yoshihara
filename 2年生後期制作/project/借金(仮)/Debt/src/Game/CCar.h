@@ -18,6 +18,8 @@ public:
 	void Update();
 	// Õ“Ëˆ—
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
+	// •`‰æ
+	void Render() override;
 
 	// •Ï”‚ğƒŠƒZƒbƒg
 	void Reset() override;

@@ -34,7 +34,7 @@ public:
 	/// ノードが有効かどうかを取得
 	/// </summary>
 	/// <returns>trueならば、有効</returns>
-	bool IsEnable();
+	bool IsEnable() const;
 	/// <summary>
 	/// ノードが有効かどうかを設定
 	/// </summary>

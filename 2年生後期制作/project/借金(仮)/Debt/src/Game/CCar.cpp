@@ -4,6 +4,7 @@
 #include "CNavNode.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
+#include "Primitive.h"
 
 #define CAR_HEIGHT		9.0f	// 車の高さ
 #define CAR_WIDTH		25.0f	// 車の幅
@@ -26,20 +27,55 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 {
-	// プレイヤー、敵、生成場所、車両、地形
+	// プレイヤー、敵、生成場所、車両、車両探知用、地形
 	// と衝突判定する本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this,ELayer::eVehicle,
-		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH - CAR_RADIUS),
+		CVector(0.0f, CAR_HEIGHT,  CAR_WIDTH - CAR_RADIUS),
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
 		CAR_RADIUS, true
 	);
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eSpawnZone,ELayer::eVehicle,
+		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject });
+
+	// 車両と衝突判定する前方向コライダ―
+	mpFrontCol = new CColliderCapsule
+	(
+		this, ELayer::eVehicleSearch,
+		CVector(0.0f, CAR_HEIGHT,  CAR_WIDTH - CAR_RADIUS),
+		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
+		CAR_RADIUS, true
+	);
+	mpFrontCol->Position(FRONT_COL_POS);
+	mpFrontCol->SetCollisionTags({ ETag::eVehicle });
+	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
+
+	// 車両と衝突判定する横方向コライダ―
+	mpSideCol = new CColliderCapsule
+	(
+		this, ELayer::eVehicleSearch,
+		CVector(0.0f, CAR_HEIGHT,  CAR_WIDTH - CAR_RADIUS),
+		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
+		CAR_RADIUS, true
+	);
+
+	// もう一つの車道が右にある車道
+	if (mRoadType == ERoadType::eLeft1 ||
+		mRoadType == ERoadType::eRight1)
+	{
+		mpSideCol->Position(RIGHT_COL_POS);
+	}
+	// もう一つの車道が左にある車道
+	else
+	{
+		mpSideCol->Position(LEFT_COL_POS);
+	}
+	mpSideCol->SetCollisionTags({ ETag::eVehicle });
+	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
 
 	// 経路探索用のコライダ―作成
 	mpNavCol = new CColliderCapsule
@@ -155,6 +191,88 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				ChangeState(EState::eBroken);
 			}
 		}
+		// 車両とぶつかったら壊れる
+		else if (other->Layer() == ELayer::eVehicle)
+		{
+			// 壊れた状態へ移行
+			ChangeState(EState::eBroken);
+		}
+	}
+	// 前方コライダ―
+	else if (self == mpFrontCol)
+	{
+		// 相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			// 車両クラスを取得
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+
+			// 相手が動いていない場合
+			if (!vehicle->IsMove())
+			{
+				mIsFrontVehicle = true;
+				// 横方向に車両がいないかつ
+				// 前方の車のさらに前に停止している車両がない場合
+				if (!mIsSideVehicle &&
+					!vehicle->GetIsFrontVehicle())
+				{
+					// 車線変更状態へ移行
+					ChangeState(EState::eChangeRoad);
+				}
+				// 横方向に車両がいるなら
+				else
+				{
+					// 停止状態へ移行
+					ChangeState(EState::eStop);
+				}
+			}
+		}
+	}
+	// 横方向コライダ―
+	else if (self == mpSideCol)
+	{
+		// 相手が車両の場合
+		if (other->Layer() == ELayer::eVehicle)
+		{
+			mIsSideVehicle = true;
+		}
+	}
+}
+
+// 描画
+void CCar::Render()
+{
+	CVehicleBase::Render();
+
+	// 移動状態であれば
+	if (mState == EState::eMove)
+	{
+		// 巡回ポイントを全て描画
+		int size = mPatrolPoints.size();
+		for (int i = 0; i < size; i++)
+		{
+			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
+			Primitive::DrawWireBox
+			(
+				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				CVector::one,
+				c
+			);
+		}
+		// 巡回するポイントが決まっていれば
+		if (mNextPatrolIndex != -1)
+		{
+			CVector offsetPos = CVector(0.0f, CAR_HEIGHT, 0.0f);
+			CVector selfPos = Position() + offsetPos;
+			CVector targetPos = mPatrolPoints[mNextPatrolIndex]->GetPos() + offsetPos;
+			// 次巡回するポイントまで緑線を描画
+			Primitive::DrawLine
+			(
+				selfPos, targetPos,
+				CColor::green,
+				2.0f
+			);
+		}
 	}
 }
 
@@ -188,6 +306,10 @@ void CCar::UpdateMove()
 			// ステップ1：巡回ポイントまで移動
 		case 1:
 		{
+			if (mMoveRoute.size() == 1)
+			{
+				mNextMoveIndex = 0;
+			}
 			// 最短経路の次のノードまで移動
 			CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
 
@@ -226,6 +348,7 @@ void CCar::UpdateBroken()
 {
 	// 動いていない
 	mIsMove = false;
+	mIsBroken = true;
 	// 移動速度をゼロにする
 	mMoveSpeed = CVector::zero;
 
@@ -237,8 +360,6 @@ void CCar::UpdateBroken()
 	{
 		// 消滅までの時間を初期値に戻す
 		SetDeleteTime();
-		// 状態を移動に戻しておく
-		ChangeState(EState::eMove);
 
 		// 非表示
 		SetEnable(false);

@@ -37,6 +37,7 @@ public:
 
 	// 一番近くにある調べるオブジェクトを取得
 	CInteractObject* GetNearInteractObject() const;
+
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
@@ -66,9 +67,6 @@ protected:
 
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
-
-	// 攻撃を受けているか
-	bool mIsDamage;
 
 	// 近くにある調べるオブジェクトのリスト
 	std::list<CInteractObject*> mNearInteractObjs;
