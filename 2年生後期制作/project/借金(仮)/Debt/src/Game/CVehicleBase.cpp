@@ -129,16 +129,16 @@ void CVehicleBase::ChangeRoadType(ERoadType roadType)
 
 	mRoadType = roadType;
 	// 横方向コライダ―の位置も設定
-	// もう一つの車道が右にある車道
-	if (mRoadType == ERoadType::eLeft1 ||
+	// もう一つの車道が左にある車道
+	if (mRoadType == ERoadType::eLeft2 ||
 		mRoadType == ERoadType::eRight1)
 	{
-		mpSideCol->Position(RIGHT_COL_POS);
+		mpSideCol->Position(LEFT_COL_POS);
 	}
-	// もう一つの車道が左にある車道
+	// もう一つの車道が右にある車道
 	else
 	{
-		mpSideCol->Position(LEFT_COL_POS);
+		mpSideCol->Position(RIGHT_COL_POS);
 	}
 }
 

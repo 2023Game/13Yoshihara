@@ -13,6 +13,7 @@ enum class ELayer
 	eInteractSearch,// 調べるオブジェクト探知用
 	ePlayer,		// プレイヤー
 	eEnemy,			// 敵
+	eCharaSearch,	// キャラクター探知用
 	eVehicle,		// 車両
 	eVehicleSearch,	// 車両の探知用
 	eSpawnZone,		// 生成場所

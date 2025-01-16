@@ -143,6 +143,12 @@
     <Filter Include="ソース ファイル\Game\Navigation">
       <UniqueIdentifier>{bdfd0c47-7480-4b01-b8e4-e2a8b8c71ad8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Resident">
+      <UniqueIdentifier>{043dcb97-bc12-40fb-a3d0-e12779bb5b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\TrashBag">
+      <UniqueIdentifier>{da274fed-4583-46e4-a0a3-df32966d1d0d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -546,6 +552,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CVehicleManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCollector.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -977,6 +986,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CVehicleManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCollector.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

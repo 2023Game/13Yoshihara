@@ -13,14 +13,12 @@ public:
 	// 撤退までの時間を取得
 	float GetBackTime() const;
 	// 撤退までの時間を初期値に設定
-	void SetBackTime();
+	void SetWithdrawTime();
 	// 撤退までの時間が経過したかどうか
-	bool IsElapsedBackTime() const;
+	bool IsElapsedWithdrawTime() const;
 	// 撤退までの時間をカウントダウン
-	void CountBackTime();
+	void CountWithdrawTime();
 
-	// 回収範囲の半径を取得する
-	float GetCollectRadius() const;
 
 	// 回収員の人数を取得する
 	int GetCollectors() const;
@@ -29,7 +27,6 @@ public:
 	// 回収員の人数を1減らす
 	void DecreaseCollectors();
 private:
-	float mBackTime;		// 撤退までの時間
-	float mCollectRadius;	// 回収範囲の半径
+	float mWithdrawTime;		// 撤退までの時間
 	int mCollectors;		// 回収員の人数
 };

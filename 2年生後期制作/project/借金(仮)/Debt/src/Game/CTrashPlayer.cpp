@@ -82,7 +82,7 @@ CTrashPlayer::CTrashPlayer()
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashPlayer", &ANIM_DATA);
 
-	// 地形、敵、攻撃、車両
+	// 地形、敵、攻撃、車両、キャラ探知用
 	// と衝突判定をする本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
@@ -93,7 +93,7 @@ CTrashPlayer::CTrashPlayer()
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,
-		ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
+		ELayer::eCharaSearch,ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 攻撃コライダー
 	mpAttackCol = new CColliderCapsule
@@ -950,6 +950,12 @@ void CTrashPlayer::TakeCritical(int damage, CObjectBase* causer)
 		// 被弾開始状態へ移行
 		ChangeState(EState::eDamageStart);
 	}
+}
+
+// 死んでいるかどうか
+bool CTrashPlayer::IsDead()
+{
+	return IsDeath();
 }
 
 // 状態切り替え

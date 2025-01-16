@@ -123,7 +123,7 @@ CTrashEnemy::CTrashEnemy()
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
 
-	// 地形、プレイヤー、敵、攻撃、車両
+	// 地形、プレイヤー、敵、攻撃、車両、キャラの探知用
 	// と衝突判定をする本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
@@ -133,7 +133,7 @@ CTrashEnemy::CTrashEnemy()
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle });
-	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,
+	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
 		ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 攻撃コライダー
@@ -1222,6 +1222,12 @@ void CTrashEnemy::TakeCritical(int damage, CObjectBase* causer)
 		// 被弾開始状態へ移行
 		ChangeState(EState::eDamageStart);
 	}
+}
+
+// 死んでいるかどうか
+bool CTrashEnemy::IsDead()
+{
+	return IsDeath();
 }
 
 

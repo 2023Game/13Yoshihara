@@ -5,6 +5,7 @@
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
 #include "Primitive.h"
+#include "CVehicleManager.h"
 
 #define CAR_HEIGHT		9.0f	// 車の高さ
 #define CAR_WIDTH		25.0f	// 車の幅
@@ -337,50 +338,125 @@ void CCar::UpdateMove()
 // 停止処理
 void CCar::UpdateStop()
 {
-	// 動いていない
-	mIsMove = false;
-	// 移動速度をゼロにする
-	mMoveSpeed = CVector::zero;
+	switch (mStateStep)
+	{
+		// 設定を変更する
+	case 0:
+		// 動いていない
+		mIsMove = false;
+		// 移動速度をゼロにする
+		mMoveSpeed = CVector::zero;
+		mStateStep++;
+		break;
+
+		// 前に車両がいなくなったら移動状態へ
+	case 1:
+		// 前に車両がいないなら
+		if (!mIsFrontVehicle)
+		{
+			// 移動状態へ
+			ChangeState(EState::eMove);
+		}
+		break;
+	}
 }
 
 // 壊れた処理
 void CCar::UpdateBroken()
 {
-	// 動いていない
-	mIsMove = false;
-	mIsBroken = true;
-	// 移動速度をゼロにする
-	mMoveSpeed = CVector::zero;
-
-	// 消滅するまでの時間をカウントダウン
-	CountDeleteTime();
-
-	// 消滅までの時間が経過したら
-	if (IsElapsedDeleteTime())
+	switch (mStateStep)
 	{
+		// 設定を変更する
+	case 0:
+		// 動いていない
+		mIsMove = false;
+		// 移動速度をゼロにする
+		mMoveSpeed = CVector::zero;
 		// 消滅までの時間を初期値に戻す
 		SetDeleteTime();
+		mStateStep++;
+		break;
 
+		// 時間が経過するまでカウントダウン
+	case 1:
+		// 消滅するまでの時間をカウントダウン
+		CountDeleteTime();
+
+		// 消滅までの時間が経過したら
+		if (IsElapsedDeleteTime())
+		{
+			// 次のステップへ
+			mStateStep++;
+		}
+		break;
+
+		// 消滅する
+	case 2:
 		// 非表示
 		SetEnable(false);
 		SetShow(false);
+		break;
 	}
 }
 
 // 車線変更処理
 void CCar::UpdateChangeRoad()
 {
-	// 動いている
-	mIsMove = true;
-	bool isEnd = false;
-	// 車線変更移動
-	ChangeRoad(isEnd);
-
-	// trueならば、車線変更が終わった
-	if (isEnd)
+	switch (mStateStep)
 	{
-		// 移動状態に戻す
+		// 移動していることを設定
+	case 0:
+		mIsMove = true;
+		mStateStep++;
+		break;
+
+		// 車線変更の移動先のノードまで移動
+	case 1:
+		// 移動が終わったら
+		if (MoveTo(mpChangeRoadPoint->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+			CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+			if (vehicleMgr == nullptr) return;
+
+			/*
+			どの道にいるかの状態の変更
+			*/
+			// 左から1番目の道の場合
+			if (mRoadType == ERoadType::eLeft1)
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eLeft2;
+			}
+			// 左から2番目の道の場合
+			else if (mRoadType == ERoadType::eLeft2)
+			{
+				// 左から1番目の道に移動したので変更
+				mRoadType = ERoadType::eLeft1;
+			}
+			// 右から1番目の道の場合
+			else if (mRoadType == ERoadType::eRight1)
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eRight2;
+			}
+			// 右から2番目の道の場合
+			else
+			{
+				// 左から2番目の道に移動したので変更
+				mRoadType = ERoadType::eRight1;
+			}
+
+			// 巡回ポイントのリストを変更された道のものに変更する
+			mPatrolPoints = vehicleMgr->GetPatrolPoints(mRoadType);
+			mStateStep++;
+		}
+		break;
+
+		// 車線変更が終了
+	case 2:
+		// 終わったので移動状態に移行
 		ChangeState(EState::eMove);
+		break;
 	}
 }
 

@@ -8,15 +8,13 @@
 #define ATTACK_POWER 1							// UŒ‚—Í
 #define POWER 1									// ƒSƒ~‚ğ—‚Æ‚·ƒpƒ[
 
-#define BACK_TIME 10.0f		// “P‘Ş‚Ü‚Å‚ÌŠÔ
-#define COLLECT_RADIUS 5.0f	// ‰ñû”ÍˆÍ‚Ì”¼Œa
-#define COLLECTORS 3		// ‰ñûˆõ‚Ìl”
+#define WITHDRAW_TIME 10.0f		// “P‘Ş‚Ü‚Å‚ÌŠÔ
+#define COLLECTORS 3			// ‰ñûˆõ‚Ìl”
 
 CGarbageTruckStatus::CGarbageTruckStatus()
 	: CVehicleStatus(MAX_HP, BASE_MOVE_SPEED, JUMP_SPEED,
 		KNOCKBACK_SPEED, ATTACK_POWER, POWER)
-	, mBackTime(BACK_TIME)
-	, mCollectRadius(COLLECT_RADIUS)
+	, mWithdrawTime(WITHDRAW_TIME)
 	, mCollectors(COLLECTORS)
 {
 }
@@ -27,20 +25,20 @@ CGarbageTruckStatus::~CGarbageTruckStatus()
 // “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğæ“¾
 float CGarbageTruckStatus::GetBackTime() const
 {
-	return mBackTime;
+	return mWithdrawTime;
 }
 
 // “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğ‰Šú’l‚Éİ’è
-void CGarbageTruckStatus::SetBackTime()
+void CGarbageTruckStatus::SetWithdrawTime()
 {
-	mBackTime = BACK_TIME;
+	mWithdrawTime = WITHDRAW_TIME;
 }
 
 // “P‘Ş‚Ü‚Å‚ÌŠÔ‚ªŒo‰ß‚µ‚½‚©‚Ç‚¤‚©
-bool CGarbageTruckStatus::IsElapsedBackTime() const
+bool CGarbageTruckStatus::IsElapsedWithdrawTime() const
 {
 	// “P‘Ş‚Ü‚Å‚ÌŠÔ‚ª0‚æ‚è‘å‚«‚¢‚È‚çŒo‰ß‚µ‚Ä‚¢‚È‚¢
-	if (mBackTime > 0.0f)
+	if (mWithdrawTime > 0.0f)
 	{
 		return false;
 	}
@@ -52,15 +50,9 @@ bool CGarbageTruckStatus::IsElapsedBackTime() const
 }
 
 // “P‘Ş‚Ü‚Å‚ÌŠÔ‚ğƒJƒEƒ“ƒgƒ_ƒEƒ“
-void CGarbageTruckStatus::CountBackTime()
+void CGarbageTruckStatus::CountWithdrawTime()
 {
-	mBackTime -= Times::DeltaTime();
-}
-
-// ‰ñû”ÍˆÍ‚Ì”¼Œa‚ğæ“¾‚·‚é
-float CGarbageTruckStatus::GetCollectRadius() const
-{
-	return mCollectRadius;
+	mWithdrawTime -= Times::DeltaTime();
 }
 
 // ‰ñûˆõ‚Ìl”‚ğæ“¾‚·‚é

@@ -28,6 +28,9 @@ public:
 	// クリティカルダメージを受ける
 	void TakeCritical(int damage, CObjectBase* causer);
 
+	// 死んでいるかどうか
+	bool IsDead() override;
+
 	// 更新
 	void Update();
 

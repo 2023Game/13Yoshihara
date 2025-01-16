@@ -1,5 +1,6 @@
 #include "CGarbageTruck.h"
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "CModel.h"
 #include "CNavNode.h"
 #include "CTrashPlayer.h"
@@ -11,6 +12,9 @@
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		30.0f	// トラックの幅
 #define TRUCK_RADIUS	15.0f	// トラックの半径
+
+#define SEARCH_RADIUS	50.0f	// 探知範囲
+
 
 // ノードの座標
 #define NODE_POS0	CVector( 20.0f,0.0f, 35.0f)
@@ -29,6 +33,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	, mState(EState::eMove)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
+	, mIsWithdraw(false)
 {
 	// プレイヤー、敵、生成場所、車両、車両探知用、地形
 	// と衝突判定する本体コライダ―
@@ -66,17 +71,16 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
-
-	// もう一つの車道が右にある車道
-	if (mRoadType == ERoadType::eLeft1 ||
+	// もう一つの車道が左にある車道
+	if (mRoadType == ERoadType::eLeft2 ||
 		mRoadType == ERoadType::eRight1)
 	{
-		mpSideCol->Position(RIGHT_COL_POS);
-	}	
-	// もう一つの車道が左にある車道
+		mpSideCol->Position(LEFT_COL_POS);
+	}
+	// もう一つの車道が右にある車道
 	else
 	{
-		mpSideCol->Position(LEFT_COL_POS);
+		mpSideCol->Position(RIGHT_COL_POS);
 	}
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
@@ -89,6 +93,17 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH * 1.2f + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
+
+	// プレイヤーと敵の探知用コライダ―作成
+	mpSearchCol = new CColliderSphere
+	(
+		this,ELayer::eCharaSearch,
+		SEARCH_RADIUS,
+		true
+	);
+	// プレイヤーと敵と衝突判定
+	mpSearchCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy });
+	mpSearchCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy });
 }
 
 // デストラクタ
@@ -141,7 +156,18 @@ void CGarbageTruck::Update()
 	}
 
 #if _DEBUG
+
+	std::string roadType;
+	if (mRoadType == ERoadType::eLeft1)
+		roadType = "L1";
+	else if (mRoadType == ERoadType::eLeft2)
+		roadType = "L2";
+	else if (mRoadType == ERoadType::eRight1)
+		roadType = "R1";
+	else
+		roadType = "R2";
 	CDebugPrint::Print("TruckState:%s\n", GetStateStr(mState).c_str());
+	CDebugPrint::Print("TruckRoadType:%s\n" ,roadType.c_str());
 #endif
 }
 
@@ -253,6 +279,30 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			mIsSideVehicle = true;
 		}
 	}
+	// プレイヤーと敵、探知用コライダ―
+	else if (self == mpSearchCol)
+	{
+		// 撤退中でなければ
+		if (!mIsWithdraw)
+		{
+			// 相手がプレイヤーの場合
+			if (other->Layer() == ELayer::ePlayer)
+			{
+				// ターゲットに設定
+				mpTarget = other->Owner();
+				// 回収状態へ
+				ChangeState(EState::eCollect);
+			}
+			// 相手が敵の場合
+			else if (other->Layer() == ELayer::eEnemy)
+			{
+				// ターゲットに設定
+				mpTarget = other->Owner();
+				// 回収状態へ
+				ChangeState(EState::eCollect);
+			}
+		}
+	}
 }
 
 // 描画
@@ -319,8 +369,15 @@ void CGarbageTruck::Reset()
 
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
+	mIsWithdraw = false;
 
 	mState = EState::eMove;
+}
+
+// ターゲットのポインタを取得
+CObjectBase* CGarbageTruck::GetTarget() const
+{
+	return mpTarget;
 }
 
 // 移動処理
@@ -371,39 +428,64 @@ void CGarbageTruck::UpdateMove()
 // 停止処理
 void CGarbageTruck::UpdateStop()
 {
-	// 動いていない
-	mIsMove = false;
-	// 移動速度をゼロにする
-	mMoveSpeed = CVector::zero;
-
-	// 前に車両がいないなら
-	if (!mIsFrontVehicle)
+	switch (mStateStep)
 	{
-		// 移動状態へ
-		ChangeState(EState::eMove);
+		// 設定を変更する
+	case 0:
+		// 動いていない
+		mIsMove = false;
+		// 移動速度をゼロにする
+		mMoveSpeed = CVector::zero;
+		mStateStep++;
+		break;
+
+		// 前に車両がいなくなったら移動状態へ
+	case 1:
+		// 前に車両がいないなら
+		if (!mIsFrontVehicle)
+		{
+			// 移動状態へ
+			ChangeState(EState::eMove);
+		}
+		break;
 	}
 }
 
 // 壊れた処理
 void CGarbageTruck::UpdateBroken()
 {
-	// 動いていない
-	mIsMove = false;
-	// 移動速度をゼロにする
-	mMoveSpeed = CVector::zero;
-
-	// 消滅するまでの時間をカウントダウン
-	CountDeleteTime();
-
-	// 消滅までの時間が経過したら
-	if (IsElapsedDeleteTime())
+	switch (mStateStep)
 	{
+		// 設定を変更する
+	case 0:
+		// 動いていない
+		mIsMove = false;
+		// 移動速度をゼロにする
+		mMoveSpeed = CVector::zero;
 		// 消滅までの時間を初期値に戻す
 		SetDeleteTime();
+		mStateStep++;
+		break;
 
+		// 時間が経過するまでカウントダウン
+	case 1:
+		// 消滅するまでの時間をカウントダウン
+		CountDeleteTime();
+
+		// 消滅までの時間が経過したら
+		if (IsElapsedDeleteTime())
+		{
+			// 次のステップへ
+			mStateStep++;
+		}
+		break;
+
+		// 消滅する
+	case 2:
 		// 非表示
 		SetEnable(false);
 		SetShow(false);
+		break;
 	}
 }
 
@@ -433,25 +515,25 @@ void CGarbageTruck::UpdateChangeRoad()
 			if (mRoadType == ERoadType::eLeft1)
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eLeft2;
+				ChangeRoadType(ERoadType::eLeft2);
 			}
 			// 左から2番目の道の場合
 			else if (mRoadType == ERoadType::eLeft2)
 			{
 				// 左から1番目の道に移動したので変更
-				mRoadType = ERoadType::eLeft1;
+				ChangeRoadType(ERoadType::eLeft1);
 			}
 			// 右から1番目の道の場合
 			else if (mRoadType == ERoadType::eRight1)
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eRight2;
+				ChangeRoadType(ERoadType::eRight2);
 			}
 			// 右から2番目の道の場合
 			else
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eRight1;
+				ChangeRoadType(ERoadType::eRight1);
 			}
 
 			// 巡回ポイントのリストを変更された道のものに変更する
@@ -472,6 +554,73 @@ void CGarbageTruck::UpdateChangeRoad()
 // 回収処理
 void CGarbageTruck::UpdateCollect()
 {
+	switch (mStateStep)
+	{
+		// 設定を変更する
+	case 0:
+		// ターゲットが設定されていない場合
+		if (mpTarget == nullptr)
+		{
+			// 移動状態へ戻る
+			ChangeState(EState::eMove);
+		}
+
+		// 動いていない
+		mIsMove = false;
+		// 移動速度をゼロにする
+		mMoveSpeed = CVector::zero;
+		// 撤退までの時間を初期値に戻す
+		SetWithdrawTime();
+		// 回収員の人数を初期値に戻す
+		SetCollectors();
+
+		// TODO：回収員を全て有効にする
+		// ターゲットのポインタを渡して
+		// 追跡状態にする
+
+		mStateStep++;
+		break;
+
+		// 時間が経過するまでカウントダウン
+	case 1:
+		// 撤退までの時間をカウントダウンする
+		CountWithdrawTime();
+
+		// 撤退までの時間が経過した、もしくは
+		// ターゲットが死亡したら
+		if (IsElapsedWithdrawTime() ||
+			mpTarget->IsDead())
+		{
+			// TODO：全ての回収員の状態を撤退状態へ
+
+			mStateStep++;
+		}
+		break;
+
+		// 回収員の撤退の終了まで待機
+	case 2:
+
+		// 回収員の数がゼロなら
+		if (GetCollectors() == 0)
+		{
+			// 回収員が全ていなくなったので
+			// 次のステップへ
+			mStateStep++;
+		}
+		// TODO：テスト用で回収員の数を無視して次のステップへ
+		mStateStep++;
+		break;
+
+		// 自分の撤退を開始
+	case 3:
+		// ターゲットを解除
+		mpTarget = nullptr;
+		// 撤退の移動である
+		mIsWithdraw = true;
+		// 移動状態へ
+		ChangeState(EState::eMove);
+		break;
+	}
 }
 
 // 状態切り替え
