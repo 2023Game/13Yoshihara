@@ -10,7 +10,7 @@ class CTrashEnemyStatus : public CTrashStatusBase
 {
 public:
 	// コンストラクタ
-	CTrashEnemyStatus();
+	CTrashEnemyStatus(bool punisher);
 	// デストラクタ
 	~CTrashEnemyStatus();
 
@@ -19,4 +19,6 @@ public:
 private:
 	// クリティカル確率
 	int mCriticalChance;
+	// お仕置き用かどうか
+	bool mIsPunisher;
 };

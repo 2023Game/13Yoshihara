@@ -333,8 +333,8 @@ void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* b
 	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
 	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
 
-	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight1, mPatrolPointsR1);
-	mpPunishTruck = new CGarbageTruck(blackTruck, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight2, mPatrolPointsR2);
+	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight1, mPatrolPointsR1, false);
+	mpPunishTruck = new CGarbageTruck(blackTruck, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight2, mPatrolPointsR2, false);
 }
 
 // åoòHíTçıópÇÃÉmÅ[ÉhÇçÏê¨

@@ -849,6 +849,11 @@ void CTrashPlayer::UpdateOpenClose()
 	}
 }
 
+// TODOF€–Sˆ—
+void CTrashPlayer::Death()
+{
+}
+
 
 // UŒ‚’†‚©
 bool CTrashPlayer::IsAttacking() const

@@ -53,6 +53,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
 	CResourceManager::Load<CModel>("BlackTruck", "Character\\BlackTruck\\BlackTruck.obj");
+	CResourceManager::Load<CModel>("Collector", "Character\\Collector\\Fox.x");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
@@ -75,7 +76,7 @@ void CTrashGameScene::Load()
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Scale(0.1f, 0.1f, 0.1f);
 
-	CTrashEnemy* enemy = new CTrashEnemy();
+	CTrashEnemy* enemy = new CTrashEnemy(false);
 	enemy->Position(0.0f, 0.0f, 5.0f);
 	enemy->Scale(0.1f, 0.1f, 0.1f);
 

@@ -1,5 +1,15 @@
 #include "CTrashStatusBase.h"
 
+// コンストラクタ
+CTrashStatusBase::CTrashStatusBase()
+	: CCharaStatusBase(0, 0.0f, 0.0f, 0)
+	, mKnockbackDealt(0.0f)
+	, mPower(0)
+	, mKnockbackReceived(CVector::zero)
+{
+}
+
+// コンストラクタ
 CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpeed,
 	float knockbackDealt, int attackPower, int power)
 	: CCharaStatusBase(maxHp, baseMoveSpeed, jumpSpeed, attackPower)
@@ -9,6 +19,7 @@ CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpe
 {
 }
 
+// デストラクタ
 CTrashStatusBase::~CTrashStatusBase()
 {
 }

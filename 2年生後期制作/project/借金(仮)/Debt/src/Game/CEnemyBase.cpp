@@ -16,7 +16,6 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
-	, mIsWall(false)
 	, mpRideObject(nullptr)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
@@ -123,7 +122,6 @@ void CEnemyBase::Update()
 	CXCharacter::Update();
 
 	mIsGrounded = false;
-	mIsWall = false;
 }
 
 // •`‰æ

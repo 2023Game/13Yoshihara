@@ -27,9 +27,9 @@
 
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
-	ERoadType road, std::vector<CNavNode*> patrolPoints)
+	ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher)
 	: CVehicleBase(model, pos, rotation, road, patrolPoints)
-	, CGarbageTruckStatus()
+	, CGarbageTruckStatus(punisher)
 	, mState(EState::eMove)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)

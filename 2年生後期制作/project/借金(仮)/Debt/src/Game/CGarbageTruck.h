@@ -8,12 +8,21 @@ class CModel;
 
 // ゴミ収集車のクラス
 // 車のクラスを継承
+// ゴミ収集車のステータスを継承
 class CGarbageTruck : public CVehicleBase , public CGarbageTruckStatus
 {
 public:
-	// コンストラクタ
-	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation, 
-		ERoadType road, std::vector<CNavNode*> patrolPoints);
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="model">モデル</param>
+	/// <param name="pos">座標</param>
+	/// <param name="rotation">回転</param>
+	/// <param name="road">道の種類</param>
+	/// <param name="patrolPoints">巡回するポイントのリスト</param>
+	/// <param name="punisher">trueならば、お仕置き用</param>
+	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
+		ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher);
 	// デストラクタ
 	~CGarbageTruck();
 

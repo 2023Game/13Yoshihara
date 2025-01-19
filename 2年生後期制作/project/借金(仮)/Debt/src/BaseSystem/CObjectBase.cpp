@@ -130,7 +130,7 @@ bool CObjectBase::IsDamaging() const
 }
 
 // Ž€‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
-bool CObjectBase::IsDeath()
+bool CObjectBase::IsDead()
 {
 	return false;
 }

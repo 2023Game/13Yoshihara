@@ -556,6 +556,9 @@
     <ClCompile Include="src\Game\CCollector.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CCollectorStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -989,6 +992,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CCollector.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCollectorStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

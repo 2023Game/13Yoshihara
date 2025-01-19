@@ -5,8 +5,11 @@
 class CGarbageTruckStatus : public CVehicleStatus
 {
 public:
-	// コンストラクタ
-	CGarbageTruckStatus();
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="punisher">trueなら、お仕置き用</param>
+	CGarbageTruckStatus(bool punisher);
 	// デストラクタ
 	~CGarbageTruckStatus();
 
@@ -27,6 +30,7 @@ public:
 	// 回収員の人数を1減らす
 	void DecreaseCollectors();
 private:
-	float mWithdrawTime;		// 撤退までの時間
+	float mWithdrawTime;	// 撤退までの時間
 	int mCollectors;		// 回収員の人数
+	bool mIsPunisher;		// お仕置き用かどうか
 };

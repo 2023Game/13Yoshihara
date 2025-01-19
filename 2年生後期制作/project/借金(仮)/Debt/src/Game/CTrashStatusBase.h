@@ -4,6 +4,8 @@
 class CTrashStatusBase : public CCharaStatusBase
 {
 public:
+	// コンストラクタ
+	CTrashStatusBase();
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>

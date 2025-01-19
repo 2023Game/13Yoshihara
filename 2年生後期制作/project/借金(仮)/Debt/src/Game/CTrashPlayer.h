@@ -135,6 +135,8 @@ private:
 	void UpdateCriticalEnd();
 	// ŠW‚ğŠJ•Â‚·‚é
 	void UpdateOpenClose();
+	// €–Sˆ—
+	void Death() override;
 
 	// ó‘ÔØ‚è‘Ö‚¦
 	void ChangeState(EState state);

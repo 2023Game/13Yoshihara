@@ -12,8 +12,12 @@
 class CTrashEnemy : public CEnemyBase, public CTrashEnemyStatus
 {
 public:
-	// コンストラクタ
-	CTrashEnemy();
+	/// <summary>
+	///	コンストラクタ
+	/// </summary>
+	/// <param name="punisher">trueならば、お仕置き用</param>
+	CTrashEnemy(bool punisher);
+	// デストラクタ
 	~CTrashEnemy();
 
 	// 攻撃中か
@@ -139,6 +143,8 @@ private:
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
+	// 死亡処理
+	void Death() override;
 
 	// 状態切り替え
 	void ChangeState(EState state);

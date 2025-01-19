@@ -11,7 +11,7 @@
 
 #define SEARCH_RADIUS 10.0f	// 調べるオブジェクトの探知範囲の半径
 
-#define MOVE_SPEED 0.375f * 2.0f		// 移動速度
+#define BASE_MOVE_SPEED 0.375f * 2.0f		// 移動速度
 
 #define ANIM_PATH "Character\\Player\\anim\\"
 
@@ -109,7 +109,7 @@ void CHomePlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * MOVE_SPEED;
+		mMoveSpeed += move * BASE_MOVE_SPEED;
 
 		// 待機状態であれば、移動アニメーションに切り替え
 		if (mState == EState::eIdle)

@@ -31,7 +31,7 @@
 */
 const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 {
-	{ "",								true,	0.0f,	1.0f},	// Tポーズ
+	{ "",								true,	 0.0f,	1.0f},	// Tポーズ
 	{ ANIM_PATH"Idle_Close.x",			true,	30.0f,	1.0f},	// 待機					（と）
 	{ ANIM_PATH"Idle_Open.x",			true,	30.0f,	1.0f},	// 待機					（開）
 	{ ANIM_PATH"Move_Close.x",			true,	80.0f,	1.0f},	// 移動					（と）
@@ -97,12 +97,12 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,160.0f)
 
 // コンストラクタ
-CTrashEnemy::CTrashEnemy()
+CTrashEnemy::CTrashEnemy(bool punisher)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
 		FOV_LENGTH,
-		{ 
+		{
 			PATROL_POS0,
 			PATROL_POS1,
 			PATROL_POS2,
@@ -112,8 +112,9 @@ CTrashEnemy::CTrashEnemy()
 			PATROL_POS6,
 			PATROL_POS7
 		},
-		EYE_HEIGHT		
+		EYE_HEIGHT
 	)
+	, CTrashEnemyStatus(punisher)
 	, mState(EState::eIdle)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
@@ -174,6 +175,7 @@ CTrashEnemy::CTrashEnemy()
 // デストラクタ
 CTrashEnemy::~CTrashEnemy()
 {
+	SAFE_DELETE(mpCriticalCol);
 }
 
 // 更新
@@ -1120,6 +1122,11 @@ void CTrashEnemy::UpdateOpenClose()
 	}
 }
 
+// TODO：死亡処理
+void CTrashEnemy::Death()
+{
+}
+
 
 // 攻撃中か
 bool CTrashEnemy::IsAttacking() const
@@ -1168,7 +1175,6 @@ void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer)
 	// 開いていればダメージを受ける
 	if (mIsOpen)
 	{
-		// TODO：Death()の処理を追加
 		CCharaStatusBase::TakeDamage(damage, causer);
 
 		// 死亡していなければ
