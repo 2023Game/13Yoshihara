@@ -6,8 +6,8 @@
 #include "CColliderSphere.h"
 #include "CInteractObject.h"
 
-#define CAPSULE_RADIUS 2.5f	// カプセルコライダの半径
-#define PLAYER_HEIGHT 16.0f	// プレイヤーの高さ
+#define BODY_RADIUS 2.5f	// 本体コライダの半径
+#define BODY_HEIGHT 16.0f	// 本体コライダの高さ
 
 #define SEARCH_RADIUS 10.0f	// 調べるオブジェクトの探知範囲の半径
 
@@ -34,9 +34,9 @@ CHomePlayer::CHomePlayer()
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, CAPSULE_RADIUS, 0.0f),
-		CVector(0.0f, PLAYER_HEIGHT - CAPSULE_RADIUS, 0.0f),
-		CAPSULE_RADIUS
+		CVector(0.0f, BODY_RADIUS, 0.0f),
+		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
+		BODY_RADIUS
 	);
 	//フィールド、壁、オブジェクトとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject });

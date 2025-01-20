@@ -43,8 +43,16 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	// 回収員がついているかを取得
+	bool GetStickCollector() const;
+	// 回収員がついているかを設定
+	void SetStickCollector(bool stickCollector);
+
 private:
-	// アクションのキー入力
+	/*
+	アクションのキー入力
+	回収員がついていないときのみ入力可能
+	*/
 	void ActionInput();
 
 	/*
@@ -156,4 +164,6 @@ private:
 	bool mIsOpen;
 	// ジャンプしているか
 	bool mIsJump;
+	// 回収員がついているかどうか
+	bool mIsStickCollector;
 };

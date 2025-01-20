@@ -7,6 +7,7 @@
 #include "CNavManager.h"
 #include "CVehicleManager.h"
 
+// 基本の重力
 #define GRAVITY 0.0625f
 
 // コンストラクタ
@@ -15,7 +16,9 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	float eyeHeight)
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
 	, mMoveSpeedY(0.0f)
+	, mGravity(GRAVITY)
 	, mIsGrounded(false)
+	, mIsGravity(true)
 	, mpRideObject(nullptr)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
@@ -66,14 +69,16 @@ CEnemyBase::~CEnemyBase()
 		SAFE_DELETE(mpLostPlayerNode);
 
 		// 巡回ポイントに配置したノードも全て削除
-		auto itr = mPatrolPoints.begin();
-		auto end = mPatrolPoints.end();
-		while (itr != end)
-		{
-			CNavNode* del = *itr;
-			itr = mPatrolPoints.erase(itr);
-			delete del;
-		}
+		mPatrolPoints.clear();
+		//// 巡回ポイントに配置したノードも全て削除
+		//auto itr = mPatrolPoints.begin();
+		//auto end = mPatrolPoints.end();
+		//while (itr != end)
+		//{
+		//	CNavNode* del = *itr;
+		//	itr = mPatrolPoints.erase(itr);
+		//	delete del;
+		//}
 	}
 }
 
@@ -100,7 +105,12 @@ void CEnemyBase::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
-	mMoveSpeedY -= GRAVITY;
+	// 重力を掛けるなら
+	if (mIsGravity)
+	{
+		mMoveSpeedY -= mGravity;
+	}
+
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 
 	// 移動

@@ -28,7 +28,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 {
-	// プレイヤー、敵、生成場所、車両、車両探知用、地形
+	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
 	// と衝突判定する本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
@@ -39,7 +39,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	);
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
-	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,
 		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject });
 
@@ -51,7 +51,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
 		CAR_RADIUS, true
 	);
-	mpFrontCol->Position(FRONT_COL_POS);
+	mpFrontCol->Position(FRONT_COL_OFFSET_POS);
 	mpFrontCol->SetCollisionTags({ ETag::eVehicle });
 	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
 
@@ -68,12 +68,12 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	if (mRoadType == ERoadType::eLeft1 ||
 		mRoadType == ERoadType::eRight1)
 	{
-		mpSideCol->Position(RIGHT_COL_POS);
+		mpSideCol->Position(RIGHT_COL_OFFSET_POS);
 	}
 	// もう一つの車道が左にある車道
 	else
 	{
-		mpSideCol->Position(LEFT_COL_POS);
+		mpSideCol->Position(LEFT_COL_OFFSET_POS);
 	}
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
@@ -171,7 +171,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		}
 		// 衝突した相手が敵の場合
 		else if (other->Layer() == ELayer::eEnemy)
-		{	
+		{
 			// 移動していたら
 			if (IsMove())
 			{
@@ -192,11 +192,25 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				ChangeState(EState::eBroken);
 			}
 		}
+		// 衝突した相手が回収員の場合
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 移動していたら
+			if (IsMove())
+			{
+				// 壊れた状態へ移行
+				ChangeState(EState::eBroken);
+			}
+		}
 		// 車両とぶつかったら壊れる
 		else if (other->Layer() == ELayer::eVehicle)
 		{
-			// 壊れた状態へ移行
-			ChangeState(EState::eBroken);
+			// 移動していたら
+			if (IsMove())
+			{
+				// 壊れた状態へ移行
+				ChangeState(EState::eBroken);
+			}
 		}
 	}
 	// 前方コライダ―

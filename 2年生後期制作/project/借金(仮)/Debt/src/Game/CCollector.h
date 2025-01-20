@@ -24,6 +24,8 @@ public :
 	void AttackStart() override;
 	// 攻撃終了
 	void AttackEnd() override;
+	// 攻撃が成功したか
+	bool GetAttackSuccess() const;
 
 	// ダメージを受ける
 	void TakeDamage(int damage, CObjectBase* causer) override;
@@ -81,8 +83,10 @@ private:
 		eLost,			// 見失う
 		eReturn,		// ゴミ収集車に戻る
 		eAttackStart,	// 攻撃開始
-		eAttack,		// 攻撃中
+		eAttackTrue,	// 攻撃中（成功）
+		eAttackFalse,	// 攻撃中（失敗）
 		eAttackEnd,		// 攻撃終了
+		eDeath,			// 死亡
 	};
 
 	// 待機状態
@@ -97,10 +101,14 @@ private:
 	void UpdateReturn();
 	// 攻撃開始
 	void UpdateAttackStart();
-	// 攻撃中
-	void UpdateAttack();
+	// 攻撃中（成功）
+	void UpdateAttackTrue();
+	// 攻撃中（失敗）
+	void UpdateAttackFalse();
 	// 攻撃終了
 	void UpdateAttackEnd();
+	// 死亡の更新処理
+	void UpdateDeath();
 	// 死亡処理
 	void Death() override;
 
@@ -118,7 +126,8 @@ private:
 #endif
 
 	bool mIsBag;	// ゴミ袋を持っているかどうか
-	bool mIsAttackSuccess;	// 攻撃が成功したかどうか
-	// 自分が攻撃を当てたキャラのステータスクラス保存用
-	CCharaStatusBase* mpAttackChara;
+	// 攻撃が成功したかどうか
+	bool mIsAttackSuccess;		
+	// 攻撃中かどうか
+	bool mIsAttacking;
 };

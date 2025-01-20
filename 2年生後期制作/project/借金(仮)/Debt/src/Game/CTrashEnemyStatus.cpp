@@ -19,21 +19,18 @@
 
 // コンストラクタ
 CTrashEnemyStatus::CTrashEnemyStatus(bool punisher)
-	: mIsPunisher(punisher)
+	: CTrashStatusBase(NORMAL_MAX_HP, NORMAL_BASE_MOVE_SPEED, NORMAL_JUMP_SPEED,
+		NORMAL_KNOCKBACK_SPEED, NORMAL_ATTACK_POWER, NORMAL_POWER)
+	, mCriticalChance(NORMAL_CRITICAL_CHANCE)
+	, mIsPunisher(punisher)
 {
-	// お仕置き用
+	// お仕置き用なら
 	if (punisher)
 	{
-		CTrashStatusBase(PUNISHER_MAX_HP, PUNISHER_BASE_MOVE_SPEED, PUNISHER_JUMP_SPEED,
+		// お仕置き用のステータスに変更する
+		SetAllStatus(PUNISHER_MAX_HP, PUNISHER_BASE_MOVE_SPEED, PUNISHER_JUMP_SPEED,
 			PUNISHER_KNOCKBACK_SPEED, PUNISHER_ATTACK_POWER, PUNISHER_POWER);
 		mCriticalChance = PUNISHER_CRITICAL_CHANCE;
-	}
-	// 通常用
-	else
-	{
-		CTrashStatusBase(NORMAL_MAX_HP, NORMAL_BASE_MOVE_SPEED, NORMAL_JUMP_SPEED,
-			NORMAL_KNOCKBACK_SPEED, NORMAL_ATTACK_POWER, NORMAL_POWER);
-		mCriticalChance = NORMAL_CRITICAL_CHANCE;
 	}
 }
 
@@ -46,4 +43,10 @@ CTrashEnemyStatus::~CTrashEnemyStatus()
 int CTrashEnemyStatus::GetCriticalChance()
 {
 	return mCriticalChance;
+}
+
+// クリティカル確率を設定
+void CTrashEnemyStatus::SetCriticalChance(int criticalChance)
+{
+	mCriticalChance = criticalChance;
 }

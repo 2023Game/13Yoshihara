@@ -97,7 +97,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,160.0f)
 
 // コンストラクタ
-CTrashEnemy::CTrashEnemy(bool punisher)
+CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
@@ -121,21 +121,22 @@ CTrashEnemy::CTrashEnemy(bool punisher)
 	, mIsOpen(false)
 	, mIsJump(false)
 {
+	Scale(scale, scale, scale);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
 
-	// 地形、プレイヤー、敵、攻撃、車両、キャラの探知用
+	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用
 	// と衝突判定をする本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(BODY_WIDTH - BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
-		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
+		CVector(BODY_WIDTH - BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
+		CVector(-BODY_WIDTH + BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
-		ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
+		ELayer::ePlayer, ELayer::eEnemy,ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle});
 
 	// 攻撃コライダー
 	mpAttackCol = new CColliderCapsule
@@ -154,11 +155,11 @@ CTrashEnemy::CTrashEnemy(bool punisher)
 		CRITICAL_COL_RADIUS
 	);
 
-	// プレイヤーと敵と車両と衝突判定するように設定
-	mpAttackCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eVehicle });
-	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eVehicle });
-	mpCriticalCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eVehicle });
-	mpCriticalCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eVehicle });
+	// プレイヤーと衝突判定するように設定
+	mpAttackCol->SetCollisionTags({ ETag::ePlayer});
+	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer});
+	mpCriticalCol->SetCollisionTags({ ETag::ePlayer});
+	mpCriticalCol->SetCollisionLayers({ ELayer::ePlayer});
 
 	// 自分の前に位置調整
 	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
@@ -238,6 +239,16 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 		}
 		// 衝突した相手がプレイヤーなら
 		else if (other->Layer() == ELayer::ePlayer)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+		// 衝突した相手が回収員なら
+		else if (other->Layer() == ELayer::eCollector)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
@@ -921,6 +932,7 @@ void CTrashEnemy::UpdateAttack()
 		{
 			// 攻撃終了へ
 			ChangeState(EState::eAttackEnd);
+			AttackEnd();
 		}
 		break;
 	}
@@ -935,7 +947,6 @@ void CTrashEnemy::UpdateAttackEnd()
 		mIsOpen = true;
 		// 攻撃終了アニメーション再生
 		ChangeAnimation((int)EAnimType::eAttack_End);
-		AttackEnd();
 		mStateStep++;
 		break;
 

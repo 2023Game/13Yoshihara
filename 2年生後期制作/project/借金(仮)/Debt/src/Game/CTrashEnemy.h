@@ -16,7 +16,8 @@ public:
 	///	コンストラクタ
 	/// </summary>
 	/// <param name="punisher">trueならば、お仕置き用</param>
-	CTrashEnemy(bool punisher);
+	/// <param name="scale">スケール</param>
+	CTrashEnemy(bool punisher, float scale);
 	// デストラクタ
 	~CTrashEnemy();
 

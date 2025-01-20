@@ -11,6 +11,7 @@
 #include "CVehicleManager.h"
 #include "CTrashEnemy.h"
 #include "CNavManager.h"
+#include "CCollector.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -35,25 +36,26 @@ void CTrashGameScene::Load()
 	//ここでゲーム中に必要な
 	//リソースの読み込みやクラスの生成を行う
 
-	CResourceManager::Load<CModel>("Field", "Field\\Field.obj");
-	CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
-	CResourceManager::Load<CModel>("FieldCylinder", "Field\\Object\\cylinder.obj");
-	CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
-	CResourceManager::Load<CTexture>("Laser", "Effect\\laser.png");
-	CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
-	CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
-	CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
+	//CResourceManager::Load<CModel>("Field", "Field\\Field.obj");
+	//CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
+	//CResourceManager::Load<CModel>("FieldCylinder", "Field\\Object\\cylinder.obj");
+	//CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
+	//CResourceManager::Load<CTexture>("Laser", "Effect\\laser.png");
+	//CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
+	//CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
+	//CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
 	
-	// ゴミ拾い
+	// CModelX
 	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
 	CResourceManager::Load<CModelX>("TrashEnemy", "Character\\TrashBox\\TrashBoxEnemy.x");
+	CResourceManager::Load<CModelX>("Collector", "Character\\Collector\\Fox.x");
+	// CModel
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("Sky", "Field\\Sky\\Sky.obj");
 	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
 	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
 	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
 	CResourceManager::Load<CModel>("BlackTruck", "Character\\BlackTruck\\BlackTruck.obj");
-	CResourceManager::Load<CModel>("Collector", "Character\\Collector\\Fox.x");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
@@ -74,11 +76,13 @@ void CTrashGameScene::Load()
 		new CVehicleManager();
 
 	CTrashPlayer* player = new CTrashPlayer();
-	player->Scale(0.1f, 0.1f, 0.1f);
 
-	CTrashEnemy* enemy = new CTrashEnemy(false);
-	enemy->Position(0.0f, 0.0f, 5.0f);
-	enemy->Scale(0.1f, 0.1f, 0.1f);
+	float enemyScale = 0.1f;
+	//CTrashEnemy* enemy = new CTrashEnemy(false, enemyScale);
+	//enemy->Position(0.0f, 0.0f, 5.0f);
+
+	CCollector* collector = new CCollector(false);
+	collector->Position(0.0f, 0.0f, 20.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

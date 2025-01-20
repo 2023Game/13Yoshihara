@@ -18,17 +18,25 @@ public:
 
 	// 最大HPを取得
 	int GetMaxHp() const;
+	// 最大HPを設定
+	void SetMaxHp(int maxHp);
 	// 現在HPを取得
 	int GetHp() const;
 
 	// 基礎移動速度を取得
 	float GetBaseMoveSpeed() const;
+	// 基礎移動速度を設定
+	void SetBaseMoveSpeed(float baseMoveSpeed);
 
 	// ジャンプ速度を取得
 	float GetJumpSpeed() const;
+	// ジャンプ速度を設定
+	void SetJumpSpeed(float jumpSpeed);
 
 	// 攻撃力を取得
 	int GetAttackPower() const;
+	// 攻撃力を設定
+	void SetAttackPower(int attackPower);
 
 private:
 	int mMaxHp;				// 最大HP

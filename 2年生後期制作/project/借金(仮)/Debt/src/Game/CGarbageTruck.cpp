@@ -12,6 +12,8 @@
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		30.0f	// トラックの幅
 #define TRUCK_RADIUS	15.0f	// トラックの半径
+// 本体コライダのオフセット座標
+#define BODY_COL_OFFSET_POS CVector(0.0f,0.0f,-2.0f)
 
 #define SEARCH_RADIUS	50.0f	// 探知範囲
 
@@ -33,10 +35,9 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	, mState(EState::eMove)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
-	, mIsWithdraw(false)
+	, mIsReturn(false)
 {
-	// プレイヤー、敵、生成場所、車両、車両探知用、地形
-	// と衝突判定する本体コライダ―
+	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this,ELayer::eVehicle,
@@ -44,14 +45,17 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		CVector(0.0f,TRUCK_HEIGHT,-TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
-	mpBodyCol->Position(0.0f, 0.0f, -2.0f);
+	// 座標を設定
+	mpBodyCol->Position(BODY_COL_OFFSET_POS);
+	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
+	// と衝突判定する
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
-	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,ELayer::eAttackCol,
 		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject });
 
-	// 車両と衝突判定する前方向コライダ―
+	// 前方向コライダ―
 	mpFrontCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
@@ -59,11 +63,13 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
-	mpFrontCol->Position(FRONT_COL_POS);
+	// 座標を設定
+	mpFrontCol->Position(FRONT_COL_OFFSET_POS);
+	// 車両と衝突判定する
 	mpFrontCol->SetCollisionTags({ ETag::eVehicle });
 	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
 
-	// 車両と衝突判定する横方向コライダ―
+	// 横方向コライダ―
 	mpSideCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
@@ -75,13 +81,16 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	if (mRoadType == ERoadType::eLeft2 ||
 		mRoadType == ERoadType::eRight1)
 	{
-		mpSideCol->Position(LEFT_COL_POS);
+		// 座標を設定
+		mpSideCol->Position(LEFT_COL_OFFSET_POS);
 	}
 	// もう一つの車道が右にある車道
 	else
 	{
-		mpSideCol->Position(RIGHT_COL_POS);
+		// 座標を設定
+		mpSideCol->Position(RIGHT_COL_OFFSET_POS);
 	}
+	// 車両と衝突判定する
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
 
@@ -94,16 +103,16 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		TRUCK_RADIUS, true
 	);
 
-	// プレイヤーと敵の探知用コライダ―作成
+	// 探知用コライダ―作成
 	mpSearchCol = new CColliderSphere
 	(
 		this,ELayer::eCharaSearch,
 		SEARCH_RADIUS,
 		true
 	);
-	// プレイヤーと敵と衝突判定
-	mpSearchCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy });
-	mpSearchCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy });
+	// プレイヤーと衝突判定
+	mpSearchCol->SetCollisionTags({ ETag::ePlayer});
+	mpSearchCol->SetCollisionLayers({ ELayer::ePlayer});
 }
 
 // デストラクタ
@@ -124,7 +133,6 @@ void CGarbageTruck::Update()
 	case EState::eBroken:		UpdateBroken();		break;
 	// 車線変更
 	case EState::eChangeRoad:	UpdateChangeRoad();	break;
-
 	// 回収
 	case EState::eCollect:		UpdateCollect();	break;
 	}
@@ -223,6 +231,12 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				enemy->TakeDamage(GetAttackPower(), this);
 			}
 		}
+		// 衝突した相手が回収員の場合
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 止まる状態へ移行
+			ChangeState(EState::eStop);
+		}
 		// 車両とぶつかったら止まる
 		else if (other->Layer() == ELayer::eVehicle)
 		{
@@ -279,25 +293,15 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			mIsSideVehicle = true;
 		}
 	}
-	// プレイヤーと敵、探知用コライダ―
+	// 探知用コライダ―
 	else if (self == mpSearchCol)
 	{
 		// 撤退中でなければ
-		if (!mIsWithdraw)
+		if (!mIsReturn)
 		{
 			// 相手がプレイヤーの場合
 			if (other->Layer() == ELayer::ePlayer)
 			{
-				// ターゲットに設定
-				mpTarget = other->Owner();
-				// 回収状態へ
-				ChangeState(EState::eCollect);
-			}
-			// 相手が敵の場合
-			else if (other->Layer() == ELayer::eEnemy)
-			{
-				// ターゲットに設定
-				mpTarget = other->Owner();
 				// 回収状態へ
 				ChangeState(EState::eCollect);
 			}
@@ -369,15 +373,9 @@ void CGarbageTruck::Reset()
 
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
-	mIsWithdraw = false;
+	mIsReturn = false;
 
 	mState = EState::eMove;
-}
-
-// ターゲットのポインタを取得
-CObjectBase* CGarbageTruck::GetTarget() const
-{
-	return mpTarget;
 }
 
 // 移動処理
@@ -558,13 +556,6 @@ void CGarbageTruck::UpdateCollect()
 	{
 		// 設定を変更する
 	case 0:
-		// ターゲットが設定されていない場合
-		if (mpTarget == nullptr)
-		{
-			// 移動状態へ戻る
-			ChangeState(EState::eMove);
-		}
-
 		// 動いていない
 		mIsMove = false;
 		// 移動速度をゼロにする
@@ -575,8 +566,6 @@ void CGarbageTruck::UpdateCollect()
 		SetCollectors();
 
 		// TODO：回収員を全て有効にする
-		// ターゲットのポインタを渡して
-		// 追跡状態にする
 
 		mStateStep++;
 		break;
@@ -586,10 +575,8 @@ void CGarbageTruck::UpdateCollect()
 		// 撤退までの時間をカウントダウンする
 		CountWithdrawTime();
 
-		// 撤退までの時間が経過した、もしくは
-		// ターゲットが死亡したら
-		if (IsElapsedWithdrawTime() ||
-			mpTarget->IsDead())
+		// 撤退までの時間が経過したら
+		if (IsElapsedWithdrawTime())
 		{
 			// TODO：全ての回収員の状態を撤退状態へ
 
@@ -613,10 +600,8 @@ void CGarbageTruck::UpdateCollect()
 
 		// 自分の撤退を開始
 	case 3:
-		// ターゲットを解除
-		mpTarget = nullptr;
 		// 撤退の移動である
-		mIsWithdraw = true;
+		mIsReturn = true;
 		// 移動状態へ
 		ChangeState(EState::eMove);
 		break;

@@ -1,13 +1,14 @@
 #include "CCollector.h"
 #include "CDebugFieldOfView.h"
-#include "CPlayerBase.h"
 #include "CTrashPlayer.h"
+#include "CPlayerBase.h"
 #include "CFieldBase.h"
 #include "Primitive.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "CVehicleManager.h"
 #include "Maths.h"
+#include "CTrashPlayer.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -31,24 +32,23 @@
 */
 const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 {
-	{ "",								true,	 0.0f,	1.0f},	// Tポーズ
-	{ ANIM_PATH"Idle.x",				true,	30.0f,	1.0f},	// 待機					（無）
-	{ ANIM_PATH"Idle_Bag.x",			true,	30.0f,	1.0f},	// 待機					（有）
-	{ ANIM_PATH"Move.x",				true,	80.0f,	1.0f},	// 移動					（無）
-	{ ANIM_PATH"Move_Bag.x",			true,	80.0f,	1.0f},	// 移動					（有）
-	{ ANIM_PATH"GetBag.x",				false,	10.0f,	1.0f},	// ゴミ袋獲得			（無）
-	{ ANIM_PATH"GetBag_End.x",			false,	10.0f,	1.0f},	// ゴミ袋獲得終了		（有）
-	{ ANIM_PATH"Death.x",				true,	11.0f,	1.0f},	// 死亡					（有無）
-	{ ANIM_PATH"Attack_Start.x",		false,	51.0f,	1.0f},	// 攻撃開始				（無）
-	{ ANIM_PATH"Attack_True.x",			false,	20.0f,	1.0f},	// 攻撃成功				（無）
-	{ ANIM_PATH"Attack_False.x",		true,	11.0f,	1.0f},	// 攻撃失敗				（無）
-	{ ANIM_PATH"Attack_False_Fall.x",	false,	21.0f,	1.0f},	// 攻撃失敗落下中		（無）
-	{ ANIM_PATH"Attack_False_StandUp.x",false,	20.0f,	1.0f},	// 立ち上がる			（無）
+	{ "",								 true,	  0.0f,	1.0f},	// Tポーズ
+	{ ANIM_PATH"Idle.x",				 true,	 80.0f,	1.0f},	// 待機					（無）
+	{ ANIM_PATH"Idle_Bag.x",			 true,	 80.0f,	1.0f},	// 待機					（有）
+	{ ANIM_PATH"Move.x",				 true,	 80.0f,	1.0f},	// 移動					（無）
+	{ ANIM_PATH"Move_Bag.x",			 true,	 80.0f,	1.0f},	// 移動					（有）
+	{ ANIM_PATH"GetBag.x",				false,	240.0f,	1.0f},	// ゴミ袋獲得			（無）
+	{ ANIM_PATH"GetBag_End.x",			false,	 60.0f,	1.0f},	// ゴミ袋獲得終了		（有）
+	{ ANIM_PATH"Death.x",				false,	  5.0f,	1.0f},	// 死亡					（有無）
+	{ ANIM_PATH"Attack_Start.x",		false,	 50.0f,	1.0f},	// 攻撃開始				（無）
+	{ ANIM_PATH"Attack_True.x",			false,	 20.0f,	1.0f},	// 攻撃成功				（無）
+	{ ANIM_PATH"Attack_False.x",		false,	 20.0f,	1.0f},	// 攻撃失敗				（無）
+	{ ANIM_PATH"Attack_False_Fall.x",	 true,	 20.0f,	1.0f},	// 攻撃失敗落下中		（無）
+	{ ANIM_PATH"Attack_False_StandUp.x",false,	 70.0f,	1.0f},	// 立ち上がる			（無）
 };
 
 #define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
-#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
-#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
+#define BODY_HEIGHT 50.0f	// 本体のコライダ―の高さ
 
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
@@ -61,11 +61,11 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
 #define IDLE_TIME 5.0f			// 待機状態の時間
 
-#define PATROL_POS0 CVector( 40.0f,0.0f,  0.0f)
-#define PATROL_POS1 CVector( 40.0f,0.0f,100.0f)
-#define PATROL_POS2 CVector(  0.0f,0.0f,100.0f)
-#define PATROL_POS3 CVector(-40.0f,0.0f,100.0f)
-#define PATROL_POS4 CVector(-40.0f,0.0f,  0.0f)
+#define PATROL_POS0 CVector( 40.0f,0.0f,   0.0f)
+#define PATROL_POS1 CVector( 40.0f,0.0f, 100.0f)
+#define PATROL_POS2 CVector(  0.0f,0.0f, 100.0f)
+#define PATROL_POS3 CVector(-40.0f,0.0f, 100.0f)
+#define PATROL_POS4 CVector(-40.0f,0.0f,   0.0f)
 #define PATROL_POS5 CVector(-40.0f,0.0f,-100.0f)
 #define PATROL_POS6 CVector(  0.0f,0.0f,-100.0f)
 #define PATROL_POS7 CVector( 40.0f,0.0f,-100.0f)
@@ -73,7 +73,14 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define ROAD_X_AREA 90.0f	// 車道のXの範囲
 
 // 攻撃成功時のオフセット座標
-#define ATTACK_SUCCESS_OFFSET_POS CVector(0.0f,0.0f,5.0f)
+#define ATTACK_SUCCESS_OFFSET_POSY 3.0f
+// Z座標はプレイヤーの前方向のベクトルを掛けて求めるのでfloat型
+#define ATTACK_SUCCESS_OFFSET_POSZ 4.0f
+
+#define SCALE 0.2f	// スケール
+
+// 死んだときの消えるまでの時間
+#define DELETE_TIME 2.0f
 
 //	コンストラクタ
 CCollector::CCollector(bool punisher)
@@ -99,23 +106,29 @@ CCollector::CCollector(bool punisher)
 	, mElapsedTime(0.0f)
 	, mIsBag(false)
 	, mIsAttackSuccess(false)
-	, mpAttackChara(nullptr)
+	, mIsAttacking(false)
 {
+	// 基本重力の半分の重力
+	mGravity = mGravity * 0.2f;
+	// 大きさの調整
+	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Collector", &ANIM_DATA);
 
-	// 地形、プレイヤー、敵、攻撃、車両、キャラの探知用
-	// と衝突判定をする本体コライダ―
+
+	// 本体のコライダ―
 	mpBodyCol = new CColliderCapsule
 	(
-		this, ELayer::eEnemy,
-		CVector(BODY_WIDTH - BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
-		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
+		this, ELayer::eCollector,
+		CVector(0.0f, BODY_RADIUS / SCALE, 0.0f),
+		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS / SCALE, 0.0f),
 		BODY_RADIUS
 	);
+	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用
+	// と衝突判定をする
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
-		ELayer::ePlayer, ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle });
+		ELayer::ePlayer, ELayer::eEnemy, ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle });
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
@@ -137,15 +150,10 @@ void CCollector::Update()
 	case EState::eChase:			UpdateChase();			break;
 	case EState::eLost:				UpdateLost();			break;
 	case EState::eAttackStart:		UpdateAttackStart();	break;
-	case EState::eAttack:			UpdateAttack();			break;
+	case EState::eAttackTrue:		UpdateAttackTrue();		break;
+	case EState::eAttackFalse:		UpdateAttackFalse();	break;
 	case EState::eAttackEnd:		UpdateAttackEnd();		break;
-	}
-
-	// 攻撃が成功している間はプレイヤーの前に固定
-	if (mIsAttackSuccess)
-	{
-		CPlayerBase* player = CPlayerBase::Instance();
-		Position(player->Position() + ATTACK_SUCCESS_OFFSET_POS);
+	case EState::eDeath:			UpdateDeath();			break;
 	}
 
 	// キャラクターの更新
@@ -188,8 +196,8 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
 
-			// 自分が攻撃開始状態かつ攻撃がすでに成功していない場合
-			if (mState==EState::eAttackStart &&
+			// 自分が攻撃中かつ攻撃がすでに成功していない場合
+			if (IsAttacking() &&
 				!mIsAttackSuccess)
 			{
 				// プレイヤークラスを取得
@@ -199,7 +207,7 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 					!IsAttackHitObj(player))
 				{
 					AddAttackHitObj(player);
-					mIsAttackSuccess = true; // 攻撃が成功
+					mIsAttackSuccess = true;		// 攻撃が成功
 				}
 			}
 		}
@@ -516,8 +524,9 @@ void CCollector::UpdateLost()
 			mpLostPlayerNode->SetEnable(false);
 		}
 		break;
+
+		// ステップ1：プレイヤーを見失った位置まで移動
 	case 1:
-		// プレイヤーを見失った位置まで移動
 		if (MoveTo(mMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			mNextMoveIndex++;
@@ -540,101 +549,165 @@ void CCollector::UpdateReturn()
 // 攻撃開始
 void CCollector::UpdateAttackStart()
 {
-	// プレイヤーの座標
-	CPlayerBase* player = CPlayerBase::Instance();
-	CVector targetPos = player->Position();
-	// プレイヤーの方向へ移動
-	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
-	{
 
-	}
+
 	switch (mStateStep)
 	{
+		// ステップ0：攻撃の開始
 	case 0:
-		// 上方向の移動を設定
-		mMoveSpeedY = GetJumpSpeed();
-		// 攻撃開始
-		AttackStart();
 		// 攻撃開始アニメーションを再生
 		ChangeAnimation((int)EAnimType::eAttack_Start);
 		mStateStep++;
 		break;
 
+		// ステップ1：上方向の移動を設定
 	case 1:
+		// アニメーションが60%以上進行したら
+		if (GetAnimationFrameRatio() >= 0.6f)
+		{
+			// 上方向の移動を設定
+			mMoveSpeedY = GetJumpSpeed();
+			// 攻撃開始
+			AttackStart();
+			mStateStep++;
+		}
+		break;
+
+		// ステップ2：アニメーションが終了したら攻撃中へ
+	case 2:
+		// プレイヤーの座標
+		CPlayerBase * player = CPlayerBase::Instance();
+		CVector targetPos = player->Position();
+		// プレイヤーの方向へ移動
+		if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+
+		}
 		// 攻撃開始アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 攻撃中へ
-			ChangeState(EState::eAttack);
+			// 攻撃成功なら
+			if (mIsAttackSuccess)
+			{
+				// 攻撃中（成功）へ
+				ChangeState(EState::eAttackTrue);
+			}
+			// 失敗なら
+			else
+			{
+				// 攻撃中（失敗）へ
+				ChangeState(EState::eAttackFalse);
+			}
 		}
 		break;
 	}
 }
 
-// 攻撃中
-void CCollector::UpdateAttack()
+// 攻撃中（成功）
+void CCollector::UpdateAttackTrue()
 {
+	// 座標をプレイヤーの前に固定
+	CPlayerBase* player = CPlayerBase::Instance();
+	CVector playerForward = player->VectorZ();
+	CVector playerUp = player->VectorY();
+	// 固定する座標を求める
+	CVector lockPos = player->Position() + playerForward * ATTACK_SUCCESS_OFFSET_POSZ +
+		playerUp * ATTACK_SUCCESS_OFFSET_POSY;
+	Position(lockPos);
+	// 向く方向をプレイヤーの方向にする
+	CVector lookVec = player->Position() - Position();
+	lookVec.Y(0.0f);
+	Rotation(CQuaternion::LookRotation(lookVec));
+
 	switch (mStateStep)
 	{
+		// ステップ0：アニメーション再生
 	case 0:
-		// 攻撃が成功している場合
-		if (mIsAttackSuccess)
-		{
-			// 攻撃成功アニメーション再生
-			ChangeAnimation((int)EAnimType::eAttack_True);
-		}
-		// 失敗なら
-		else
-		{
-			// 攻撃失敗アニメーション再生
-			ChangeAnimation((int)EAnimType::eAttack_False);
-		}
+	{
+		// プレイヤーに回収員がついている
+		CTrashPlayer* trashPlayer = dynamic_cast<CTrashPlayer*>(player);
+		trashPlayer->SetStickCollector(true);
+		// 重力を掛けない
+		mIsGravity = false;
+		// 攻撃成功アニメーション再生
+		ChangeAnimation((int)EAnimType::eAttack_True);
 		mStateStep++;
 		break;
+	}
 
+		// ステップ1：次のアニメーション再生
 	case 1:
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 攻撃が成功している場合
-			if (mIsAttackSuccess)
-			{
-				// ゴミ袋獲得アニメーション再生
-				ChangeAnimation((int)EAnimType::eGetBag);
-			}
-			// 失敗なら
-			else
-			{
-				// 攻撃失敗落下中アニメーション再生
-				ChangeAnimation((int)EAnimType::eAttack_False_Fall);
-			}
+			// ゴミ袋獲得アニメーション再生
+			ChangeAnimation((int)EAnimType::eGetBag);
 			mStateStep++;
 		}
 		break;
 
+		// ステップ2：ゴミ袋を手に持ち攻撃終了状態へ
 	case 2:
-		// 攻撃が成功している場合
-		if (mIsAttackSuccess)
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
 		{
-			// アニメーションが終了したら
-			if (IsAnimationFinished())
-			{
-				// TODO：ゴミ袋を表示
-				// ゴミ袋を取得
-				mIsBag = true;
-				// 攻撃終了状態へ
-				ChangeState(EState::eAttackEnd);
-			}
+			// 重力を掛ける
+			mIsGravity = true;
+			// TODO：ゴミ袋を表示
+			// ゴミ袋を取得
+			mIsBag = true;
+			// 攻撃終了状態へ
+			ChangeState(EState::eAttackEnd);
 		}
-		// 失敗なら
-		else
+	}
+}
+
+// 攻撃中（失敗）
+void CCollector::UpdateAttackFalse()
+{
+	// 攻撃が成功に変わったら
+	if (mIsAttackSuccess)
+	{
+		// 攻撃成功状態へ
+		ChangeState(EState::eAttackTrue);
+		return;
+	}
+
+	// 自分の前方を目標地点に設定
+	CVector targetPos = Position() + VectorZ() * 10.0f;
+	// 目標地点の方向へ移動
+	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	{
+
+	}
+
+	switch (mStateStep)
+	{
+		// ステップ0：アニメーション再生
+	case 0:
+		// 攻撃失敗アニメーション再生
+		ChangeAnimation((int)EAnimType::eAttack_False);
+		mStateStep++;
+		break;
+
+		// ステップ1：次のアニメーション再生
+	case 1:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
 		{
-			// 地面に付いたら
-			if (mIsGrounded)
-			{
-				// 攻撃終了状態へ
-				ChangeState(EState::eAttackEnd);
-			}
+			// 攻撃失敗落下中アニメーション再生
+			ChangeAnimation((int)EAnimType::eAttack_False_Fall);
+			mStateStep++;
+		}
+		break;
+
+		// ステップ2：ゴミ袋を手に持ち攻撃終了状態へ
+	case 2:
+		// 接地したら
+		if (mIsGrounded)
+		{
+			// 攻撃終了状態へ
+			ChangeState(EState::eAttackEnd);
 		}
 	}
 }
@@ -645,8 +718,12 @@ void CCollector::UpdateAttackEnd()
 	switch (mStateStep)
 	{
 	case 0:
-		// 攻撃終了
-		AttackEnd();
+	{
+		// プレイヤーに回収員はついていない
+		CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+		player->SetStickCollector(false);
+		// 攻撃の判定自体はここまで
+		mIsAttacking = false;
 		// 攻撃が成功している場合
 		if (mIsAttackSuccess)
 		{
@@ -656,37 +733,85 @@ void CCollector::UpdateAttackEnd()
 		// 失敗なら
 		else
 		{
-			// 攻撃終了アニメーション再生
+			// 立ち上がるアニメーション再生
 			ChangeAnimation((int)EAnimType::eAttack_False_StandUp);
 		}
 		mStateStep++;
 		break;
+	}
 
 	case 1:
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// ゴミ収集車に戻る状態へ
-			ChangeState(EState::eReturn);
+			// 攻撃が成功している場合
+			if (mIsAttackSuccess)
+			{
+				/*
+				// ゴミ収集車に戻る状態へ
+				ChangeState(EState::eReturn);
+				*/
+				// TODO
+				ChangeState(EState::eIdle);
+			}
+			// 失敗なら
+			else
+			{
+				// 追跡状態へ
+				ChangeState(EState::eChase);
+			}
+			// 攻撃終了
+			AttackEnd();
 		}
 		break;
 	}
 }
 
-// TODO：死亡処理
+// 死亡の更新処理
+void CCollector::UpdateDeath()
+{
+	switch (mStateStep)
+	{
+		// ステップ0：死亡アニメーションを再生
+	case 0:
+		ChangeAnimation((int)EAnimType::eDeath);
+		mStateStep++;
+		break;
+
+		// ステップ1：アニメーションが終了したら次のステップへ
+	case 1:
+		if (IsAnimationFinished())
+		{
+			mStateStep++;
+		}
+		break;
+		// ステップ1：消えるまでの時間になるまでカウント
+	case 2:
+		mElapsedTime += Times::DeltaTime();
+		if (mElapsedTime >= DELETE_TIME)
+		{
+			mStateStep++;
+		}
+		break;
+		// ステップ2：アニメーションが終了したら削除
+	case 3:
+		Kill();
+		break;
+	}
+}
+
+// 死亡処理
 void CCollector::Death()
 {
+	// 死亡状態へ
+	ChangeState(EState::eDeath);
 }
 
 
 // 攻撃中か
 bool CCollector::IsAttacking() const
 {
-	// 攻撃中
-	if (mState == EState::eAttack) return true;
-
-	// 攻撃中でない
-	return false;
+	return mIsAttacking;
 }
 
 // 攻撃開始
@@ -694,6 +819,8 @@ void CCollector::AttackStart()
 {
 	// ベースクラスの攻撃開始処理を呼び出し
 	CXCharacter::AttackStart();
+	// 攻撃中
+	mIsAttacking = true;
 }
 
 // 攻撃終了
@@ -701,6 +828,22 @@ void CCollector::AttackEnd()
 {
 	// ベースクラスの攻撃終了処理を呼び出し
 	CXCharacter::AttackEnd();
+
+	// 攻撃が成功したかをリセット
+	mIsAttackSuccess = false;
+	// 攻撃中でない
+	mIsAttacking = false;
+	// 重力を掛ける
+	mIsGravity = true;
+	// プレイヤーに回収員はついていない
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	player->SetStickCollector(false);
+}
+
+// 攻撃が成功したか
+bool CCollector::GetAttackSuccess() const
+{
+	return mIsAttackSuccess;
 }
 
 // ダメージを受ける
@@ -722,9 +865,13 @@ void CCollector::ChangeState(EState state)
 	// 既に同じ状態であれば、処理しない
 	if (state == mState) return;
 
-	// 攻撃中に他の状態に変わるとき
+	// 攻撃中に攻撃関連以外の状態に変わるとき
 	// 攻撃終了処理を呼ぶ
-	if (IsAttacking())
+	if (IsAttacking() &&
+		state != EState::eAttackStart &&
+		state != EState::eAttackTrue &&
+		state != EState::eAttackFalse &&
+		state != EState::eAttackEnd)
 	{
 		AttackEnd();
 	}
@@ -746,7 +893,8 @@ std::string CCollector::GetStateStr(EState state) const
 	case EState::eLost:				return "見失う";
 	case EState::eReturn:			return "ゴミ収集車に戻る";
 	case EState::eAttackStart:		return "攻撃開始";
-	case EState::eAttack:			return "攻撃中";
+	case EState::eAttackTrue:		return "攻撃中（成功）";
+	case EState::eAttackFalse:		return "攻撃中（失敗）";
 	case EState::eAttackEnd:		return "攻撃終了";
 	}
 	return "";
@@ -763,7 +911,8 @@ CColor CCollector::GetStateColor(EState state) const
 	case EState::eLost:				return CColor::yellow;
 	case EState::eReturn:			return CColor::blue;
 	case EState::eAttackStart:		return CColor::magenta;
-	case EState::eAttack:			return CColor::magenta;
+	case EState::eAttackTrue:		return CColor::magenta;
+	case EState::eAttackFalse:		return CColor::magenta;
 	case EState::eAttackEnd:		return CColor::magenta;
 	}
 	return CColor::white;

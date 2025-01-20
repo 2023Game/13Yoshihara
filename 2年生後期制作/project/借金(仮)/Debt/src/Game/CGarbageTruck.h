@@ -36,16 +36,12 @@ public:
 	// 変数をリセット
 	void Reset() override;
 
-	// ターゲットのポインタを取得
-	CObjectBase* GetTarget() const;
 private:
-	// ターゲットのポインタ
-	CObjectBase* mpTarget;
 	// プレイヤーと敵の探知用
 	CCollider* mpSearchCol;
 
 	// 撤退の移動中かどうか
-	bool mIsWithdraw;
+	bool mIsReturn;
 
 	// 移動処理
 	void UpdateMove();

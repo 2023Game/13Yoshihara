@@ -19999,11 +19999,11 @@ Frame Root {
           0,
           0;
           Material Fox {
-             0.000000; 0.000000; 0.000000; 1.000000;;
+             0.700000; 0.700000; 0.700000; 1.000000;;
              249.019608;
              0.000000; 0.000000; 0.000000;;
              0.000000; 0.000000; 0.000000;;
-            TextureFilename {"FoxCol.png";}
+            TextureFilename {"FoxColor.png";}
           }
         } // End of Fox material list
         XSkinMeshHeader {

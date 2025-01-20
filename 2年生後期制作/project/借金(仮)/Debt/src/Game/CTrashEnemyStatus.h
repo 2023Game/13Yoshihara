@@ -16,6 +16,8 @@ public:
 
 	// クリティカル確率を取得
 	int GetCriticalChance();
+	// クリティカル確率を設定
+	void SetCriticalChance(int criticalChance);
 private:
 	// クリティカル確率
 	int mCriticalChance;

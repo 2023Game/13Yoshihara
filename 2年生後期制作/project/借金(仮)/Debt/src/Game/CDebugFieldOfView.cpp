@@ -39,9 +39,13 @@ void CDebugFieldOfView::Set(float angle, float length)
 // 更新
 void CDebugFieldOfView::Update()
 {
-	// 表示対象のスケール以外を適用
-	Position(mpOwner->Position());
-	Rotation(mpOwner->Rotation());
+	// 表示対象がいるなら
+	if (mpOwner != nullptr)
+	{
+		// 表示対象のスケール以外を適用
+		Position(mpOwner->Position());
+		Rotation(mpOwner->Rotation());
+	}
 }
 
 // 描画

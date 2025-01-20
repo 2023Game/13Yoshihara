@@ -6,10 +6,10 @@ class CNavNode;
 class CVehicleManager;
 
 // 前方コライダ―の座標
-#define FRONT_COL_POS CVector(0.0f,0.0f,60.0f)
+#define FRONT_COL_OFFSET_POS CVector(0.0f,0.0f,60.0f)
 // 横コライダーの座標
-#define LEFT_COL_POS	CVector(-40.0f,0.0f,0.0f)	// 左
-#define RIGHT_COL_POS	CVector( 40.0f,0.0f,0.0f)	// 右
+#define LEFT_COL_OFFSET_POS		CVector(-40.0f,0.0f,0.0f)	// 左
+#define RIGHT_COL_OFFSET_POS	CVector( 40.0f,0.0f,0.0f)	// 右
 
 // 車両の基底クラス
 class CVehicleBase : public CCharaBase

@@ -133,12 +133,12 @@ void CVehicleBase::ChangeRoadType(ERoadType roadType)
 	if (mRoadType == ERoadType::eLeft2 ||
 		mRoadType == ERoadType::eRight1)
 	{
-		mpSideCol->Position(LEFT_COL_POS);
+		mpSideCol->Position(LEFT_COL_OFFSET_POS);
 	}
 	// ‚à‚¤ˆê‚Â‚ÌŽÔ“¹‚ª‰E‚É‚ ‚éŽÔ“¹
 	else
 	{
-		mpSideCol->Position(RIGHT_COL_POS);
+		mpSideCol->Position(RIGHT_COL_OFFSET_POS);
 	}
 }
 

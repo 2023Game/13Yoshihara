@@ -4,9 +4,9 @@
 #include "Maths.h"
 #include "CTrashEnemy.h"
 
-// 衝突相手の車両基底クラスを取得するための
-// 車両の基底クラスのインクルード
+// 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
+#include "CCollector.h"
 
 // コライダのインクルード
 #include "CColliderCapsule.h"
@@ -72,28 +72,36 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 // モーションブラーの反復回数
 #define MOTION_BLUR_COUNT 5
 
+#define SCALE 0.1f	// スケール
+
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
 	: CPlayerBase()
+	, CTrashPlayerStatus()
 	, mState(EState::eIdle)
 	, mIsOpen(false)
 	, mIsJump(false)
+	, mIsStickCollector(false)
 {
+	// 大きさの調整
+	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashPlayer", &ANIM_DATA);
 
-	// 地形、敵、攻撃、車両、キャラ探知用
-	// と衝突判定をする本体コライダ―
+	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector( BODY_WIDTH - BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
-		CVector(-BODY_WIDTH + BODY_RADIUS * 10, BODY_HEIGHT, 0.0f),
+		CVector( BODY_WIDTH - BODY_RADIUS / SCALE, BODY_HEIGHT, 0.0f),
+		CVector(-BODY_WIDTH + BODY_RADIUS / SCALE, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
+	// 地形、敵、回収員、攻撃、車両、キャラ探知用
+	// と衝突判定をする
 	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,
-		ELayer::eCharaSearch,ELayer::eEnemy, ELayer::eAttackCol, ELayer::eVehicle});
+		ELayer::eEnemy, ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle,
+		ELayer::eCharaSearch});
 
 	// 攻撃コライダー
 	mpAttackCol = new CColliderCapsule
@@ -112,11 +120,11 @@ CTrashPlayer::CTrashPlayer()
 		CRITICAL_COL_RADIUS
 	);
 
-	// 敵と車両と衝突判定するように設定
+	// 敵と回収員と車両と衝突判定する
 	mpAttackCol->SetCollisionTags({ ETag::eEnemy,ETag::eVehicle });
-	mpAttackCol->SetCollisionLayers({ ELayer::eEnemy,ELayer::eVehicle });
+	mpAttackCol->SetCollisionLayers({ ELayer::eEnemy,ELayer::eCollector,ELayer::eVehicle });
 	mpCriticalCol->SetCollisionTags({ ETag::eEnemy,ETag::eVehicle });
-	mpCriticalCol->SetCollisionLayers({ ELayer::eEnemy,ELayer::eVehicle });
+	mpCriticalCol->SetCollisionLayers({ ELayer::eEnemy,ELayer::eCollector,ELayer::eVehicle });
 	
 	// 自分の前に位置調整
 	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
@@ -180,6 +188,7 @@ void CTrashPlayer::Update()
 	CDebugPrint::Print("PlayerIsOpen:%s\n", mIsOpen ? "true" : "false");
 	CDebugPrint::Print("PlayerIsJump:%s\n", mIsJump ? "true" : "false");
 	CDebugPrint::Print("PlayerHp:%d\n", GetHp());
+	CDebugPrint::Print("PlayerIsCollector:%s\n", mIsStickCollector ? "true" : "false");
 #endif
 }
 
@@ -212,6 +221,34 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
 		}
+		// 衝突した相手が回収員なら
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 回収員のクラスを取得
+			CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
+
+			// 攻撃中でないなら
+			if (!collector->IsAttacking())
+			{
+				// 押し戻しベクトル
+				CVector adjust = hit.adjust;
+				adjust.Y(0.0f);
+
+				// 押し戻しベクトルの分、座標を移動
+				Position(Position() + adjust * hit.weight);
+			}
+			// 攻撃中なら
+			else if (collector->IsAttacking())
+			{
+				// 蓋が開いていない場合
+				if (!mIsOpen)
+				{
+					// 蓋を開く
+					ChangeState(EState::eOpenClose);
+				}
+			}
+
+		}
 	}
 	// 攻撃コライダー
 	else if (self == mpAttackCol)
@@ -235,6 +272,20 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				enemy->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				enemy->TakeDamage(GetAttackPower(), this);
+			}
+		}
+		// 衝突した相手が回収員なら
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 回収員クラスを取得
+			CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
+
+			if (collector != nullptr &&
+				!IsAttackHitObj(collector))
+			{
+				AddAttackHitObj(collector);
+				// 攻撃力分のダメージを与える
+				collector->TakeDamage(GetAttackPower(), this);
 			}
 		}
 	}
@@ -262,48 +313,81 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				enemy->TakeCritical(GetAttackPower(), this);
 			}
 		}
+		// 衝突した相手が回収員なら
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 回収員クラスを取得
+			CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
+
+			if (collector != nullptr &&
+				!IsAttackHitObj(collector))
+			{
+				AddAttackHitObj(collector);
+				// 攻撃力分のダメージを与える
+				collector->TakeDamage(GetAttackPower(), this);
+			}
+		}
 	}
 }
 
-// アクションのキー入力
+// 回収員がついているかを取得
+bool CTrashPlayer::GetStickCollector() const
+{
+	return mIsStickCollector;
+}
+
+// 回収員がついているかを設定
+void CTrashPlayer::SetStickCollector(bool stickCollector)
+{
+	mIsStickCollector = stickCollector;
+}
+
+/*
+アクションのキー入力
+回収員がついていないときのみ入力可能
+*/
 void CTrashPlayer::ActionInput()
 {
-	// スペースでジャンプ
-	if (CInput::PushKey(VK_SPACE))
+	// 回収員がついていないときのみキー入力できる
+	if (!mIsStickCollector)
 	{
-		if (mState == EState::eOpenClose)
+		// スペースでジャンプ
+		if (CInput::PushKey(VK_SPACE))
 		{
-			// ジャンプ速度の設定
-			mMoveSpeedY = GetJumpSpeed();
-			mIsGrounded = false;
-			mIsJump = true;
-			ChangeState(EState::eJump);
+			if (mState == EState::eOpenClose)
+			{
+				// ジャンプ速度の設定
+				mMoveSpeedY = GetJumpSpeed();
+				mIsGrounded = false;
+				mIsJump = true;
+				ChangeState(EState::eJump);
+			}
+			else
+			{
+				ChangeState(EState::eJumpStart);
+			}
 		}
-		else
+		// 左クリックで攻撃
+		if (CInput::PushKey(VK_LBUTTON))
 		{
-			ChangeState(EState::eJumpStart);
+			// 1から100までの100個の数から乱数を取得
+			int random = Math::Rand(1, 100);
+			// クリティカル確率以下の値ならクリティカル攻撃
+			if (random <= GetCriticalChance())
+			{
+				ChangeState(EState::eCriticalStart);
+			}
+			// それ以外の時は通常攻撃
+			else
+			{
+				ChangeState(EState::eAttackStart);
+			}
 		}
-	}
-	// 左クリックで攻撃
-	if (CInput::PushKey(VK_LBUTTON))
-	{
-		// 1から100までの100個の数から乱数を取得
-		int random = Math::Rand(1, 100);
-		// クリティカル確率以下の値ならクリティカル攻撃
-		if (random <= GetCriticalChance())
+		// 右クリックで蓋の開閉
+		if (CInput::PushKey(VK_RBUTTON))
 		{
-			ChangeState(EState::eCriticalStart);
+			ChangeState(EState::eOpenClose);
 		}
-		// それ以外の時は通常攻撃
-		else
-		{
-			ChangeState(EState::eAttackStart);
-		}
-	}
-	// 右クリックで蓋の開閉
-	if (CInput::PushKey(VK_RBUTTON))
-	{
-		ChangeState(EState::eOpenClose);
 	}
 }
 
@@ -645,6 +729,7 @@ void CTrashPlayer::UpdateAttack()
 		{
 			// 攻撃終了へ
 			ChangeState(EState::eAttackEnd);
+			AttackEnd();
 		}
 		break;
 	}
@@ -659,7 +744,6 @@ void CTrashPlayer::UpdateAttackEnd()
 		mIsOpen = true;
 		// 攻撃終了アニメーション再生
 		ChangeAnimation((int)EAnimType::eAttack_End);
-		AttackEnd();
 		mStateStep++;
 		break;
 

@@ -54,6 +54,12 @@ int CCharaStatusBase::GetMaxHp() const
 	return mMaxHp;
 }
 
+// 最大HPを設定
+void CCharaStatusBase::SetMaxHp(int maxHp)
+{
+	mMaxHp = maxHp;
+}
+
 // 現在HPを取得
 int CCharaStatusBase::GetHp() const
 {
@@ -66,14 +72,32 @@ float CCharaStatusBase::GetBaseMoveSpeed() const
 	return mBaseMoveSpeed;
 }
 
+// 基礎移動速度を設定
+void CCharaStatusBase::SetBaseMoveSpeed(float baseMoveSpeed)
+{
+	mBaseMoveSpeed = baseMoveSpeed;
+}
+
 // ジャンプ速度を取得
 float CCharaStatusBase::GetJumpSpeed() const
 {
 	return mJumpSpeed;
 }
 
+// ジャンプ速度を設定
+void CCharaStatusBase::SetJumpSpeed(float jumpSpeed)
+{
+	mJumpSpeed = jumpSpeed;
+}
+
 // 攻撃力を取得
 int CCharaStatusBase::GetAttackPower() const
 {
 	return mAttackPower;
+}
+
+// 攻撃力を設定
+void CCharaStatusBase::SetAttackPower(int attackPower)
+{
+	mAttackPower = attackPower;
 }
