@@ -18,7 +18,7 @@
 #define NODE_POS3	CVector( 15.0f,0.0f,-30.0f)
 
 #define PATROL_NEAR_DIST 0.0f	// 巡回開始時に選択される巡回ポイントの最短距離
-#define ROTATE_SPEED 6.0f	// 回転速度
+#define ROTATE_SPEED 3.0f	// 回転速度
 
 CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, 
 	ERoadType road, std::vector<CNavNode*> patrolPoints)
@@ -28,8 +28,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 {
-	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
-	// と衝突判定する本体コライダ―
+	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this,ELayer::eVehicle,
@@ -37,6 +36,8 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
 		CAR_RADIUS, true
 	);
+	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
+	// と衝突判定する
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
 		ETag::eVehicle,ETag::eField, });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,
@@ -55,12 +56,13 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	mpFrontCol->SetCollisionTags({ ETag::eVehicle });
 	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
 
-	// 車両と衝突判定する横方向コライダ―
+	// 横方向コライダ―
+	// 他より長く設定しておく
 	mpSideCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
-		CVector(0.0f, CAR_HEIGHT,  CAR_WIDTH - CAR_RADIUS),
-		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
+		CVector(0.0f, CAR_HEIGHT,  CAR_WIDTH - CAR_RADIUS * 5.0f),
+		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS * 5.0f),
 		CAR_RADIUS, true
 	);
 
@@ -75,6 +77,7 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	{
 		mpSideCol->Position(LEFT_COL_OFFSET_POS);
 	}
+	// 車両と衝突判定する
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
 
@@ -195,11 +198,19 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 衝突した相手が回収員の場合
 		else if (other->Layer() == ELayer::eCollector)
 		{
-			// 移動していたら
+			// 自分が移動していたら
 			if (IsMove())
 			{
-				// 壊れた状態へ移行
-				ChangeState(EState::eBroken);
+				// 回収員クラスを取得
+				CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
+
+				if (collector != nullptr &&
+					!IsAttackHitObj(collector))
+				{
+					AddAttackHitObj(collector);
+					// 攻撃力分のダメージを与える
+					collector->TakeDamage(GetAttackPower(), this);
+				}
 			}
 		}
 		// 車両とぶつかったら壊れる
@@ -222,8 +233,9 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 車両クラスを取得
 			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
 
-			// 相手が動いていない場合
-			if (!vehicle->IsMove())
+			// 相手が動いていないかつ壊れていない場合
+			if (!vehicle->IsMove() &&
+				!vehicle->IsBroken())
 			{
 				mIsFrontVehicle = true;
 				// 横方向に車両がいないかつ
@@ -231,6 +243,8 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				if (!mIsSideVehicle &&
 					!vehicle->GetIsFrontVehicle())
 				{
+					// 車線変更の移動先を設定
+					SetChangeRoadPoint(vehicle);
 					// 車線変更状態へ移行
 					ChangeState(EState::eChangeRoad);
 				}
@@ -240,6 +254,14 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					// 停止状態へ移行
 					ChangeState(EState::eStop);
 				}
+			}
+			// 相手が動いていないかつ壊れている場合
+			else if (!vehicle->IsMove() &&
+				vehicle->IsBroken())
+			{
+				mIsFrontVehicle = true;
+				// いなくなれば進めるのでそれまで停止
+				ChangeState(EState::eStop);
 			}
 		}
 	}
@@ -258,7 +280,6 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CCar::Render()
 {
 	CVehicleBase::Render();
-
 	// 移動状態であれば
 	if (mState == EState::eMove)
 	{
@@ -274,12 +295,12 @@ void CCar::Render()
 				c
 			);
 		}
-		// 巡回するポイントが決まっていれば
-		if (mNextPatrolIndex != -1)
+		// 巡回ポイントまで移動のステップなら
+		if (mStateStep == 1)
 		{
 			CVector offsetPos = CVector(0.0f, CAR_HEIGHT, 0.0f);
 			CVector selfPos = Position() + offsetPos;
-			CVector targetPos = mPatrolPoints[mNextPatrolIndex]->GetPos() + offsetPos;
+			CVector targetPos = mMoveRoute[mNextMoveIndex]->GetPos() + offsetPos;
 			// 次巡回するポイントまで緑線を描画
 			Primitive::DrawLine
 			(
@@ -288,6 +309,27 @@ void CCar::Render()
 				2.0f
 			);
 		}
+	}
+	// 車線変更状態の場合
+	else if (mState == EState::eChangeRoad)
+	{
+		// 車線変更で移動するポイントを描画
+		Primitive::DrawWireBox
+		(
+			mpChangeRoadPoint->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+			CVector::one,
+			CColor::gray
+		);
+		CVector offsetPos = CVector(0.0f, CAR_HEIGHT, 0.0f);
+		CVector selfPos = Position() + offsetPos;
+		CVector targetPos = mpChangeRoadPoint->GetPos() + offsetPos;
+		// 車線変更の移動先ポイントまで青線を描画
+		Primitive::DrawLine
+		(
+			selfPos, targetPos,
+			CColor::blue,
+			2.0f
+		);
 	}
 }
 
@@ -305,6 +347,8 @@ void CCar::Reset()
 // 移動処理
 void CCar::UpdateMove()
 {
+	// 動いている
+	mIsMove = true;
 	// 全ての巡回ポイントへの移動が終わっていないなら
 	if (!mIsMoveEnd)
 	{
@@ -321,10 +365,6 @@ void CCar::UpdateMove()
 			// ステップ1：巡回ポイントまで移動
 		case 1:
 		{
-			if (mMoveRoute.size() == 1)
-			{
-				mNextMoveIndex = 0;
-			}
 			// 最短経路の次のノードまで移動
 			CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
 
@@ -439,25 +479,25 @@ void CCar::UpdateChangeRoad()
 			if (mRoadType == ERoadType::eLeft1)
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eLeft2;
+				ChangeRoadType(ERoadType::eLeft2);
 			}
 			// 左から2番目の道の場合
 			else if (mRoadType == ERoadType::eLeft2)
 			{
 				// 左から1番目の道に移動したので変更
-				mRoadType = ERoadType::eLeft1;
+				ChangeRoadType(ERoadType::eLeft1);
 			}
 			// 右から1番目の道の場合
 			else if (mRoadType == ERoadType::eRight1)
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eRight2;
+				ChangeRoadType(ERoadType::eRight2);
 			}
 			// 右から2番目の道の場合
 			else
 			{
 				// 左から2番目の道に移動したので変更
-				mRoadType = ERoadType::eRight1;
+				ChangeRoadType(ERoadType::eRight1);
 			}
 
 			// 巡回ポイントのリストを変更された道のものに変更する
@@ -479,6 +519,12 @@ void CCar::ChangeState(EState state)
 {
 	// 同じなら処理しない
 	if (state == mState) return;
+	// 壊れた状態から車線変更、止まるには変更しない
+	if ((state == EState::eChangeRoad || state == EState::eStop)&&
+		mState == EState::eBroken)
+	{
+		return;
+	}
 
 	// 移動から破壊以外に変更されるとき
 	// 移動の中断中

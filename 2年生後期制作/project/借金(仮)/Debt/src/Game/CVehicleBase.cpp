@@ -66,6 +66,8 @@ CVehicleBase::~CVehicleBase()
 {
 	// コライダ―の削除
 	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpFrontCol);
+	SAFE_DELETE(mpSideCol);
 	SAFE_DELETE(mpNavCol);
 }
 
@@ -171,7 +173,7 @@ void CVehicleBase::SetOnOff(bool setOnOff)
 {
 	SetEnable(setOnOff);
 	SetShow(setOnOff);
-	mpNavNode->SetEnable(true);
+	mpNavNode->SetEnable(setOnOff);
 }
 
 // 変数をリセット

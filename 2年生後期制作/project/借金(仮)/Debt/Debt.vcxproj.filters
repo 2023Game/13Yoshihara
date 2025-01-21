@@ -463,9 +463,6 @@
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashVehicleSpawnZone.cpp">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\CColliderBox.cpp">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClCompile>
@@ -899,9 +896,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTrashEnemyManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashVehicleSpawnZone.h">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CColliderBox.h">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>

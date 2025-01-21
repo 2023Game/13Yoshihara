@@ -66,6 +66,12 @@ int CCharaStatusBase::GetHp() const
 	return mHp;
 }
 
+// 現在HPをリセット
+void CCharaStatusBase::SetHp()
+{
+	mHp = mMaxHp;
+}
+
 // 基礎移動速度を取得
 float CCharaStatusBase::GetBaseMoveSpeed() const
 {

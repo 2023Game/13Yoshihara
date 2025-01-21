@@ -7,6 +7,7 @@
 #include "CTrashEnemy.h"
 #include "Primitive.h"
 #include "CVehicleManager.h"
+#include "CCollector.h"
 
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
@@ -17,6 +18,12 @@
 
 #define SEARCH_RADIUS	50.0f	// 探知範囲
 
+// 回収員生成のオフセット座標
+#define COLLECTOR_OFFSET_POS CVector(-10.0f,0.0f,0.0f)
+
+// 車両同士の距離の最低値
+// 前方コライダ―に他の車両がいるときにこれより近くなれば停止する
+#define VEHICLE_DIST 40.0f
 
 // ノードの座標
 #define NODE_POS0	CVector( 20.0f,0.0f, 35.0f)
@@ -70,11 +77,12 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	mpFrontCol->SetCollisionLayers({ ELayer::eVehicle });
 
 	// 横方向コライダ―
+	// 他より長く設定しておく
 	mpSideCol = new CColliderCapsule
 	(
 		this, ELayer::eVehicleSearch,
-		CVector(0.0f, TRUCK_HEIGHT,  TRUCK_WIDTH - TRUCK_RADIUS),
-		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS),
+		CVector(0.0f, TRUCK_HEIGHT,  TRUCK_WIDTH - TRUCK_RADIUS * 5.0f),
+		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH + TRUCK_RADIUS * 5.0f),
 		TRUCK_RADIUS, true
 	);
 	// もう一つの車道が左にある車道
@@ -113,11 +121,25 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	// プレイヤーと衝突判定
 	mpSearchCol->SetCollisionTags({ ETag::ePlayer});
 	mpSearchCol->SetCollisionLayers({ ELayer::ePlayer});
+
+	// 回収員を全て生成し、無効にしておく
+	for (int i = 0; i < GetCollectorsNum(); i++)
+	{
+		mpCollectors.push_back(new CCollector(false, this,
+			{ mpNode0,mpNode1,mpNode2,mpNode3 }));
+		// 無効にする
+		mpCollectors[i]->SetOnOff(false);
+	}
 }
 
 // デストラクタ
 CGarbageTruck::~CGarbageTruck()
 {
+	// コライダーの削除
+	SAFE_DELETE(mpSearchCol);
+
+	// リストのクリア
+	mpCollectors.clear();
 }
 
 // 更新
@@ -234,14 +256,30 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		// 衝突した相手が回収員の場合
 		else if (other->Layer() == ELayer::eCollector)
 		{
-			// 止まる状態へ移行
-			ChangeState(EState::eStop);
+			// 自分が移動していたら
+			if (IsMove())
+			{
+				// 回収員クラスを取得
+				CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
+
+				if (collector != nullptr &&
+					!IsAttackHitObj(collector))
+				{
+					AddAttackHitObj(collector);
+					// 攻撃力分のダメージを与える
+					collector->TakeDamage(GetAttackPower(), this);
+				}
+			}
 		}
 		// 車両とぶつかったら止まる
 		else if (other->Layer() == ELayer::eVehicle)
 		{
-			// 止まる状態へ移行
-			ChangeState(EState::eStop);
+			// 自分が移動していたら
+			if (IsMove())
+			{
+				// 止まる状態へ移行
+				ChangeState(EState::eStop);
+			}
 		}
 		//TODO：テスト用
 		else if (other->Layer() == ELayer::eAttackCol)
@@ -259,8 +297,10 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// 車両クラスを取得
 			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
 
+			// 相手と自分の座標の距離を求める
+			float dist = CVector::Distance(vehicle->Position(), Position());
+
 			// 相手が動いていないかつ壊れていない場合
-			// 壊れていたら壊れたら進めるので待つ
 			if (!vehicle->IsMove()&&
 				!vehicle->IsBroken())
 			{
@@ -281,6 +321,22 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					// 停止状態へ移行
 					ChangeState(EState::eStop);
 				}
+			}
+			// 相手が動いていないかつ壊れている場合
+			else if (!vehicle->IsMove() &&
+				vehicle->IsBroken())
+			{
+				mIsFrontVehicle = true;
+				// いなくなれば進めるのでそれまで停止
+				ChangeState(EState::eStop);
+			}
+			// 相手が動いていても近い場合は停止する
+			else if (vehicle->IsMove() &&
+				dist < VEHICLE_DIST)
+			{
+				mIsFrontVehicle = true;
+				// 停止状態へ移行
+				ChangeState(EState::eStop);
 			}
 		}
 	}
@@ -554,56 +610,67 @@ void CGarbageTruck::UpdateCollect()
 {
 	switch (mStateStep)
 	{
-		// 設定を変更する
+		// ステップ0：設定を変更する
 	case 0:
 		// 動いていない
 		mIsMove = false;
 		// 移動速度をゼロにする
 		mMoveSpeed = CVector::zero;
 		// 撤退までの時間を初期値に戻す
-		SetWithdrawTime();
+		SetReturnTime();
 		// 回収員の人数を初期値に戻す
-		SetCollectors();
+		SetCollectorsNum();
 
-		// TODO：回収員を全て有効にする
+		// 回収員を全て有効にする
+		for (int i = 0; i < mpCollectors.size(); i++)
+		{
+			// 有効にする
+			mpCollectors[i]->SetOnOff(true);
+			// 自分の座標＋オフセット座標を設定
+			mpCollectors[i]->Position(Position() + COLLECTOR_OFFSET_POS);
+		}
 
 		mStateStep++;
 		break;
 
-		// 時間が経過するまでカウントダウン
+		// ステップ1：時間が経過するまでカウントダウン
 	case 1:
 		// 撤退までの時間をカウントダウンする
-		CountWithdrawTime();
+		CountReturnTime();
 
-		// 撤退までの時間が経過したら
-		if (IsElapsedWithdrawTime())
+		// 撤退までの時間が経過したら次のステップへ
+		if (IsElapsedReturnTime())
 		{
-			// TODO：全ての回収員の状態を撤退状態へ
+			// 全ての回収員の状態を撤退状態へ
+			for (int i = 0; i < mpCollectors.size(); i++)
+			{
+				// 無効ならスルー
+				if (!mpCollectors[i]->IsEnable()) continue;
+				// 撤収状態に変更
+				mpCollectors[i]->ChangeStateReturn();
+			}
 
+			mStateStep++;
+		}
+		// もしくは、回収員が全滅したら次のステップへ
+		else if (GetCollectorsNum() <= 0)
+		{
 			mStateStep++;
 		}
 		break;
 
-		// 回収員の撤退の終了まで待機
+		// ステップ2：回収員がいなくなるまで待機
 	case 2:
 
 		// 回収員の数がゼロなら
-		if (GetCollectors() == 0)
+		if (GetCollectorsNum() <= 0)
 		{
-			// 回収員が全ていなくなったので
-			// 次のステップへ
-			mStateStep++;
+			// 自分の撤退を開始
+			// 撤退の移動である
+			mIsReturn = true;
+			// 移動状態へ
+			ChangeState(EState::eMove);
 		}
-		// TODO：テスト用で回収員の数を無視して次のステップへ
-		mStateStep++;
-		break;
-
-		// 自分の撤退を開始
-	case 3:
-		// 撤退の移動である
-		mIsReturn = true;
-		// 移動状態へ
-		ChangeState(EState::eMove);
 		break;
 	}
 }
@@ -613,6 +680,12 @@ void CGarbageTruck::ChangeState(EState state)
 {
 	// 同じなら処理しない
 	if (state == mState) return;
+	// 壊れた状態から車線変更、止まるには変更しない
+	if ((state == EState::eChangeRoad || state == EState::eStop) &&
+		mState == EState::eBroken)
+	{
+		return;
+	}
 
 	// 移動から破壊以外に変更されるとき
 	// 移動の中断中

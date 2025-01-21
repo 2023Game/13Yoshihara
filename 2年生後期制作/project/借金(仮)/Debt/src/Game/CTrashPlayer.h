@@ -3,6 +3,7 @@
 #include "CPlayerBase.h"
 // プレイヤーのステータスクラスのインクルード
 #include "CTrashPlayerStatus.h"
+#include "CCollector.h"
 
 /*
 ゴミ拾いゲームのプレイヤークラス
@@ -47,6 +48,10 @@ public:
 	bool GetStickCollector() const;
 	// 回収員がついているかを設定
 	void SetStickCollector(bool stickCollector);
+	// ついている回収員のポインタを取得
+	CCollector* GetStickCollectorPointer() const;
+	// ついている回収員のポインタを設定
+	void SetStickCollectorPointer(CCollector* collector);
 
 private:
 	/*
@@ -88,6 +93,7 @@ private:
 		eCritical_End,		// クリティカル攻撃終了	（開閉）
 		eOpen,				// 蓋を開く				（と）
 		eClose,				// 蓋を閉じる			（開）
+		eDeath,				// 死亡					（開）
 
 
 		Num
@@ -111,6 +117,7 @@ private:
 		eCritical,		// クリティカル攻撃
 		eCriticalEnd,	// クリティカル攻撃終了
 		eOpenClose,		// 蓋を開閉する
+		eDeath,			// 死亡
 	};
 
 	// 待機状態
@@ -143,7 +150,9 @@ private:
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
-	// 死亡処理
+	// 死亡の更新処理
+	void UpdateDeath();
+	// 死亡
 	void Death() override;
 
 	// 状態切り替え
@@ -166,4 +175,6 @@ private:
 	bool mIsJump;
 	// 回収員がついているかどうか
 	bool mIsStickCollector;
+	// ついている回収員のポインタ
+	CCollector* mpStickCollector;
 };

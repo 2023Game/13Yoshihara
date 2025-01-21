@@ -45,6 +45,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Critical_End.x",		false,	69.0f,	1.0f},	// クリティカル攻撃終了	（開閉）
 	{ ANIM_PATH"Open.x",				false,	10.0f,	1.0f},	// 蓋を開く				（と）
 	{ ANIM_PATH"Close.x",				false,	10.0f,	1.0f},	// 蓋を閉じる			（開）
+	{ ANIM_PATH"Death.x",				false,   5.0f,  1.0f},	// 死亡					（開）
 };
 
 #define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
@@ -82,6 +83,7 @@ CTrashPlayer::CTrashPlayer()
 	, mIsOpen(false)
 	, mIsJump(false)
 	, mIsStickCollector(false)
+	, mpStickCollector(nullptr)
 {
 	// 大きさの調整
 	Scale(SCALE, SCALE, SCALE);
@@ -141,6 +143,7 @@ CTrashPlayer::CTrashPlayer()
 // デストラクタ
 CTrashPlayer::~CTrashPlayer()
 {
+	SAFE_DELETE(mpCriticalCol);
 }
 
 // 更新
@@ -163,6 +166,7 @@ void CTrashPlayer::Update()
 	case EState::eCritical:			UpdateCritical();		break;
 	case EState::eCriticalEnd:		UpdateCriticalEnd();	break;
 	case EState::eOpenClose:		UpdateOpenClose();		break;
+	case EState::eDeath:			UpdateDeath();			break;
 	}
 
 	// 待機中とジャンプ中と
@@ -342,47 +346,59 @@ void CTrashPlayer::SetStickCollector(bool stickCollector)
 	mIsStickCollector = stickCollector;
 }
 
+// ついている回収員のポインタを取得
+CCollector* CTrashPlayer::GetStickCollectorPointer() const
+{
+	return mpStickCollector;
+}
+
+// ついている回収員のポインタを設定
+void CTrashPlayer::SetStickCollectorPointer(CCollector* collector)
+{
+	mpStickCollector = collector;
+}
+
 /*
 アクションのキー入力
 回収員がついていないときのみ入力可能
 */
 void CTrashPlayer::ActionInput()
 {
+	// スペースでジャンプ
+	if (CInput::PushKey(VK_SPACE))
+	{
+		if (mState == EState::eOpenClose)
+		{
+			// ジャンプ速度の設定
+			mMoveSpeedY = GetJumpSpeed();
+			mIsGrounded = false;
+			mIsJump = true;
+			ChangeState(EState::eJump);
+		}
+		else
+		{
+			ChangeState(EState::eJumpStart);
+		}
+	}
+	// 左クリックで攻撃
+	if (CInput::PushKey(VK_LBUTTON))
+	{
+		// 1から100までの100個の数から乱数を取得
+		int random = Math::Rand(1, 100);
+		// クリティカル確率以下の値ならクリティカル攻撃
+		if (random <= GetCriticalChance())
+		{
+			ChangeState(EState::eCriticalStart);
+		}
+		// それ以外の時は通常攻撃
+		else
+		{
+			ChangeState(EState::eAttackStart);
+		}
+	}
 	// 回収員がついていないときのみキー入力できる
 	if (!mIsStickCollector)
 	{
-		// スペースでジャンプ
-		if (CInput::PushKey(VK_SPACE))
-		{
-			if (mState == EState::eOpenClose)
-			{
-				// ジャンプ速度の設定
-				mMoveSpeedY = GetJumpSpeed();
-				mIsGrounded = false;
-				mIsJump = true;
-				ChangeState(EState::eJump);
-			}
-			else
-			{
-				ChangeState(EState::eJumpStart);
-			}
-		}
-		// 左クリックで攻撃
-		if (CInput::PushKey(VK_LBUTTON))
-		{
-			// 1から100までの100個の数から乱数を取得
-			int random = Math::Rand(1, 100);
-			// クリティカル確率以下の値ならクリティカル攻撃
-			if (random <= GetCriticalChance())
-			{
-				ChangeState(EState::eCriticalStart);
-			}
-			// それ以外の時は通常攻撃
-			else
-			{
-				ChangeState(EState::eAttackStart);
-			}
-		}
 		// 右クリックで蓋の開閉
 		if (CInput::PushKey(VK_RBUTTON))
 		{
@@ -933,9 +949,17 @@ void CTrashPlayer::UpdateOpenClose()
 	}
 }
 
-// TODO：死亡処理
+// 死亡の更新処理
+void CTrashPlayer::UpdateDeath()
+{
+	// TODO：ゲームオーバーを表示
+}
+
+// 死亡処理
 void CTrashPlayer::Death()
 {
+	// 死亡状態へ
+	ChangeState(EState::eDeath);
 }
 
 
@@ -1085,6 +1109,7 @@ std::string CTrashPlayer::GetStateStr(EState state) const
 	case EState::eCritical:			return "クリティカル攻撃中";
 	case EState::eCriticalEnd:		return "クリティカル攻撃終了";
 	case EState::eOpenClose:		return "開閉中";
+	case EState::eDeath:			return "死亡";
 	}
 	return "";
 }

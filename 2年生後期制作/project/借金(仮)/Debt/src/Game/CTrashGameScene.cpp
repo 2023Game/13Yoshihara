@@ -11,7 +11,6 @@
 #include "CVehicleManager.h"
 #include "CTrashEnemy.h"
 #include "CNavManager.h"
-#include "CCollector.h"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -35,15 +34,6 @@ void CTrashGameScene::Load()
 
 	//ここでゲーム中に必要な
 	//リソースの読み込みやクラスの生成を行う
-
-	//CResourceManager::Load<CModel>("Field", "Field\\Field.obj");
-	//CResourceManager::Load<CModel>("FieldCube", "Field\\Object\\cube.obj");
-	//CResourceManager::Load<CModel>("FieldCylinder", "Field\\Object\\cylinder.obj");
-	//CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
-	//CResourceManager::Load<CTexture>("Laser", "Effect\\laser.png");
-	//CResourceManager::Load<CTexture>("LightningBolt", "Effect\\lightning_bolt.png");
-	//CResourceManager::Load<CModel>("Slash", "Effect\\slash.obj");
-	//CResourceManager::Load<CSound>("SlashSound", "Sound\\SE\\slash.wav");
 	
 	// CModelX
 	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
@@ -60,7 +50,6 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
 	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_SpawnZone_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_SpawnZone_Collision.obj");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
@@ -78,11 +67,8 @@ void CTrashGameScene::Load()
 	CTrashPlayer* player = new CTrashPlayer();
 
 	float enemyScale = 0.1f;
-	//CTrashEnemy* enemy = new CTrashEnemy(false, enemyScale);
-	//enemy->Position(0.0f, 0.0f, 5.0f);
-
-	CCollector* collector = new CCollector(false);
-	collector->Position(0.0f, 0.0f, 20.0f);
+	CTrashEnemy* enemy = new CTrashEnemy(false, enemyScale);
+	enemy->Position(0.0f, 0.0f, 5.0f);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

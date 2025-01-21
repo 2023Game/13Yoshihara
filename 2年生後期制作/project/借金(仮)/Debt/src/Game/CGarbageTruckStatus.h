@@ -14,23 +14,23 @@ public:
 	~CGarbageTruckStatus();
 
 	// 撤退までの時間を取得
-	float GetBackTime() const;
+	float GetReturnTime() const;
 	// 撤退までの時間を初期値に設定
-	void SetWithdrawTime();
+	void SetReturnTime();
 	// 撤退までの時間が経過したかどうか
-	bool IsElapsedWithdrawTime() const;
+	bool IsElapsedReturnTime() const;
 	// 撤退までの時間をカウントダウン
-	void CountWithdrawTime();
+	void CountReturnTime();
 
 
 	// 回収員の人数を取得する
-	int GetCollectors() const;
+	int GetCollectorsNum() const;
 	// 回収員の人数を初期値に設定する
-	void SetCollectors();
+	void SetCollectorsNum();
 	// 回収員の人数を1減らす
 	void DecreaseCollectors();
 private:
-	float mWithdrawTime;	// 撤退までの時間
-	int mCollectors;		// 回収員の人数
+	float mReturnTime;	// 撤退までの時間
+	int mCollectorsNum;		// 回収員の人数
 	bool mIsPunisher;		// お仕置き用かどうか
 };

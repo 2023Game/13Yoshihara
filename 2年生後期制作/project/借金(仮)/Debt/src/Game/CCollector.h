@@ -14,7 +14,10 @@ public :
 	///	コンストラクタ
 	/// </summary>
 	/// <param name="punisher">trueならば、お仕置き用</param>
-	CCollector(bool punisher);
+	/// <param name="owner">回収員の持ち主</param>
+	/// <param name="patrolPoints">巡回ポイントのリスト</param>
+	CCollector(bool punisher, CObjectBase* owner,
+		std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
 	~CCollector();
 
@@ -45,6 +48,17 @@ public :
 
 	// 描画
 	void Render() override;
+
+	// 回収員の有効無効を切り替える
+	void SetOnOff(bool setOnOff);
+
+	// 撤収状態に変える
+	void ChangeStateReturn();
+
+	// 回収員の持ち主を設定
+	void SetOwner(CObjectBase* owner);
+	// 回収員の持ち主を取得
+	CObjectBase* GetOwner() const;
 private:
 	/*
 アニメーションの種類
@@ -130,4 +144,7 @@ private:
 	bool mIsAttackSuccess;		
 	// 攻撃中かどうか
 	bool mIsAttacking;
+
+	// 回収員の持ち主
+	CObjectBase* mpOwner;
 };

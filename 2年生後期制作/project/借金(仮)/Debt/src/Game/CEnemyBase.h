@@ -88,12 +88,13 @@ protected:
 	void ChangePatrolPoint(float patrolNearDist);
 	
 	// 巡回ポイントのリスト
-	std::vector<CNavNode*> mPatrolPoints;
+	std::vector<CNavNode*> mpPatrolPoints;
 	int mNextPatrolIndex;	// 次に巡回するポイントの番号
+	
+	// 求めた最短経路記憶用
+	std::vector<CNavNode*> mpMoveRoute;
+	int mNextMoveIndex;		// 次に移動するノードのインデックス値
 
-	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用
-	int mNextMoveIndex;					// 次に移動するノードのインデックス値
-
-	// 攻撃をしてきた相手記憶用
-	CObjectBase* mDamageCauser;
+	// 攻撃してきた相手の記憶用
+	CObjectBase* mpDamageCauser;
 };

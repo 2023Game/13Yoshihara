@@ -54,6 +54,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Critical_End.x",		false,	69.0f,	1.0f},	// クリティカル攻撃終了	（開閉）
 	{ ANIM_PATH"Open.x",				false,	10.0f,	1.0f},	// 蓋を開く				（と）
 	{ ANIM_PATH"Close.x",				false,	10.0f,	1.0f},	// 蓋を閉じる			（開）
+	{ ANIM_PATH"Death.x",				false,   5.0f,  1.0f},	// 死亡					（開）
 };
 
 #define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
@@ -95,6 +96,9 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define CRITICAL_COL_WIDTH		140.0f		// 幅
 // オフセット座標
 #define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,160.0f)
+
+// 死んだときの消えるまでの時間
+#define DEATH_WAIT_TIME 2.0f
 
 // コンストラクタ
 CTrashEnemy::CTrashEnemy(bool punisher, float scale)
@@ -202,6 +206,7 @@ void CTrashEnemy::Update()
 	case EState::eCritical:			UpdateCritical();		break;
 	case EState::eCriticalEnd:		UpdateCriticalEnd();	break;
 	case EState::eOpenClose:		UpdateOpenClose();		break;
+	case EState::eDeath:			UpdateDeath();			break;
 	}
 
 	// キャラクターの更新
@@ -319,13 +324,13 @@ void CTrashEnemy::Render()
 	if (mState == EState::ePatrol)
 	{
 		// 巡回ポイントを全て描画
-		int size = mPatrolPoints.size();
+		int size = mpPatrolPoints.size();
 		for (int i = 0; i < size; i++)
 		{
 			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
 			Primitive::DrawWireBox
 			(
-				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				mpPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
 				CVector::one,
 				c
 			);
@@ -465,19 +470,19 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
-		if (mMoveRoute.size() == 1)
+		if (mpMoveRoute.size() == 1)
 		{
 			mNextMoveIndex = 0;
 		}
 		// 最短経路の次のノードまで移動
-		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
+		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
 		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			// 移動が終われば、次のノードへ切り替え
 			mNextMoveIndex++;
 			// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
-			if (mNextMoveIndex >= mMoveRoute.size())
+			if (mNextMoveIndex >= mpMoveRoute.size())
 			{
 				mStateStep++;
 			}
@@ -570,11 +575,11 @@ void CTrashEnemy::UpdateChase()
 
 		// 自身のノードからプレイヤーのノードまでの最短経路を求める
 		CNavNode* playerNode = player->GetNavNode();
-		if (navMgr->Navigate(mpNavNode, playerNode, mMoveRoute))
+		if (navMgr->Navigate(mpNavNode, playerNode, mpMoveRoute))
 		{
 			// 自身のノードからプレイヤーのノードまで繋がっていたら、
 			// 移動する位置を次のノードの位置に設定
-			targetPos = mMoveRoute[1]->GetPos();
+			targetPos = mpMoveRoute[1]->GetPos();
 		}
 	}
 	// 移動処理
@@ -618,7 +623,7 @@ void CTrashEnemy::UpdateLost()
 		// 経路探索用のノードの座標を更新
 		mpNavNode->SetPos(Position());
 
-		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mMoveRoute))
+		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mpMoveRoute))
 		{
 			// 見失った位置まで経路が繋がっていたら、次のステップへ
 			mNextMoveIndex = 1;
@@ -633,10 +638,10 @@ void CTrashEnemy::UpdateLost()
 		break;
 	case 1:
 		// プレイヤーを見失った位置まで移動
-		if (MoveTo(mMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		if (MoveTo(mpMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			mNextMoveIndex++;
-			if (mNextMoveIndex >= mMoveRoute.size())
+			if (mNextMoveIndex >= mpMoveRoute.size())
 			{
 				// 移動が終われば、待機状態へ移行
 				ChangeState(EState::eIdle);
@@ -739,7 +744,7 @@ void CTrashEnemy::UpdateDamageEnd()
 		if (IsAnimationFinished())
 		{
 			// 攻撃してきた相手がプレイヤーなら追跡状態へ
-			if (mDamageCauser = CPlayerBase::Instance())
+			if (mpDamageCauser = CPlayerBase::Instance())
 			{
 				ChangeState(EState::eChase);
 			}
@@ -749,7 +754,7 @@ void CTrashEnemy::UpdateDamageEnd()
 				ChangeState(EState::eIdle);
 			}
 			// 攻撃してきた相手の記憶をリセットする
-			mDamageCauser = nullptr;
+			mpDamageCauser = nullptr;
 		}
 		break;
 	}
@@ -1108,12 +1113,12 @@ void CTrashEnemy::UpdateOpenClose()
 			if (!mIsJump)
 			{
 				// プレイヤーに攻撃されていたら
-				if (mDamageCauser == CPlayerBase::Instance())
+				if (mpDamageCauser == CPlayerBase::Instance())
 				{
 					// 追跡状態へ
 					ChangeState(EState::eChase);
 					// 攻撃してきた相手の記憶をリセット
-					mDamageCauser = nullptr;
+					mpDamageCauser = nullptr;
 				}
 				// それ以外なら
 				else
@@ -1133,9 +1138,47 @@ void CTrashEnemy::UpdateOpenClose()
 	}
 }
 
-// TODO：死亡処理
+// 死亡の更新処理
+void CTrashEnemy::UpdateDeath()
+{
+	switch (mStateStep)
+	{
+		// ステップ0：死亡アニメーションを再生
+	case 0:
+		ChangeAnimation((int)EAnimType::eDeath);
+		mStateStep++;
+		break;
+
+		// ステップ1：アニメーションが終了したら次のステップへ
+	case 1:
+		if (IsAnimationFinished())
+		{
+			mStateStep++;
+		}
+		break;
+		// ステップ1：消えるまでの時間になるまでカウント
+	case 2:
+		mElapsedTime += Times::DeltaTime();
+		if (mElapsedTime >= DEATH_WAIT_TIME)
+		{
+			mStateStep++;
+		}
+		break;
+		// ステップ2：アニメーションが終了したら無効にする
+	case 3:
+		SetEnable(false);
+		SetShow(false);
+		mpDebugFov->SetEnable(false);
+		mpDebugFov->SetShow(false);
+		break;
+	}
+}
+
+// 死亡処理
 void CTrashEnemy::Death()
 {
+	// 死亡状態へ
+	ChangeState(EState::eDeath);
 }
 
 
@@ -1207,7 +1250,7 @@ void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer)
 		// 開閉状態へ移行
 		ChangeState(EState::eOpenClose);
 	}
-	mDamageCauser = causer;
+	mpDamageCauser = causer;
 }
 
 // クリティカルダメージを受ける
@@ -1289,6 +1332,7 @@ std::string CTrashEnemy::GetStateStr(EState state) const
 	case EState::eCritical:			return "クリティカル攻撃中";
 	case EState::eCriticalEnd:		return "クリティカル攻撃終了";
 	case EState::eOpenClose:		return "開閉中";
+	case EState::eDeath:			return "死亡";
 	}
 	return "";
 }
@@ -1315,6 +1359,7 @@ CColor CTrashEnemy::GetStateColor(EState state) const
 	case EState::eCritical:			return CColor::black;
 	case EState::eCriticalEnd:		return CColor::black;
 	case EState::eOpenClose:		return CColor::white;
+	case EState::eDeath:			return CColor::white;
 	}
 	return CColor::white;
 }

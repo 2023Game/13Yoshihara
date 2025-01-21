@@ -83,6 +83,7 @@ private:
 		eCritical_End,		// クリティカル攻撃終了	（開閉）
 		eOpen,				// 蓋を開く				（と）
 		eClose,				// 蓋を閉じる			（開）
+		eDeath,				// 死亡					（開）
 
 
 		Num
@@ -108,6 +109,7 @@ private:
 		eCritical,		// クリティカル攻撃
 		eCriticalEnd,	// クリティカル攻撃終了
 		eOpenClose,		// 蓋を開閉する
+		eDeath,			// 死亡
 	};
 
 	// 待機状態
@@ -144,7 +146,9 @@ private:
 	void UpdateCriticalEnd();
 	// 蓋を開閉する
 	void UpdateOpenClose();
-	// 死亡処理
+	// 死亡の更新処理
+	void UpdateDeath();
+	// 死亡
 	void Death() override;
 
 	// 状態切り替え

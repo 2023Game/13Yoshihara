@@ -8,13 +8,13 @@
 #define ATTACK_POWER 1							// 攻撃力
 #define POWER 1									// ゴミを落とすパワー
 
-#define DELETE_TIME 2.0f	// 消滅までの時間
+#define DEATH_WAIT_TIME 2.0f	// 消滅までの時間
 
 // コンストラクタ
 CVehicleStatus::CVehicleStatus()
 	: CTrashStatusBase(MAX_HP, BASE_MOVE_SPEED, JUMP_SPEED,
 		KNOCKBACK_SPEED, ATTACK_POWER, POWER)
-	, mDeleteTime(DELETE_TIME)
+	, mDeleteTime(DEATH_WAIT_TIME)
 {
 }
 
@@ -26,7 +26,7 @@ CVehicleStatus::CVehicleStatus(int maxHp, float baseMoveSpeed, float jumpSpeed,
 	float knockback, int attackPower, int power)
 	: CTrashStatusBase(maxHp, baseMoveSpeed, jumpSpeed,
 		knockback, attackPower, power)
-	, mDeleteTime(DELETE_TIME)
+	, mDeleteTime(DEATH_WAIT_TIME)
 {
 }
 
@@ -43,7 +43,7 @@ float CVehicleStatus::GetDeleteTime() const
 // 消滅までの時間を初期値に設定する
 void CVehicleStatus::SetDeleteTime()
 {
-	mDeleteTime = DELETE_TIME;
+	mDeleteTime = DEATH_WAIT_TIME;
 }
 
 // 消滅までの時間が経過したかどうか

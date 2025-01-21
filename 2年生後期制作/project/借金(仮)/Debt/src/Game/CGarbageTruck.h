@@ -5,6 +5,7 @@
 #include "CGarbageTruckStatus.h"
 
 class CModel;
+class CCollector;
 
 // ゴミ収集車のクラス
 // 車のクラスを継承
@@ -37,6 +38,8 @@ public:
 	void Reset() override;
 
 private:
+	// 回収員のリスト
+	std::vector<CCollector*> mpCollectors;
 	// プレイヤーと敵の探知用
 	CCollider* mpSearchCol;
 

@@ -1,7 +1,6 @@
 #include "CVehicleManager.h"
 #include "CCar.h"
 #include "CGarbageTruck.h"
-#include "CTrashVehicleSpawnZone.h"
 #include <random>
 #include "Maths.h"
 #include "CNavNode.h"
@@ -43,6 +42,8 @@ CVehicleManager* CVehicleManager::spInstance = nullptr;
 #define PATROLPOINT_R2_4 CVector( -20.0f,0.0f, 580.0f)
 #define PATROLPOINT_R2_5 CVector(-300.0f,0.0f, 580.0f)
 
+// 次、道に出現可能になるまでの時間
+#define NEXT_CAN_POP_TIME 2.0f
 
 // 車両管理クラスのインスタンスを取得
 CVehicleManager* CVehicleManager::Instance()
@@ -59,8 +60,6 @@ CVehicleManager::CVehicleManager()
 	, mpPunishTruck(nullptr)
 {
 	spInstance = this;
-	// 生成場所
-	mpSpawnZone = new CTrashVehicleSpawnZone();
 
 	// 車のモデル
 	mpCarModel = CResourceManager::Get<CModel>("Car");
@@ -271,6 +270,11 @@ void CVehicleManager::Update()
 	CountCarPopTime();
 	CountTruckPopTime();
 	CountBlackTruckPopTime();
+	// それぞれの道の生成可能までの時間をカウント
+	CountLeft1CanPopTime();
+	CountLeft2CanPopTime();
+	CountRight1CanPopTime();
+	CountRight2CanPopTime();
 
 
 	// 出現までの時間が0以下なら出現
@@ -330,11 +334,11 @@ std::vector<CNavNode*> CVehicleManager::GetPatrolPoints(CVehicleBase::ERoadType 
 // 使用するトラックを全て生成
 void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck)
 {
-	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
-	mCars.push_back(new CCar(car, CAR_LEFT_POS1, CAR_LEFT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
+	mCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
+	mCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
 
-	mpGarbageTruck = new CGarbageTruck(garbageTruck, CAR_RIGHT_POS1, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight1, mPatrolPointsR1, false);
-	mpPunishTruck = new CGarbageTruck(blackTruck, CAR_RIGHT_POS2, CAR_RIGHT_ROTATION, CVehicleBase::ERoadType::eRight2, mPatrolPointsR2, false);
+	mpGarbageTruck = new CGarbageTruck(garbageTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsR1, false);
+	mpPunishTruck = new CGarbageTruck(blackTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsR2, true);
 }
 
 // 経路探索用のノードを作成
@@ -399,8 +403,7 @@ void CVehicleManager::HideVehicle()
 
 // 乗り物を出現させる
 void CVehicleManager::SpawnVehicle()
-{
-	
+{	
 	// TODO：お仕置きだけ違う処理
 	// お仕置きトラックの出現時間が0以下なら出現
 	if (mPunishTruckPopTime <= 0.0f)
@@ -410,178 +413,146 @@ void CVehicleManager::SpawnVehicle()
 		{
 			// お仕置きトラックの生成位置
 			CVector punishPopPos;
+			// 生成時の回転
+			CVector popRotation;
 			// どの道にいるか
 			CVehicleBase::ERoadType punishRoadType;
 			// 巡回ポイント
 			std::vector<CNavNode*> patrolPoints;
 
-			punishPopPos = CAR_RIGHT_POS2;
-			punishRoadType = CVehicleBase::ERoadType::eRight2;
+			// ランダムに場所を決定
+			// 決定出来たら中身を処理
+			if (RandomDecidePopPosition(punishRoadType, punishPopPos))
+			{
 
-			//// ランダムに場所を決定
-			//RandomDecidePopPosition(punishRoadType, punishPopPos);
-			//// 生成場所に車両がいたら抽選しなおし
-			//if (IsSpawnZone(punishRoadType))
-			//{
-			//	// ランダムに場所を決定
-			//	RandomDecidePopPosition(punishRoadType, punishPopPos);
-			//}
-			//// 停止している車両がいる道で生成されるとき抽選しなおし
-			//while (IsVehicle(punishRoadType))
-			//{
-			//	// ランダムに場所を決定
-			//	RandomDecidePopPosition(punishRoadType, punishPopPos);
-			//}
-			CVector popRotation;	// 生成された時の方向
+				// 左の道1なら
+				if (punishRoadType == CVehicleBase::ERoadType::eLeft1)
+				{
+					// 左から1番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsL1;
+					// 右向きの回転を設定
+					popRotation = VEHICLE_RIGHT_ROTATION;
+				}
+				// 左の道2なら
+				else if (punishRoadType == CVehicleBase::ERoadType::eLeft2)
+				{
+					// 左から2番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsL2;
+					// 左向きの回転を設定
+					popRotation = VEHICLE_LEFT_ROTATION;
+				}
+				// 右の道1なら
+				else if (punishRoadType == CVehicleBase::ERoadType::eRight1)
+				{
+					// 右から1番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsR1;
+					// 左向きの回転を設定
+					popRotation = VEHICLE_LEFT_ROTATION;
+				}
+				// 右の道2なら
+				else
+				{
+					// 右から2番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsR2;
+					// 右向きの回転を設定
+					popRotation = VEHICLE_RIGHT_ROTATION;
+				}
 
+				// 位置回転設定
+				mpPunishTruck->Position(punishPopPos);
+				mpPunishTruck->Rotation(popRotation);
+
+				// どの道にいるかを設定
+				mpPunishTruck->ChangeRoadType(punishRoadType);
+				// 巡回ポイントのリストを設定
+				mpPunishTruck->SetPatrolPoints(patrolPoints);
+				// 変数をリセット
+				mpPunishTruck->Reset();
+
+				// 描画更新開始
+				mpPunishTruck->SetOnOff(true);
+
+				// 出現までの時間を設定しなおす
+				mPunishTruckPopTime = PUNISH_POP_TIME;
+			}
+		}
+	}
+
+	// 車の出現時間が0以下なら出現
+	if (mCarPopTime <= 0.0f)
+	{
+		// 車の生成位置
+		CVector carPopPos;
+		// 生成時の回転
+		CVector popRotation;
+		// どの道にいるか
+		CVehicleBase::ERoadType carRoadType;
+		// 巡回ポイント
+		std::vector<CNavNode*> patrolPoints;
+
+		// ランダムに場所を決定
+		// 決定出来たら中身を処理
+		if (RandomDecidePopPosition(carRoadType, carPopPos))
+		{
 			// 左の道1なら
-			if (punishRoadType == CVehicleBase::ERoadType::eLeft1)
+			if (carRoadType == CVehicleBase::ERoadType::eLeft1)
 			{
 				// 左から1番目の道の巡回ポイント
 				patrolPoints = mPatrolPointsL1;
-				// 左の道用の回転を設定
-				popRotation = CAR_LEFT_ROTATION;
+				// 右向きの回転を設定
+				popRotation = VEHICLE_RIGHT_ROTATION;
 			}
 			// 左の道2なら
-			else if (punishRoadType == CVehicleBase::ERoadType::eLeft2)
+			else if (carRoadType == CVehicleBase::ERoadType::eLeft2)
 			{
 				// 左から2番目の道の巡回ポイント
 				patrolPoints = mPatrolPointsL2;
-				// 左の道用の回転を設定
-				popRotation = CAR_LEFT_ROTATION;
+				// 左向きの回転を設定
+				popRotation = VEHICLE_LEFT_ROTATION;
 			}
 			// 右の道1なら
-			else if (punishRoadType == CVehicleBase::ERoadType::eRight1)
+			else if (carRoadType == CVehicleBase::ERoadType::eRight1)
 			{
 				// 右から1番目の道の巡回ポイント
 				patrolPoints = mPatrolPointsR1;
-				// 右の道用の回転を設定
-				popRotation = CAR_RIGHT_ROTATION;
+				// 左向きの回転を設定
+				popRotation = VEHICLE_LEFT_ROTATION;
 			}
 			// 右の道2なら
 			else
 			{
 				// 右から2番目の道の巡回ポイント
 				patrolPoints = mPatrolPointsR2;
-				// 右の道用の回転を設定
-				popRotation = CAR_RIGHT_ROTATION;
+				// 右向きの回転を設定
+				popRotation = VEHICLE_RIGHT_ROTATION;
 			}
 
-			// 位置回転設定
-			mpPunishTruck->Position(punishPopPos);
-			mpPunishTruck->Rotation(popRotation);
+			// 既に有効になっていない車を有効にする
+			for (CCar* car : mCars)
+			{
+				// 既に有効なら次の車
+				if (car->IsEnable())
+					continue;
 
-			// どの道にいるかを設定
-			mpPunishTruck->ChangeRoadType(punishRoadType);
-			// 巡回ポイントのリストを設定
-			mpPunishTruck->SetPatrolPoints(patrolPoints);
-			// 変数をリセット
-			mpPunishTruck->Reset();
+				// 位置回転設定
+				car->Position(carPopPos);
+				car->Rotation(popRotation);
 
-			// 描画更新開始
-			mpPunishTruck->SetOnOff(true);
+				// どの道にいるかを設定
+				car->ChangeRoadType(carRoadType);
+				// 巡回ポイントのリストを設定
+				car->SetPatrolPoints(patrolPoints);
+				// 変数をリセット
+				car->Reset();
 
-			// 出現までの時間を設定しなおす
-			mPunishTruckPopTime = PUNISH_POP_TIME;
+				// 描画更新開始
+				car->SetOnOff(true);
+				// 出現までの時間を設定しなおす
+				mCarPopTime = CAR_POP_TIME;
+				break;
+			}
 		}
 	}
-
-	//// 車の出現時間が0以下なら出現
-	//if (mCarPopTime <= 0.0f)
-	//{
-	//	// 車の生成位置
-	//	CVector carPopPos;
-	//	// どの道にいるか
-	//	CVehicleBase::ERoadType carRoadType;
-	//	// 巡回ポイント
-	//	std::vector<CNavNode*> patrolPoints;
-
-	//	carPopPos = CAR_RIGHT_POS2;
-	//	carRoadType = CVehicleBase::ERoadType::eRight2;
-
-	//	//// ランダムに場所を決定
-	//	//RandomDecidePopPosition(carRoadType, carPopPos);
-	//	//// 生成場所に車両がいたら抽選しなおし
-	//	//if (IsSpawnZone(carRoadType))
-	//	//{
-	//	//	// ランダムに場所を決定
-	//	//	RandomDecidePopPosition(carRoadType, carPopPos);
-	//	//}
-	//	//// 停止している車両がいる道で生成されるとき抽選しなおし
-	//	//while (IsVehicle(carRoadType))
-	//	//{
-	//	//	// ランダムに場所を決定
-	//	//	RandomDecidePopPosition(carRoadType, carPopPos);
-	//	//}
-	//	CVector popRotation;	// 生成されたときの方向
-	//	bool isPop = false;	// 生成したかどうか
-
-	//	// 左の道1なら
-	//	if (carRoadType == CVehicleBase::ERoadType::eLeft1)
-	//	{
-	//		// 左から1番目の道の巡回ポイント
-	//		patrolPoints = mPatrolPointsL1;
-	//		// 左の道用の回転を設定
-	//		popRotation = CAR_LEFT_ROTATION;
-	//	}
-	//	// 左の道2なら
-	//	else if (carRoadType == CVehicleBase::ERoadType::eLeft2)
-	//	{
-	//		// 左から2番目の道の巡回ポイント
-	//		patrolPoints = mPatrolPointsL2;
-	//		// 左の道用の回転を設定
-	//		popRotation = CAR_LEFT_ROTATION;
-	//	}
-	//	// 右の道1なら
-	//	else if (carRoadType == CVehicleBase::ERoadType::eRight1)
-	//	{
-	//		// 右から1番目の道の巡回ポイント
-	//		patrolPoints = mPatrolPointsR1;
-	//		// 右の道用の回転を設定
-	//		popRotation = CAR_RIGHT_ROTATION;
-	//	}
-	//	// 右の道2なら
-	//	else
-	//	{
-	//		// 右から2番目の道の巡回ポイント
-	//		patrolPoints = mPatrolPointsR2;
-	//		// 右の道用の回転を設定
-	//		popRotation = CAR_RIGHT_ROTATION;
-	//	}
-
-	//	// 既に有効になっていない車を有効にする
-	//	for (CCar* car : mCars)
-	//	{
-	//		// 既に有効なら次の車
-	//		if (car->IsEnable())
-	//			continue;
-
-	//		// 位置回転設定
-	//		car->Position(carPopPos);
-	//		car->Rotation(popRotation);
-
-	//		// どの道にいるかを設定
-	//		car->ChangeRoadType(carRoadType);
-	//		// 巡回ポイントのリストを設定
-	//		car->SetPatrolPoints(patrolPoints);
-	//		// 変数をリセット
-	//		car->Reset();
-
-	//		// 描画更新開始
-	//		car->SetOnOff(true);
-	//		// 出現までの時間を設定しなおす
-	//		mCarPopTime = CAR_POP_TIME;
-	//		break;
-	//	}
-	//	//// 車を生成できていなければ
-	//	//if (!isPop)
-	//	//{
-	//	//	// 新しい車を追加して描画更新開始
-	//	//	mCars.push_back(new CCar(mpCarModel, carPopPos, popRotation, carRoadType, patrolPoints));
-	//	//	mCars.back()->SetOnOff(true);
-	//	//}
-
-	//}
 
 	
 
@@ -590,82 +561,70 @@ void CVehicleManager::SpawnVehicle()
 	{
 		// トラックが無効なら出現させる
 		if (!mpGarbageTruck->IsEnable())
-		{	
+		{
 			// トラックの生成位置
 			CVector truckPopPos;
+			// 生成時の回転
+			CVector popRotation;
 			// どの道にいるか
 			CVehicleBase::ERoadType truckRoadType;
 			// 巡回ポイント
 			std::vector<CNavNode*> patrolPoints;
 
-			truckPopPos = CAR_RIGHT_POS2;
-			truckRoadType = CVehicleBase::ERoadType::eRight2;
-
-			//// ランダムに場所を決定
-			//RandomDecidePopPosition(truckRoadType, truckPopPos);
-			//// 生成場所に車両がいたら抽選しなおし
-			//if (IsSpawnZone(truckRoadType))
-			//{
-			//	// ランダムに場所を決定
-			//	RandomDecidePopPosition(truckRoadType, truckPopPos);
-			//}
-			//// 停止している車両がいる道で生成されるとき抽選しなおし
-			//while (IsVehicle(truckRoadType))
-			//{
-			//	// ランダムに場所を決定
-			//	RandomDecidePopPosition(truckRoadType, truckPopPos);
-			//}
-			CVector popRotation;
-
-			// 左の道1なら
-			if (truckRoadType == CVehicleBase::ERoadType::eLeft1)
+			// ランダムに場所を決定
+			// 決定出来たら中身を処理
+			if (RandomDecidePopPosition(truckRoadType, truckPopPos))
 			{
-				// 左から1番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsL1;
-				// 左の道用の回転を設定
-				popRotation = CAR_LEFT_ROTATION;
-			}
-			// 左の道2なら
-			else if (truckRoadType == CVehicleBase::ERoadType::eLeft2)
-			{
-				// 左から2番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsL2;
-				// 左の道用の回転を設定
-				popRotation = CAR_LEFT_ROTATION;
-			}
-			// 右の道1なら
-			else if (truckRoadType == CVehicleBase::ERoadType::eRight1)
-			{
-				// 右から1番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsR1;
-				// 右の道用の回転を設定
-				popRotation = CAR_RIGHT_ROTATION;
-			}
-			// 右の道2なら
-			else
-			{
-				// 右から2番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsR2;
-				// 右の道用の回転を設定
-				popRotation = CAR_RIGHT_ROTATION;
-			}
+				// 左の道1なら
+				if (truckRoadType == CVehicleBase::ERoadType::eLeft1)
+				{
+					// 左から1番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsL1;
+					// 右向きの回転を設定
+					popRotation = VEHICLE_RIGHT_ROTATION;
+				}
+				// 左の道2なら
+				else if (truckRoadType == CVehicleBase::ERoadType::eLeft2)
+				{
+					// 左から2番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsL2;
+					// 左向きの回転を設定
+					popRotation = VEHICLE_LEFT_ROTATION;
+				}
+				// 右の道1なら
+				else if (truckRoadType == CVehicleBase::ERoadType::eRight1)
+				{
+					// 右から1番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsR1;
+					// 左向きの回転を設定
+					popRotation = VEHICLE_LEFT_ROTATION;
+				}
+				// 右の道2なら
+				else
+				{
+					// 右から2番目の道の巡回ポイント
+					patrolPoints = mPatrolPointsR2;
+					// 右向きの回転を設定
+					popRotation = VEHICLE_RIGHT_ROTATION;
+				}
 
-			// 位置回転設定
-			mpGarbageTruck->Position(truckPopPos);
-			mpGarbageTruck->Rotation(popRotation);
+				// 位置回転設定
+				mpGarbageTruck->Position(truckPopPos);
+				mpGarbageTruck->Rotation(popRotation);
 
-			// どの道にいるかを設定
-			mpGarbageTruck->ChangeRoadType(truckRoadType);
-			// 巡回ポイントのリストを設定
-			mpGarbageTruck->SetPatrolPoints(patrolPoints);
-			// 変数をリセット
-			mpGarbageTruck->Reset();
+				// どの道にいるかを設定
+				mpGarbageTruck->ChangeRoadType(truckRoadType);
+				// 巡回ポイントのリストを設定
+				mpGarbageTruck->SetPatrolPoints(patrolPoints);
+				// 変数をリセット
+				mpGarbageTruck->Reset();
 
-			// 描画更新開始
-			mpGarbageTruck->SetOnOff(true);
+				// 描画更新開始
+				mpGarbageTruck->SetOnOff(true);
 
-			// 出現までの時間を設定しなおす
-			mTruckPopTime = TRUCK_POP_TIME;
+				// 出現までの時間を設定しなおす
+				mTruckPopTime = TRUCK_POP_TIME;
+			}
 		}
 	}
 }
@@ -688,97 +647,122 @@ void CVehicleManager::CountBlackTruckPopTime()
 	mPunishTruckPopTime -= Times::DeltaTime();
 }
 
-// ランダムで車両を出現させる場所を決める
-void CVehicleManager::RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos)
+// それぞれの道に出現可能になるまでをカウントダウン
+// 左から1番道路
+void CVehicleManager::CountLeft1CanPopTime()
 {
-	// 0から3の乱数
-	int randomNumber = Math::Rand(0, 3);
+	mLeft1CanPopTime -= Times::DeltaTime();
+}
+// 左から2番道路
+void CVehicleManager::CountLeft2CanPopTime()
+{
+	mLeft2CanPopTime -= Times::DeltaTime();
+}
+// 右から1番道路
+void CVehicleManager::CountRight1CanPopTime()
+{
+	mRight1CanPopTime -= Times::DeltaTime();
+}
+// 右から2番道路
+void CVehicleManager::CountRight2CanPopTime()
+{
+	mRight2CanPopTime -= Times::DeltaTime();
+}
 
-	// 0なら左から1番
-	if (randomNumber == 0)
+// ランダムで車両を出現させる場所を決める
+bool CVehicleManager::RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos)
+{
+	// 生成可能な道の数
+	int canPopRoadNum = 0;
+	// それぞれが割り当てされる番号
+	// 割り当てされなければ、-1
+	int left1RoadNum = -1;
+	int left2RoadNum = -1;
+	int right1RoadNum = -1;
+	int right2RoadNum = -1;
+	// 生成が可能なら
+	if (IsSpawn(CVehicleBase::ERoadType::eLeft1))
 	{
-		roadType = CVehicleBase::ERoadType::eLeft1;
-		popPos = CAR_LEFT_POS1;
+		// 生成可能な道の数を増やし
+		canPopRoadNum++;
+		// 番号を割り当てる
+		left1RoadNum = canPopRoadNum;
 	}
-	// 1なら左から2番
-	else if (randomNumber == 1)
+	if (IsSpawn(CVehicleBase::ERoadType::eLeft2))
+	{
+		canPopRoadNum++;
+		left2RoadNum = canPopRoadNum;
+	}
+	if (IsSpawn(CVehicleBase::ERoadType::eRight1))
+	{
+		canPopRoadNum++;
+		right1RoadNum = canPopRoadNum;
+	}
+	if (IsSpawn(CVehicleBase::ERoadType::eRight2))
+	{
+		canPopRoadNum++;
+		right2RoadNum = canPopRoadNum;
+	}
+
+	// 生成場所未決定
+	if (canPopRoadNum == 0) return false;
+	// 1から生成可能な道の数の乱数
+	int randomNumber = Math::Rand(1, canPopRoadNum);
+
+	// 乱数と割り当てた番号が一致すればその場所へ生成
+	if (randomNumber == left1RoadNum)
+	{
+		// 道の種類を設定
+		roadType = CVehicleBase::ERoadType::eLeft1;
+		// 生成座標を設定
+		popPos = VEHICLE_LEFT_POS1;
+		// この道の次に出現可能になるまでの時間を設定
+		mLeft1CanPopTime = NEXT_CAN_POP_TIME;
+	}
+	else if (randomNumber == left2RoadNum)
 	{
 		roadType = CVehicleBase::ERoadType::eLeft2;
-		popPos = CAR_LEFT_POS2;
+		popPos = VEHICLE_LEFT_POS2;
+		mLeft2CanPopTime = NEXT_CAN_POP_TIME;
 	}
-	// 2なら右から1番
-	else if (randomNumber == 2)
+	else if (randomNumber == right1RoadNum)
 	{
 		roadType = CVehicleBase::ERoadType::eRight1;
-		popPos = CAR_RIGHT_POS1;
+		popPos = VEHICLE_RIGHT_POS1;
+		mRight1CanPopTime = NEXT_CAN_POP_TIME;
 	}
-	// 3なら右から2番
-	else
+	else if (randomNumber == right2RoadNum)
 	{
 		roadType = CVehicleBase::ERoadType::eRight2;
-		popPos = CAR_RIGHT_POS2;
+		popPos = VEHICLE_RIGHT_POS2;
+		mRight2CanPopTime = NEXT_CAN_POP_TIME;
 	}
 
+	// 生成場所決定
+	return true;
 }
 
-// 指定した道に停止している車両がいるかチェックする
-bool CVehicleManager::IsVehicle(CVehicleBase::ERoadType roadType)
-{
-	// 全ての車を確認
-	for (CCar* car : mCars)
-	{
-		// 無効なら出現していないのでチェックしない
-		if (!car->IsEnable())
-			continue;
-
-		// 同じ道かつ、停止していたらtrue
-		if (roadType == car->GetRoadType() && !car->IsMove())
-			return true;
-	}
-
-	// トラックを確認
-	// 有効なら出現しているのでチェック
-	if (mpGarbageTruck->IsEnable())
-	{
-		// 同じ道かつ、停止していたらtrue
-		if (roadType == mpGarbageTruck->GetRoadType() && !mpGarbageTruck->IsMove())
-			return true;
-	}
-
-	// お仕置きトラックを確認
-	// 有効なら出現しているのでチェック
-	if (mpPunishTruck->IsEnable())
-	{
-		// 同じ道かつ、停止していたらtrue
-		if (roadType == mpPunishTruck->GetRoadType() && !mpPunishTruck->IsMove())
-			return true;
-	}
-
-	// 停止している車両がいないのでfalse
-	return false;
-}
-
-// 指定した道の生成場所に車両がいるかチェックする
-bool CVehicleManager::IsSpawnZone(CVehicleBase::ERoadType roadType)
+// 指定した道に車を生成できるか
+bool CVehicleManager::IsSpawn(CVehicleBase::ERoadType roadType)
 {
 	// 左から一番目の道
 	if (roadType == CVehicleBase::ERoadType::eLeft1)
 	{
-		return !mpSpawnZone->GetCanPops().IsLeft1CanPop;
+		return mLeft1CanPopTime <= 0.0f;
 	}
 	// 左から二番目の道
 	else if (roadType == CVehicleBase::ERoadType::eLeft2)
 	{
-		return !mpSpawnZone->GetCanPops().IsLeft2CanPop;
+		return mLeft2CanPopTime <= 0.0f;
 	}
 	// 右から一番目の道
 	else if (roadType == CVehicleBase::ERoadType::eRight1)
 	{
-		return !mpSpawnZone->GetCanPops().IsRight1CanPop;
+		return mRight1CanPopTime <= 0.0f;
 	}
 	// 右から二番目の道
 	else
 	{
-		return !mpSpawnZone->GetCanPops().IsRight2CanPop;
+		return mRight2CanPopTime <= 0.0f;
 	}
 }

@@ -57,9 +57,9 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define ROTATE_SPEED 9.0f	// 回転速度
 #define ATTACK_RANGE 18.0f	// 攻撃する距離
 
-#define PATROL_INTERVAL	3.0f	// 次の巡回ポイントに移動開始するまでの時間
+#define PATROL_INTERVAL	0.5f	// 次の巡回ポイントに移動開始するまでの時間
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
-#define IDLE_TIME 5.0f			// 待機状態の時間
+#define IDLE_TIME 0.5f			// 待機状態の時間
 
 #define PATROL_POS0 CVector( 40.0f,0.0f,   0.0f)
 #define PATROL_POS1 CVector( 40.0f,0.0f, 100.0f)
@@ -80,24 +80,18 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define SCALE 0.2f	// スケール
 
 // 死んだときの消えるまでの時間
-#define DELETE_TIME 2.0f
+#define DEATH_WAIT_TIME 2.0f
+// 死んだとき退避させる場所
+#define DEATH_POS CVector(100.0f,100.0f,100.0f)
 
 //	コンストラクタ
-CCollector::CCollector(bool punisher)
+CCollector::CCollector(bool punisher, CObjectBase* owner,
+	std::vector<CNavNode*> patrolPoints)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
 		FOV_LENGTH,
-		{
-			PATROL_POS0,
-			PATROL_POS1,
-			PATROL_POS2,
-			PATROL_POS3,
-			PATROL_POS4,
-			PATROL_POS5,
-			PATROL_POS6,
-			PATROL_POS7
-		},
+		{},
 		EYE_HEIGHT
 	)
 	, CCollectorStatus(punisher)
@@ -107,14 +101,16 @@ CCollector::CCollector(bool punisher)
 	, mIsBag(false)
 	, mIsAttackSuccess(false)
 	, mIsAttacking(false)
+	, mpOwner(owner)
 {
-	// 基本重力の半分の重力
+	// 巡回ポイントを設定
+	mpPatrolPoints = patrolPoints;
+	// 基本重力の5分の1の重力
 	mGravity = mGravity * 0.2f;
 	// 大きさの調整
 	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Collector", &ANIM_DATA);
-
 
 	// 本体のコライダ―
 	mpBodyCol = new CColliderCapsule
@@ -137,6 +133,7 @@ CCollector::CCollector(bool punisher)
 // デストラクタ
 CCollector::~CCollector()
 {
+	mpOwner = nullptr;
 }
 
 // 更新
@@ -149,6 +146,7 @@ void CCollector::Update()
 	case EState::ePatrol:			UpdatePatrol();			break;
 	case EState::eChase:			UpdateChase();			break;
 	case EState::eLost:				UpdateLost();			break;
+	case EState::eReturn:			UpdateReturn();			break;
 	case EState::eAttackStart:		UpdateAttackStart();	break;
 	case EState::eAttackTrue:		UpdateAttackTrue();		break;
 	case EState::eAttackFalse:		UpdateAttackFalse();	break;
@@ -164,6 +162,7 @@ void CCollector::Update()
 	mpDebugFov->SetColor(GetStateColor(mState));
 
 	CDebugPrint::Print("CollectorState:%s\n", GetStateStr(mState).c_str());
+	CDebugPrint::Print("CollectorAttackSuccess:%s\n", mIsAttackSuccess ? "true" : "false");
 #endif
 }
 
@@ -179,12 +178,25 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 		// 衝突した相手が車両なら
 		if (other->Layer() == ELayer::eVehicle)
 		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
+			// 死んでないなら押し戻す
+			if (!IsDead())
+			{
+				// 押し戻しベクトル
+				CVector adjust = hit.adjust;
+				adjust.Y(0.0f);
 
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
+				// 押し戻しベクトルの分、座標を移動
+				Position(Position() + adjust * hit.weight);
+			}
+
+			// 相手の持ち主と自分の持ち主が一致しているかつ、
+			// 自分が撤退状態なら
+			if (other->Owner() == mpOwner&&
+				mState == EState::eReturn)
+			{
+				// 無効にする
+				SetOnOff(false);
+			}
 		}
 		// 衝突した相手がプレイヤーなら
 		else if (other->Layer() == ELayer::ePlayer)
@@ -203,13 +215,39 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 				// プレイヤークラスを取得
 				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
 
+				// プレイヤーが存在してまだ攻撃が当たっていないかつ
+				// 回収員が既についていないなら
 				if (player != nullptr &&
-					!IsAttackHitObj(player))
+					!IsAttackHitObj(player)&&
+					!player->GetStickCollector())
 				{
 					AddAttackHitObj(player);
 					mIsAttackSuccess = true;		// 攻撃が成功
+					player->SetStickCollector(true);// 回収員がついている
+					// この回収員をついている回収員に設定
+					player->SetStickCollectorPointer(this);
 				}
 			}
+		}
+		// 衝突した相手が敵なら
+		else if (other->Layer() == ELayer::eEnemy)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+		// 衝突した相手が回収員なら
+		else if (other->Layer() == ELayer::eCollector)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
 		}
 	}
 }
@@ -223,13 +261,13 @@ void CCollector::Render()
 	if (mState == EState::ePatrol)
 	{
 		// 巡回ポイントを全て描画
-		int size = mPatrolPoints.size();
+		int size = mpPatrolPoints.size();
 		for (int i = 0; i < size; i++)
 		{
 			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
 			Primitive::DrawWireBox
 			(
-				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				mpPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
 				CVector::one,
 				c
 			);
@@ -291,6 +329,53 @@ void CCollector::Render()
 			);
 		}
 	}
+}
+
+// 回収員の有効無効を切り替える
+void CCollector::SetOnOff(bool setOnOff)
+{
+	// 無効にするとき
+	if (!setOnOff)
+	{
+		// 退避場所に移動する
+		Position(DEATH_POS);
+		// ゴミ収集車のクラスを取得
+		CGarbageTruck* owner = dynamic_cast<CGarbageTruck*>(mpOwner);
+		// 回収員の人数を減らす
+		owner->DecreaseCollectors();
+	}
+	// 有効にするとき
+	else
+	{
+		// Hpをリセットする
+		SetHp();
+		ChangeState(EState::eIdle);
+	}
+	// 有効無効を設定する
+	SetEnable(setOnOff);
+	SetShow(setOnOff);
+}
+
+// 撤収状態に変える
+void CCollector::ChangeStateReturn()
+{
+	// 死亡状態じゃないなら
+	if (mState != EState::eDeath)
+	{
+		ChangeState(EState::eReturn);
+	}
+}
+
+// 回収員の持ち主を設定
+void CCollector::SetOwner(CObjectBase* owner)
+{
+	mpOwner = owner;
+}
+
+// 回収員の持ち主を取得
+CObjectBase* CCollector::GetOwner() const
+{
+	return mpOwner;
 }
 
 // 待機状態
@@ -369,19 +454,19 @@ void CCollector::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Bag);
 		}
-		if (mMoveRoute.size() == 1)
+		if (mpMoveRoute.size() == 1)
 		{
 			mNextMoveIndex = 0;
 		}
 		// 最短経路の次のノードまで移動
-		CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
+		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
 		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			// 移動が終われば、次のノードへ切り替え
 			mNextMoveIndex++;
 			// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
-			if (mNextMoveIndex >= mMoveRoute.size())
+			if (mNextMoveIndex >= mpMoveRoute.size())
 			{
 				mStateStep++;
 			}
@@ -440,7 +525,12 @@ void CCollector::UpdateChase()
 	// プレイヤーに攻撃できるならば、攻撃状態へ移行
 	if (CanAttackPlayer(ATTACK_RANGE))
 	{
-		ChangeState(EState::eAttackStart);
+		CTrashPlayer* trashPlayer = dynamic_cast<CTrashPlayer*>(player);
+		// 回収員が既についていなければ攻撃状態へ
+		if (!trashPlayer->GetStickCollector())
+		{
+			ChangeState(EState::eAttackStart);
+		}
 		return;
 	}
 
@@ -463,11 +553,11 @@ void CCollector::UpdateChase()
 
 		// 自身のノードからプレイヤーのノードまでの最短経路を求める
 		CNavNode* playerNode = player->GetNavNode();
-		if (navMgr->Navigate(mpNavNode, playerNode, mMoveRoute))
+		if (navMgr->Navigate(mpNavNode, playerNode, mpMoveRoute))
 		{
 			// 自身のノードからプレイヤーのノードまで繋がっていたら、
 			// 移動する位置を次のノードの位置に設定
-			targetPos = mMoveRoute[1]->GetPos();
+			targetPos = mpMoveRoute[1]->GetPos();
 		}
 	}
 	// 移動処理
@@ -511,7 +601,7 @@ void CCollector::UpdateLost()
 		// 経路探索用のノードの座標を更新
 		mpNavNode->SetPos(Position());
 
-		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mMoveRoute))
+		if (navMgr->Navigate(mpNavNode, mpLostPlayerNode, mpMoveRoute))
 		{
 			// 見失った位置まで経路が繋がっていたら、次のステップへ
 			mNextMoveIndex = 1;
@@ -527,10 +617,10 @@ void CCollector::UpdateLost()
 
 		// ステップ1：プレイヤーを見失った位置まで移動
 	case 1:
-		if (MoveTo(mMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		if (MoveTo(mpMoveRoute[mNextMoveIndex]->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			mNextMoveIndex++;
-			if (mNextMoveIndex >= mMoveRoute.size())
+			if (mNextMoveIndex >= mpMoveRoute.size())
 			{
 				// 移動が終われば、待機状態へ移行
 				ChangeState(EState::eIdle);
@@ -541,9 +631,37 @@ void CCollector::UpdateLost()
 	}
 }
 
-// TODO：ゴミ収集車に戻る処理
+// ゴミ収集車に戻る処理
 void CCollector::UpdateReturn()
 {
+
+	switch (mStateStep)
+	{
+		// ステップ0：移動アニメーションを再生
+	case 0:
+		// ゴミ袋を持っていないなら
+		if (!mIsBag)
+		{
+			ChangeAnimation((int)EAnimType::eMove);
+		}
+		// ゴミ袋を持っているなら
+		else
+		{
+			ChangeAnimation((int)EAnimType::eMove_Bag);
+		}
+		mStateStep++;
+		break;
+
+		// ステップ1：自分の持ち主とぶつかるまで移動を続ける
+	case 1:
+		// 持ち主の座標へ移動
+		if (MoveTo(mpOwner->Position(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		{
+
+		}
+		break;
+	}
+
 }
 
 // 攻撃開始
@@ -624,9 +742,6 @@ void CCollector::UpdateAttackTrue()
 		// ステップ0：アニメーション再生
 	case 0:
 	{
-		// プレイヤーに回収員がついている
-		CTrashPlayer* trashPlayer = dynamic_cast<CTrashPlayer*>(player);
-		trashPlayer->SetStickCollector(true);
 		// 重力を掛けない
 		mIsGravity = false;
 		// 攻撃成功アニメーション再生
@@ -665,8 +780,10 @@ void CCollector::UpdateAttackTrue()
 // 攻撃中（失敗）
 void CCollector::UpdateAttackFalse()
 {
-	// 攻撃が成功に変わったら
-	if (mIsAttackSuccess)
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// 攻撃が成功に変わって、回収員がプレイヤーについていなかったら
+	if (mIsAttackSuccess &&
+		!player->GetStickCollector())
 	{
 		// 攻撃成功状態へ
 		ChangeState(EState::eAttackTrue);
@@ -719,9 +836,16 @@ void CCollector::UpdateAttackEnd()
 	{
 	case 0:
 	{
-		// プレイヤーに回収員はついていない
+		// プレイヤーのクラスを取得
 		CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-		player->SetStickCollector(false);
+		// ついている回収員のポインタを取得
+		CCollector* stickCollector = player->GetStickCollectorPointer();
+		// ついている回収員と一致したら
+		if (this == stickCollector)
+		{
+			// ついているのを解除
+			player->SetStickCollector(false);
+		}
 		// 攻撃の判定自体はここまで
 		mIsAttacking = false;
 		// 攻撃が成功している場合
@@ -747,12 +871,8 @@ void CCollector::UpdateAttackEnd()
 			// 攻撃が成功している場合
 			if (mIsAttackSuccess)
 			{
-				/*
 				// ゴミ収集車に戻る状態へ
 				ChangeState(EState::eReturn);
-				*/
-				// TODO
-				ChangeState(EState::eIdle);
 			}
 			// 失敗なら
 			else
@@ -788,14 +908,14 @@ void CCollector::UpdateDeath()
 		// ステップ1：消えるまでの時間になるまでカウント
 	case 2:
 		mElapsedTime += Times::DeltaTime();
-		if (mElapsedTime >= DELETE_TIME)
+		if (mElapsedTime >= DEATH_WAIT_TIME)
 		{
 			mStateStep++;
 		}
 		break;
-		// ステップ2：アニメーションが終了したら削除
+		// ステップ2：アニメーションが終了したら無効にする
 	case 3:
-		Kill();
+		SetOnOff(false);
 		break;
 	}
 }
@@ -835,9 +955,16 @@ void CCollector::AttackEnd()
 	mIsAttacking = false;
 	// 重力を掛ける
 	mIsGravity = true;
-	// プレイヤーに回収員はついていない
+	// プレイヤーのクラスを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	player->SetStickCollector(false);
+	// ついている回収員のポインタを取得
+	CCollector* stickCollector = player->GetStickCollectorPointer();
+	// ついている回収員と一致すれば
+	if (this == stickCollector)
+	{
+		// ついているのを解除
+		player->SetStickCollector(false);
+	}
 }
 
 // 攻撃が成功したか

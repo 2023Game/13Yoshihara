@@ -28,7 +28,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mNextPatrolIndex(-1)
 	, mEyeHeight(eyeHeight)
 	, mNextMoveIndex(0)
-	, mDamageCauser(nullptr)
+	, mpDamageCauser(nullptr)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -45,7 +45,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	for (CVector point : patrolPoints)
 	{
 		CNavNode* node = new CNavNode(point, true);
-		mPatrolPoints.push_back(node);
+		mpPatrolPoints.push_back(node);
 	}
 }
 
@@ -54,6 +54,8 @@ CEnemyBase::~CEnemyBase()
 {
 	// コライダ―削除
 	SAFE_DELETE(mpBodyCol);
+	SAFE_DELETE(mpAttackCol);
+
 	// 視野範囲のデバッグ表示が存在したら、一緒に削除
 	if (mpDebugFov != nullptr)
 	{
@@ -68,15 +70,21 @@ CEnemyBase::~CEnemyBase()
 		SAFE_DELETE(mpNavNode);
 		SAFE_DELETE(mpLostPlayerNode);
 
+		// 巡回ポイントをすべて削除
+		for (CNavNode* node : mpPatrolPoints)
+		{
+			delete node;
+		}
+		// リストをクリア
+		mpPatrolPoints.clear();
+		mpMoveRoute.clear();
 		// 巡回ポイントに配置したノードも全て削除
-		mPatrolPoints.clear();
-		//// 巡回ポイントに配置したノードも全て削除
-		//auto itr = mPatrolPoints.begin();
-		//auto end = mPatrolPoints.end();
+		//auto itr = mpPatrolPoints.begin();
+		//auto end = mpPatrolPoints.end();
 		//while (itr != end)
 		//{
 		//	CNavNode* del = *itr;
-		//	itr = mPatrolPoints.erase(itr);
+		//	itr = mpPatrolPoints.erase(itr);
 		//	delete del;
 		//}
 	}
@@ -363,7 +371,7 @@ bool CEnemyBase::MoveTo(const CVector& targetPos, float speed,float rotateSpeed)
 void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
-	int size = mPatrolPoints.size();
+	int size = mpPatrolPoints.size();
 	if (size == 0) return;
 
 	// 巡回開始時であれば、一番近い巡回ポイントを選択
@@ -374,7 +382,7 @@ void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 		// 全ての巡回ポイントの距離を調べ、一番近い巡回ポイントを探す
 		for (int i = 0; i < size; i++)
 		{
-			CVector point = mPatrolPoints[i]->GetPos();
+			CVector point = mpPatrolPoints[i]->GetPos();
 			CVector vec = point - Position();
 			vec.Y(0.0f);
 			float dist = vec.Length();
@@ -409,12 +417,12 @@ void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 
 			// 巡回ポイントの経路探索ノードの位置を設定しなおすことで、
 			// 各ノードへの接続情報を更新
-			for (CNavNode* node : mPatrolPoints)
+			for (CNavNode* node : mpPatrolPoints)
 			{
 				node->SetPos(node->GetPos());
 			}
 			// 巡回ポイントまでの最短経路を求める
-			if (navMgr->Navigate(mpNavNode, mPatrolPoints[mNextPatrolIndex], mMoveRoute))
+			if (navMgr->Navigate(mpNavNode, mpPatrolPoints[mNextPatrolIndex], mpMoveRoute))
 			{
 				// 次の目的地のインデックスを設定
 				mNextMoveIndex = 1;
