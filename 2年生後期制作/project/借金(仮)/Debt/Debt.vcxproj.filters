@@ -134,9 +134,6 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck">
       <UniqueIdentifier>{0e571c8e-843d-4f94-8393-7f12148a2f84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
-      <UniqueIdentifier>{b25a58a6-0c85-4166-89ca-ea7ba91db312}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Debug">
       <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
     </Filter>
@@ -555,6 +552,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\CCollectorStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResident.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResidentStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResidentManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -989,6 +995,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CCollectorStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResident.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResidentStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResidentManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

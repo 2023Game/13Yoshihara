@@ -89,6 +89,9 @@
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CNavManager.cpp" />
     <ClCompile Include="src\Game\CNavNode.cpp" />
+    <ClCompile Include="src\Game\CResident.cpp" />
+    <ClCompile Include="src\Game\CResidentManager.cpp" />
+    <ClCompile Include="src\Game\CResidentStatus.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
@@ -235,6 +238,9 @@
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CNavManager.h" />
     <ClInclude Include="src\Game\CNavNode.h" />
+    <ClInclude Include="src\Game\CResident.h" />
+    <ClInclude Include="src\Game\CResidentManager.h" />
+    <ClInclude Include="src\Game\CResidentStatus.h" />
     <ClInclude Include="src\Game\CSky.h" />
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />

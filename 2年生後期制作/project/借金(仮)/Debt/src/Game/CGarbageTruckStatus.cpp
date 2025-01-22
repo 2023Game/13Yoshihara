@@ -66,16 +66,8 @@ void CGarbageTruckStatus::SetReturnTime()
 // 撤退までの時間が経過したかどうか
 bool CGarbageTruckStatus::IsElapsedReturnTime() const
 {
-	// 撤退までの時間が0より大きいなら経過していない
-	if (mReturnTime > 0.0f)
-	{
-		return false;
-	}
-	// 0以下なら経過した
-	else
-	{
-		return true;
-	}
+	// 0以下なら経過している
+	return mReturnTime <= 0.0f;
 }
 
 // 撤退までの時間をカウントダウン

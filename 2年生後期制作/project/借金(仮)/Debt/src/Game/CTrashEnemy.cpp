@@ -19,7 +19,6 @@
 
 // コライダのインクルード
 #include "CColliderCapsule.h"
-#include "CColliderSphere.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TrashBox\\anim\\"

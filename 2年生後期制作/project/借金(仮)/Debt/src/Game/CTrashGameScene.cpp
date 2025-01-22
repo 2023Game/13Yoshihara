@@ -9,6 +9,7 @@
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 #include "CVehicleManager.h"
+#include "CResidentManager.h"
 #include "CTrashEnemy.h"
 #include "CNavManager.h"
 
@@ -16,6 +17,8 @@
 CTrashGameScene::CTrashGameScene()
 	: CSceneBase(EScene::eTrashGame)
 	, mpGameMenu(nullptr)
+	, mpVehicleManager(nullptr)
+	, mpResidentManager(nullptr)
 {
 }
 
@@ -39,6 +42,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
 	CResourceManager::Load<CModelX>("TrashEnemy", "Character\\TrashBox\\TrashBoxEnemy.x");
 	CResourceManager::Load<CModelX>("Collector", "Character\\Collector\\Fox.x");
+	CResourceManager::Load<CModelX>("Resident", "Character\\Resident\\Monkey.x");
 	// CModel
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
 	CResourceManager::Load<CModel>("Sky", "Field\\Sky\\Sky.obj");
@@ -61,8 +65,12 @@ void CTrashGameScene::Load()
 	CTrashField* field = new CTrashField();
 
 	// 車両の管理クラス作成
-	mpCVehicleManager =
+	mpVehicleManager =
 		new CVehicleManager();
+
+	// 住人の管理クラス作成
+	mpResidentManager =
+		new CResidentManager();
 
 	CTrashPlayer* player = new CTrashPlayer();
 
@@ -120,5 +128,5 @@ void CTrashGameScene::Update()
 	}
 
 	// 車両管理クラスの更新
-	mpCVehicleManager->Update();
+	mpVehicleManager->Update();
 }

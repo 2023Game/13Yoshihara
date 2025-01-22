@@ -45,6 +45,9 @@ CVehicleManager* CVehicleManager::spInstance = nullptr;
 // 次、道に出現可能になるまでの時間
 #define NEXT_CAN_POP_TIME 2.0f
 
+// 車の最大数
+#define CARS_MAX_NUM 2
+
 // 車両管理クラスのインスタンスを取得
 CVehicleManager* CVehicleManager::Instance()
 {
@@ -61,21 +64,55 @@ CVehicleManager::CVehicleManager()
 {
 	spInstance = this;
 
-	// 車のモデル
+	// 車両のモデル
 	mpCarModel = CResourceManager::Get<CModel>("Car");
+	mpGarbageTruckModel = CResourceManager::Get<CModel>("GarbageTruck");
+	mpPunishTruckModel = CResourceManager::Get<CModel>("BlackTruck");
 
 	// 経路探索用のノードを作成
 	CreateNavNodes();
 
 	// 車両の作成
-	CreateVehicle(CResourceManager::Get<CModel>("Car"),
-		CResourceManager::Get<CModel>("GarbageTruck"),
-		CResourceManager::Get<CModel>("BlackTruck"));
+	CreateVehicle(mpCarModel, mpGarbageTruckModel, mpPunishTruckModel);
 }
 
 // デストラクタ
 CVehicleManager::~CVehicleManager()
 {
+	// 車のモデルがnullptrでないなら
+	if (mpCarModel != nullptr)
+	{
+		// nullptrにする
+		mpCarModel = nullptr;
+	}
+	// 通常トラックのモデルがnullptrでないなら
+	if (mpGarbageTruckModel != nullptr)
+	{
+		// nullptrにする
+		mpGarbageTruckModel = nullptr;
+	}
+	// お仕置きトラックのモデルがnullptrでないなら
+	if (mpPunishTruckModel != nullptr)
+	{
+		// nullptrにする
+		mpPunishTruckModel = nullptr;
+	}
+
+	// リストを空にする
+	{
+		auto itr = mpCars.begin();
+		auto end = mpCars.end();
+		while (itr != end)
+		{
+			CCar* del = *itr;
+			itr = mpCars.erase(itr);
+			delete del;
+		}
+	}
+	SAFE_DELETE(mpGarbageTruck);	// 通常トラック
+	SAFE_DELETE(mpPunishTruck);		// お仕置きトラック
+
+	// インスタンスと削除している車両管理クラスが同一なら削除
 	if (spInstance == this)
 	{
 		spInstance = nullptr;
@@ -87,45 +124,45 @@ CVehicleManager::~CVehicleManager()
 	{
 		// 左から1番目の道の
 		// 巡回ポイントに配置したノードを全て削除
-		auto itr = mPatrolPointsL1.begin();
-		auto end = mPatrolPointsL1.end();
+		auto itr = mpPatrolPointsL1.begin();
+		auto end = mpPatrolPointsL1.end();
 		while (itr != end)
 		{
 			CNavNode* del = *itr;
-			itr = mPatrolPointsL1.erase(itr);
+			itr = mpPatrolPointsL1.erase(itr);
 			delete del;
 		}
 
 		// 左から2番目の道の
 		// 巡回ポイントに配置したノードを全て削除
-		itr = mPatrolPointsL2.begin();
-		end = mPatrolPointsL2.end();
+		itr = mpPatrolPointsL2.begin();
+		end = mpPatrolPointsL2.end();
 		while (itr != end)
 		{
 			CNavNode* del = *itr;
-			itr = mPatrolPointsL2.erase(itr);
+			itr = mpPatrolPointsL2.erase(itr);
 			delete del;
 		}
 
 		// 右から1番目の道の
 		// 巡回ポイントに配置したノードを全て削除
-		itr = mPatrolPointsR1.begin();
-		end = mPatrolPointsR1.end();
+		itr = mpPatrolPointsR1.begin();
+		end = mpPatrolPointsR1.end();
 		while (itr != end)
 		{
 			CNavNode* del = *itr;
-			itr = mPatrolPointsR1.erase(itr);
+			itr = mpPatrolPointsR1.erase(itr);
 			delete del;
 		}
 
 		// 右から2番目の道の
 		// 巡回ポイントに配置したノードを全て削除
-		itr = mPatrolPointsR2.begin();
-		end = mPatrolPointsR2.end();
+		itr = mpPatrolPointsR2.begin();
+		end = mpPatrolPointsR2.end();
 		while (itr != end)
 		{
 			CNavNode* del = *itr;
-			itr = mPatrolPointsR2.erase(itr);
+			itr = mpPatrolPointsR2.erase(itr);
 			delete del;
 		}
 	}
@@ -139,7 +176,7 @@ bool CVehicleManager::CollisionRay(const CVector& start, const CVector& end, CHi
 	// 衝突したかどうかフラグ
 	bool isHit = alreadyHit;
 	// 全ての車との衝突をチェック
-	for (CCar* car : mCars)
+	for (CCar* car : mpCars)
 	{
 		// 無効なら次へ
 		if (!car->IsEnable()) continue;
@@ -200,7 +237,7 @@ bool CVehicleManager::NavCollisionRay(const CVector& start, const CVector& end, 
 	// 衝突したかどうかフラグ
 	bool isHit = alreadyHit;
 	// 全ての車との衝突をチェック
-	for (CCar* car : mCars)
+	for (CCar* car : mpCars)
 	{
 		// 無効なら次へ
 		if (!car->IsEnable()) continue;
@@ -312,33 +349,35 @@ std::vector<CNavNode*> CVehicleManager::GetPatrolPoints(CVehicleBase::ERoadType 
 	// 左から1番目の道
 	if (road == CVehicleBase::ERoadType::eLeft1)
 	{
-		return mPatrolPointsL1;
+		return mpPatrolPointsL1;
 	}
 	// 左から2番目の道
 	else if (road == CVehicleBase::ERoadType::eLeft2)
 	{
-		return mPatrolPointsL2;
+		return mpPatrolPointsL2;
 	}
 	// 右から1番目の道
 	else if (road == CVehicleBase::ERoadType::eRight1)
 	{
-		return mPatrolPointsR1;
+		return mpPatrolPointsR1;
 	}
 	// 右から2番目の道
 	else
 	{
-		return mPatrolPointsR2;
+		return mpPatrolPointsR2;
 	}
 }
 
 // 使用するトラックを全て生成
 void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck)
 {
-	mCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
-	mCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsL1));
+	for (int i = 0; i < CARS_MAX_NUM; i++)
+	{
+		mpCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsL1));
+	}
 
-	mpGarbageTruck = new CGarbageTruck(garbageTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsR1, false);
-	mpPunishTruck = new CGarbageTruck(blackTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mPatrolPointsR2, true);
+	mpGarbageTruck = new CGarbageTruck(garbageTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR1, false);
+	mpPunishTruck = new CGarbageTruck(blackTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR2, true);
 }
 
 // 経路探索用のノードを作成
@@ -348,42 +387,42 @@ void CVehicleManager::CreateNavNodes()
 	if (navMgr != nullptr)
 	{
 		// 左から1番目の道
-		mPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_1, true));
-		mPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_2, true));
-		mPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_3, true));
-		mPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_4, true));
-		mPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_5, true));
+		mpPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_1, true));
+		mpPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_2, true));
+		mpPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_3, true));
+		mpPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_4, true));
+		mpPatrolPointsL1.push_back(new CNavNode(PATROLPOINT_L1_5, true));
 
 		// 左から2番目の道
-		mPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_1, true));
-		mPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_2, true));
-		mPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_3, true));
-		mPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_4, true));
-		mPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_5, true));
+		mpPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_1, true));
+		mpPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_2, true));
+		mpPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_3, true));
+		mpPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_4, true));
+		mpPatrolPointsL2.push_back(new CNavNode(PATROLPOINT_L2_5, true));
 
 		// 右から1番目の道
-		mPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_1, true));
-		mPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_2, true));
-		mPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_3, true));
-		mPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_4, true));
-		mPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_5, true));
+		mpPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_1, true));
+		mpPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_2, true));
+		mpPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_3, true));
+		mpPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_4, true));
+		mpPatrolPointsR1.push_back(new CNavNode(PATROLPOINT_R1_5, true));
 
 		// 右から2番目の道
-		mPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_1, true));
-		mPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_2, true));
-		mPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_3, true));
-		mPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_4, true));
-		mPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_5, true));
+		mpPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_1, true));
+		mpPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_2, true));
+		mpPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_3, true));
+		mpPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_4, true));
+		mpPatrolPointsR2.push_back(new CNavNode(PATROLPOINT_R2_5, true));
 	}
 }
 
-// ステージ範囲外の車、トラックの更新、描画を止める
+// 移動が終了した車、トラックの更新、描画を止める
 void CVehicleManager::HideVehicle()
 {
 	// 車
-	for (CCar* car : mCars)
+	for (CCar* car : mpCars)
 	{
-		// ステージエリア外なら更新、描画を止める
+		// 移動終了ならなら更新、描画を止める
 		if (car->GetMoveEnd())
 		{
 			car->SetOnOff(false);
@@ -429,7 +468,7 @@ void CVehicleManager::SpawnVehicle()
 				if (punishRoadType == CVehicleBase::ERoadType::eLeft1)
 				{
 					// 左から1番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsL1;
+					patrolPoints = mpPatrolPointsL1;
 					// 右向きの回転を設定
 					popRotation = VEHICLE_RIGHT_ROTATION;
 				}
@@ -437,7 +476,7 @@ void CVehicleManager::SpawnVehicle()
 				else if (punishRoadType == CVehicleBase::ERoadType::eLeft2)
 				{
 					// 左から2番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsL2;
+					patrolPoints = mpPatrolPointsL2;
 					// 左向きの回転を設定
 					popRotation = VEHICLE_LEFT_ROTATION;
 				}
@@ -445,7 +484,7 @@ void CVehicleManager::SpawnVehicle()
 				else if (punishRoadType == CVehicleBase::ERoadType::eRight1)
 				{
 					// 右から1番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsR1;
+					patrolPoints = mpPatrolPointsR1;
 					// 左向きの回転を設定
 					popRotation = VEHICLE_LEFT_ROTATION;
 				}
@@ -453,7 +492,7 @@ void CVehicleManager::SpawnVehicle()
 				else
 				{
 					// 右から2番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsR2;
+					patrolPoints = mpPatrolPointsR2;
 					// 右向きの回転を設定
 					popRotation = VEHICLE_RIGHT_ROTATION;
 				}
@@ -498,7 +537,7 @@ void CVehicleManager::SpawnVehicle()
 			if (carRoadType == CVehicleBase::ERoadType::eLeft1)
 			{
 				// 左から1番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsL1;
+				patrolPoints = mpPatrolPointsL1;
 				// 右向きの回転を設定
 				popRotation = VEHICLE_RIGHT_ROTATION;
 			}
@@ -506,7 +545,7 @@ void CVehicleManager::SpawnVehicle()
 			else if (carRoadType == CVehicleBase::ERoadType::eLeft2)
 			{
 				// 左から2番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsL2;
+				patrolPoints = mpPatrolPointsL2;
 				// 左向きの回転を設定
 				popRotation = VEHICLE_LEFT_ROTATION;
 			}
@@ -514,7 +553,7 @@ void CVehicleManager::SpawnVehicle()
 			else if (carRoadType == CVehicleBase::ERoadType::eRight1)
 			{
 				// 右から1番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsR1;
+				patrolPoints = mpPatrolPointsR1;
 				// 左向きの回転を設定
 				popRotation = VEHICLE_LEFT_ROTATION;
 			}
@@ -522,13 +561,13 @@ void CVehicleManager::SpawnVehicle()
 			else
 			{
 				// 右から2番目の道の巡回ポイント
-				patrolPoints = mPatrolPointsR2;
+				patrolPoints = mpPatrolPointsR2;
 				// 右向きの回転を設定
 				popRotation = VEHICLE_RIGHT_ROTATION;
 			}
 
 			// 既に有効になっていない車を有効にする
-			for (CCar* car : mCars)
+			for (CCar* car : mpCars)
 			{
 				// 既に有効なら次の車
 				if (car->IsEnable())
@@ -579,7 +618,7 @@ void CVehicleManager::SpawnVehicle()
 				if (truckRoadType == CVehicleBase::ERoadType::eLeft1)
 				{
 					// 左から1番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsL1;
+					patrolPoints = mpPatrolPointsL1;
 					// 右向きの回転を設定
 					popRotation = VEHICLE_RIGHT_ROTATION;
 				}
@@ -587,7 +626,7 @@ void CVehicleManager::SpawnVehicle()
 				else if (truckRoadType == CVehicleBase::ERoadType::eLeft2)
 				{
 					// 左から2番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsL2;
+					patrolPoints = mpPatrolPointsL2;
 					// 左向きの回転を設定
 					popRotation = VEHICLE_LEFT_ROTATION;
 				}
@@ -595,7 +634,7 @@ void CVehicleManager::SpawnVehicle()
 				else if (truckRoadType == CVehicleBase::ERoadType::eRight1)
 				{
 					// 右から1番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsR1;
+					patrolPoints = mpPatrolPointsR1;
 					// 左向きの回転を設定
 					popRotation = VEHICLE_LEFT_ROTATION;
 				}
@@ -603,7 +642,7 @@ void CVehicleManager::SpawnVehicle()
 				else
 				{
 					// 右から2番目の道の巡回ポイント
-					patrolPoints = mPatrolPointsR2;
+					patrolPoints = mpPatrolPointsR2;
 					// 右向きの回転を設定
 					popRotation = VEHICLE_RIGHT_ROTATION;
 				}

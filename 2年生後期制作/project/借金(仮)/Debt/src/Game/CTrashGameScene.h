@@ -2,6 +2,7 @@
 #include "CSceneBase.h"
 class CGameMenuBase;
 class CVehicleManager;
+class CResidentManager;
 class CSound;
 
 //タイトルシーン
@@ -19,5 +20,6 @@ public:
 
 private:
 	CGameMenuBase* mpGameMenu;
-	CVehicleManager* mpCVehicleManager;
+	CVehicleManager* mpVehicleManager;
+	CResidentManager* mpResidentManager;
 };

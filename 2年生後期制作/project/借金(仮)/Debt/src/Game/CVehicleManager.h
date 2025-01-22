@@ -81,7 +81,7 @@ private:
 	// 経路探索用のノードを作成
 	void CreateNavNodes();
 	
-	// ステージ範囲外の車、トラックの更新、描画を止める
+	// 移動が終了した車、トラックの更新、描画を止める
 	void HideVehicle();
 	// 乗り物を出現させる
 	void SpawnVehicle();
@@ -112,8 +112,10 @@ private:
 	static CVehicleManager* spInstance;
 
 	CModel* mpCarModel;	// 車のモデル
+	CModel* mpGarbageTruckModel;	// 通常トラックのモデル
+	CModel* mpPunishTruckModel;		// お仕置きトラックのモデル
 
-	std::list<CCar*> mCars;		// 車のリスト
+	std::list<CCar*> mpCars;		// 車のリスト
 	CGarbageTruck* mpGarbageTruck;	// 通常トラック
 	CGarbageTruck* mpPunishTruck;	// お仕置きトラック
 
@@ -129,8 +131,8 @@ private:
 	float mRight2CanPopTime; // 右から2番道路
 
 	// 巡回ポイントのリスト
-	std::vector<CNavNode*> mPatrolPointsL1;	// 左から1番道路
-	std::vector<CNavNode*> mPatrolPointsL2; // 左から2番道路
-	std::vector<CNavNode*> mPatrolPointsR1; // 右から1番道路
-	std::vector<CNavNode*> mPatrolPointsR2; // 右から2番道路
+	std::vector<CNavNode*> mpPatrolPointsL1;	// 左から1番道路
+	std::vector<CNavNode*> mpPatrolPointsL2; // 左から2番道路
+	std::vector<CNavNode*> mpPatrolPointsR1; // 右から1番道路
+	std::vector<CNavNode*> mpPatrolPointsR2; // 右から2番道路
 };

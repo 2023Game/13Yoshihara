@@ -20,7 +20,6 @@
 
 // コライダのインクルード
 #include "CColliderCapsule.h"
-#include "CColliderSphere.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\Collector\\anim\\"
@@ -60,15 +59,6 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define PATROL_INTERVAL	0.5f	// 次の巡回ポイントに移動開始するまでの時間
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
 #define IDLE_TIME 0.5f			// 待機状態の時間
-
-#define PATROL_POS0 CVector( 40.0f,0.0f,   0.0f)
-#define PATROL_POS1 CVector( 40.0f,0.0f, 100.0f)
-#define PATROL_POS2 CVector(  0.0f,0.0f, 100.0f)
-#define PATROL_POS3 CVector(-40.0f,0.0f, 100.0f)
-#define PATROL_POS4 CVector(-40.0f,0.0f,   0.0f)
-#define PATROL_POS5 CVector(-40.0f,0.0f,-100.0f)
-#define PATROL_POS6 CVector(  0.0f,0.0f,-100.0f)
-#define PATROL_POS7 CVector( 40.0f,0.0f,-100.0f)
 
 #define ROAD_X_AREA 90.0f	// 車道のXの範囲
 
@@ -133,7 +123,10 @@ CCollector::CCollector(bool punisher, CObjectBase* owner,
 // デストラクタ
 CCollector::~CCollector()
 {
-	mpOwner = nullptr;
+	if (mpOwner != nullptr)
+	{
+		mpOwner = nullptr;
+	}
 }
 
 // 更新
