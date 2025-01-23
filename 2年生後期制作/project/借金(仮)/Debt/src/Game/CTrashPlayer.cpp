@@ -98,12 +98,12 @@ CTrashPlayer::CTrashPlayer()
 		CVector(-BODY_WIDTH + BODY_RADIUS / SCALE, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
-	// 地形、敵、回収員、攻撃、車両、キャラ探知用
+	// 地形、敵、回収員、攻撃、車両、キャラ探知用、ゴミ袋
 	// と衝突判定をする
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle});
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::eEnemy, ETag::eVehicle,ETag::eTrashBag});
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,
 		ELayer::eEnemy, ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle,
-		ELayer::eCharaSearch});
+		ELayer::eCharaSearch,ELayer::eTrashBag});
 
 	// 攻撃コライダー
 	mpAttackCol = new CColliderCapsule
@@ -183,9 +183,6 @@ void CTrashPlayer::Update()
 
 	// キャラクターの更新
 	CPlayerBase::Update();
-
-	mpAttackCol->Update();
-	mpCriticalCol->Update();
 
 #if _DEBUG
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
@@ -356,6 +353,12 @@ CCollector* CTrashPlayer::GetStickCollectorPointer() const
 void CTrashPlayer::SetStickCollectorPointer(CCollector* collector)
 {
 	mpStickCollector = collector;
+}
+
+// 開いているかを取得
+bool CTrashPlayer::GetOpen() const
+{
+	return mIsOpen;
 }
 
 /*

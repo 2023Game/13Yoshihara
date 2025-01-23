@@ -128,8 +128,8 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
 
-	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用
-	// と衝突判定をする本体コライダ―
+
+	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
@@ -137,9 +137,11 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 		CVector(-BODY_WIDTH + BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
 		BODY_RADIUS
 	);
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle });
+	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用、ゴミ袋
+	// と衝突判定をする
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle, ETag::eTrashBag });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
-		ELayer::ePlayer, ELayer::eEnemy,ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle});
+		ELayer::ePlayer, ELayer::eEnemy,ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle, ELayer::eTrashBag});
 
 	// 攻撃コライダー
 	mpAttackCol = new CColliderCapsule
@@ -391,6 +393,12 @@ void CTrashEnemy::Render()
 			);
 		}
 	}
+}
+
+// 開いているかを取得
+bool CTrashEnemy::GetOpen() const
+{
+	return mIsOpen;
 }
 
 // 待機状態

@@ -2,6 +2,8 @@
 #include "CEnemyBase.h"
 #include "CResidentStatus.h"
 
+class CTrashBag;
+
 /*
 ゴミ拾いゲームの住人クラス
 敵基底クラスと
@@ -79,4 +81,25 @@ private:
 
 	// 移動を中断したかどうか
 	bool mIsMovePause;
+
+	// 投げるときに向く座標
+	CVector mLookPos;
+
+	// 向く座標をランダムに決定する
+	void SetLookPosRandom();
+
+	// ゴミ袋の生成
+	void CreateTrashBag();
+	
+	/// <summary>
+	/// 生成できるゴミ袋を有効にする 
+	/// </summary>
+	/// <returns>trueならば、有効にできた</returns>
+	bool SpawnTrashBag();
+	// ゴミ袋がゴールドか否かを計算
+	bool GoldBag();
+	// ゴミ袋のリスト
+	std::vector<CTrashBag*> mpTrashBags;
+	// 今生成中のゴミ袋の番号記憶用
+	int mTrashBagNum;
 };

@@ -94,6 +94,8 @@
     <ClCompile Include="src\Game\CResidentStatus.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
+    <ClCompile Include="src\Game\CTrashBag.cpp" />
+    <ClCompile Include="src\Game\CTrashBagStatus.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyStatus.cpp" />
     <ClCompile Include="src\Game\CVehicleBase.cpp" />
@@ -243,6 +245,8 @@
     <ClInclude Include="src\Game\CResidentStatus.h" />
     <ClInclude Include="src\Game\CSky.h" />
     <ClInclude Include="src\Game\CSword.h" />
+    <ClInclude Include="src\Game\CTrashBag.h" />
+    <ClInclude Include="src\Game\CTrashBagStatus.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashEnemyStatus.h" />
     <ClInclude Include="src\Game\CVehicleBase.h" />

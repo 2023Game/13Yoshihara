@@ -53,6 +53,9 @@ public:
 	// ついている回収員のポインタを設定
 	void SetStickCollectorPointer(CCollector* collector);
 
+	// 開いているかを取得
+	bool GetOpen() const;
+
 private:
 	/*
 	アクションのキー入力

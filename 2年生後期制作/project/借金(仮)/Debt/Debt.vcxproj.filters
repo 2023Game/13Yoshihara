@@ -562,6 +562,12 @@
     <ClCompile Include="src\Game\CResidentManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CTrashBag.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashBagStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1004,6 +1010,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CResidentManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashBag.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashBagStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

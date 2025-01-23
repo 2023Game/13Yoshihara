@@ -5,14 +5,23 @@
 #define BASE_MOVE_SPEED 0.375f * 20.0f	// 移動速度
 #define JUMP_SPEED 0.0f					// ジャンプ速度
 #define ATTACK_POWER 0					// 攻撃力
-#define THROW_SPEED 1.0f				// 投げる速度
-#define THROW_TIME 5.0f					// ゴミを投げるまでの時間
+#define THROW_SPEED 2.0f				// 投げる速度
+#define THROW_TIME 1.0f					// ゴミを投げるまでの時間
+#define MAX_THROW_NUM 3					// 投げれるゴミの最大数
+#define GOLD_CHANCE 10					// ゴールド袋が出る確率
+
+// ゴミを投げる速度を計算するときランダムで掛ける最大値
+#define THROW_SPEED_RANDOM_MAX 1.5f
+// ゴミを投げるまでの時間を計算するときランダムで掛ける最大数
+#define THROW_TIME_RANDOM_MAX 5
 
 // コンストラクタ
 CResidentStatus::CResidentStatus()
 	: CCharaStatusBase(MAX_HP, BASE_MOVE_SPEED, JUMP_SPEED, ATTACK_POWER)
 	, mThrowSpeed(THROW_SPEED)
 	, mThrowTime(THROW_TIME)
+	, mMaxThrowNum(MAX_THROW_NUM)
+	, mGoldChance(GOLD_CHANCE)
 {
 	// ランダム数値を掛けた値を設定
 	SetThrowTime();
@@ -24,9 +33,11 @@ CResidentStatus::~CResidentStatus()
 }
 
 // ゴミ袋を投げる速度を設定する
-void CResidentStatus::SetThrowSpeed(float throwSpeed)
+void CResidentStatus::SetThrowSpeed()
 {
-	mThrowSpeed = throwSpeed;
+	// 等倍から最大値までのランダムな数値を掛ける
+	int random = Math::Rand(1.0f, THROW_SPEED_RANDOM_MAX);
+	mThrowSpeed = THROW_SPEED * random;
 }
 
 // ゴミ袋を投げる速度を取得する
@@ -44,8 +55,8 @@ float CResidentStatus::GetThrowTime() const
 // ゴミを投げるまでの時間を初期値にランダム数値を掛けた数に設定
 void CResidentStatus::SetThrowTime()
 {
-	// 等倍から1.5倍までのランダムな数値を掛ける
-	float random = Math::Rand(1.0f, 2.0f);
+	// 等倍から最大数までのランダムな数値を掛ける
+	int random = Math::Rand(1, THROW_TIME_RANDOM_MAX);
 	mThrowTime = THROW_TIME * random;
 }
 
@@ -60,4 +71,28 @@ bool CResidentStatus::IsElapsedThrowTime() const
 void CResidentStatus::CountThrowTime()
 {
 	mThrowTime -= Times::DeltaTime();
+}
+
+// ゴミ袋の最大数を設定
+void CResidentStatus::SetMaxThrowNum(int maxThrowNum)
+{
+	mMaxThrowNum = maxThrowNum;
+}
+
+// ゴミ袋の最大数を取得
+int CResidentStatus::GetMaxThrowNum() const
+{
+	return mMaxThrowNum;
+}
+
+// ゴールド確率を設定
+void CResidentStatus::SetGoldChance(int goldChance)
+{
+	mGoldChance = goldChance;
+}
+
+// ゴールド確率を取得
+int CResidentStatus::GetGoldChance() const
+{
+	return mGoldChance;
 }

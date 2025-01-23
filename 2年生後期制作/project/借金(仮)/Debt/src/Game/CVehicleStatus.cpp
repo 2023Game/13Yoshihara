@@ -49,26 +49,14 @@ void CVehicleStatus::SetDeleteTime()
 // 消滅までの時間が経過したかどうか
 bool CVehicleStatus::IsElapsedDeleteTime() const
 {
-	// 消滅までの時間が0より大きいなら経過していない
-	if (mDeleteTime > 0.0f)
-	{
-		return false;
-	}
-	// 0以下なら経過した
-	else
-	{
-		return true;
-	}
+	// 消滅までの時間が0以下なら経過した
+	return mDeleteTime <= 0.0f;
 }
 
 // 消滅までの時間をカウントダウン
 void CVehicleStatus::CountDeleteTime()
 {
-	// 0より大きいなら減算
-	if (mDeleteTime > 0.0f)
-	{
-		mDeleteTime -= Times::DeltaTime();
-	}
+	mDeleteTime -= Times::DeltaTime();
 }
 
 

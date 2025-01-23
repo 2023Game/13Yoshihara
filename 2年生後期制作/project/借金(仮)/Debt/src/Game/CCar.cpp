@@ -36,13 +36,13 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
 		CAR_RADIUS, true
 	);
-	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
+	// プレイヤー、敵、回収員、車両、車両探知用、地形、ゴミ袋
 	// と衝突判定する
-	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
-		ETag::eVehicle,ETag::eField, });
+	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
+		ETag::eVehicle,ETag::eField, ETag::eTrashBag});
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,
 		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
-		ELayer::eGround,ELayer::eWall,ELayer::eObject });
+		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eTrashBag });
 
 	// 車両と衝突判定する前方向コライダ―
 	mpFrontCol = new CColliderCapsule

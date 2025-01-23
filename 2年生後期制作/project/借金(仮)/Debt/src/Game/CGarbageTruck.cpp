@@ -54,13 +54,13 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	);
 	// 座標を設定
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
-	// プレイヤー、敵、回収員、生成場所、車両、車両探知用、地形
+	// プレイヤー、敵、回収員、車両、車両探知用、地形、ゴミ袋
 	// と衝突判定する
-	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eSpawnZone,
-		ETag::eVehicle,ETag::eField, });
+	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
+		ETag::eVehicle,ETag::eField,ETag::eTrashBag });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,ELayer::eAttackCol,
 		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
-		ELayer::eGround,ELayer::eWall,ELayer::eObject });
+		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eTrashBag });
 
 	// 前方向コライダ―
 	mpFrontCol = new CColliderCapsule

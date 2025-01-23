@@ -12,6 +12,7 @@ enum class ETaskPriority
 	eDefault,	// デフォルト
 	ePlayer,	// プレイヤー
 	eEnemy,		// 敵
+	eTrashBag,	// ゴミ袋
 	eWeapon,	// 武器
 	eVehicle,	// 車両
 	eSpawnZone,	// 生成場所

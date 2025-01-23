@@ -15,6 +15,7 @@ enum class ELayer
 	eEnemy,			// 敵
 	eCollector,		// 回収員
 	eResident,		// 住人
+	eTrashBag,		// ゴミ袋
 	eCharaSearch,	// キャラクター探知用
 	eVehicle,		// 車両
 	eVehicleSearch,	// 車両の探知用
