@@ -7,7 +7,7 @@
 #define WORLD_UNIT_PER_PIXEL 32.0f
 
 // コンストラクタ
-CGaugeUI3D::CGaugeUI3D(CObjectBase* owner)
+CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI3D, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 	, mpGaugeImg(nullptr)
@@ -19,7 +19,7 @@ CGaugeUI3D::CGaugeUI3D(CObjectBase* owner)
 	// ゲージのイメージを読み込み
 	mpGaugeImg = new CImage3D
 	(
-		"UI\\gauge.png",
+		gaugePath,
 		ETag::eUI,
 		ETaskPriority::eUI3D, 0,
 		ETaskPauseType::eGame,

@@ -8,6 +8,7 @@
 #include "CNavNode.h"
 #include "CVehicleManager.h"
 #include "Maths.h"
+#include "CGaugeUI3D.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -99,6 +100,11 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 // 死んだときの消えるまでの時間
 #define DEATH_WAIT_TIME 2.0f
 
+// Hpゲージのオフセット座標
+#define GAUGE_OFFSET_POS CVector(0.0f,15.0f,0.0f)
+
+#define HP_GAUGE_PATH "UI\\trashbox_enemy_hp_gauge.png"
+
 // コンストラクタ
 CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	: CEnemyBase
@@ -124,6 +130,10 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	, mIsOpen(false)
 	, mIsJump(false)
 {
+	// Hpゲージを設定
+	mpHpGauge = new CGaugeUI3D(this, HP_GAUGE_PATH);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
 	Scale(scale, scale, scale);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
@@ -212,6 +222,11 @@ void CTrashEnemy::Update()
 
 	// キャラクターの更新
 	CEnemyBase::Update();
+
+	// HPゲージを更新
+	mpHpGauge->Position(Position() + GAUGE_OFFSET_POS);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
 
 #if _DEBUG
 	// 現在の状態に合わせて視野範囲の色を変更
@@ -1177,6 +1192,8 @@ void CTrashEnemy::UpdateDeath()
 		SetShow(false);
 		mpDebugFov->SetEnable(false);
 		mpDebugFov->SetShow(false);
+		mpHpGauge->SetEnable(false);
+		mpHpGauge->SetShow(false);
 		break;
 	}
 }

@@ -34,6 +34,10 @@
 #define PATROL_NEAR_DIST 0.0f	// 巡回開始時に選択される巡回ポイントの最短距離
 #define ROTATE_SPEED 3.0f	// 回転速度
 
+// 回収を開始できるZの座標の範囲
+#define COLLECT_MAX_POSZ  200.0f
+#define COLLECT_MIN_POSZ -200.0f
+
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
 	ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher)
@@ -274,18 +278,6 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		// 車両とぶつかったら止まる
 		else if (other->Layer() == ELayer::eVehicle)
 		{
-			// 自分が移動していたら
-			if (IsMove())
-			{
-				// 止まる状態へ移行
-				ChangeState(EState::eStop);
-			}
-		}
-		//TODO：テスト用
-		else if (other->Layer() == ELayer::eAttackCol)
-		{
-			// 壊れた状態へ移行
-			ChangeState(EState::eBroken);
 		}
 	}
 	// 前方コライダ―
@@ -358,8 +350,14 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// 相手がプレイヤーの場合
 			if (other->Layer() == ELayer::ePlayer)
 			{
-				// 回収状態へ
-				ChangeState(EState::eCollect);
+				// 回収を開始できる場所にいるかつ
+				// 壊れた状態でないなら
+				if (CanCollectPosZ()&&
+					mState != EState::eBroken)
+				{
+					// 回収状態へ
+					ChangeState(EState::eCollect);
+				}
 			}
 		}
 	}
@@ -432,6 +430,19 @@ void CGarbageTruck::Reset()
 	mIsReturn = false;
 
 	mState = EState::eMove;
+}
+
+// 回収をできるZの範囲内にいるかどうか
+bool CGarbageTruck::CanCollectPosZ()
+{
+	// 回収を開始できるZの範囲内ならtrue
+	if (Position().Z() <= COLLECT_MAX_POSZ &&
+		Position().Z() >= COLLECT_MIN_POSZ)
+	{
+		return true;
+	}
+	// 範囲外ならfalse
+	return false;
 }
 
 // 移動処理

@@ -27,18 +27,8 @@ CTrashBag::CTrashBag(bool gold)
 	, mIsGravity(true)
 {
 	Scale(SCALE, SCALE, SCALE);
-	// ゴールドの場合
-	if (gold)
-	{
-		// ゴールドのモデル
-		mpModel = CResourceManager::Get<CModel>("TrashBag");
-	}
-	// 通常の場合
-	else
-	{
-		// 通常のモデル
-		mpModel = CResourceManager::Get<CModel>("TrashBag");
-	}
+
+	SetGold(gold);
 
 	// 本体コライダ―
 	mpBodyCol = new CColliderSphere
@@ -247,7 +237,7 @@ void CTrashBag::SetGold(bool gold)
 	if (gold)
 	{
 		// ゴールドのモデル
-		mpModel = CResourceManager::Get<CModel>("TrashBag");		
+		mpModel = CResourceManager::Get<CModel>("TrashBagGold");		
 	}
 	// 通常の場合
 	else

@@ -37,6 +37,9 @@ public:
 	// 変数をリセット
 	void Reset() override;
 
+	// 回収をできるZの範囲内にいるかどうか
+	bool CanCollectPosZ();
+
 private:
 	// 回収員のリスト
 	std::vector<CCollector*> mpCollectors;

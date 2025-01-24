@@ -97,4 +97,7 @@ protected:
 
 	// 攻撃してきた相手の記憶用
 	CObjectBase* mpDamageCauser;
+
+	// Hpゲージ
+	CGaugeUI3D* mpHpGauge;
 };

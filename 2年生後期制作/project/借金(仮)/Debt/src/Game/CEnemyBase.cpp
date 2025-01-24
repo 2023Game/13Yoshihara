@@ -6,6 +6,7 @@
 #include "CNavNode.h"
 #include "CNavManager.h"
 #include "CVehicleManager.h"
+#include "CGaugeUI3D.h"
 
 // 基本の重力
 #define GRAVITY 0.0625f
@@ -29,6 +30,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mEyeHeight(eyeHeight)
 	, mNextMoveIndex(0)
 	, mpDamageCauser(nullptr)
+	, mpHpGauge(nullptr)
 {
 	// 視野範囲のデバッグ表示クラスを作成
 	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
@@ -88,6 +90,13 @@ CEnemyBase::~CEnemyBase()
 		//	delete del;
 		//}
 	}
+
+	// HPゲージが存在したら、一緒に削除する
+	if (mpHpGauge != nullptr)
+	{
+		mpHpGauge->SetOwner(nullptr);
+		mpHpGauge->Kill();
+	}
 }
 
 // 本体コライダ―を取得
@@ -104,6 +113,10 @@ void CEnemyBase::DeleteObject(CObjectBase* obj)
 	if (obj == mpDebugFov)
 	{
 		mpDebugFov = nullptr;
+	}
+	else if (obj == mpHpGauge)
+	{
+		mpHpGauge = nullptr;
 	}
 }
 

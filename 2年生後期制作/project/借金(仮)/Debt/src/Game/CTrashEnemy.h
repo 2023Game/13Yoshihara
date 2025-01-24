@@ -52,6 +52,7 @@ public:
 
 	// 開いているかを取得
 	bool GetOpen() const;
+
 private:
 	/*
 	アニメーションの種類

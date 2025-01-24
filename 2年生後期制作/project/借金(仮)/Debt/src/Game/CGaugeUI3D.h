@@ -8,7 +8,7 @@ class CGaugeUI3D : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CGaugeUI3D(CObjectBase* owner);
+	CGaugeUI3D(CObjectBase* owner,std::string gaugePath);
 	// デストラクタ
 	virtual ~CGaugeUI3D();
 
@@ -27,7 +27,7 @@ public:
 	// 描画
 	void Render() override;
 
-private:
+protected:
 	// ポイント残量を反映
 	void ApplyPoint();
 
