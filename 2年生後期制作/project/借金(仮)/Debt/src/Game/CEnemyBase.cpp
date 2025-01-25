@@ -114,6 +114,8 @@ void CEnemyBase::DeleteObject(CObjectBase* obj)
 	{
 		mpDebugFov = nullptr;
 	}
+	// 削除されたオブジェクトがHpゲージであれば
+	// ポインタを空にする
 	else if (obj == mpHpGauge)
 	{
 		mpHpGauge = nullptr;

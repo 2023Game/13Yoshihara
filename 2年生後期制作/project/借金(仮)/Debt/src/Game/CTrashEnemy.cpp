@@ -1178,7 +1178,7 @@ void CTrashEnemy::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ1：消えるまでの時間になるまでカウント
+		// ステップ2：消えるまでの時間になるまでカウント
 	case 2:
 		mElapsedTime += Times::DeltaTime();
 		if (mElapsedTime >= DEATH_WAIT_TIME)
@@ -1186,7 +1186,7 @@ void CTrashEnemy::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ2：アニメーションが終了したら無効にする
+		// ステップ3：自身と視野範囲とHPゲージは無効になる
 	case 3:
 		SetEnable(false);
 		SetShow(false);

@@ -10,6 +10,7 @@
 #include "CSceneManager.h"
 #include "CNavNode.h"
 #include "CNavManager.h"
+#include "CGaugeUI2D.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -62,6 +63,13 @@ CPlayerBase::~CPlayerBase()
 	if (spInstance == this)
 	{
 		spInstance = nullptr;
+	}
+
+	// HPゲージが存在したら、一緒に削除する
+	if (mpHpGauge != nullptr)
+	{
+		mpHpGauge->SetOwner(nullptr);
+		mpHpGauge->Kill();
 	}
 }
 
@@ -154,6 +162,17 @@ void CPlayerBase::UpdateMotionBlur()
 		// モーションブラーをオフにする
 		System::SetEnableMotionBlur(false);
 		mMotionBlurRemainTime = 0.0f;
+	}
+}
+
+// オブジェクト削除処理
+void CPlayerBase::DeleteObject(CObjectBase* obj)
+{
+	// 削除されたオブジェクトがHpゲージであれば
+	// ポインタを空にする
+	if (obj == mpHpGauge)
+	{
+		mpHpGauge = nullptr;
 	}
 }
 

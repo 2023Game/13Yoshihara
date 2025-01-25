@@ -4,6 +4,7 @@
 #include "CRideableObject.h"
 #include "CSound.h"
 
+class CGaugeUI2D;
 class CInteractObject;
 
 /*
@@ -21,6 +22,8 @@ public:
 	// デストラクタ
 	~CPlayerBase();
 
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
 	// 更新
 	void Update();
 
@@ -70,4 +73,7 @@ protected:
 	std::list<CInteractObject*> mNearInteractObjs;
 	// 調べるオブジェクト探知用のコライダ―
 	CCollider* mpSearchCol;
+
+	// Hpゲージ
+	CGaugeUI2D* mpHpGauge;
 };

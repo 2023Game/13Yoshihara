@@ -168,6 +168,7 @@ void CTrashBag::Collision(CCollider* self, CCollider* other, const CHitInfo& hit
 			// ŠJ‚¢‚Ä‚¢‚é‚È‚ç
 			if (player->GetOpen())
 			{
+
 				// –³Œø‚É‚·‚é
 				SetOnOff(false);
 			}

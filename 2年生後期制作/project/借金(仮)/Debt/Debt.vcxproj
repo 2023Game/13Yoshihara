@@ -79,6 +79,7 @@
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
+    <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
@@ -94,6 +95,8 @@
     <ClCompile Include="src\Game\CResidentStatus.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
+    <ClCompile Include="src\Game\CTextUI2D.cpp" />
+    <ClCompile Include="src\Game\CTimeUI.cpp" />
     <ClCompile Include="src\Game\CTrashBag.cpp" />
     <ClCompile Include="src\Game\CTrashBagStatus.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
@@ -230,6 +233,7 @@
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
+    <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
@@ -245,6 +249,8 @@
     <ClInclude Include="src\Game\CResidentStatus.h" />
     <ClInclude Include="src\Game\CSky.h" />
     <ClInclude Include="src\Game\CSword.h" />
+    <ClInclude Include="src\Game\CTextUI2D.h" />
+    <ClInclude Include="src\Game\CTimeUI.h" />
     <ClInclude Include="src\Game\CTrashBag.h" />
     <ClInclude Include="src\Game\CTrashBagStatus.h" />
     <ClInclude Include="src\Game\CTrashEnemyManager.h" />

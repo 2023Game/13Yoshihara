@@ -3,6 +3,7 @@
 #include "CCamera.h"
 #include "Maths.h"
 #include "CTrashEnemy.h"
+#include "CGaugeUI2D.h"
 
 // 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
@@ -75,6 +76,8 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 
 #define SCALE 0.1f	// スケール
 
+#define HP_GAUGE_PATH "UI\\trashbox_player_hp_gauge.png"
+
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
 	: CPlayerBase()
@@ -85,6 +88,11 @@ CTrashPlayer::CTrashPlayer()
 	, mIsStickCollector(false)
 	, mpStickCollector(nullptr)
 {
+	// Hpゲージを設定
+	mpHpGauge = new CGaugeUI2D(this, HP_GAUGE_PATH);
+	mpHpGauge->Position(CVector::zero);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
 	// 大きさの調整
 	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
@@ -183,6 +191,10 @@ void CTrashPlayer::Update()
 
 	// キャラクターの更新
 	CPlayerBase::Update();
+
+	// HPゲージを更新
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
 
 #if _DEBUG
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
@@ -955,7 +967,27 @@ void CTrashPlayer::UpdateOpenClose()
 // 死亡の更新処理
 void CTrashPlayer::UpdateDeath()
 {
-	// TODO：ゲームオーバーを表示
+	switch (mStateStep)
+	{
+		// ステップ0：死亡アニメーションを再生
+	case 0:
+		ChangeAnimation((int)EAnimType::eDeath);
+		mMoveSpeed = CVector::zero;
+		mStateStep++;
+		break;
+
+		// ステップ1：アニメーションが終了したら次のステップへ
+	case 1:
+		if (IsAnimationFinished())
+		{
+			mStateStep++;
+		}
+		break;
+		// ステップ1：TODO：ゲーム終了画面を表示する
+	case 2:
+
+		break;
+	}
 }
 
 // 死亡処理

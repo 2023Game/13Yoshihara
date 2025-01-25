@@ -146,6 +146,9 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\TrashBag">
       <UniqueIdentifier>{da274fed-4583-46e4-a0a3-df32966d1d0d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D">
+      <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -567,6 +570,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\CTrashBagStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTextUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTimeUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1016,6 +1028,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTrashBagStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTextUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTimeUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
