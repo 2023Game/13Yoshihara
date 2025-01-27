@@ -24,15 +24,11 @@ public:
 	void CountDeleteTime();
 
 	// 得点を取得する
-	int GetPoint() const;
-	// 得点を設定する
-	void SetPoint();
+	int GetPoint(bool gold) const;
 
 private:
 	// ゴールド袋かどうか
 	bool mIsGold;
 	// 消滅までの時間
 	float mDeleteTime;
-	// 得点
-	int mPoint;
 };

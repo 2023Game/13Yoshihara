@@ -2,8 +2,8 @@
 
 #define DELETE_TIME 5.0f	// 消滅までの時間
 
-#define NORMAL_POINT 1	// 通常のポイント
-#define GOLD_POINT 2	// ゴールドのポイント
+#define NORMAL_POINT 100	// 通常のポイント
+#define GOLD_POINT 1000		// ゴールドのポイント
 
 // コンストラクタ
 CTrashBagStatus::CTrashBagStatus(bool gold)
@@ -11,18 +11,6 @@ CTrashBagStatus::CTrashBagStatus(bool gold)
 	, mDeleteTime(DELETE_TIME)
 
 {
-	// ゴールドなら
-	if (mIsGold)
-	{
-		// ゴールドのポイントに設定
-		mPoint = GOLD_POINT;
-	}
-	// ゴールドじゃないなら
-	else
-	{
-		// 通常のポイントに設定
-		mPoint = NORMAL_POINT;
-	}
 }
 
 // デストラクタ
@@ -68,24 +56,18 @@ void CTrashBagStatus::CountDeleteTime()
 }
 
 // 得点を取得する
-int CTrashBagStatus::GetPoint() const
-{
-	return mPoint;
-}
-
-// 得点を設定する
-void CTrashBagStatus::SetPoint()
+int CTrashBagStatus::GetPoint(bool gold) const
 {
 	// ゴールドなら
-	if (mIsGold)
+	if (gold)
 	{
-		// ゴールドのポイントに設定
-		mPoint = GOLD_POINT;
+		// ゴールドのポイントを返す
+		return GOLD_POINT;
 	}
-	// ゴールドじゃないなら
+	// 通常なら
 	else
 	{
-		// 通常のポイントに設定
-		mPoint = NORMAL_POINT;
+		// 通常のポイントを返す
+		return NORMAL_POINT;
 	}
 }

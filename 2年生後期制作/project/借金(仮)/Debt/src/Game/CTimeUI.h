@@ -2,6 +2,7 @@
 
 class CTextUI2D;
 
+// ŽžŠÔ•\Ž¦UI
 class CTimeUI
 {
 public:

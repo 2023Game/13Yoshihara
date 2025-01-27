@@ -580,6 +580,9 @@
     <ClCompile Include="src\Game\CTimeUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CTrashScoreUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1036,6 +1039,9 @@
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTimeUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashScoreUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
   </ItemGroup>

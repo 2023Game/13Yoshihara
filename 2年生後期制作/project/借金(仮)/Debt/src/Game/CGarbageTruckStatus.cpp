@@ -8,7 +8,7 @@
 #define NORMAL_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
 #define NORMAL_ATTACK_POWER 1							// 攻撃力
 #define NORMAL_POWER 1									// ゴミを落とすパワー
-#define NORMAL_RETURN_TIME 10.0f						// 撤退までの時間
+#define NORMAL_RETURN_TIME 20.0f						// 撤退までの時間
 #define NORMAL_COLLECTORS 1								// 回収員の人数
 // お仕置きのゴミ収集車のステータス
 #define PUNISHER_MAX_HP 3								// 最大HP
@@ -17,7 +17,7 @@
 #define PUNISHER_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
 #define PUNISHER_ATTACK_POWER 1							// 攻撃力
 #define PUNISHER_POWER 1								// ゴミを落とすパワー
-#define PUNISHER_RETURN_TIME 10.0f					// 撤退までの時間
+#define PUNISHER_RETURN_TIME 100.0f						// 撤退までの時間
 #define PUNISHER_COLLECTORS 1							// 回収員の人数
 
 CGarbageTruckStatus::CGarbageTruckStatus(bool punisher)

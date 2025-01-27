@@ -15,6 +15,11 @@ public:
 	// デストラクタ
 	~CTrashBag();
 
+	// ゴミ袋の持ち主を設定
+	void SetOwner(CObjectBase* owner);
+	// ゴミ袋の持ち主を取得
+	CObjectBase* GetOwner() const;
+
 	// 更新
 	void Update();
 	// 衝突処理
@@ -33,6 +38,13 @@ public:
 	// 重力をかけるかを設定
 	void SetGravity(bool gravity);
 
+	// ゴミ袋をアタッチする行列を設定
+	void SetAttachMtx(const CMatrix* mtx);
+	// 行列を取得
+	CMatrix Matrix() const;
+	// 行列を更新
+	void UpdateMtx();
+
 private:
 	// 本体コライダ―
 	CCollider* mpBodyCol;
@@ -50,4 +62,8 @@ private:
 	bool mIsGrounded;		// 接地しているかどうか
 
 	bool mIsGravity;	// 重力を掛けるかどうか
+
+	CObjectBase* mpOwner;		// ゴミ袋の持ち主
+	const CMatrix* mpAttachMtx;	// くっつける行列のポインター
+	CMatrix mAttachMtx;			// くっつける行列の本体
 };

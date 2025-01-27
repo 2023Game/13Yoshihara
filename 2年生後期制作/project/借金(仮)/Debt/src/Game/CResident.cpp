@@ -455,13 +455,11 @@ bool CResident::SpawnTrashBag()
 		if (GoldBag())
 		{
 			trashBag->SetGold(true);
-			trashBag->SetPoint();
 		}
 		// ‚»‚¤‚Å‚È‚¢‚È‚ç’Êí
 		else
 		{
 			trashBag->SetGold(false);
-			trashBag->SetPoint();
 		}
 		// —LŒø‚É‚·‚é
 		trashBag->SetOnOff(true);

@@ -25,10 +25,20 @@ public:
 	// 攻撃終了
 	void AttackEnd() override;
 
-	// ダメージを受ける
-	void TakeDamage(int damage, CObjectBase* causer) override;
-	// クリティカルダメージを受ける
-	void TakeCritical(int damage, CObjectBase* causer);
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	/// <param name="dropNum">ゴミ袋を落とす数</param>
+	void TakeDamage(int damage, CObjectBase* causer, int dropNum);
+	/// <summary>
+	/// クリティカルダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	/// <param name="dropNum">ゴミ袋を落とす数</param>
+	void TakeCritical(int damage, CObjectBase* causer, int dropNum);
 
 	// 死んでいるかどうか
 	bool IsDead() override;
@@ -56,7 +66,19 @@ public:
 	// 開いているかを取得
 	bool GetOpen() const;
 
+	// ゴミ袋の数を加算する
+	void SetTrashBag(int num);
+	// ゴミ袋の数を取得する
+	int GetTrashBag() const;
+	
+	// ゴールドゴミ袋の数を加算する
+	void SetGoldTrashBag(int num);
+	// ゴールドゴミ袋の数を取得する
+	int GetGoldTrashBag() const;
+
 private:
+	// ゴミ袋を落とす処理
+	void DropTrashBag(int power);
 	/*
 	アクションのキー入力
 	回収員がついていないときのみ入力可能
@@ -180,4 +202,9 @@ private:
 	bool mIsStickCollector;
 	// ついている回収員のポインタ
 	CCollector* mpStickCollector;
+
+	// 持っているゴミ袋の数
+	int mTrashBagNum;
+	// 持っているゴールドゴミ袋の数
+	int mGoldTrashBagNum;
 };

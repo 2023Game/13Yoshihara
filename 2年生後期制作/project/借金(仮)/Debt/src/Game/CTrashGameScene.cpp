@@ -13,6 +13,7 @@
 #include "CTrashEnemy.h"
 #include "CNavManager.h"
 #include "CTimeUI.h"
+#include "CTrashScoreUI.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -84,7 +85,10 @@ void CTrashGameScene::Load()
 	CTrashEnemy* enemy = new CTrashEnemy(false, enemyScale);
 	enemy->Position(0.0f, 0.0f, 5.0f);
 
+	// 時間表示UI作成
 	mpTimeUI = new CTimeUI(MAX_TIME);
+	// スコア表示UI作成
+	mpTrashScoreUI = new CTrashScoreUI();
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -139,4 +143,6 @@ void CTrashGameScene::Update()
 	mpVehicleManager->Update();
 	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
+	// スコア表示UIクラスの更新
+	mpTrashScoreUI->Update();
 }

@@ -25,6 +25,8 @@ CTrashBag::CTrashBag(bool gold)
 	, mGroundNormal(CVector::zero)
 	, mIsGrounded(false)
 	, mIsGravity(true)
+	, mpAttachMtx(nullptr)
+	, mpOwner(nullptr)
 {
 	Scale(SCALE, SCALE, SCALE);
 
@@ -47,6 +49,19 @@ CTrashBag::CTrashBag(bool gold)
 // デストラクタ
 CTrashBag::~CTrashBag()
 {
+	SAFE_DELETE(mpBodyCol);
+}
+
+// ゴミ袋の持ち主を設定
+void CTrashBag::SetOwner(CObjectBase* owner)
+{
+	mpOwner = owner;
+}
+
+// ゴミ袋の持ち主を取得
+CObjectBase* CTrashBag::GetOwner() const
+{
+	return mpOwner;
 }
 
 // 更新
@@ -168,9 +183,20 @@ void CTrashBag::Collision(CCollider* self, CCollider* other, const CHitInfo& hit
 			// 開いているなら
 			if (player->GetOpen())
 			{
-
 				// 無効にする
 				SetOnOff(false);
+				// ゴールドじゃない場合
+				if (!GetIsGold())
+				{
+					// 通常のゴミ袋の数を1増やす
+					player->SetTrashBag(1);
+				}
+				// ゴールドの場合
+				else
+				{
+					// ゴールドのゴミ袋の数を1増やす
+					player->SetGoldTrashBag(1);
+				}
 			}
 		}
 		// 衝突した相手が敵だったら
@@ -189,6 +215,18 @@ void CTrashBag::Collision(CCollider* self, CCollider* other, const CHitInfo& hit
 			{
 				// 無効にする
 				SetOnOff(false);
+				// ゴールドじゃない場合
+				if (!GetIsGold())
+				{
+					// 通常のゴミ袋の数を1増やす
+					enemy->SetTrashBag(1);
+				}
+				// ゴールドの場合
+				else
+				{
+					// ゴールドのゴミ袋の数を1増やす
+					enemy->SetGoldTrashBag(1);
+				}
 			}
 		}
 		// 衝突した相手がゴミ袋なら
@@ -260,4 +298,40 @@ void CTrashBag::SetThrowSpeed(CVector speed, float speedY)
 void CTrashBag::SetGravity(bool gravity)
 {
 	mIsGravity = gravity;
+}
+
+// ゴミ袋をアタッチする行列を設定
+void CTrashBag::SetAttachMtx(const CMatrix* mtx)
+{
+	mpAttachMtx = mtx;
+}
+
+// 行列を取得
+CMatrix CTrashBag::Matrix() const
+{
+	CMatrix m = CTransform::Matrix();
+	// くっつける行列が設定されていれば
+	if (mpAttachMtx != nullptr)
+	{
+		// その行列にくっつける
+		m = m * mAttachMtx;
+	}
+	// 持ち主が設定されていれば
+	else if (mpOwner != nullptr)
+	{
+		// 持ち主の行列に付属
+		m = m * mpOwner->Matrix();
+	}
+	return m;
+}
+
+// 行列を更新
+void CTrashBag::UpdateMtx()
+{
+	// くっつける行列が設定されていれば、
+	if (mpAttachMtx != nullptr)
+	{
+		// くっつける行列をメンバ変数にコピー
+		mAttachMtx = *mpAttachMtx;
+	}
 }

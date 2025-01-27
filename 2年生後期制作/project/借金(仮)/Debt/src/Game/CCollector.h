@@ -2,6 +2,8 @@
 #include "CEnemyBase.h"
 #include "CCollectorStatus.h"
 
+class CTrashBag;
+
 /*
 ゴミ収集車から生成される
 回収員のクラス
@@ -126,6 +128,9 @@ private:
 	// 死亡処理
 	void Death() override;
 
+	// ゴミ袋を持っているかを切り替える
+	void SetHaveBag(bool isHave);
+
 	// 状態切り替え
 	void ChangeState(EState state);
 	EState mState;	// 回収員の状態
@@ -147,4 +152,6 @@ private:
 
 	// 回収員の持ち主
 	CObjectBase* mpOwner;
+	// 持つ用のゴミ袋
+	CTrashBag* mpTrashBag;
 };

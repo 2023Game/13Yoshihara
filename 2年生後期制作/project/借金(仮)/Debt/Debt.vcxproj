@@ -93,6 +93,7 @@
     <ClCompile Include="src\Game\CResident.cpp" />
     <ClCompile Include="src\Game\CResidentManager.cpp" />
     <ClCompile Include="src\Game\CResidentStatus.cpp" />
+    <ClCompile Include="src\Game\CTrashScoreUI.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
     <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTextUI2D.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="src\Game\CResident.h" />
     <ClInclude Include="src\Game\CResidentManager.h" />
     <ClInclude Include="src\Game\CResidentStatus.h" />
+    <ClInclude Include="src\Game\CTrashScoreUI.h" />
     <ClInclude Include="src\Game\CSky.h" />
     <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTextUI2D.h" />

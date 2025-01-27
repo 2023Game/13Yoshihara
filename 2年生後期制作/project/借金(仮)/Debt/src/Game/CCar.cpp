@@ -166,7 +166,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
 				player->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
-				player->TakeDamage(GetAttackPower(), this);
+				player->TakeDamage(GetAttackPower(), this, GetPower());
 
 				// 壊れた状態に変更
 				ChangeState(EState::eBroken);
@@ -189,7 +189,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
 				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
-				enemy->TakeDamage(GetAttackPower(), this);
+				enemy->TakeDamage(GetAttackPower(), this, GetPower());
 
 				// 壊れた状態に変更
 				ChangeState(EState::eBroken);

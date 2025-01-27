@@ -232,7 +232,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
 				player->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
-				player->TakeDamage(GetAttackPower(), this);
+				player->TakeDamage(GetAttackPower(), this, GetPower());
 			}
 		}
 		// 衝突した相手が敵の場合
@@ -254,7 +254,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
 				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
-				enemy->TakeDamage(GetAttackPower(), this);
+				enemy->TakeDamage(GetAttackPower(), this, GetPower());
 			}
 		}
 		// 衝突した相手が回収員の場合
@@ -274,10 +274,6 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					collector->TakeDamage(GetAttackPower(), this);
 				}
 			}
-		}
-		// 車両とぶつかったら止まる
-		else if (other->Layer() == ELayer::eVehicle)
-		{
 		}
 	}
 	// 前方コライダ―

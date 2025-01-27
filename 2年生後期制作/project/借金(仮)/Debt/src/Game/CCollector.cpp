@@ -9,6 +9,7 @@
 #include "CVehicleManager.h"
 #include "Maths.h"
 #include "CTrashPlayer.h"
+#include "CTrashBag.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -74,6 +75,13 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 // 死んだとき退避させる場所
 #define DEATH_POS CVector(100.0f,100.0f,100.0f)
 
+// ゴミ袋のオフセット座標
+#define TRASH_BAG_OFFSET_POS CVector(-0.5f,0.5f,0.5f)
+#define TRASH_BAG_OFFSET_ROTATION CVector(0.0f,0.0f,90.0f)
+
+// ゴミ袋のスケール
+#define TRASH_BAG_SCALE CVector(0.3f,0.3f,0.3f)
+
 //	コンストラクタ
 CCollector::CCollector(bool punisher, CObjectBase* owner,
 	std::vector<CNavNode*> patrolPoints)
@@ -118,6 +126,27 @@ CCollector::CCollector(bool punisher, CObjectBase* owner,
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
+
+	// 持つ用のゴミ袋を生成
+	mpTrashBag = new CTrashBag
+	(
+		false
+	);
+	// 右手のフレームを取得し、
+	// ゴミ袋に右手の行列をアタッチ
+	CModelXFrame* frame = mpModel->FinedFrame("FoxRig_hand_R");
+	mpTrashBag->SetAttachMtx(&frame->CombinedMatrix());
+	// 回転、座標、スケールの設定
+	mpTrashBag->Rotation(TRASH_BAG_OFFSET_ROTATION);
+	mpTrashBag->Position(TRASH_BAG_OFFSET_POS);
+	mpTrashBag->Scale(TRASH_BAG_SCALE);
+	// 最初は非表示
+	mpTrashBag->SetEnable(false);
+	mpTrashBag->SetShow(false);
+	// 衝突判定はしない
+	mpTrashBag->SetEnableCol(false);
+	// 重力を掛けない
+	mpTrashBag->SetGravity(false);
 }
 
 // デストラクタ
@@ -149,6 +178,12 @@ void CCollector::Update()
 
 	// キャラクターの更新
 	CEnemyBase::Update();
+
+	// ゴミ袋を持っている場合
+	if (mIsBag)
+	{
+		mpTrashBag->UpdateMtx();
+	}
 
 #if _DEBUG
 	// 現在の状態に合わせて視野範囲の色を変更
@@ -334,14 +369,23 @@ void CCollector::SetOnOff(bool setOnOff)
 		Position(DEATH_POS);
 		// ゴミ収集車のクラスを取得
 		CGarbageTruck* owner = dynamic_cast<CGarbageTruck*>(mpOwner);
-		// 回収員の人数を減らす
-		owner->DecreaseCollectors();
+		// 親がnullでないなら
+		if (owner != nullptr)
+		{
+			// 回収員の人数を減らす
+			owner->DecreaseCollectors();
+		}
+		// ゴミ袋を無効にする
+		mpTrashBag->SetEnable(false);
+		mpTrashBag->SetShow(false);
 	}
 	// 有効にするとき
 	else
 	{
 		// Hpをリセットする
 		SetHp();
+		// ゴミ袋を持っているかをリセット
+		SetHaveBag(false);
 		ChangeState(EState::eIdle);
 	}
 	// 有効無効を設定する
@@ -414,11 +458,14 @@ void CCollector::UpdateIdle()
 void CCollector::UpdatePatrol()
 {
 	// プレイヤーの座標を取得
-	CPlayerBase* player = CPlayerBase::Instance();
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector playerPos = player->Position();
-	// プレイヤーが視野範囲内かつ、道路内なら、
+
+	// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
+	// プレイヤーが道路内の場合
 	// 追跡状態へ移行
 	if (IsFoundPlayer() &&
+		!player->GetStickCollector() &&
 		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
 	{
 		ChangeState(EState::eChase);
@@ -496,11 +543,13 @@ void CCollector::UpdatePatrol()
 void CCollector::UpdateChase()
 {
 	// プレイヤーの座標へ向けて移動する
-	CPlayerBase* player = CPlayerBase::Instance();
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
-	// プレイヤーの座標が道路外なら追いかけるのをやめる
+	// プレイヤーの座標が道路外か、既に回収員がくっついている場合
+	// 追いかけるのをやめる
 	if (targetPos.X() >= ROAD_X_AREA ||
-		targetPos.X() <= -ROAD_X_AREA)
+		targetPos.X() <= -ROAD_X_AREA ||
+		player->GetStickCollector())
 	{
 		ChangeState(EState::eIdle);
 		return;
@@ -515,12 +564,12 @@ void CCollector::UpdateChase()
 		mStateStep = 0;
 		return;
 	}
-	// プレイヤーに攻撃できるならば、攻撃状態へ移行
+	// プレイヤーに攻撃できる距離ならば
 	if (CanAttackPlayer(ATTACK_RANGE))
 	{
-		CTrashPlayer* trashPlayer = dynamic_cast<CTrashPlayer*>(player);
+
 		// 回収員が既についていなければ攻撃状態へ
-		if (!trashPlayer->GetStickCollector())
+		if (!player->GetStickCollector())
 		{
 			ChangeState(EState::eAttackStart);
 		}
@@ -528,14 +577,7 @@ void CCollector::UpdateChase()
 	}
 
 	// 移動アニメーションを再生
-	if (!mIsBag)
-	{
-		ChangeAnimation((int)EAnimType::eMove);
-	}
-	else
-	{
-		ChangeAnimation((int)EAnimType::eMove_Bag);
-	}
+	ChangeAnimation((int)EAnimType::eMove);
 
 	// 経路探索管理クラスが存在すれば
 	CNavManager* navMgr = CNavManager::Instance();
@@ -754,19 +796,48 @@ void CCollector::UpdateAttackTrue()
 		}
 		break;
 
-		// ステップ2：ゴミ袋を手に持ち攻撃終了状態へ
+		// ステップ2：ゴミ袋を手に持つ
 	case 2:
+		// アニメーションが200フレーム以降なら
+		if (GetAnimationFrame() >= 200.0f)
+		{
+			CTrashPlayer* trashPlayer = dynamic_cast<CTrashPlayer*>(player);
+			// プレイヤーが通常のゴミ袋を所持している場合
+			if (trashPlayer->GetTrashBag() > 0)
+			{
+				// ゴミ袋の数を1減らす
+				trashPlayer->SetTrashBag(-1);
+				// ゴールドじゃない
+				mpTrashBag->SetGold(false);
+				// ゴミ袋を持っている
+				SetHaveBag(true);
+			}
+			// プレイヤーが通常のゴミ袋を所持していないかつ
+			// ゴールドのゴミ袋を所持している場合
+			else if (trashPlayer->GetGoldTrashBag() > 0)
+			{
+				// ゴールドのゴミ袋の数を1減らす
+				trashPlayer->SetGoldTrashBag(-1);
+				// ゴールドである
+				mpTrashBag->SetGold(true);
+				// ゴミ袋を持っている
+				SetHaveBag(true);
+			}
+			mStateStep++;
+		}
+		break;
+
+		// ステップ3：攻撃終了状態へ
+	case 3:
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
 			// 重力を掛ける
 			mIsGravity = true;
-			// TODO：ゴミ袋を表示
-			// ゴミ袋を取得
-			mIsBag = true;
 			// 攻撃終了状態へ
 			ChangeState(EState::eAttackEnd);
 		}
+		break;
 	}
 }
 
@@ -829,19 +900,7 @@ void CCollector::UpdateAttackEnd()
 	{
 	case 0:
 	{
-		// プレイヤーのクラスを取得
-		CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-		// ついている回収員のポインタを取得
-		CCollector* stickCollector = player->GetStickCollectorPointer();
-		// ついている回収員と一致したら
-		if (this == stickCollector)
-		{
-			// ついているのを解除
-			player->SetStickCollector(false);
-		}
-		// 攻撃の判定自体はここまで
-		mIsAttacking = false;
-		// 攻撃が成功している場合
+		// 攻撃成功なら
 		if (mIsAttackSuccess)
 		{
 			// ゴミ袋獲得終了アニメーション再生
@@ -853,6 +912,8 @@ void CCollector::UpdateAttackEnd()
 			// 立ち上がるアニメーション再生
 			ChangeAnimation((int)EAnimType::eAttack_False_StandUp);
 		}
+		// 攻撃終了
+		AttackEnd();
 		mStateStep++;
 		break;
 	}
@@ -861,13 +922,13 @@ void CCollector::UpdateAttackEnd()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 攻撃が成功している場合
-			if (mIsAttackSuccess)
+			// ゴミ袋を持っていたら
+			if (mIsBag)
 			{
 				// ゴミ収集車に戻る状態へ
 				ChangeState(EState::eReturn);
 			}
-			// 失敗なら
+			// 持っていないなら
 			else
 			{
 				// 追跡状態へ
@@ -887,6 +948,20 @@ void CCollector::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// ゴミ袋を持っているなら
+		if (mIsBag)
+		{
+			bool gold = false;
+			// 持っているのがゴールドなら
+			if (mpTrashBag->GetIsGold())
+			{
+				gold = true;
+			}
+			new CTrashBag(gold);
+			// ゴミ袋を持っていない
+			SetHaveBag(false);
+		}
+
 		ChangeAnimation((int)EAnimType::eDeath);
 		mStateStep++;
 		break;
@@ -918,6 +993,17 @@ void CCollector::Death()
 {
 	// 死亡状態へ
 	ChangeState(EState::eDeath);
+}
+
+// ゴミ袋を持っているかを切り替える
+void CCollector::SetHaveBag(bool isHave)
+{
+	// 同じなら処理しない
+	if (mIsBag == isHave) return;
+
+	mIsBag = isHave;
+	mpTrashBag->SetEnable(isHave);
+	mpTrashBag->SetShow(isHave);
 }
 
 

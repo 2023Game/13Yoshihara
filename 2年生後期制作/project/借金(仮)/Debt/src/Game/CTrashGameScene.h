@@ -5,6 +5,7 @@ class CVehicleManager;
 class CResidentManager;
 class CSound;
 class CTimeUI;
+class CTrashScoreUI;
 
 //タイトルシーン
 class CTrashGameScene :public CSceneBase
@@ -28,4 +29,6 @@ private:
 	CResidentManager* mpResidentManager;
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
+	// スコア表示UI
+	CTrashScoreUI* mpTrashScoreUI;
 };

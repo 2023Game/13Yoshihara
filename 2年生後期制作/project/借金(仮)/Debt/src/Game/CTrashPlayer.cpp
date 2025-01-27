@@ -4,6 +4,7 @@
 #include "Maths.h"
 #include "CTrashEnemy.h"
 #include "CGaugeUI2D.h"
+#include "CTrashBag.h"
 
 // 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
@@ -76,7 +77,11 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 
 #define SCALE 0.1f	// スケール
 
+// Hpゲージの画像のパス
 #define HP_GAUGE_PATH "UI\\trashbox_player_hp_gauge.png"
+
+// ゴミ袋を落とすオフセット座標
+#define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
 
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
@@ -87,6 +92,8 @@ CTrashPlayer::CTrashPlayer()
 	, mIsJump(false)
 	, mIsStickCollector(false)
 	, mpStickCollector(nullptr)
+	, mTrashBagNum(0)
+	, mGoldTrashBagNum(0)
 {
 	// Hpゲージを設定
 	mpHpGauge = new CGaugeUI2D(this, HP_GAUGE_PATH);
@@ -202,6 +209,8 @@ void CTrashPlayer::Update()
 	CDebugPrint::Print("PlayerIsJump:%s\n", mIsJump ? "true" : "false");
 	CDebugPrint::Print("PlayerHp:%d\n", GetHp());
 	CDebugPrint::Print("PlayerIsCollector:%s\n", mIsStickCollector ? "true" : "false");
+	CDebugPrint::Print("PlayerTrashBagNum:%d\n", mTrashBagNum);
+	CDebugPrint::Print("PlayerGoldBagNum:%d\n", mGoldTrashBagNum);
 #endif
 }
 
@@ -284,7 +293,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				// 自分が与えるノックバック速度を自分から相手の方向に設定
 				enemy->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
-				enemy->TakeDamage(GetAttackPower(), this);
+				enemy->TakeDamage(GetAttackPower(), this, GetPower());
 			}
 		}
 		// 衝突した相手が回収員なら
@@ -323,7 +332,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				// 自分が与えるノックバック速度の2倍を自分から相手の方向に設定
 				enemy->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// クリティカルダメージを与える
-				enemy->TakeCritical(GetAttackPower(), this);
+				enemy->TakeCritical(GetAttackPower(), this, GetPower());
 			}
 		}
 		// 衝突した相手が回収員なら
@@ -371,6 +380,55 @@ void CTrashPlayer::SetStickCollectorPointer(CCollector* collector)
 bool CTrashPlayer::GetOpen() const
 {
 	return mIsOpen;
+}
+
+// ゴミ袋の数を加算する
+void CTrashPlayer::SetTrashBag(int num)
+{
+	mTrashBagNum += num;
+}
+
+// ゴミ袋の数を取得する
+int CTrashPlayer::GetTrashBag() const
+{
+	return mTrashBagNum;
+}
+
+// ゴールドゴミ袋の数を加算する
+void CTrashPlayer::SetGoldTrashBag(int num)
+{
+	mGoldTrashBagNum += num;
+}
+
+// ゴールドゴミ袋の数を取得する
+int CTrashPlayer::GetGoldTrashBag() const
+{
+	return mGoldTrashBagNum;
+}
+
+// ゴミ袋を落とす処理
+void CTrashPlayer::DropTrashBag(int power)
+{
+	// 落とす力が0以下なら処理しない
+	if (power <= 0) return;
+
+	// ゴミ袋を一つでも所持していたら落とす
+	if (GetTrashBag() > 0)
+	{
+		SetTrashBag(-power);
+		CTrashBag* trashBag = new CTrashBag(false);
+		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
+		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+	}
+	// 通常のゴミ袋を一つも持っていない場合かつ
+	// ゴールドゴミ袋持っている場合に落とす
+	else if (GetGoldTrashBag() > 0)
+	{
+		SetGoldTrashBag(-power);
+		CTrashBag* trashBag = new CTrashBag(true);
+		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
+		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+	}
 }
 
 /*
@@ -1040,13 +1098,16 @@ void CTrashPlayer::AttackEnd()
 }
 
 // ダメージを受ける
-void CTrashPlayer::TakeDamage(int damage, CObjectBase* causer)
+void CTrashPlayer::TakeDamage(int damage, CObjectBase* causer, int dropNum)
 {
+
 	// 開いていればダメージを受ける
 	if (mIsOpen)
 	{
-		// TODO：Death()の処理を追加
+		// ダメージを受ける
 		CCharaStatusBase::TakeDamage(damage, causer);
+		// ゴミ袋を落とす
+		DropTrashBag(dropNum);
 
 		// 死亡していなければ
 		if (!IsDeath())
@@ -1070,20 +1131,27 @@ void CTrashPlayer::TakeDamage(int damage, CObjectBase* causer)
 }
 
 // クリティカルダメージを受ける
-void CTrashPlayer::TakeCritical(int damage, CObjectBase* causer)
+void CTrashPlayer::TakeCritical(int damage, CObjectBase* causer, int dropNum)
 {
 	// 開いていれば2倍のダメージを受ける
 	if (mIsOpen)
 	{
 		// 攻撃力の2倍のダメージ
-		int CriticalDamage = damage * 2;
-		CCharaStatusBase::TakeDamage(CriticalDamage, causer);
+		int criticalDamage = damage * 2;
+		// 落とす数の2倍ドロップ
+		int criticalDropNum = dropNum * 2;
+		// ダメージを受ける
+		CCharaStatusBase::TakeDamage(criticalDamage, causer);
+		// ゴミ袋を落とす
+		DropTrashBag(criticalDropNum);
 	}
 	// 閉じていても通常のダメージを受ける
 	else
 	{
-		// TODO：Death()の処理を追加
+		// ダメージを受ける
 		CCharaStatusBase::TakeDamage(damage, causer);
+		// ゴミ袋を落とす
+		DropTrashBag(dropNum);
 	}
 
 	// 死亡していなければ
