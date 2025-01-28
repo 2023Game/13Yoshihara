@@ -27,6 +27,9 @@ public:
 	// 描画する文字列を設定する
 	void SetStr(std::string str);
 
+	// 文字のサイズを設定する
+	void SetFontSize(int fontSize);
+
 private:
 	CText* mpText;	// 文字列描画用
 

@@ -6,13 +6,15 @@
 #include "CNavNode.h"
 #include "CNavManager.h"
 #include "Primitive.h"
+#include "CTrashPlayer.h"
+#include "CTrashField.h"
 
 CVehicleManager* CVehicleManager::spInstance = nullptr;
 
 // 出現までの時間
 #define CAR_POP_TIME 3.0f		// 車
 #define TRUCK_POP_TIME 1.0f		// トラック
-#define PUNISH_POP_TIME 4.0f		// お仕置きトラック
+#define PUNISH_POP_TIME 1.0f		// お仕置きトラック
 
 // 左から1番目の道の巡回ポイント
 #define PATROLPOINT_L1_1 CVector( -85.0f,0.0f, 500.0f)
@@ -443,80 +445,6 @@ void CVehicleManager::HideVehicle()
 // 乗り物を出現させる
 void CVehicleManager::SpawnVehicle()
 {	
-	// TODO：お仕置きだけ違う処理
-	// お仕置きトラックの出現時間が0以下なら出現
-	if (mPunishTruckPopTime <= 0.0f)
-	{
-		// お仕置きトラックが無効なら出現させる
-		if (!mpPunishTruck->IsEnable())
-		{
-			// お仕置きトラックの生成位置
-			CVector punishPopPos;
-			// 生成時の回転
-			CVector popRotation;
-			// どの道にいるか
-			CVehicleBase::ERoadType punishRoadType;
-			// 巡回ポイント
-			std::vector<CNavNode*> patrolPoints;
-
-			// ランダムに場所を決定
-			// 決定出来たら中身を処理
-			if (RandomDecidePopPosition(punishRoadType, punishPopPos))
-			{
-
-				// 左の道1なら
-				if (punishRoadType == CVehicleBase::ERoadType::eLeft1)
-				{
-					// 左から1番目の道の巡回ポイント
-					patrolPoints = mpPatrolPointsL1;
-					// 右向きの回転を設定
-					popRotation = VEHICLE_RIGHT_ROTATION;
-				}
-				// 左の道2なら
-				else if (punishRoadType == CVehicleBase::ERoadType::eLeft2)
-				{
-					// 左から2番目の道の巡回ポイント
-					patrolPoints = mpPatrolPointsL2;
-					// 左向きの回転を設定
-					popRotation = VEHICLE_LEFT_ROTATION;
-				}
-				// 右の道1なら
-				else if (punishRoadType == CVehicleBase::ERoadType::eRight1)
-				{
-					// 右から1番目の道の巡回ポイント
-					patrolPoints = mpPatrolPointsR1;
-					// 左向きの回転を設定
-					popRotation = VEHICLE_LEFT_ROTATION;
-				}
-				// 右の道2なら
-				else
-				{
-					// 右から2番目の道の巡回ポイント
-					patrolPoints = mpPatrolPointsR2;
-					// 右向きの回転を設定
-					popRotation = VEHICLE_RIGHT_ROTATION;
-				}
-
-				// 位置回転設定
-				mpPunishTruck->Position(punishPopPos);
-				mpPunishTruck->Rotation(popRotation);
-
-				// どの道にいるかを設定
-				mpPunishTruck->ChangeRoadType(punishRoadType);
-				// 巡回ポイントのリストを設定
-				mpPunishTruck->SetPatrolPoints(patrolPoints);
-				// 変数をリセット
-				mpPunishTruck->Reset();
-
-				// 描画更新開始
-				mpPunishTruck->SetOnOff(true);
-
-				// 出現までの時間を設定しなおす
-				mPunishTruckPopTime = PUNISH_POP_TIME;
-			}
-		}
-	}
-
 	// 車の出現時間が0以下なら出現
 	if (mCarPopTime <= 0.0f)
 	{
@@ -593,13 +521,15 @@ void CVehicleManager::SpawnVehicle()
 		}
 	}
 
-	
-
 	// トラックの出現時間が0以下なら出現
-	if (mTruckPopTime <= 0.0f)
+	// 死んでいたら出現させない
+	if (mTruckPopTime <= 0.0f&&
+		!mpGarbageTruck->IsDeath())
 	{
 		// トラックが無効なら出現させる
-		if (!mpGarbageTruck->IsEnable())
+		// お仕置きトラックが出ているときは出現させない
+		if (!mpGarbageTruck->IsEnable() &&
+			!mpPunishTruck->IsEnable())
 		{
 			// トラックの生成位置
 			CVector truckPopPos;
@@ -666,6 +596,76 @@ void CVehicleManager::SpawnVehicle()
 			}
 		}
 	}
+
+	// お仕置きトラックの出現時間が0以下なら出現
+	if (mPunishTruckPopTime <= 0.0f)
+	{
+		// お仕置きトラックが無効なら出現させる
+		if (!mpPunishTruck->IsEnable())
+		{
+			// お仕置きトラックの生成位置
+			CVector punishPopPos;
+			// 生成時の回転
+			CVector popRotation;
+			// どの道にいるか
+			CVehicleBase::ERoadType punishRoadType;
+			// 巡回ポイント
+			std::vector<CNavNode*> patrolPoints;
+
+			// プレイヤーの場所によって生成場所を決定
+			CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+			CVector playerPos = player->Position();
+			// プレイヤーのX座標がプラス側のエリア外なら
+			if (playerPos.X() >= ROAD_X_AREA)
+			{
+				// 右から1番目の道
+				punishRoadType = CVehicleBase::ERoadType::eRight1;
+				// 右から1番目の道の巡回ポイント
+				patrolPoints = mpPatrolPointsR1;
+				// 右から1番目の道の座標を設定
+				punishPopPos = VEHICLE_RIGHT_POS1;
+				// 左向きの回転を設定
+				popRotation = VEHICLE_LEFT_ROTATION;
+			}
+			// プレイヤーのX座標がマイナス側のエリア外なら
+			else if (playerPos.X() <= -ROAD_X_AREA)
+			{
+				// 左から1番目の道
+				punishRoadType = CVehicleBase::ERoadType::eLeft1;
+				// 左から1番目の道の巡回ポイント
+				patrolPoints = mpPatrolPointsL1;
+				// 左から1番目の道の座標を設定
+				punishPopPos = VEHICLE_LEFT_POS1;
+				// 右向きの回転を設定
+				popRotation = VEHICLE_RIGHT_ROTATION;
+			}
+			// エリア外でない場合
+			else
+			{
+				// 出現までの時間を設定しなおして生成しない
+				mPunishTruckPopTime = PUNISH_POP_TIME;
+				return;
+			}
+
+
+			// 位置回転設定
+			mpPunishTruck->Position(punishPopPos);
+			mpPunishTruck->Rotation(popRotation);
+
+			// どの道にいるかを設定
+			mpPunishTruck->ChangeRoadType(punishRoadType);
+			// 巡回ポイントのリストを設定
+			mpPunishTruck->SetPatrolPoints(patrolPoints);
+			// 変数をリセット
+			mpPunishTruck->Reset();
+
+			// 描画更新開始
+			mpPunishTruck->SetOnOff(true);
+
+			// 出現までの時間を設定しなおす
+			mPunishTruckPopTime = PUNISH_POP_TIME;
+		}
+	}
 }
 
 // 車の出現までの時間をカウント
@@ -683,7 +683,13 @@ void CVehicleManager::CountTruckPopTime()
 // お仕置きトラックの出現までの時間をカウント
 void CVehicleManager::CountBlackTruckPopTime()
 {
-	mPunishTruckPopTime -= Times::DeltaTime();
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// プレイヤーがエリア外ならカウント
+	if (player->AreaOutX())
+	{
+		mPunishTruckPopTime -= Times::DeltaTime();
+	}
 }
 
 // それぞれの道に出現可能になるまでをカウントダウン

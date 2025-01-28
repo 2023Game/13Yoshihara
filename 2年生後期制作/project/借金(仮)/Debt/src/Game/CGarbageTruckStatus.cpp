@@ -2,23 +2,23 @@
 
 // 使わないベースステータスは値が0
 // 通常のゴミ収集車のステータス
-#define NORMAL_MAX_HP 3									// 最大HP
+#define NORMAL_MAX_HP 10								// 最大HP
 #define NORMAL_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f	// 移動速度
 #define NORMAL_JUMP_SPEED 0.0f							// ジャンプ速度
 #define NORMAL_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
 #define NORMAL_ATTACK_POWER 1							// 攻撃力
-#define NORMAL_POWER 1									// ゴミを落とすパワー
+#define NORMAL_POWER 2									// ゴミを落とすパワー
 #define NORMAL_RETURN_TIME 20.0f						// 撤退までの時間
 #define NORMAL_COLLECTORS 1								// 回収員の人数
 // お仕置きのゴミ収集車のステータス
-#define PUNISHER_MAX_HP 3								// 最大HP
-#define PUNISHER_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f	// 移動速度
-#define PUNISHER_JUMP_SPEED 0.0f						// ジャンプ速度
-#define PUNISHER_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
-#define PUNISHER_ATTACK_POWER 1							// 攻撃力
-#define PUNISHER_POWER 1								// ゴミを落とすパワー
-#define PUNISHER_RETURN_TIME 100.0f						// 撤退までの時間
-#define PUNISHER_COLLECTORS 1							// 回収員の人数
+#define PUNISHER_MAX_HP 100										// 最大HP
+#define PUNISHER_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f			// 移動速度
+#define PUNISHER_JUMP_SPEED 0.0f								// ジャンプ速度
+#define PUNISHER_KNOCKBACK_SPEED 0.375f * 5.0f					// ノックバック速度
+#define PUNISHER_ATTACK_POWER 1									// 攻撃力
+#define PUNISHER_POWER 2										// ゴミを落とすパワー
+#define PUNISHER_RETURN_TIME 1.0f								// 撤退までの時間
+#define PUNISHER_COLLECTORS 2									// 回収員の人数
 
 CGarbageTruckStatus::CGarbageTruckStatus(bool punisher)
 	: CVehicleStatus(NORMAL_MAX_HP, NORMAL_BASE_MOVE_SPEED, NORMAL_JUMP_SPEED,
@@ -101,6 +101,12 @@ void CGarbageTruckStatus::SetCollectorsNum()
 void CGarbageTruckStatus::DecreaseCollectors()
 {
 	mCollectorsNum--;
+}
+
+// お仕置き用かどうかを取得
+bool CGarbageTruckStatus::GetPunisher() const
+{
+	return mIsPunisher;
 }
 
 

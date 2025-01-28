@@ -336,8 +336,9 @@ bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const 
 		}
 	}
 
+	int size = axes.size();
 	// すべての分離軸で重なりを確認
-	for (int i = 0; i < axes.size(); i++)
+	for (int i = 0; i < size; i++)
 	{
 		CVector ax = axes[i].Normalized();
 		// 重ならない軸があれば衝突なし
@@ -1053,8 +1054,9 @@ bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1,
 		}
 	}
 
+	int size = axes.size();
 	// すべての分離軸で重なりを確認
-	for (int i = 0; i < axes.size(); i++)
+	for (int i = 0; i < size; i++)
 	{
 		CVector ax = axes[i].Normalized();
 		// 重ならない軸があれば衝突なし
@@ -1113,8 +1115,9 @@ bool CCollider::CollisionRectangle(const CVector& r00, const CVector& r01, const
 		}
 	}
 
+	int size = axes.size();
 	// すべての分離軸で重なりを確認
-	for (int i = 0; i < axes.size(); i++)
+	for (int i = 0; i < size; i++)
 	{
 		CVector ax = axes[i].Normalized();
 		// 重ならない軸があれば衝突なし

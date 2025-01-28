@@ -26,6 +26,8 @@ public:
 	void Update() override;
 	// 描画
 	void Render() override;
+	// サイズを設定
+	void Size(float rate);
 
 protected:
 	// ポイント残量を反映

@@ -8,6 +8,7 @@
 #include "Primitive.h"
 #include "CVehicleManager.h"
 #include "CCollector.h"
+#include "CGaugeUI3D.h"
 
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
@@ -38,6 +39,17 @@
 #define COLLECT_MAX_POSZ  200.0f
 #define COLLECT_MIN_POSZ -200.0f
 
+// プレイヤーとの座標比較する時の閾値
+#define THRESHOLD 10.0f
+
+// Hpゲージのオフセット座標
+#define GAUGE_OFFSET_POS CVector(0.0f,30.0f,0.0f)
+// Hpゲージの画像のパス
+#define HP_GAUGE_PATH "UI\\trashbox_enemy_hp_gauge.png"
+
+// 初期から持っておくゴミ袋の数
+#define DEFAULT_TRASH_BAG_NUM 5
+
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
 	ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher)
@@ -47,7 +59,16 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mIsReturn(false)
+	, mpSearchCol(nullptr)
 {
+	// Hpゲージを設定
+	mpHpGauge = new CGaugeUI3D(this, HP_GAUGE_PATH);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
+	// 最初は無効
+	mpHpGauge->SetEnable(false);
+	mpHpGauge->SetShow(false);
+
 	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(
@@ -58,7 +79,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	);
 	// 座標を設定
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
-	// プレイヤー、敵、回収員、車両、車両探知用、地形、ゴミ袋
+	// プレイヤー、敵、回収員、攻撃、車両、ゴミ収集車、車両探知用、地形、ゴミ袋
 	// と衝突判定する
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
 		ETag::eVehicle,ETag::eField,ETag::eTrashBag });
@@ -115,25 +136,34 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		TRUCK_RADIUS, true
 	);
 
-	// 探知用コライダ―作成
-	mpSearchCol = new CColliderSphere
-	(
-		this,ELayer::eCharaSearch,
-		SEARCH_RADIUS,
-		true
-	);
-	// プレイヤーと衝突判定
-	mpSearchCol->SetCollisionTags({ ETag::ePlayer});
-	mpSearchCol->SetCollisionLayers({ ELayer::ePlayer});
-
-	// 回収員を全て生成し、無効にしておく
-	for (int i = 0; i < GetCollectorsNum(); i++)
+	// お仕置き用ではない場合
+	if (!punisher)
 	{
-		mpCollectors.push_back(new CCollector(false, this,
+		// 探知用コライダ―作成
+		mpSearchCol = new CColliderSphere
+		(
+			this, ELayer::eCharaSearch,
+			SEARCH_RADIUS,
+			true
+		);
+		// プレイヤーと衝突判定
+		mpSearchCol->SetCollisionTags({ ETag::ePlayer });
+		mpSearchCol->SetCollisionLayers({ ELayer::ePlayer });
+	}
+
+	int num = GetCollectorsNum();
+	// 回収員を全て生成し、無効にしておく
+	for (int i = 0; i < num; i++)
+	{
+		mpCollectors.push_back(new CCollector(punisher, this,
 			{ mpNode0,mpNode1,mpNode2,mpNode3 }));
 		// 無効にする
 		mpCollectors[i]->SetOnOff(false);
 	}
+
+	// 最初からゴミ袋を持っておく
+	SetTrashBag(DEFAULT_TRASH_BAG_NUM);
+	SetGoldTrashBag(DEFAULT_TRASH_BAG_NUM);
 }
 
 // デストラクタ
@@ -144,6 +174,40 @@ CGarbageTruck::~CGarbageTruck()
 
 	// リストのクリア
 	mpCollectors.clear();
+
+	// HPゲージが存在したら、一緒に削除する
+	if (mpHpGauge != nullptr)
+	{
+		mpHpGauge->SetOwner(nullptr);
+		mpHpGauge->Kill();
+	}
+}
+
+// ダメージを受ける
+void CGarbageTruck::TakeDamage(int damage, CObjectBase* causer)
+{
+	// ダメージを受ける
+	CCharaStatusBase::TakeDamage(damage, causer);
+}
+
+// クリティカルダメージを受ける
+void CGarbageTruck::TakeCritical(int damage, CObjectBase* causer)
+{
+	// 攻撃力の2倍のダメージ
+	int criticalDamage = damage * 2;
+	// ダメージを受ける
+	CCharaStatusBase::TakeDamage(criticalDamage, causer);
+}
+
+// オブジェクト削除処理
+void CGarbageTruck::DeleteObject(CObjectBase* obj)
+{
+	// 削除されたオブジェクトがHpゲージであれば
+	// ポインタを空にする
+	if (obj == mpHpGauge)
+	{
+		mpHpGauge = nullptr;
+	}
 }
 
 // 更新
@@ -164,6 +228,11 @@ void CGarbageTruck::Update()
 	}
 
 	CVehicleBase::Update();
+
+	// HPゲージを更新
+	mpHpGauge->Position(Position() + GAUGE_OFFSET_POS);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
 
 	// 移動しているもしくは、自身が有効でない場合
 	if (mIsMove || !IsEnable())
@@ -340,16 +409,19 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	// 探知用コライダ―
 	else if (self == mpSearchCol)
 	{
-		// 撤退中でなければ
-		if (!mIsReturn)
+		// 相手がプレイヤーの場合
+		if (other->Layer() == ELayer::ePlayer)
 		{
-			// 相手がプレイヤーの場合
-			if (other->Layer() == ELayer::ePlayer)
+			// 撤退中でなければ
+			if (!mIsReturn)
 			{
+				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 				// 回収を開始できる場所にいるかつ
-				// 壊れた状態でないなら
-				if (CanCollectPosZ()&&
-					mState != EState::eBroken)
+				// 壊れた状態でないかつ
+				// プレイヤーがエリア内なら
+				if (CanCollectPosZ() &&
+					mState != EState::eBroken&&
+					!player->AreaOutX())
 				{
 					// 回収状態へ
 					ChangeState(EState::eCollect);
@@ -424,6 +496,8 @@ void CGarbageTruck::Reset()
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
 	mIsReturn = false;
+	mpHpGauge->SetEnable(true);
+	mpHpGauge->SetShow(true);
 
 	mState = EState::eMove;
 }
@@ -444,6 +518,22 @@ bool CGarbageTruck::CanCollectPosZ()
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
+	// お仕置き用の場合
+	if (GetPunisher())
+	{
+		CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+		
+		// 自身のZ座標がプレイヤーのZ座標から閾値の範囲内の場合かつ
+		// 回収が開始できる座標かつ撤退中ではない場合
+		if (Position().Z() <= player->Position().Z() + THRESHOLD &&
+			Position().Z() >= player->Position().Z() - THRESHOLD &&
+			CanCollectPosZ() && !mIsReturn)
+		{
+			// 回収状態へ
+			ChangeState(EState::eCollect);
+			return;
+		}
+	}
 	// 動いている
 	mIsMove = true;
 	// 全ての巡回ポイントへの移動が終わっていないなら
@@ -615,71 +705,183 @@ void CGarbageTruck::UpdateChangeRoad()
 // 回収処理
 void CGarbageTruck::UpdateCollect()
 {
-	switch (mStateStep)
+	// 通常のトラックの場合
+	if (!GetPunisher())
 	{
-		// ステップ0：設定を変更する
-	case 0:
-		// 動いていない
-		mIsMove = false;
-		// 移動速度をゼロにする
-		mMoveSpeed = CVector::zero;
-		// 撤退までの時間を初期値に戻す
-		SetReturnTime();
-		// 回収員の人数を初期値に戻す
-		SetCollectorsNum();
-
-		// 回収員を全て有効にする
-		for (int i = 0; i < mpCollectors.size(); i++)
+		switch (mStateStep)
 		{
-			// 有効にする
-			mpCollectors[i]->SetOnOff(true);
-			// 自分の座標＋オフセット座標を設定
-			mpCollectors[i]->Position(Position() + COLLECTOR_OFFSET_POS);
-		}
-
-		mStateStep++;
-		break;
-
-		// ステップ1：時間が経過するまでカウントダウン
-	case 1:
-		// 撤退までの時間をカウントダウンする
-		CountReturnTime();
-
-		// 撤退までの時間が経過したら次のステップへ
-		if (IsElapsedReturnTime())
+			// ステップ0：設定を変更する
+		case 0:
 		{
-			// 全ての回収員の状態を撤退状態へ
-			for (int i = 0; i < mpCollectors.size(); i++)
+			// 動いていない
+			mIsMove = false;
+			// 移動速度をゼロにする
+			mMoveSpeed = CVector::zero;
+			// 撤退までの時間を初期値に戻す
+			SetReturnTime();
+			// 回収員の人数を初期値に戻す
+			SetCollectorsNum();
+
+			int size = mpCollectors.size();
+			// 回収員を全て有効にする
+			for (int i = 0; i < size; i++)
 			{
-				// 無効ならスルー
-				if (!mpCollectors[i]->IsEnable()) continue;
-				// 撤収状態に変更
-				mpCollectors[i]->ChangeStateReturn();
+				// 有効にする
+				mpCollectors[i]->SetOnOff(true);
+				// 自分の座標＋オフセット座標を設定
+				mpCollectors[i]->Position(Position() + COLLECTOR_OFFSET_POS * (i + 1));
 			}
 
 			mStateStep++;
+			break;
 		}
-		// もしくは、回収員が全滅したら次のステップへ
-		else if (GetCollectorsNum() <= 0)
-		{
-			mStateStep++;
-		}
-		break;
 
-		// ステップ2：回収員がいなくなるまで待機
-	case 2:
+			// ステップ1：時間が経過するまでカウントダウン
+		case 1:
+			// 撤退までの時間をカウントダウンする
+			CountReturnTime();
 
-		// 回収員の数がゼロなら
-		if (GetCollectorsNum() <= 0)
-		{
-			// 自分の撤退を開始
-			// 撤退の移動である
-			mIsReturn = true;
-			// 移動状態へ
-			ChangeState(EState::eMove);
+			// 撤退までの時間が経過したら次のステップへ
+			if (IsElapsedReturnTime())
+			{
+				int size = mpCollectors.size();
+				// 全ての回収員の状態を撤退状態へ
+				for (int i = 0; i < size; i++)
+				{
+					// 無効ならスルー
+					if (!mpCollectors[i]->IsEnable()) continue;
+					// 撤収状態に変更
+					mpCollectors[i]->ChangeStateReturn();
+				}
+
+				mStateStep++;
+			}
+			// もしくは、回収員が全滅したら次のステップへ
+			else if (GetCollectorsNum() <= 0)
+			{
+				mStateStep++;
+			}
+			break;
+
+			// ステップ2：回収員がいなくなるまで待機
+		case 2:
+
+			// 回収員の数がゼロなら
+			if (GetCollectorsNum() <= 0)
+			{
+				// 自分の撤退を開始
+				// 撤退の移動である
+				mIsReturn = true;
+				// 移動状態へ
+				ChangeState(EState::eMove);
+			}
+			break;
 		}
-		break;
 	}
+	// お仕置き用の場合
+	else
+	{
+		switch (mStateStep)
+		{
+			// ステップ0：設定を変更する
+		case 0:
+		{
+			// 動いていない
+			mIsMove = false;
+			// 移動速度をゼロにする
+			mMoveSpeed = CVector::zero;
+			// 撤退までの時間を初期値に戻す
+			SetReturnTime();
+			// 回収員の人数を初期値に戻す
+			SetCollectorsNum();
+
+			int size = mpCollectors.size();
+			// 回収員を全て有効にする
+			for (int i = 0; i < size; i++)
+			{
+				// 有効にする
+				mpCollectors[i]->SetOnOff(true);
+				// 自分の座標＋オフセット座標を設定
+				mpCollectors[i]->Position(Position() + COLLECTOR_OFFSET_POS * (i + 1));
+			}
+
+			mStateStep++;
+			break;
+		}
+
+			// ステップ1：時間が経過するまでカウントダウン
+		case 1:
+		{
+			CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+			// プレイヤーがエリア内なら
+			if (!player->AreaOutX())
+			{
+				// 撤退までの時間をカウントダウンする
+				CountReturnTime();
+			}
+			// プレイヤーがエリア外なら
+			else
+			{
+				// 撤退までの時間を初期値に戻す
+				SetReturnTime();
+			}
+
+			int size = mpCollectors.size();
+			// 無効になっても有効にし直す
+			for (int i = 0; i < size; i++)
+			{
+				if (!mpCollectors[i]->IsEnable())
+				{
+					// 有効にする
+					mpCollectors[i]->SetOnOff(true);
+					// 自分の座標＋オフセット座標を設定
+					mpCollectors[i]->Position(Position() + COLLECTOR_OFFSET_POS * (i + 1));
+				}
+			}
+
+
+			// 撤退までの時間が経過したら次のステップへ
+			if (IsElapsedReturnTime())
+			{
+				// 回収員の数を初期化しておく
+				SetCollectorsNum();
+				int size = mpCollectors.size();
+				// 全ての回収員の状態を撤退状態へ
+				for (int i = 0; i < size; i++)
+				{
+					// 無効ならスルー
+					if (!mpCollectors[i]->IsEnable()) continue;
+					// 撤収状態に変更
+					mpCollectors[i]->ChangeStateReturn();
+				}
+
+				mStateStep++;
+			}
+			break;
+		}
+			
+			// ステップ2：回収員がいなくなるまで待機
+		case 2:
+
+			// 回収員の数がゼロなら
+			if (GetCollectorsNum() <= 0)
+			{
+				// 自分の撤退を開始
+				// 撤退の移動である
+				mIsReturn = true;
+				// 移動状態へ
+				ChangeState(EState::eMove);
+			}
+			break;
+		}
+	}
+}
+
+// 死亡(壊れた)
+void CGarbageTruck::Death()
+{
+	// 壊れた状態へ
+	ChangeState(EState::eBroken);
 }
 
 // 状態切り替え

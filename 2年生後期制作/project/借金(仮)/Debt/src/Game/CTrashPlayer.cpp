@@ -5,6 +5,7 @@
 #include "CTrashEnemy.h"
 #include "CGaugeUI2D.h"
 #include "CTrashBag.h"
+#include "CTrashField.h"
 
 // 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
@@ -79,6 +80,8 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 
 // Hpゲージの画像のパス
 #define HP_GAUGE_PATH "UI\\trashbox_player_hp_gauge.png"
+#define HP_GAUGE_SIZE 1.5f	// Hpゲージの大きさの倍率
+#define HP_GAUGE_OFFSET_POS CVector(10.0f,10.0f,0.0f)
 
 // ゴミ袋を落とすオフセット座標
 #define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
@@ -92,14 +95,13 @@ CTrashPlayer::CTrashPlayer()
 	, mIsJump(false)
 	, mIsStickCollector(false)
 	, mpStickCollector(nullptr)
-	, mTrashBagNum(0)
-	, mGoldTrashBagNum(0)
 {
 	// Hpゲージを設定
 	mpHpGauge = new CGaugeUI2D(this, HP_GAUGE_PATH);
-	mpHpGauge->Position(CVector::zero);
+	mpHpGauge->Position(HP_GAUGE_OFFSET_POS);
 	mpHpGauge->SetMaxPoint(GetMaxHp());
 	mpHpGauge->SetCurrPoint(GetHp());
+	mpHpGauge->Size(HP_GAUGE_SIZE);
 	// 大きさの調整
 	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
@@ -209,8 +211,8 @@ void CTrashPlayer::Update()
 	CDebugPrint::Print("PlayerIsJump:%s\n", mIsJump ? "true" : "false");
 	CDebugPrint::Print("PlayerHp:%d\n", GetHp());
 	CDebugPrint::Print("PlayerIsCollector:%s\n", mIsStickCollector ? "true" : "false");
-	CDebugPrint::Print("PlayerTrashBagNum:%d\n", mTrashBagNum);
-	CDebugPrint::Print("PlayerGoldBagNum:%d\n", mGoldTrashBagNum);
+	CDebugPrint::Print("PlayerTrashBagNum:%d\n", GetTrashBag());
+	CDebugPrint::Print("PlayerGoldBagNum:%d\n", GetGoldTrashBag());
 #endif
 }
 
@@ -269,7 +271,6 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 					ChangeState(EState::eOpenClose);
 				}
 			}
-
 		}
 	}
 	// 攻撃コライダー
@@ -308,6 +309,18 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				AddAttackHitObj(collector);
 				// 攻撃力分のダメージを与える
 				collector->TakeDamage(GetAttackPower(), this);
+			}
+		}
+		// 衝突した相手が車両なら
+		else if (other->Layer() == ELayer::eVehicle)
+		{
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			if (vehicle != nullptr &&
+				!IsAttackHitObj(vehicle))
+			{
+				AddAttackHitObj(vehicle);
+				// 攻撃力分のダメージを与える
+				vehicle->TakeDamage(GetAttackPower(), this);
 			}
 		}
 	}
@@ -349,6 +362,18 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				collector->TakeDamage(GetAttackPower(), this);
 			}
 		}
+		// 衝突した相手が車両なら
+		else if (other->Layer() == ELayer::eVehicle)
+		{
+			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			if (vehicle != nullptr &&
+				!IsAttackHitObj(vehicle))
+			{
+				AddAttackHitObj(vehicle);
+				// 攻撃力分のダメージを与える
+				vehicle->TakeCritical(GetAttackPower(), this);
+			}
+		}
 	}
 }
 
@@ -382,28 +407,30 @@ bool CTrashPlayer::GetOpen() const
 	return mIsOpen;
 }
 
-// ゴミ袋の数を加算する
-void CTrashPlayer::SetTrashBag(int num)
+// X軸の範囲外にいるかどうか
+bool CTrashPlayer::AreaOutX()
 {
-	mTrashBagNum += num;
+	// 車道のXの範囲外にいるなら
+	if (Position().X() >= ROAD_X_AREA ||
+		Position().X() <= -ROAD_X_AREA)
+	{
+		return true;
+	}
+	// そうでないなら範囲内
+	return false;
 }
 
-// ゴミ袋の数を取得する
-int CTrashPlayer::GetTrashBag() const
+// Z軸の範囲外にいるかどうか
+bool CTrashPlayer::AreaOutZ()
 {
-	return mTrashBagNum;
-}
-
-// ゴールドゴミ袋の数を加算する
-void CTrashPlayer::SetGoldTrashBag(int num)
-{
-	mGoldTrashBagNum += num;
-}
-
-// ゴールドゴミ袋の数を取得する
-int CTrashPlayer::GetGoldTrashBag() const
-{
-	return mGoldTrashBagNum;
+	// 車道のZの範囲外にいるなら
+	if (Position().Z() >= ROAD_Z_AREA ||
+		Position().Z() <= -ROAD_Z_AREA)
+	{
+		return true;
+	}
+	// そうでないなら範囲内
+	return false;
 }
 
 // ゴミ袋を落とす処理
@@ -415,19 +442,43 @@ void CTrashPlayer::DropTrashBag(int power)
 	// ゴミ袋を一つでも所持していたら落とす
 	if (GetTrashBag() > 0)
 	{
-		SetTrashBag(-power);
-		CTrashBag* trashBag = new CTrashBag(false);
-		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
-		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
 	}
 	// 通常のゴミ袋を一つも持っていない場合かつ
 	// ゴールドゴミ袋持っている場合に落とす
 	else if (GetGoldTrashBag() > 0)
 	{
-		SetGoldTrashBag(-power);
-		CTrashBag* trashBag = new CTrashBag(true);
-		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
-		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetGoldTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetGoldTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetGoldTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
 	}
 }
 
@@ -437,6 +488,20 @@ void CTrashPlayer::DropTrashBag(int power)
 */
 void CTrashPlayer::ActionInput()
 {
+	// 回収員がくっついているかつ
+	if (GetStickCollector())
+	{
+		// 回収員のポインタ
+		CCollector* collector = GetStickCollectorPointer();
+		// ポインタがnullでないかつ、
+		// 回収員がお仕置き用の場合キー入力不可
+		if (collector != nullptr &&
+			GetStickCollectorPointer()->GetPunisher())
+		{
+			return;
+		}
+	}
+
 	// スペースでジャンプ
 	if (CInput::PushKey(VK_SPACE))
 	{
@@ -782,6 +847,7 @@ void CTrashPlayer::UpdateAttackStart()
 		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			mIsOpen = true;
 			// 攻撃開始アニメーションを再生
 			ChangeAnimation((int)EAnimType::eAttack_Start);
 			mStateStep++;
@@ -883,6 +949,7 @@ void CTrashPlayer::UpdateCriticalStart()
 		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			mIsOpen = true;
 			// クリティカル開始アニメーションを再生
 			ChangeAnimation((int)EAnimType::eCritical_Start);
 			mStateStep++;
@@ -1166,12 +1233,6 @@ void CTrashPlayer::TakeCritical(int damage, CObjectBase* causer, int dropNum)
 		// 被弾開始状態へ移行
 		ChangeState(EState::eDamageStart);
 	}
-}
-
-// 死んでいるかどうか
-bool CTrashPlayer::IsDead()
-{
-	return IsDeath();
 }
 
 // 状態切り替え

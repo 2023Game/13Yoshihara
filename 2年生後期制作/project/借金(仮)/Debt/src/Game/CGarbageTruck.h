@@ -6,6 +6,7 @@
 
 class CModel;
 class CCollector;
+class CGaugeUI3D;
 
 // ゴミ収集車のクラス
 // 車のクラスを継承
@@ -27,6 +28,22 @@ public:
 	// デストラクタ
 	~CGarbageTruck();
 
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	void TakeDamage(int damage, CObjectBase* causer) override;
+	/// <summary>
+	/// クリティカルダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	void TakeCritical(int damage, CObjectBase* causer) override;
+
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
+
 	// 更新
 	void Update();
 	// 衝突処理
@@ -40,7 +57,7 @@ public:
 	// 回収をできるZの範囲内にいるかどうか
 	bool CanCollectPosZ();
 
-private:
+protected:
 	// 回収員のリスト
 	std::vector<CCollector*> mpCollectors;
 	// プレイヤーと敵の探知用
@@ -59,6 +76,8 @@ private:
 	void UpdateChangeRoad();
 	// 回収処理
 	void UpdateCollect();
+	// 死亡(壊れた)
+	void Death() override;
 
 	// 車の状態
 	enum class EState
@@ -79,4 +98,7 @@ private:
 	// 状態の文字列を取得
 	std::string GetStateStr(EState state) const;
 #endif
+
+	// Hpゲージ
+	CGaugeUI3D* mpHpGauge;
 };

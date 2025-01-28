@@ -4,7 +4,7 @@
 #include "CTrashBagStatus.h"
 
 // スコアUIのオフセット座標
-#define SCORE_UI_OFFSET_POS CVector(WINDOW_WIDTH - 300.0f,10.0f,0.0f)
+#define SCORE_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.8f,10.0f,0.0f)
 
 // コンストラクタ
 CTrashScoreUI::CTrashScoreUI()

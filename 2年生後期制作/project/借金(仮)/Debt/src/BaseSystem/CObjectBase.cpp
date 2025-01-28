@@ -129,12 +129,6 @@ bool CObjectBase::IsDamaging() const
 	return mIsDamage;
 }
 
-// 死んでいるかどうか
-bool CObjectBase::IsDead()
-{
-	return false;
-}
-
 // 攻撃がヒットしたオブジェクトを追加
 void CObjectBase::AddAttackHitObj(CObjectBase* obj)
 {

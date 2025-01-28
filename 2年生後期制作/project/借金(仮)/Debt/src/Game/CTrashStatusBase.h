@@ -43,8 +43,23 @@ public:
 	int GetPower() const;
 	// ゴミを落とす力を設定
 	void SetPower(int power);
+
+	// ゴミ袋の数を加算する
+	void SetTrashBag(int num);
+	// ゴミ袋の数を取得する
+	int GetTrashBag() const;
+
+	// ゴールドゴミ袋の数を加算する
+	void SetGoldTrashBag(int num);
+	// ゴールドゴミ袋の数を取得する
+	int GetGoldTrashBag() const;
 private:
 	float mKnockbackDealt;		// 与えるノックバック速度
 	CVector mKnockbackReceived;	// 受けるノックバック
 	int mPower;					// ゴミを落とす力
+
+	// 持っているゴミ袋の数
+	int mTrashBagNum;
+	// 持っているゴールドゴミ袋の数
+	int mGoldTrashBagNum;
 };

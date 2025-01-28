@@ -96,6 +96,22 @@ CCar::~CCar()
 
 }
 
+// ダメージを受ける
+void CCar::TakeDamage(int damage, CObjectBase* causer)
+{
+	// ダメージを受ける
+	CCharaStatusBase::TakeDamage(damage, causer);
+}
+
+// クリティカルダメージを受ける
+void CCar::TakeCritical(int damage, CObjectBase* causer)
+{
+	// 攻撃力の2倍のダメージ
+	int criticalDamage = damage * 2;
+	// ダメージを受ける
+	CCharaStatusBase::TakeDamage(criticalDamage, causer);
+}
+
 void CCar::Update()
 {
 	switch (mState)
@@ -512,6 +528,13 @@ void CCar::UpdateChangeRoad()
 		ChangeState(EState::eMove);
 		break;
 	}
+}
+
+// 死亡(壊れた)
+void CCar::Death()
+{
+	// 壊れた状態へ
+	ChangeState(EState::eBroken);
 }
 
 // 状態切り替え

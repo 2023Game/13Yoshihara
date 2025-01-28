@@ -14,6 +14,19 @@ public:
 	// デストラクタ
 	~CCar();
 
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	void TakeDamage(int damage, CObjectBase* causer) override;
+	/// <summary>
+	/// クリティカルダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	void TakeCritical(int damage, CObjectBase* causer) override;
+
 	// 更新
 	void Update();
 	// 衝突処理
@@ -32,6 +45,8 @@ private:
 	void UpdateBroken();
 	// 車線変更処理
 	void UpdateChangeRoad();
+	// 死亡(壊れた)
+	void Death() override;
 
 	// 車の状態
 	enum class EState

@@ -241,10 +241,6 @@ void CResident::UpdatePatrol()
 		// 移動アニメーションを再生
 		ChangeAnimation((int)EAnimType::eMove);
 
-		if (mpMoveRoute.size() == 1)
-		{
-			mNextMoveIndex = 0;
-		}
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 

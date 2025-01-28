@@ -9,7 +9,7 @@ CTextUI2D::CTextUI2D()
 	// 文字列描画用のクラスを生成
 	mpText = new CText
 	(
-		nullptr, 32,
+		nullptr, 40,
 		CVector::zero,
 		CVector2(WINDOW_WIDTH,WINDOW_HEIGHT),
 		CColor::white,
@@ -56,4 +56,10 @@ void CTextUI2D::ChangeStr(const char* format, ...)
 void CTextUI2D::SetStr(std::string str)
 {
 	mStr = str;
+}
+
+// 文字のサイズを設定する
+void CTextUI2D::SetFontSize(int fontSize)
+{
+	mpText->SetFontSize(fontSize);
 }

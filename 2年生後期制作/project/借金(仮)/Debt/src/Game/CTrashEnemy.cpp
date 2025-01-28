@@ -82,8 +82,6 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define PATROL_POS6 CVector(  0.0f,0.0f,-100.0f)
 #define PATROL_POS7 CVector( 40.0f,0.0f,-100.0f)
 
-#define ROAD_X_AREA 90.0f	// 車道のXの範囲
-
 // 攻撃コライダ―
 #define ATTACK_COL_RADIUS	2.0f	// 半径
 #define ATTACK_COL_HEIGHT	25.0f	// 高さ
@@ -103,7 +101,6 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 // Hpゲージのオフセット座標
 #define GAUGE_OFFSET_POS CVector(0.0f,15.0f,0.0f)
-
 // Hpゲージの画像のパス
 #define HP_GAUGE_PATH "UI\\trashbox_enemy_hp_gauge.png"
 
@@ -134,8 +131,6 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	, mElapsedTime(0.0f)
 	, mIsOpen(false)
 	, mIsJump(false)
-	, mTrashBagNum(0)
-	, mGoldTrashBagNum(0)
 {
 	// Hpゲージを設定
 	mpHpGauge = new CGaugeUI3D(this, HP_GAUGE_PATH);
@@ -243,8 +238,8 @@ void CTrashEnemy::Update()
 	CDebugPrint::Print("EnemyIsOpen:%s\n", mIsOpen ? "true" : "false");
 	CDebugPrint::Print("EnemyIsJump:%s\n", mIsJump ? "true" : "false");
 	CDebugPrint::Print("EnemyHp:%d\n", GetHp());
-	CDebugPrint::Print("EnemyTrashBagNum:%d\n", mTrashBagNum);
-	CDebugPrint::Print("EnemyGoldBagNum:%d\n", mGoldTrashBagNum);
+	CDebugPrint::Print("EnemyTrashBagNum:%d\n", GetTrashBag());
+	CDebugPrint::Print("EnemyGoldBagNum:%d\n", GetGoldTrashBag());
 #endif
 }
 
@@ -425,30 +420,6 @@ bool CTrashEnemy::GetOpen() const
 	return mIsOpen;
 }
 
-// ゴミ袋の数を加算する
-void CTrashEnemy::SetTrashBag(int num)
-{
-	mTrashBagNum += num;
-}
-
-// ゴミ袋の数を取得する
-int CTrashEnemy::GetTrashBag() const
-{
-	return mTrashBagNum;
-}
-
-// ゴールドゴミ袋の数を加算する
-void CTrashEnemy::SetGoldTrashBag(int num)
-{
-	mGoldTrashBagNum += num;
-}
-
-// ゴールドゴミ袋の数を取得する
-int CTrashEnemy::GetGoldTrashBag() const
-{
-	return mGoldTrashBagNum;
-}
-
 // ゴミ袋を落とす処理
 void CTrashEnemy::DropTrashBag(int power)
 {
@@ -458,19 +429,43 @@ void CTrashEnemy::DropTrashBag(int power)
 	// ゴミ袋を一つでも所持していたら落とす
 	if (GetTrashBag() > 0)
 	{
-		SetTrashBag(-power);
-		CTrashBag* trashBag = new CTrashBag(false);
-		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
-		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
 	}
 	// 通常のゴミ袋を一つも持っていない場合かつ
 	// ゴールドゴミ袋持っている場合に落とす
 	else if (GetGoldTrashBag() > 0)
 	{
-		SetGoldTrashBag(-power);
-		CTrashBag* trashBag = new CTrashBag(true);
-		trashBag->Position(Position() + TRASH_BAG_OFFSET_POS);
-		trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetGoldTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetGoldTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetGoldTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
 	}
 }
 
@@ -478,13 +473,12 @@ void CTrashEnemy::DropTrashBag(int power)
 void CTrashEnemy::UpdateIdle()
 {
 	mMoveSpeed = CVector::zero;
-	// プレイヤーの座標を取得
-	CPlayerBase* player = CPlayerBase::Instance();
-	CVector playerPos = player->Position();
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	// プレイヤーが視野範囲内かつ、道路内なら、
 	// 追跡状態へ移行
 	if (IsFoundPlayer()&&
-		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
+		!player->AreaOutX())
 	{
 		ChangeState(EState::eChase);
 		return;
@@ -516,13 +510,12 @@ void CTrashEnemy::UpdateIdle()
 // 巡回処理
 void CTrashEnemy::UpdatePatrol()
 {
-	// プレイヤーの座標を取得
-	CPlayerBase* player = CPlayerBase::Instance();
-	CVector playerPos = player->Position();
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	// プレイヤーが視野範囲内かつ、道路内なら、
 	// 追跡状態へ移行
 	if (IsFoundPlayer() &&
-		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
+		!player->AreaOutX())
 	{
 		ChangeState(EState::eChase);
 		return;
@@ -550,10 +543,7 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
-		if (mpMoveRoute.size() == 1)
-		{
-			mNextMoveIndex = 0;
-		}
+
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
@@ -599,11 +589,10 @@ void CTrashEnemy::UpdatePatrol()
 void CTrashEnemy::UpdateChase()
 {
 	// プレイヤーの座標へ向けて移動する
-	CPlayerBase* player = CPlayerBase::Instance();
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
 	// プレイヤーの座標が道路外なら追いかけるのをやめる
-	if (targetPos.X() >= ROAD_X_AREA ||
-		targetPos.X() <= -ROAD_X_AREA)
+	if (player->AreaOutX())
 	{
 		ChangeState(EState::eIdle);
 		return;
@@ -981,6 +970,7 @@ void CTrashEnemy::UpdateAttackStart()
 		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			mIsOpen = true;
 			// 攻撃開始アニメーションを再生
 			ChangeAnimation((int)EAnimType::eAttack_Start);
 			mStateStep++;
@@ -1083,6 +1073,7 @@ void CTrashEnemy::UpdateCriticalStart()
 		// 開くアニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			mIsOpen = true;
 			// クリティカル開始アニメーションを再生
 			ChangeAnimation((int)EAnimType::eCritical_Start);
 			mStateStep++;
@@ -1225,7 +1216,10 @@ void CTrashEnemy::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// 当たり判定をオフ
 		SetEnableCol(false);
+		// 重力をオフ
+		mIsGravity = false;
 		ChangeAnimation((int)EAnimType::eDeath);
 		mStateStep++;
 		break;
@@ -1258,7 +1252,7 @@ void CTrashEnemy::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ3：自身と視野範囲とHPゲージは無効になる
+		// ステップ4：自身と視野範囲とHPゲージは無効になる
 	case 4:
 		SetEnable(false);
 		SetShow(false);
@@ -1389,13 +1383,6 @@ void CTrashEnemy::TakeCritical(int damage, CObjectBase* causer, int dropNum)
 		ChangeState(EState::eDamageStart);
 	}
 }
-
-// 死んでいるかどうか
-bool CTrashEnemy::IsDead()
-{
-	return IsDeath();
-}
-
 
 // 状態切り替え
 void CTrashEnemy::ChangeState(EState state)

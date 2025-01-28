@@ -2,7 +2,7 @@
 #include "CTextUI2D.h"
 
 // 時間UIのオフセット座標
-#define TIME_UI_OFFSET_POS CVector(512.0f,10.0f,0.0f)
+#define TIME_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.4f,10.0f,0.0f)
 
 // コンストラクタ
 CTimeUI::CTimeUI(int maxTime)

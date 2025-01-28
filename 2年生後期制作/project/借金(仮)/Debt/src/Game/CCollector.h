@@ -34,8 +34,6 @@ public :
 
 	// ダメージを受ける
 	void TakeDamage(int damage, CObjectBase* causer) override;
-	// 死んでいるかどうか
-	bool IsDead() override;
 
 	// 更新
 	void Update();
@@ -62,6 +60,9 @@ public :
 	// 回収員の持ち主を取得
 	CObjectBase* GetOwner() const;
 private:
+	// ゴミ袋を落とす処理
+	void DropTrashBag(int power);
+
 	/*
 アニメーションの種類
 (と)＝蓋が閉じている状態からのアニメーション

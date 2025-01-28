@@ -207,7 +207,7 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 		if (other->Layer() == ELayer::eVehicle)
 		{
 			// 死んでないなら押し戻す
-			if (!IsDead())
+			if (!IsDeath())
 			{
 				// 押し戻しベクトル
 				CVector adjust = hit.adjust;
@@ -222,6 +222,15 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 			if (other->Owner() == mpOwner&&
 				mState == EState::eReturn)
 			{
+				// ゴミ収集車のクラスを取得
+				CGarbageTruck* owner = dynamic_cast<CGarbageTruck*>(mpOwner);
+				// 親がnullでない場合
+				if (owner != nullptr)
+				{
+					// 自分の持っているゴミ袋の数を親に渡す
+					owner->SetTrashBag(GetTrashBag());
+					owner->SetGoldTrashBag(GetTrashBag());
+				}
 				// 無効にする
 				SetOnOff(false);
 			}
@@ -369,15 +378,17 @@ void CCollector::SetOnOff(bool setOnOff)
 		Position(DEATH_POS);
 		// ゴミ収集車のクラスを取得
 		CGarbageTruck* owner = dynamic_cast<CGarbageTruck*>(mpOwner);
-		// 親がnullでないなら
+		// 親がnullでない場合
 		if (owner != nullptr)
 		{
 			// 回収員の人数を減らす
 			owner->DecreaseCollectors();
 		}
-		// ゴミ袋を無効にする
-		mpTrashBag->SetEnable(false);
-		mpTrashBag->SetShow(false);
+		// ゴミ袋を持っているかをリセット
+		SetHaveBag(false);
+		// 持っている数をリセット
+		SetTrashBag(-GetTrashBag());
+		SetGoldTrashBag(-GetGoldTrashBag());
 	}
 	// 有効にするとき
 	else
@@ -387,6 +398,9 @@ void CCollector::SetOnOff(bool setOnOff)
 		// ゴミ袋を持っているかをリセット
 		SetHaveBag(false);
 		ChangeState(EState::eIdle);
+		ChangeAnimation((int)EState::eIdle);
+		SetEnableCol(true);
+		mIsGravity = true;
 	}
 	// 有効無効を設定する
 	SetEnable(setOnOff);
@@ -415,20 +429,85 @@ CObjectBase* CCollector::GetOwner() const
 	return mpOwner;
 }
 
+// ゴミ袋を落とす処理
+void CCollector::DropTrashBag(int power)
+{
+	// 落とす力が0以下なら処理しない
+	if (power <= 0) return;
+
+	// ゴミ袋を一つでも所持していたら落とす
+	if (GetTrashBag() > 0)
+	{
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
+	}
+	// 通常のゴミ袋を一つも持っていない場合かつ
+	// ゴールドゴミ袋持っている場合に落とす
+	else if (GetGoldTrashBag() > 0)
+	{
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetGoldTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetGoldTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetGoldTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			CTrashBag* trashBag = new CTrashBag(false);
+			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
+			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
+	}
+}
+
 // 待機状態
 void CCollector::UpdateIdle()
 {
 	mMoveSpeed = CVector::zero;
-	// プレイヤーの座標を取得
-	CPlayerBase* player = CPlayerBase::Instance();
-	CVector playerPos = player->Position();
-	// プレイヤーが視野範囲内かつ、道路内なら、
-	// 追跡状態へ移行
-	if (IsFoundPlayer() &&
-		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// 通常用の場合
+	if (!GetPunisher())
 	{
-		ChangeState(EState::eChase);
-		return;
+		// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
+		// 道路内なら、
+		// 追跡状態へ移行
+		if (IsFoundPlayer() &&
+			!player->GetStickCollector() &&
+			!player->AreaOutX())
+		{
+			ChangeState(EState::eChase);
+			return;
+		}
+	}
+	// お仕置き用の場合
+	else
+	{
+		// 回収員がくっついていない場合
+		if (!player->GetStickCollector())
+		{
+			// 追跡状態へ移行
+			ChangeState(EState::eChase);
+			return;
+		}
 	}
 
 	// 待機アニメーションを再生
@@ -457,19 +536,32 @@ void CCollector::UpdateIdle()
 // 巡回処理
 void CCollector::UpdatePatrol()
 {
-	// プレイヤーの座標を取得
+	// プレイヤーを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	CVector playerPos = player->Position();
-
-	// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
-	// プレイヤーが道路内の場合
-	// 追跡状態へ移行
-	if (IsFoundPlayer() &&
-		!player->GetStickCollector() &&
-		playerPos.X() <= ROAD_X_AREA && playerPos.X() >= -ROAD_X_AREA)
+	// 通常用の場合
+	if (!GetPunisher())
 	{
-		ChangeState(EState::eChase);
-		return;
+		// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
+		// プレイヤーが道路内の場合
+		// 追跡状態へ移行
+		if (IsFoundPlayer() &&
+			!player->GetStickCollector() &&
+			!player->AreaOutX())
+		{
+			ChangeState(EState::eChase);
+			return;
+		}
+	}
+	// お仕置き用の場合
+	else
+	{
+		// 回収員がくっついていないなら
+		// 追跡状態へ移行
+		if (!player->GetStickCollector())
+		{
+			ChangeState(EState::eChase);
+			return;
+		}
 	}
 
 	// ステップごとに処理を切り替える
@@ -494,10 +586,7 @@ void CCollector::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Bag);
 		}
-		if (mpMoveRoute.size() == 1)
-		{
-			mNextMoveIndex = 0;
-		}
+
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
@@ -545,15 +634,30 @@ void CCollector::UpdateChase()
 	// プレイヤーの座標へ向けて移動する
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
-	// プレイヤーの座標が道路外か、既に回収員がくっついている場合
-	// 追いかけるのをやめる
-	if (targetPos.X() >= ROAD_X_AREA ||
-		targetPos.X() <= -ROAD_X_AREA ||
-		player->GetStickCollector())
+	// 通常用の場合
+	if (!GetPunisher())
 	{
-		ChangeState(EState::eIdle);
-		return;
+		// プレイヤーがエリア外か、既に回収員がくっついている場合
+		// 追いかけるのをやめる
+		if (player->AreaOutX() ||
+			player->GetStickCollector())
+		{
+			ChangeState(EState::eIdle);
+			return;
+		}
 	}
+	// お仕置き用の場合
+	else
+	{
+		// 既に回収員がくっついている場合
+		// 追いかけるのをやめる
+		if (player->GetStickCollector())
+		{
+			ChangeState(EState::eIdle);
+			return;
+		}
+	}
+
 	// プレイヤーが見えなくなったら、見失った状態へ移行
 	if (!IsLookPlayer())
 	{
@@ -577,7 +681,14 @@ void CCollector::UpdateChase()
 	}
 
 	// 移動アニメーションを再生
-	ChangeAnimation((int)EAnimType::eMove);
+	if (!mIsBag)
+	{
+		ChangeAnimation((int)EAnimType::eMove);
+	}
+	else
+	{
+		ChangeAnimation((int)EAnimType::eMove_Bag);
+	}
 
 	// 経路探索管理クラスが存在すれば
 	CNavManager* navMgr = CNavManager::Instance();
@@ -702,8 +813,6 @@ void CCollector::UpdateReturn()
 // 攻撃開始
 void CCollector::UpdateAttackStart()
 {
-
-
 	switch (mStateStep)
 	{
 		// ステップ0：攻撃の開始
@@ -805,8 +914,17 @@ void CCollector::UpdateAttackTrue()
 			// プレイヤーが通常のゴミ袋を所持している場合
 			if (trashPlayer->GetTrashBag() > 0)
 			{
-				// ゴミ袋の数を1減らす
-				trashPlayer->SetTrashBag(-1);
+				int power = GetPower();
+				// ゴミ袋の数がパワーより少ない場合
+				if (trashPlayer->GetTrashBag() < power)
+				{
+					// プレイヤーの持ち数と同数にパワーを設定
+					power = trashPlayer->GetTrashBag();
+				}
+				// ゴミ袋の数をパワー分減らす
+				trashPlayer->SetTrashBag(-power);
+				// 得た分を自分の持ち数に加える
+				SetTrashBag(power);
 				// ゴールドじゃない
 				mpTrashBag->SetGold(false);
 				// ゴミ袋を持っている
@@ -816,8 +934,17 @@ void CCollector::UpdateAttackTrue()
 			// ゴールドのゴミ袋を所持している場合
 			else if (trashPlayer->GetGoldTrashBag() > 0)
 			{
-				// ゴールドのゴミ袋の数を1減らす
-				trashPlayer->SetGoldTrashBag(-1);
+				int power = GetPower();
+				// ゴールドのゴミ袋の数がパワーより少ない場合
+				if (trashPlayer->GetGoldTrashBag() < power)
+				{
+					// プレイヤーの持ち数と同数にパワーを設定
+					power = trashPlayer->GetGoldTrashBag();
+				}
+				// ゴールドのゴミ袋の数をパワー分減らす
+				trashPlayer->SetGoldTrashBag(-power);
+				// 得た分を自分の持ち数に加える
+				SetGoldTrashBag(power);
 				// ゴールドである
 				mpTrashBag->SetGold(true);
 				// ゴミ袋を持っている
@@ -922,8 +1049,10 @@ void CCollector::UpdateAttackEnd()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// ゴミ袋を持っていたら
-			if (mIsBag)
+			// ゴミ袋を持っていて
+			// 親が有効の場合
+			if (mIsBag&&
+				mpOwner->IsEnable())
 			{
 				// ゴミ収集車に戻る状態へ
 				ChangeState(EState::eReturn);
@@ -948,20 +1077,10 @@ void CCollector::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
-		// ゴミ袋を持っているなら
-		if (mIsBag)
-		{
-			bool gold = false;
-			// 持っているのがゴールドなら
-			if (mpTrashBag->GetIsGold())
-			{
-				gold = true;
-			}
-			new CTrashBag(gold);
-			// ゴミ袋を持っていない
-			SetHaveBag(false);
-		}
-
+		// 当たり判定をオフ
+		SetEnableCol(false);
+		// 重力をオフ
+		mIsGravity = false;
 		ChangeAnimation((int)EAnimType::eDeath);
 		mStateStep++;
 		break;
@@ -973,16 +1092,30 @@ void CCollector::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ1：消えるまでの時間になるまでカウント
+
+		// ステップ2：全てのゴミ袋を落とす
 	case 2:
+		// ゴミ袋を1つずつ落とす
+		DropTrashBag(1);
+		// 通常とゴールドのゴミ袋が両方の数が0以下なら
+		if (GetTrashBag() <= 0 &&
+			GetGoldTrashBag() <= 0)
+		{
+			// 次のステップへ
+			mStateStep++;
+		}
+		break;
+
+		// ステップ3：消えるまでの時間になるまでカウント
+	case 3:
 		mElapsedTime += Times::DeltaTime();
 		if (mElapsedTime >= DEATH_WAIT_TIME)
 		{
 			mStateStep++;
 		}
 		break;
-		// ステップ2：アニメーションが終了したら無効にする
-	case 3:
+		// ステップ4：無効にする
+	case 4:
 		SetOnOff(false);
 		break;
 	}
@@ -1057,13 +1190,6 @@ void CCollector::TakeDamage(int damage, CObjectBase* causer)
 {
 	CCharaStatusBase::TakeDamage(damage, causer);
 }
-
-// 死んでいるかどうか
-bool CCollector::IsDead()
-{
-	return IsDeath();
-}
-
 
 // 状態切り替え
 void CCollector::ChangeState(EState state)

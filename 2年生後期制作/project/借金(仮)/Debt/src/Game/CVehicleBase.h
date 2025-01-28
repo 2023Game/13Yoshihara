@@ -33,6 +33,18 @@ public:
 		ERoadType road, std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
 	~CVehicleBase();
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	virtual void TakeDamage(int damage, CObjectBase* causer) = 0;
+	/// <summary>
+	/// クリティカルダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	virtual void TakeCritical(int damage, CObjectBase* causer) = 0;
 
 	// 更新
 	void Update();

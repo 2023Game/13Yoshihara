@@ -86,9 +86,6 @@ public:
 	// 攻撃を受けているかどうか
 	bool IsDamaging() const;
 
-	// 死んでいるかどうか
-	virtual bool IsDead();
-
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
 	bool mIsEnableCol;	// 衝突判定を行うかどうか

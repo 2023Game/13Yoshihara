@@ -22,13 +22,15 @@ public:
 	// 撤退までの時間をカウントダウン
 	void CountReturnTime();
 
-
 	// 回収員の人数を取得する
 	int GetCollectorsNum() const;
 	// 回収員の人数を初期値に設定する
 	void SetCollectorsNum();
 	// 回収員の人数を1減らす
 	void DecreaseCollectors();
+
+	// お仕置き用かどうかを取得
+	bool GetPunisher() const;
 private:
 	float mReturnTime;	// 撤退までの時間
 	int mCollectorsNum;		// 回収員の人数

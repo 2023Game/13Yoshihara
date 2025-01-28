@@ -13,6 +13,8 @@ public:
 	// デストラクタ
 	~CCollectorStatus();
 
+	// お仕置き用かどうかを取得する
+	bool GetPunisher() const;
 private:
 	// お仕置き用かどうか
 	bool mIsPunisher;

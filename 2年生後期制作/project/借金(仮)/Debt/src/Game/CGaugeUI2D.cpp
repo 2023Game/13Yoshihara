@@ -141,9 +141,18 @@ void CGaugeUI2D::Render()
 	}
 
 	// ゲージ本体を描画
+	mpGaugeImg->SetSize(mGaugeSize);
 	mpGaugeImg->Render();
 	mpGaugeImg->SetPos(pos);
 
 	// 行列を戻す
 	glPopMatrix();
+}
+
+// サイズを設定
+void CGaugeUI2D::Size(float rate)
+{
+	mGaugeSize = mGaugeSize * rate;
+	CVector2 center = CVector2(-mGaugeSize.X() * 0.5f, 0.0f);
+	mpWhiteImg->SetCenter(center);
 }

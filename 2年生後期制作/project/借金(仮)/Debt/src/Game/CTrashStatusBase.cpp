@@ -7,6 +7,8 @@ CTrashStatusBase::CTrashStatusBase(int maxHp, float baseMoveSpeed, float jumpSpe
 	, mKnockbackDealt(knockbackDealt)
 	, mPower(power)
 	, mKnockbackReceived(CVector::zero)
+	, mTrashBagNum(0)
+	, mGoldTrashBagNum(0)
 {
 }
 
@@ -60,4 +62,32 @@ int CTrashStatusBase::GetPower() const
 void CTrashStatusBase::SetPower(int power)
 {
 	mPower = power;
+}
+
+// ÉSÉ~ë‹ÇÃêîÇâ¡éZÇ∑ÇÈ
+void CTrashStatusBase::SetTrashBag(int num)
+{
+	mTrashBagNum += num;
+	// 0ÇÊÇËè¨Ç≥Ç≠Ç»Ç¡ÇΩÇÁ0Ç…Ç∑ÇÈ
+	if (mTrashBagNum < 0) mTrashBagNum = 0;
+}
+
+// ÉSÉ~ë‹ÇÃêîÇéÊìæÇ∑ÇÈ
+int CTrashStatusBase::GetTrashBag() const
+{
+	return mTrashBagNum;
+}
+
+// ÉSÅ[ÉãÉhÉSÉ~ë‹ÇÃêîÇâ¡éZÇ∑ÇÈ
+void CTrashStatusBase::SetGoldTrashBag(int num)
+{
+	mGoldTrashBagNum += num;
+	// 0ÇÊÇËè¨Ç≥Ç≠Ç»Ç¡ÇΩÇÁ0Ç…Ç∑ÇÈ
+	if (mGoldTrashBagNum < 0) mGoldTrashBagNum = 0;
+}
+
+// ÉSÅ[ÉãÉhÉSÉ~ë‹ÇÃêîÇéÊìæÇ∑ÇÈ
+int CTrashStatusBase::GetGoldTrashBag() const
+{
+	return mGoldTrashBagNum;
 }
