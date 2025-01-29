@@ -5,12 +5,24 @@
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "Maths.h"
+#include "CFlamethrower.h"
  
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
 #define FRONT_WIDTH		40.0f	// 前方判定の幅
 #define FRONT_RADIUS	12.0f	// 前方判定の半径
 #define TURN_SPEED		CVector(0.0f,0.5f,0.0f)	// 車両の方向転換速度
 #define TURN_MAX		CVector(0.0f,22.5f,0.0f)// 車両の方向転換の最大値
+
+// 炎のエフェクトのオフセット座標
+#define FLAME_OFFSET_POS CVector(0.0f,10.0f,20.0f)
+#define FLAME_OFFSET_ROT CQuaternion(90.0f,0.0f,0.0f)
+
+// 炎のスケール値の最大値
+#define FLAME_SCALE 5.0f
+// 炎のスケール値が最大値になるまでの時間
+#define FLAME_SCALE_ANIM_TIME 0.5f
+// 炎の移動速度
+#define FLAME_MOVE_SPEED 35.0f
 
 // コンストラクタ
 CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
@@ -59,6 +71,19 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 
 	Position(pos);
 	Rotation(rotation);
+
+	// 炎のエフェクト発生用
+	mpFlamethrower = new CFlamethrower
+	(
+		this, nullptr,
+		FLAME_OFFSET_POS,
+		FLAME_OFFSET_ROT.Matrix()
+	);
+	mpFlamethrower->SetAddBlend(false);
+	mpFlamethrower->SetFlameColor(CColor(0.0f,0.0f,0.0f));
+	mpFlamethrower->SetFlameScale(FLAME_SCALE);
+	mpFlamethrower->SetFlameScaleAnimTime(FLAME_SCALE_ANIM_TIME);
+	mpFlamethrower->SetFlameMoveSpeed(FLAME_MOVE_SPEED);
 }
 
 // デストラクタ

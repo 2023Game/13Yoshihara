@@ -2,7 +2,7 @@
 
 // 使わないベースステータスは値が0
 // 通常のゴミ収集車のステータス
-#define NORMAL_MAX_HP 10								// 最大HP
+#define NORMAL_MAX_HP 1								// 最大HP
 #define NORMAL_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f	// 移動速度
 #define NORMAL_JUMP_SPEED 0.0f							// ジャンプ速度
 #define NORMAL_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度

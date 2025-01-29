@@ -462,7 +462,7 @@ void CTrashEnemy::DropTrashBag(int power)
 		SetGoldTrashBag(-powerResult);
 		for (int i = 0; i < powerResult; i++)
 		{
-			CTrashBag* trashBag = new CTrashBag(false);
+			CTrashBag* trashBag = new CTrashBag(true);
 			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
 			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
 		}

@@ -36,6 +36,7 @@ CPlayerBase::CPlayerBase()
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
 	, mpSearchCol(nullptr)
+	, mpHpGauge(nullptr)
 {
 	spInstance = this;
 

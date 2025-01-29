@@ -28,6 +28,16 @@ public:
 	void SetThrowOffsetPos(const CVector& pos);
 	// 発射時のオフセット回転値を設定
 	void SetThrowOffsetRot(const CMatrix& rot);
+	// 炎の色を設定
+	void SetFlameColor(CColor color);
+	// 加算ブレンドを使用するかを設定
+	void SetAddBlend(bool use);
+	// 炎のスケールの最大値を設定
+	void SetFlameScale(float flameScale);
+	// 炎のスケール値が最大値になるまでの時間を設定
+	void SetFlameScaleAnimTime(float flameScaleAnimTime);
+	// 炎の移動速度を設定
+	void SetFlameMoveSpeed(float flameMoveSpeed);
 
 	// 更新
 	void Update() override;
@@ -49,4 +59,9 @@ private:
 	CMatrix mThrowOffsetRot;	// 発射時のオフセット回転値
 	float mElapsedTime;			// 経過時間計測用
 	bool mIsThrowing;			// 炎を発射しているか
+	CColor mFlameColor;			// 炎の色
+	bool mIsAddBlend;			// 加算ブレンドを使用するかどうか
+	float mFlameScale;			// 炎のスケール値の最大値
+	float mFlameScaleAnimTime;	// 炎のスケール値が最大値になるまでの時間
+	float mFlameMoveSpeed;		// 炎の移動速度
 };

@@ -9,6 +9,9 @@
 #include "CVehicleManager.h"
 #include "CCollector.h"
 #include "CGaugeUI3D.h"
+#include "CFlamethrower.h"
+#include "CTrashBag.h"
+#include "Maths.h"
 
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
@@ -49,6 +52,17 @@
 
 // 初期から持っておくゴミ袋の数
 #define DEFAULT_TRASH_BAG_NUM 5
+
+// ゴミ袋を落とすオフセット座標
+#define TRASH_BAG_OFFSET_POSY 5.0f // Y座標
+#define TRASH_BAG_OFFSET_POSZ -30.0f // Z座標
+// ゴミ袋を落とすX座標のランダム範囲
+#define TRASH_BAG_RAND_POSX 0.1f
+// ゴミ袋を落とす間隔
+#define TRASH_BAG_DROP_TIME 0.2f
+
+
+
 
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
@@ -488,6 +502,16 @@ void CGarbageTruck::Render()
 	}
 }
 
+// 車両の有効無効を切り替える
+void CGarbageTruck::SetOnOff(bool setOnOff)
+{
+	CVehicleBase::SetOnOff(setOnOff);
+
+	mpHpGauge->SetEnable(setOnOff);
+	mpHpGauge->SetShow(setOnOff);
+	mpFlamethrower->Stop();
+}
+
 // 変数をリセット
 void CGarbageTruck::Reset()
 {
@@ -515,9 +539,83 @@ bool CGarbageTruck::CanCollectPosZ()
 	return false;
 }
 
+void CGarbageTruck::DropTrashBag(int power)
+{
+	// 落とす力が0以下なら処理しない
+	if (power <= 0) return;
+
+	// ゴミ袋を一つでも所持していたら落とす
+	if (GetTrashBag() > 0)
+	{
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			// ゴミ袋を生成
+			CTrashBag* trashBag = new CTrashBag(false);
+			// 落とすX座標をXの範囲で求める
+			float randomPosX = Math::Rand(-TRASH_BAG_RAND_POSX, TRASH_BAG_RAND_POSX);
+			// オフセット座標を求める
+			CVector offsetPos = VectorX() * randomPosX
+				+ VectorY() * TRASH_BAG_OFFSET_POSY
+				+ VectorZ() * TRASH_BAG_OFFSET_POSZ;
+			trashBag->Position(Position() + offsetPos);
+			trashBag->SetThrowSpeed(-VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
+	}
+	// 通常のゴミ袋を一つも持っていない場合かつ
+	// ゴールドゴミ袋持っている場合に落とす
+	else if (GetGoldTrashBag() > 0)
+	{
+		// パワーの最終的な結果
+		int powerResult = power;
+		// ゴミ袋の数がパワーより少ない場合
+		if (GetGoldTrashBag() < power)
+		{
+			// パワーの最終的な結果をゴミ袋の数に設定
+			powerResult = GetGoldTrashBag();
+		}
+		// ゴミ袋の数を最終的なパワー分減らす
+		SetGoldTrashBag(-powerResult);
+		for (int i = 0; i < powerResult; i++)
+		{
+			// ゴミ袋を生成
+			CTrashBag* trashBag = new CTrashBag(true);
+			// 落とすX座標をXの範囲で求める
+			float randomPosX = Math::Rand(-TRASH_BAG_RAND_POSX, TRASH_BAG_RAND_POSX);
+			// オフセット座標を求める
+			CVector offsetPos = VectorX() * randomPosX
+				+ VectorY() * TRASH_BAG_OFFSET_POSY
+				+ VectorZ() * TRASH_BAG_OFFSET_POSZ;
+			trashBag->Position(Position() + offsetPos);
+			trashBag->SetThrowSpeed(-VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
+		}
+	}
+}
+
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
+	// 死んでいる場合
+	if (IsDeath())
+	{
+		mElapsedTime += Times::DeltaTime();
+		// ゴミ袋を落とす間隔の時間が経過したら
+		if (mElapsedTime >= TRASH_BAG_DROP_TIME)
+		{
+			// ゴミ袋を落とす
+			DropTrashBag(1);
+			mElapsedTime -= TRASH_BAG_DROP_TIME;
+		}
+	}
 	// お仕置き用の場合
 	if (GetPunisher())
 	{
@@ -607,35 +705,46 @@ void CGarbageTruck::UpdateBroken()
 {
 	switch (mStateStep)
 	{
-		// 設定を変更する
+		// ステップ0：設定を変更する
 	case 0:
 		// 動いていない
 		mIsMove = false;
 		// 移動速度をゼロにする
 		mMoveSpeed = CVector::zero;
-		// 消滅までの時間を初期値に戻す
-		SetDeleteTime();
+		// 炎のエフェクトを発生させる
+		mpFlamethrower->Start();
 		mStateStep++;
 		break;
 
-		// 時間が経過するまでカウントダウン
+		// ステップ1：全ての回収員を撤退
 	case 1:
-		// 消滅するまでの時間をカウントダウン
-		CountDeleteTime();
-
-		// 消滅までの時間が経過したら
-		if (IsElapsedDeleteTime())
+	{
+		int size = mpCollectors.size();
+		// 全ての回収員の状態を撤退状態へ
+		for (int i = 0; i < size; i++)
 		{
-			// 次のステップへ
-			mStateStep++;
+			// 無効ならスルー
+			if (!mpCollectors[i]->IsEnable()) continue;
+			// 撤収状態に変更
+			mpCollectors[i]->ChangeStateReturn();
 		}
-		break;
+		// 次のステップへ
+		mStateStep++;
 
-		// 消滅する
+		break;
+	}
+
+		// ステップ2：回収員がいなくなるまで待機
 	case 2:
-		// 非表示
-		SetEnable(false);
-		SetShow(false);
+		// 回収員の数がゼロなら
+		if (GetCollectorsNum() <= 0)
+		{
+			// 自分の撤退を開始
+			// 撤退の移動である
+			mIsReturn = true;
+			// 移動状態へ
+			ChangeState(EState::eMove);
+		}
 		break;
 	}
 }
@@ -896,10 +1005,9 @@ void CGarbageTruck::ChangeState(EState state)
 		return;
 	}
 
-	// 移動から破壊以外に変更されるとき
+	// 移動から他の状態に変更する時
 	// 移動の中断中
-	if (mState == EState::eMove &&
-		state != EState::eBroken)
+	if (mState == EState::eMove)
 	{
 		mIsMovePause = true;
 	}

@@ -51,6 +51,8 @@ public:
 	// 描画
 	void Render() override;
 
+	// 車両の有効無効を切り替える
+	void SetOnOff(bool setOnOff) override;
 	// 変数をリセット
 	void Reset() override;
 
@@ -58,6 +60,9 @@ public:
 	bool CanCollectPosZ();
 
 protected:
+	// ゴミ袋を落とす処理
+	void DropTrashBag(int power);
+
 	// 回収員のリスト
 	std::vector<CCollector*> mpCollectors;
 	// プレイヤーと敵の探知用

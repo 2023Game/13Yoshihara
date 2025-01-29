@@ -6,6 +6,7 @@
 #include "CTrashEnemy.h"
 #include "Primitive.h"
 #include "CVehicleManager.h"
+#include "CFlamethrower.h"
 
 #define CAR_HEIGHT		9.0f	// 車の高さ
 #define CAR_WIDTH		25.0f	// 車の幅
@@ -36,11 +37,11 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH + CAR_RADIUS),
 		CAR_RADIUS, true
 	);
-	// プレイヤー、敵、回収員、車両、車両探知用、地形、ゴミ袋
+	// プレイヤー、敵、回収員、攻撃、車両、車両探知用、地形、ゴミ袋
 	// と衝突判定する
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
 		ETag::eVehicle,ETag::eField, ETag::eTrashBag});
-	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,ELayer::eAttackCol,
 		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eTrashBag });
 
@@ -444,6 +445,8 @@ void CCar::UpdateBroken()
 		mMoveSpeed = CVector::zero;
 		// 消滅までの時間を初期値に戻す
 		SetDeleteTime();
+		// 炎のエフェクトを発生させる
+		mpFlamethrower->Start();
 		mStateStep++;
 		break;
 
@@ -462,6 +465,8 @@ void CCar::UpdateBroken()
 
 		// 消滅する
 	case 2:
+		// 炎のエフェクトの発生を終了
+		mpFlamethrower->Stop();
 		// 非表示
 		SetEnable(false);
 		SetShow(false);

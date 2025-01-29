@@ -4,6 +4,7 @@
 class CModel;
 class CNavNode;
 class CVehicleManager;
+class CFlamethrower;
 
 // 前方コライダ―の座標
 #define FRONT_COL_OFFSET_POS CVector(0.0f,0.0f,60.0f)
@@ -87,7 +88,7 @@ public:
 	void SetPatrolPoints(std::vector<CNavNode*> patrolPoints);
 
 	// 車両の有効無効を切り替える
-	void SetOnOff(bool setOnOff);
+	virtual void SetOnOff(bool setOnOff);
 	// 変数をリセット
 	virtual void Reset();
 protected:
@@ -119,6 +120,8 @@ protected:
 	CCollider* mpSideCol;
 	// 経路探索用のコライダ―
 	CCollider* mpNavCol;
+	// 炎のエフェクト
+	CFlamethrower* mpFlamethrower;
 
 	// 指定した位置まで移動する
 	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);

@@ -74,6 +74,7 @@ void CQuaternion::Euler(float x, float y, float z)
 	//mY = cx * cz * sy - cy * sx * sz;
 	//mZ = cx * cy * sz - cz * sx * sy;
 	//mW = sx * sy * sz + cx * cy * cz;
+	
 	mX = -cx * sy * sz + sx * cy * cz;
 	mY =  cx * sy * cz + sx * cy * sz;
 	mZ =  sx * sy * cz + cx * cy * sz;
