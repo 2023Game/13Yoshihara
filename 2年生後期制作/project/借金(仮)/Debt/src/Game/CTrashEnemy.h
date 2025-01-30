@@ -4,6 +4,7 @@
 // 敵のステータスクラスのインクルード
 #include "CTrashEnemyStatus.h"
 
+class CTrashBag;
 /*
 ゴミ拾いゲームの敵クラス
 敵基底クラスと
@@ -16,8 +17,7 @@ public:
 	///	コンストラクタ
 	/// </summary>
 	/// <param name="punisher">trueならば、お仕置き用</param>
-	/// <param name="scale">スケール</param>
-	CTrashEnemy(bool punisher, float scale);
+	CTrashEnemy(bool punisher);
 	// デストラクタ
 	~CTrashEnemy();
 
@@ -63,6 +63,8 @@ public:
 private:
 	// ゴミ袋を落とす処理
 	void DropTrashBag(int power);
+	// 一番近いゴミ袋との距離を取得
+	float GetTargetTrashBagDistance();
 
 	/*
 	アニメーションの種類
@@ -110,6 +112,7 @@ private:
 		ePatrol,		// 巡回
 		eChase,			// 追跡
 		eLost,			// 見失う
+		eMoveToTrashBag,// ゴミ袋に向かって移動
 		eDamageStart,	// 被弾開始
 		eDamage,		// 被弾ノックバック
 		eDamageEnd,		// 被弾終了
@@ -134,6 +137,8 @@ private:
 	void UpdateChase();
 	// 見失う処理
 	void UpdateLost();
+	// ゴミ袋に向かって移動
+	void UpdateMoveToTrashBag();
 	// 被弾開始
 	void UpdateDamageStart();
 	// 被弾ノックバック
@@ -180,9 +185,17 @@ private:
 
 	// クリティカル攻撃コライダ―
 	CCollider* mpCriticalCol;
+	// ゴミ袋探知用コライダ―
+	CCollider* mpSearchCol;
+	// 一番近いゴミ袋のポインタ
+	CTrashBag* mpTargetTrashBag;
+	// 一番近いゴミ袋までの距離
+	float mTargetTrashBagDistance;
 
 	// 蓋が開いているか
 	bool mIsOpen;
 	// ジャンプしているか
 	bool mIsJump;
+	// ゴミ袋へ移動しているか
+	bool mIsMoveToTrashBag;
 };

@@ -14,7 +14,7 @@ CVehicleManager* CVehicleManager::spInstance = nullptr;
 // 出現までの時間
 #define CAR_POP_TIME 3.0f		// 車
 #define TRUCK_POP_TIME 1.0f		// トラック
-#define PUNISH_POP_TIME 1.0f		// お仕置きトラック
+#define PUNISH_POP_TIME 3.0f		// お仕置きトラック
 
 // 左から1番目の道の巡回ポイント
 #define PATROLPOINT_L1_1 CVector( -85.0f,0.0f, 500.0f)
@@ -689,6 +689,11 @@ void CVehicleManager::CountBlackTruckPopTime()
 	if (player->AreaOutX())
 	{
 		mPunishTruckPopTime -= Times::DeltaTime();
+	}
+	// プレイヤーがエリア内なら時間をリセット
+	else
+	{
+		mPunishTruckPopTime = PUNISH_POP_TIME;
 	}
 }
 

@@ -2,6 +2,7 @@
 #include "CObjectBase.h"
 
 class CText;
+class CFont;
 
 // 2D空間に配置するテキストクラス
 class CTextUI2D : public CObjectBase
@@ -31,6 +32,7 @@ public:
 	void SetFontSize(int fontSize);
 
 private:
+	CFont* mpFont;	// フォント
 	CText* mpText;	// 文字列描画用
 
 	std::string mStr;	// 表示する文字列

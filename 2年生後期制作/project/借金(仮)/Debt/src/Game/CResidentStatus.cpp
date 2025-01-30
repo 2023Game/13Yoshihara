@@ -5,7 +5,7 @@
 #define BASE_MOVE_SPEED 0.375f * 20.0f	// 移動速度
 #define JUMP_SPEED 0.0f					// ジャンプ速度
 #define ATTACK_POWER 0					// 攻撃力
-#define THROW_SPEED 2.0f				// 投げる速度
+#define THROW_SPEED 2.2f				// 投げる速度
 #define THROW_TIME 1.0f					// ゴミを投げるまでの時間
 #define MAX_THROW_NUM 3					// 投げれるゴミの最大数
 #define GOLD_CHANCE 10					// ゴールド袋が出る確率

@@ -1,23 +1,32 @@
 #include "CTextUI2D.h"
 #include "CText.h"
+#include "CFont.h"
 #include <stdarg.h>
 
 // コンストラクタ
 CTextUI2D::CTextUI2D()
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame)
 {
+	// タイトルロゴのフォントデータを生成
+	mpFont = new CFont("res\\Font\\toroman.ttf");
+	mpFont->SetFontSize(64);
+	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpFont->SetLineLength(WINDOW_WIDTH);
+
 	// 文字列描画用のクラスを生成
 	mpText = new CText
 	(
-		nullptr, 40,
+		mpFont, 64,
 		CVector::zero,
 		CVector2(WINDOW_WIDTH,WINDOW_HEIGHT),
-		CColor::white,
+		CColor(0.1f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eGame,
 		false,false
 	);
+	mpText->SetEnableOutline(true);
+	mpText->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
 }
 
 // デストラクタ

@@ -31,6 +31,7 @@ CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
+	, mIsGravity(true)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
 	, mpBodyCol(nullptr)
@@ -183,7 +184,11 @@ void CPlayerBase::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
-	mMoveSpeedY -= GRAVITY;
+	// èdóÕÇä|ÇØÇÈÇ»ÇÁ
+	if (mIsGravity)
+	{
+		mMoveSpeedY -= GRAVITY;
+	}
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 
 	// à⁄ìÆ

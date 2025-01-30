@@ -37,6 +37,9 @@ public:
 	// 描画
 	void Render() override;
 private:
+	// 次に巡回するポイントを変更する
+	void ChangePatrolPoint();
+
 	// アニメーションの種類
 	enum class EAnimType
 	{

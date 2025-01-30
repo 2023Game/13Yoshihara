@@ -26,8 +26,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 #define ROTATE_SPEED 9.0f	// 回転速度
 
-#define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
-#define IDLE_TIME 3.0f			// 待機状態の時間
+#define IDLE_TIME 1.0f			// 待機状態の時間
 
 #define SCALE 5.0f	// スケール
 
@@ -103,22 +102,8 @@ CResident::CResident(CModelX* model, CVector startPos,
 // デストラクタ
 CResident::~CResident()
 {
-	// ゴミ袋をすべて削除
-	for (CTrashBag* trashBag : mpTrashBags)
-	{
-		delete trashBag;
-	}
 	// リストをクリア
 	mpTrashBags.clear();
-	// ゴミ袋のリスト内を全て削除
-	//auto itr = mpTrashBags.begin();
-	//auto end = mpTrashBags.end();
-	//while (itr != end)
-	//{
-	//	CTrashBag* del = *itr;
-	//	itr = mpTrashBags.erase(itr);
-	//	delete del;
-	//}
 }
 
 // 更新
@@ -176,6 +161,57 @@ void CResident::Render()
 	}
 }
 
+// 次に巡回するポイントを変更する
+void CResident::ChangePatrolPoint()
+{
+	// 巡回ポイントが設定されていない場合は、処理しない
+	int size = mpPatrolPoints.size();
+	if (size == 0) return;
+
+	// 巡回開始時であれば、一番最初の巡回ポイントを選択
+	if (mNextPatrolIndex == -1)
+	{
+		// 一番最初の巡回ポイントに設定する
+		mNextPatrolIndex = 0;
+	}
+	// 移動が中断されていたら、
+	// 巡回ポイントの番号を変更しない
+	else if (mIsMovePause)
+	{
+		mIsMovePause = false;
+		// 最後のノード（目的地のノード）だった場合、次の巡回ポイントを指定
+		if (mNextMoveIndex >= mpMoveRoute.size())
+		{
+			mNextPatrolIndex++;
+			if (mNextPatrolIndex >= size) mNextPatrolIndex -= size;
+		}
+	}
+	// 巡回中だった場合、次の巡回ポイントを指定
+	else
+	{
+		mNextPatrolIndex++;
+		if (mNextPatrolIndex >= size) mNextPatrolIndex -= size;
+	}
+
+	// 次に巡回するポイントが決まった場合
+	if (mNextPatrolIndex >= 0)
+	{
+		CNavManager* navMgr = CNavManager::Instance();
+		if (navMgr != nullptr)
+		{
+			// 経路探索用のノードの座標を更新
+			mpNavNode->SetPos(Position());
+
+			// 次に巡回するポイントの経路を設定
+			mpMoveRoute.clear();
+			mpMoveRoute.push_back(mpNavNode);
+			mpMoveRoute.push_back(mpPatrolPoints[mNextPatrolIndex]);
+			// 次の目的地インデックスを設定
+			mNextMoveIndex = 1;
+		}
+	}
+}
+
 // 待機状態
 void CResident::UpdateIdle()
 {
@@ -222,16 +258,8 @@ void CResident::UpdatePatrol()
 	{
 		// ステップ0：巡回開始時の巡回ポイントを求める
 	case 0:
-		// 移動が中断されていなければ巡回ポイントを変更
-		if (!mIsMovePause)
-		{
-			mNextPatrolIndex = -1;
-			ChangePatrolPoint(PATROL_NEAR_DIST);
-		}
-		else
-		{
-			mIsMovePause = false;
-		}
+		//巡回ポイントを求める
+		ChangePatrolPoint();
 		mStateStep++;
 		break;
 
@@ -336,8 +364,18 @@ void CResident::UpdateThrowBag()
 		SetThrowTime();
 		// 生成中のゴミ袋の番号をリセット
 		mTrashBagNum = -1;
-		// 巡回状態へ
-		ChangeState(EState::ePatrol);
+		// 移動を中断しているなら
+		if (mIsMovePause)
+		{
+			// 巡回状態へ
+			ChangeState(EState::ePatrol);
+		}
+		// していないなら
+		else
+		{
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+		}
 		break;
 	}
 }

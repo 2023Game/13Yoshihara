@@ -37,14 +37,14 @@ CTitleUI::CTitleUI()
 		mpLogoFont, 128,
 		CVector2(0.0f, 32.0f),
 		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
-		CColor(0.11f, 0.1f, 0.1f),
+		CColor(0.1f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
 		false,
 		false
 	);
-	mpTitleLogo->SetText("タイトルロゴ");
+	mpTitleLogo->SetText("Debt");
 	mpTitleLogo->SetEnableOutline(true);
 	mpTitleLogo->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
 
@@ -58,6 +58,7 @@ CTitleUI::CTitleUI()
 		false,
 		false
 	);
+	mpTitleBg->SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	// 「CLICK TO START」のテキストを生成
 	mpStartText = new CText

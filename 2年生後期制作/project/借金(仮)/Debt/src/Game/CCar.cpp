@@ -18,7 +18,6 @@
 #define NODE_POS2	CVector(-15.0f,0.0f,-30.0f)
 #define NODE_POS3	CVector( 15.0f,0.0f,-30.0f)
 
-#define PATROL_NEAR_DIST 0.0f	// 巡回開始時に選択される巡回ポイントの最短距離
 #define ROTATE_SPEED 3.0f	// 回転速度
 
 CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, 
@@ -301,13 +300,13 @@ void CCar::Render()
 	if (mState == EState::eMove)
 	{
 		// 巡回ポイントを全て描画
-		int size = mPatrolPoints.size();
+		int size = mpPatrolPoints.size();
 		for (int i = 0; i < size; i++)
 		{
 			CColor c = i == mNextPatrolIndex ? CColor::red : CColor::cyan;
 			Primitive::DrawWireBox
 			(
-				mPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
+				mpPatrolPoints[i]->GetPos() + CVector(0.0f, 1.0f, 0.0f),
 				CVector::one,
 				c
 			);
@@ -317,7 +316,7 @@ void CCar::Render()
 		{
 			CVector offsetPos = CVector(0.0f, CAR_HEIGHT, 0.0f);
 			CVector selfPos = Position() + offsetPos;
-			CVector targetPos = mMoveRoute[mNextMoveIndex]->GetPos() + offsetPos;
+			CVector targetPos = mpMoveRoute[mNextMoveIndex]->GetPos() + offsetPos;
 			// 次巡回するポイントまで緑線を描画
 			Primitive::DrawLine
 			(
@@ -383,14 +382,14 @@ void CCar::UpdateMove()
 		case 1:
 		{
 			// 最短経路の次のノードまで移動
-			CNavNode* moveNode = mMoveRoute[mNextMoveIndex];
+			CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
 			if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 			{
 				// 移動が終われば、次のノードへ切り替え
 				mNextMoveIndex++;
 				// 最後のノード（目的地のノード）だった場合は、次のステップへ進める
-				if (mNextMoveIndex >= mMoveRoute.size())
+				if (mNextMoveIndex >= mpMoveRoute.size())
 				{
 					mStateStep++;
 				}
@@ -522,7 +521,7 @@ void CCar::UpdateChangeRoad()
 			}
 
 			// 巡回ポイントのリストを変更された道のものに変更する
-			mPatrolPoints = vehicleMgr->GetPatrolPoints(mRoadType);
+			mpPatrolPoints = vehicleMgr->GetPatrolPoints(mRoadType);
 			mStateStep++;
 		}
 		break;

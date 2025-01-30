@@ -107,8 +107,19 @@ CCollector::CCollector(bool punisher, CObjectBase* owner,
 	mGravity = mGravity * 0.2f;
 	// 大きさの調整
 	Scale(SCALE, SCALE, SCALE);
-	// アニメーションとモデルの初期化
-	InitAnimationModel("Collector", &ANIM_DATA);
+	// お仕置き用の場合
+	if (punisher)
+	{
+		// アニメーションとモデルの初期化
+		InitAnimationModel("PunisherCollector", &ANIM_DATA);
+	}
+	// 通常の場合
+	else
+	{
+		// アニメーションとモデルの初期化
+		InitAnimationModel("Collector", &ANIM_DATA);
+	}
+
 
 	// 本体のコライダ―
 	mpBodyCol = new CColliderCapsule
@@ -645,6 +656,16 @@ void CCollector::UpdateChase()
 			ChangeState(EState::eIdle);
 			return;
 		}
+		// プレイヤーが見えなくなったら、見失った状態へ移行
+		if (!IsLookPlayer())
+		{
+			// 見失った位置にノードを配置
+			mpLostPlayerNode->SetPos(targetPos);
+			mpLostPlayerNode->SetEnable(true);
+			ChangeState(EState::eLost);
+			mStateStep = 0;
+			return;
+		}
 	}
 	// お仕置き用の場合
 	else
@@ -656,17 +677,6 @@ void CCollector::UpdateChase()
 			ChangeState(EState::eIdle);
 			return;
 		}
-	}
-
-	// プレイヤーが見えなくなったら、見失った状態へ移行
-	if (!IsLookPlayer())
-	{
-		// 見失った位置にノードを配置
-		mpLostPlayerNode->SetPos(targetPos);
-		mpLostPlayerNode->SetEnable(true);
-		ChangeState(EState::eLost);
-		mStateStep = 0;
-		return;
 	}
 	// プレイヤーに攻撃できる距離ならば
 	if (CanAttackPlayer(ATTACK_RANGE))
@@ -1077,6 +1087,8 @@ void CCollector::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// 上方向の移動をゼロにする
+		mMoveSpeedY = 0.0f;
 		// 当たり判定をオフ
 		SetEnableCol(false);
 		// 重力をオフ

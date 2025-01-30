@@ -58,6 +58,7 @@ protected:
 	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
 
 	bool mIsGrounded;	// 接地しているかどうか
+	bool mIsGravity;	// 重力を掛けるかどうか
 
 	CVector mGroundNormal;	// 接地している地面の法線
 

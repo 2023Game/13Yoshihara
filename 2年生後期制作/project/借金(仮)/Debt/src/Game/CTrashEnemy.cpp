@@ -1,6 +1,5 @@
 #include "CTrashEnemy.h"
 #include "CDebugFieldOfView.h"
-#include "CPlayerBase.h"
 #include "CTrashPlayer.h"
 #include "CFieldBase.h"
 #include "Primitive.h"
@@ -21,6 +20,7 @@
 
 // コライダのインクルード
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\TrashBox\\anim\\"
@@ -71,7 +71,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 #define PATROL_INTERVAL	3.0f	// 次の巡回ポイントに移動開始するまでの時間
 #define PATROL_NEAR_DIST 10.0f	// 巡回開始時に選択される巡回ポイントの最短距離
-#define IDLE_TIME 5.0f			// 待機状態の時間
+#define IDLE_TIME 2.0f			// 待機状態の時間
 
 #define PATROL_POS0 CVector( 40.0f,0.0f,  0.0f)
 #define PATROL_POS1 CVector( 40.0f,0.0f,100.0f)
@@ -96,6 +96,9 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 // オフセット座標
 #define CRITICAL_COL_OFFSET_POS CVector(0.0f,0.0f,160.0f)
 
+// 最大で追いかける時間
+#define CHASE_MAX_TIME 5.0f
+
 // 死んだときの消えるまでの時間
 #define DEATH_WAIT_TIME 2.0f
 
@@ -107,8 +110,20 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 // ゴミ袋を落とすオフセット座標
 #define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
 
+// 探知範囲
+#define SEARCH_RADIUS	50.0f
+// 蓋を開く距離
+#define OPEN_DISTANCE 10.0f
+
+// 通常の敵のスケール
+#define SCALE 0.1f
+// お仕置き用の敵のスケール
+#define PUNISHER_SCALE 0.5f
+// お仕置き用の敵が元から持っているゴミ袋の数
+#define DEFAULT_TRASH_BAG_NUM 10
+
 // コンストラクタ
-CTrashEnemy::CTrashEnemy(bool punisher, float scale)
+CTrashEnemy::CTrashEnemy(bool punisher)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
@@ -131,7 +146,33 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 	, mElapsedTime(0.0f)
 	, mIsOpen(false)
 	, mIsJump(false)
+	, mpTargetTrashBag(nullptr)
+	, mTargetTrashBagDistance(FLT_MAX)
+	, mpSearchCol(nullptr)
 {
+	float scale;
+	// お仕置き用の場合
+	if (punisher)
+	{
+		scale = PUNISHER_SCALE;
+		SetGoldTrashBag(DEFAULT_TRASH_BAG_NUM);
+	}
+	// 通常の場合
+	else
+	{
+		scale = SCALE;
+		// ゴミ袋探知用コライダ―
+		mpSearchCol = new CColliderSphere
+		(
+			this, ELayer::eTrashBagSearch,
+			SEARCH_RADIUS / scale,
+			true
+		);
+		// ゴミ袋と衝突判定
+		mpSearchCol->SetCollisionTags({ ETag::eTrashBag });
+		mpSearchCol->SetCollisionLayers({ ELayer::eTrashBag });
+	}
+
 	// Hpゲージを設定
 	mpHpGauge = new CGaugeUI3D(this, HP_GAUGE_PATH);
 	mpHpGauge->SetMaxPoint(GetMaxHp());
@@ -194,6 +235,7 @@ CTrashEnemy::CTrashEnemy(bool punisher, float scale)
 CTrashEnemy::~CTrashEnemy()
 {
 	SAFE_DELETE(mpCriticalCol);
+	SAFE_DELETE(mpSearchCol);
 }
 
 // 更新
@@ -206,6 +248,7 @@ void CTrashEnemy::Update()
 	case EState::ePatrol:			UpdatePatrol();			break;
 	case EState::eChase:			UpdateChase();			break;
 	case EState::eLost:				UpdateLost();			break;
+	case EState::eMoveToTrashBag:	UpdateMoveToTrashBag();	break;
 	case EState::eDamageStart:		UpdateDamageStart();	break;
 	case EState::eDamage:			UpdateDamage();			break;
 	case EState::eDamageEnd:		UpdateDamageEnd();		break;
@@ -282,6 +325,16 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
 		}
+		// 衝突した相手がゴミ袋なら
+		else if (other->Layer() == ELayer::eTrashBag)
+		{
+			// 開いている場合
+			if (mIsOpen)
+			{
+				// 閉じる
+				ChangeState(EState::eOpenClose);
+			}
+		}
 	}
 	// 攻撃コライダー
 	else if (self == mpAttackCol)
@@ -330,6 +383,26 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				player->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// 攻撃力分のダメージを与える
 				player->TakeCritical(GetAttackPower(), this, GetPower());
+			}
+		}
+	}
+	// ゴミ袋探知用コライダ―
+	else if (self == mpSearchCol)
+	{
+		// 衝突した相手がゴミ袋なら
+		if (other->Layer() == ELayer::eTrashBag)
+		{
+			CTrashBag* trashBag = dynamic_cast<CTrashBag*>(other->Owner());
+			// 相手と自分の距離を計る
+			float distance = CVector::Distance(trashBag->Position(), Position());
+			// ターゲットのゴミ袋のポインタがnullか、
+			// 無効の場合
+			if (mpTargetTrashBag == nullptr ||
+				!mpTargetTrashBag->IsEnable())
+			{
+				// ポインタと距離を保存
+				mpTargetTrashBag = trashBag;
+				mTargetTrashBagDistance = distance;
 			}
 		}
 	}
@@ -469,20 +542,29 @@ void CTrashEnemy::DropTrashBag(int power)
 	}
 }
 
+// ターゲットのゴミ袋との距離を取得
+float CTrashEnemy::GetTargetTrashBagDistance()
+{
+	// ターゲットのゴミ袋がnullでなければ距離を計算
+	if (mpTargetTrashBag != nullptr)
+	{
+		mTargetTrashBagDistance = CVector::Distance(mpTargetTrashBag->Position(), Position());
+	}
+	// ターゲットのゴミ袋がnull
+	// もしくは、無効の場合
+	else if (mpTargetTrashBag == nullptr ||
+		!mpTargetTrashBag->IsEnable())
+	{
+		// 大きい数字を入れておく
+		mTargetTrashBagDistance = FLT_MAX;
+	}
+	return mTargetTrashBagDistance;
+}
+
 // 待機状態
 void CTrashEnemy::UpdateIdle()
 {
 	mMoveSpeed = CVector::zero;
-	// プレイヤーを取得
-	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// プレイヤーが視野範囲内かつ、道路内なら、
-	// 追跡状態へ移行
-	if (IsFoundPlayer()&&
-		!player->AreaOutX())
-	{
-		ChangeState(EState::eChase);
-		return;
-	}
 
 	// 待機アニメーションを再生
 	if (!mIsOpen)
@@ -512,12 +594,25 @@ void CTrashEnemy::UpdatePatrol()
 {
 	// プレイヤーを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// プレイヤーが視野範囲内かつ、道路内なら、
+	// プレイヤーとの距離
+	float playerDistance = CVector::Distance(player->Position(), Position());
+	// プレイヤーの方がゴミ袋より近いかつ、
+	// プレイヤーが視野範囲内かつ、道路内の場合、
 	// 追跡状態へ移行
-	if (IsFoundPlayer() &&
+	if (playerDistance < GetTargetTrashBagDistance() &&
+		IsFoundPlayer() &&
 		!player->AreaOutX())
 	{
 		ChangeState(EState::eChase);
+		return;
+	}
+	// プレイヤーを見つけていないか、ゴミ袋の方が近いので
+	// ターゲットのゴミ袋が設定されていて、有効の場合
+	// ゴミ袋へ移動状態へ移行
+	else if (mpTargetTrashBag != nullptr &&
+		mpTargetTrashBag->IsEnable())
+	{
+		ChangeState(EState::eMoveToTrashBag);
 		return;
 	}
 
@@ -588,6 +683,14 @@ void CTrashEnemy::UpdatePatrol()
 // 追跡処理
 void CTrashEnemy::UpdateChase()
 {
+	mElapsedTime += Times::DeltaTime();
+	// 最大で追いかける時間を過ぎたら
+	if (mElapsedTime >= CHASE_MAX_TIME)
+	{
+		// 待機状態へ
+		ChangeState(EState::eIdle);
+		return;
+	}
 	// プレイヤーの座標へ向けて移動する
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
@@ -721,6 +824,77 @@ void CTrashEnemy::UpdateLost()
 	}
 }
 
+// ゴミ袋に向かって移動
+void CTrashEnemy::UpdateMoveToTrashBag()
+{
+	// ゴミ袋へ移動している
+	mIsMoveToTrashBag = true;
+	// プレイヤーのクラスを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// プレイヤーとの距離
+	float playerDistance = CVector::Distance(player->Position(), Position());
+	// プレイヤーの方が近いかつ、
+	// プレイヤーが視野範囲内かつ、道路内の場合、
+	// 追跡状態へ移行
+	if (playerDistance < GetTargetTrashBagDistance()&&
+		IsFoundPlayer()&&
+		!player->AreaOutX())
+	{
+		ChangeState(EState::eChase);
+		return;
+	}
+	// ゴミ袋がnullまたは無効の場合は、巡回状態へ
+	if (mpTargetTrashBag == nullptr ||
+		!mpTargetTrashBag->IsEnable())
+	{
+		ChangeState(EState::ePatrol);
+		return;
+	}
+	// 開いていないかつ、
+	// ゴミ袋が蓋を開く距離より近いなら開く
+	if (!mIsOpen&&
+		GetTargetTrashBagDistance() < OPEN_DISTANCE)
+	{
+		ChangeState(EState::eOpenClose);
+		return;
+	}
+
+	// 移動アニメーションを再生
+	if (!mIsOpen)
+	{
+		ChangeAnimation((int)EAnimType::eMove_Close);
+	}
+	else
+	{
+		ChangeAnimation((int)EAnimType::eMove_Open);
+	}
+
+	// 経路探索管理クラスが存在すれば
+	CNavManager* navMgr = CNavManager::Instance();
+	CVector targetPos = mpTargetTrashBag->Position();
+	if (navMgr != nullptr)
+	{
+		// 経路探索用のノードの座標を更新
+		mpNavNode->SetPos(Position());
+
+		// 自身のノードからゴミ袋のノードまでの最短経路を求める
+		CNavNode* trashBagNode = mpTargetTrashBag->GetNavNode();
+		// ゴミ袋のノードの座標を更新
+		trashBagNode->SetPos(mpTargetTrashBag->Position());
+		if (navMgr->Navigate(mpNavNode, trashBagNode, mpMoveRoute))
+		{
+			// 自身のノードからプレイヤーのノードまで繋がっていたら、
+			// 移動する位置を次のノードの位置に設定
+			targetPos = mpMoveRoute[1]->GetPos();
+		}
+	}
+	// 移動処理
+	if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
+	{
+
+	}
+}
+
 // 被弾開始
 void CTrashEnemy::UpdateDamageStart()
 {
@@ -809,21 +983,11 @@ void CTrashEnemy::UpdateDamageEnd()
 		break;
 
 	case 2:
-		// アニメーションが終了したら待機へ
+		// アニメーションが終了したら開閉状態へ
 		if (IsAnimationFinished())
 		{
-			// 攻撃してきた相手がプレイヤーなら追跡状態へ
-			if (mpDamageCauser = CPlayerBase::Instance())
-			{
-				ChangeState(EState::eChase);
-			}
-			// それ以外なら待機状態へ
-			else
-			{
-				ChangeState(EState::eIdle);
-			}
-			// 攻撃してきた相手の記憶をリセットする
-			mpDamageCauser = nullptr;
+			// 閉じる
+			ChangeState(EState::eOpenClose);
 		}
 		break;
 	}
@@ -1180,8 +1344,14 @@ void CTrashEnemy::UpdateOpenClose()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			// ゴミ袋へ移動している
+			if (mIsMoveToTrashBag)
+			{
+				// ゴミ袋へ移動状態へ
+				ChangeState(EState::eMoveToTrashBag);
+			}
 			// ジャンプしていない
-			if (!mIsJump)
+			else if (!mIsJump)
 			{
 				// プレイヤーに攻撃されていたら
 				if (mpDamageCauser == CPlayerBase::Instance())
@@ -1194,8 +1364,8 @@ void CTrashEnemy::UpdateOpenClose()
 				// それ以外なら
 				else
 				{
-					// 待機状態へ
-					ChangeState(EState::eIdle);
+					// 巡回状態へ
+					ChangeState(EState::ePatrol);
 				}
 			}
 			// ジャンプしているならジャンプへ戻る
@@ -1396,6 +1566,14 @@ void CTrashEnemy::ChangeState(EState state)
 	{
 		AttackEnd();
 	}
+	// ゴミ袋へ移動する状態から
+	// 開閉状態以外に変わるとき
+	if (mState == EState::eMoveToTrashBag &&
+		state != EState::eOpenClose)
+	{
+		// ゴミ袋へ移動していない
+		mIsMoveToTrashBag = false;
+	}
 
 	mState = state;
 	mStateStep = 0;
@@ -1412,6 +1590,7 @@ std::string CTrashEnemy::GetStateStr(EState state) const
 	case EState::ePatrol:			return "巡回";
 	case EState::eChase:			return "追跡";
 	case EState::eLost:				return "見失う";
+	case EState::eMoveToTrashBag:	return "ゴミ袋に向かって移動";
 	case EState::eDamageStart:		return "被弾開始";
 	case EState::eDamage:			return "被弾中";
 	case EState::eDamageEnd:		return "被弾終了";
@@ -1439,6 +1618,7 @@ CColor CTrashEnemy::GetStateColor(EState state) const
 	case EState::ePatrol:			return CColor::green;
 	case EState::eChase:			return CColor::red;
 	case EState::eLost:				return CColor::yellow;
+	case EState::eMoveToTrashBag:	return CColor::cyan;
 	case EState::eDamageStart:		return CColor::blue;
 	case EState::eDamage:			return CColor::blue;
 	case EState::eDamageEnd:		return CColor::blue;

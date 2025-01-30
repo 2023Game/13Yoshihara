@@ -80,7 +80,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 
 // Hpゲージの画像のパス
 #define HP_GAUGE_PATH "UI\\trashbox_player_hp_gauge.png"
-#define HP_GAUGE_SIZE 1.5f	// Hpゲージの大きさの倍率
+#define HP_GAUGE_SIZE 2.0f	// Hpゲージの大きさの倍率
 #define HP_GAUGE_OFFSET_POS CVector(10.0f,10.0f,0.0f)
 
 // ゴミ袋を落とすオフセット座標
@@ -1096,6 +1096,10 @@ void CTrashPlayer::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// 重力無効
+		mIsGravity = false;
+		// 衝突無効
+		SetEnableCol(false);
 		ChangeAnimation((int)EAnimType::eDeath);
 		mMoveSpeed = CVector::zero;
 		mStateStep++;

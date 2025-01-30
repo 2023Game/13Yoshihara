@@ -38,7 +38,7 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	, mCurrentRoadRotation(rotation)
 	, mNextPatrolIndex(-1)
 	, mNextMoveIndex(0)
-	, mPatrolPoints(patrolPoints)
+	, mpPatrolPoints(patrolPoints)
 	, mIsMoveEnd(false)
 	, mIsMovePause(false)
 	, mIsFrontVehicle(false)
@@ -190,15 +190,17 @@ CCollider* CVehicleBase::GetNavCol() const
 // 巡回ポイントのリストを設定する
 void CVehicleBase::SetPatrolPoints(std::vector<CNavNode*> patrolPoints)
 {
-	mPatrolPoints = patrolPoints;
+	mpPatrolPoints = patrolPoints;
 }
 
 // 車両の有効無効を切り替える
-void CVehicleBase::SetOnOff(bool setOnOff)
+void CVehicleBase::SetOnOff(bool isOnOff)
 {
-	SetEnable(setOnOff);
-	SetShow(setOnOff);
-	mpNavNode->SetEnable(setOnOff);
+	// 有効無効を設定
+	SetEnable(isOnOff);
+	SetShow(isOnOff);
+	// 経路探索用のノードの有効無効を設定
+	mpNavNode->SetEnable(isOnOff);
 }
 
 // 変数をリセット
@@ -258,7 +260,7 @@ bool CVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpe
 void CVehicleBase::ChangePatrolPoint()
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
-	int size = mPatrolPoints.size();
+	int size = mpPatrolPoints.size();
 	if (size == 0) return;
 
 	// 巡回開始時であれば、一番最初の巡回ポイントを選択
@@ -295,9 +297,9 @@ void CVehicleBase::ChangePatrolPoint()
 			mpNavNode->SetPos(Position());
 
 			// 次に巡回するポイントの経路を設定
-			mMoveRoute.clear();
-			mMoveRoute.push_back(mpNavNode);
-			mMoveRoute.push_back(mPatrolPoints[mNextPatrolIndex]);
+			mpMoveRoute.clear();
+			mpMoveRoute.push_back(mpNavNode);
+			mpMoveRoute.push_back(mpPatrolPoints[mNextPatrolIndex]);
 			// 次の目的地インデックスを設定
 			mNextMoveIndex = 1;
 		}

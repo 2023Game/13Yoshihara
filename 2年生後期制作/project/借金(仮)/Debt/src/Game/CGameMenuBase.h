@@ -1,6 +1,7 @@
 #pragma once
 #include "CTask.h"
 #include "CImage.h"
+#include "CText.h"
 #include <vector>
 
 // TODO:種類別のゲームメニューに対応させる
@@ -34,6 +35,7 @@ public:
 protected:
 	CImage* mpBackground;				// 背景画像
 	std::vector<CImage*> mMenuItems;	// メニューの要素
+	std::vector<CText*> mMenuTexts;		// メニューのテキスト
 	CImage* mpSelectFrame;				// 選択中の画像
 	int mSelectIndex;					// 選択中の番号
 	bool mIsOpened;						// 開いているか

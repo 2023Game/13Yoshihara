@@ -137,10 +137,10 @@ protected:
 	CNavNode* mpChangeRoadPoint;
 
 	// 巡回ポイントのリスト
-	std::vector<CNavNode*> mPatrolPoints;
+	std::vector<CNavNode*> mpPatrolPoints;
 	int mNextPatrolIndex;	// 次に巡回するポイントの番号
 
-	std::vector<CNavNode*> mMoveRoute;	// 求めた最短経路記憶用
+	std::vector<CNavNode*> mpMoveRoute;	// 求めた最短経路記憶用
 	int mNextMoveIndex;					// 次に移動するノードのインデックス値
 
 	bool mIsMoveEnd;	// 最後まで移動したかどうか

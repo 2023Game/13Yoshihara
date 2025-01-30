@@ -8,8 +8,8 @@
 #define START_POS_RIGHT CVector( 100.0f,0.0f, 100.0f)
 
 // 左の道の巡回ポイント
-#define PATROLPOINT_L_1 CVector(-100.0f, 4.0f,-100.0f)
-#define PATROLPOINT_L_2 CVector(-100.0f, 4.0f, 100.0f)
+#define PATROLPOINT_L_1 CVector(-100.0f, 4.0f, 100.0f)
+#define PATROLPOINT_L_2 CVector(-100.0f, 4.0f,-100.0f)
 // 右の道の巡回ポイント
 #define PATROLPOINT_R_1 CVector(100.0f, 4.0f,-100.0f)
 #define PATROLPOINT_R_2 CVector(100.0f, 4.0f, 100.0f)

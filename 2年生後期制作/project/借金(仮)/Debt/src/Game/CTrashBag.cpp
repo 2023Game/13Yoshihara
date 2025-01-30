@@ -1,7 +1,7 @@
 #include "CTrashBag.h"
 #include "CModel.h"
 #include "CColliderSphere.h"
-
+#include "CNavNode.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
 
@@ -17,7 +17,7 @@
 
 // コンストラクタ
 CTrashBag::CTrashBag(bool gold)
-	: CObjectBase(ETag::eTrashBag, ETaskPriority::eTrashBag)
+	: CObjectBase(ETag::eTrashBag, ETaskPriority::eTrashBag, 0, ETaskPauseType::eGame)
 	, CTrashBagStatus(gold)
 	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
@@ -39,11 +39,17 @@ CTrashBag::CTrashBag(bool gold)
 		BODY_RADIUS
 	);
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
-	// プレイヤー、敵、回収員、地形、ゴミ袋、車両
+	// プレイヤー、敵、回収員、地形、ゴミ袋、ゴミ袋探知用、車両
 	// と衝突判定する
-	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eField,ETag::eTrashBag,ETag::eVehicle });
+	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eField,
+		ETag::eTrashBag,ETag::eVehicle });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,
-		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eTrashBag,ELayer::eVehicle });
+		ELayer::eGround,ELayer::eWall,ELayer::eObject,
+		ELayer::eTrashBag,ELayer::eTrashBagSearch,ELayer::eVehicle });
+
+	// 経路探索用のノードを作成
+	mpNavNode = new CNavNode(Position(), true);
+	mpNavNode->SetColor(CColor::blue);
 }
 
 // デストラクタ
@@ -264,6 +270,8 @@ void CTrashBag::SetOnOff(bool isOnOff)
 	// 有効無効を設定
 	SetEnable(isOnOff);
 	SetShow(isOnOff);
+	// 経路探索用のノードの有効無効を設定
+	mpNavNode->SetEnable(isOnOff);
 
 	// 有効にするなら消滅までの時間をリセット
 	if (isOnOff) SetDeleteTime();

@@ -149,6 +149,9 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D">
       <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Result">
+      <UniqueIdentifier>{35a77b06-1f9a-4ad9-8141-e4f09176ff7f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -582,6 +585,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CTrashScoreUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashGameResultUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Result</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1043,6 +1049,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTrashScoreUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashGameResultUI.h">
+      <Filter>ソース ファイル\Game\UI\Result</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

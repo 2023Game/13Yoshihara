@@ -47,6 +47,7 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
 	CResourceManager::Load<CModelX>("TrashEnemy", "Character\\TrashBox\\TrashBoxEnemy.x");
 	CResourceManager::Load<CModelX>("Collector", "Character\\Collector\\Fox.x");
+	CResourceManager::Load<CModelX>("PunisherCollector", "Character\\PunisherCollector\\PunisherFox.x");
 	CResourceManager::Load<CModelX>("Resident", "Character\\Resident\\Monkey.x");
 	// CModel
 	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
@@ -81,8 +82,7 @@ void CTrashGameScene::Load()
 
 	CTrashPlayer* player = new CTrashPlayer();
 
-	float enemyScale = 0.1f;
-	CTrashEnemy* enemy = new CTrashEnemy(false, enemyScale);
+	CTrashEnemy* enemy = new CTrashEnemy(false);
 	enemy->Position(0.0f, 0.0f, 5.0f);
 
 	// éûä‘ï\é¶UIçÏê¨
