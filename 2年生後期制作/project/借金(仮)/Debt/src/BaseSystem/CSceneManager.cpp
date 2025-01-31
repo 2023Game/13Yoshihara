@@ -1,6 +1,7 @@
 #include "CSceneManager.h"
 #include "CFade.h"
 #include "CTitleScene.h"
+#include "CResultScene.h"
 #include "CHomeScene.h"
 #include "CTrashGameScene.h"
 
@@ -107,6 +108,8 @@ void CSceneManager::ChangeNextScene()
 	{
 		//タイトルシーン
 		case EScene::eTitle:	mpScene = new CTitleScene();	break;
+		// ゲームの結果シーン
+		case EScene::eResult:	mpScene = new CResultScene();	break;
 		//ホームシーン
 		case EScene::eHome:		mpScene = new CHomeScene();		break;
 		//ゴミ拾いゲームシーン

@@ -141,7 +141,7 @@ void CTrashGameScene::Update()
 
 	// 車両管理クラスの更新
 	mpVehicleManager->Update();
-	// 時間表示UIクラスの更新
+	// 時間表示UIクラスの描画、更新
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新
 	mpTrashScoreUI->Update();

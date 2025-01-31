@@ -23,7 +23,7 @@ public:
 	/// </summary>
 	/// <param name="format">‘®•¶š—ñ</param>
 	/// <param name="‘æ2ˆø”ˆÈ~">•¶š—ñ‚É•ÏŠ·‚·‚éˆø”</param>
-	void ChangeStr(const char* format, ...);
+	void ChangeToStr(const char* format, ...);
 
 	// •`‰æ‚·‚é•¶š—ñ‚ğİ’è‚·‚é
 	void SetStr(std::string str);

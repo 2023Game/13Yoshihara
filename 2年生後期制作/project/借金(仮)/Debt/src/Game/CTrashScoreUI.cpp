@@ -4,7 +4,7 @@
 #include "CTrashBagStatus.h"
 
 // スコアUIのオフセット座標
-#define SCORE_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.4f,WINDOW_HEIGHT - 100.0f,0.0f)
+#define SCORE_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.75f,WINDOW_HEIGHT - 100.0f,0.0f)
 
 // コンストラクタ
 CTrashScoreUI::CTrashScoreUI()
@@ -17,13 +17,14 @@ CTrashScoreUI::CTrashScoreUI()
 // デストラクタ
 CTrashScoreUI::~CTrashScoreUI()
 {
+	SAFE_DELETE(mpTrashBagStatus);
 }
 
 // 更新
 void CTrashScoreUI::Update()
 {
 	// 描画する文字列を設定
-	mpScoreUI->ChangeStr("スコア：%d\n", GetScore());
+	mpScoreUI->ChangeToStr("Score：%d\n", GetScore());
 	// 座標を設定
 	mpScoreUI->Position(SCORE_UI_OFFSET_POS);
 }

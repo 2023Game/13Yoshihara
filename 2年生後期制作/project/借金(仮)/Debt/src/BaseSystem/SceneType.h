@@ -6,7 +6,10 @@ enum class EScene
 	eNone,	//どのシーンにも所属していない
 
 	eTitle,			// タイトルシーン
-	eHome,			// ホームシーン
+	eResult,		// リザルトシーン
+
+	eHome,			// 拠点シーン
+
 	eTrashGame,		// ゴミ収集ゲームシーン
 	eDeliveryGame,	// 配達ゲームシーン
 

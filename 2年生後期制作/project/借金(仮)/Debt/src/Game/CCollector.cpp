@@ -681,7 +681,6 @@ void CCollector::UpdateChase()
 	// ƒvƒŒƒCƒ„[‚ÉUŒ‚‚Å‚«‚é‹——£‚È‚ç‚Î
 	if (CanAttackPlayer(ATTACK_RANGE))
 	{
-
 		// ‰ñŽûˆõ‚ªŠù‚É‚Â‚¢‚Ä‚¢‚È‚¯‚ê‚ÎUŒ‚ó‘Ô‚Ö
 		if (!player->GetStickCollector())
 		{

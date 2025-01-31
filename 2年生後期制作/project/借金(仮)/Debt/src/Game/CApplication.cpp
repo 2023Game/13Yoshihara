@@ -8,6 +8,7 @@
 #include "CSceneManager.h"
 #include "CGamePause.h"
 #include "CFade.h"
+#include "CScoreManager.h"
 
 CApplication::~CApplication()
 {
@@ -28,6 +29,8 @@ void CApplication::Start()
 	CSoundManager::Instance();
 	// BGM管理クラスを作成
 	CBGMManager::Instance();
+	// 得点管理クラスを作成
+	CScoreManager::Instance();
 
 #if _DEBUG
 	// デバッグモードでは、ブートメニューを最初に開く
@@ -46,6 +49,7 @@ void CApplication::End()
 	CResourceManager::ClearInstance();
 	CBGMManager::ClearInstance();
 	CSoundManager::ClearInstance();
+	CScoreManager::ClearInstance();
 }
 
 void CApplication::Update()

@@ -237,12 +237,15 @@ void CPlayerBase::Update()
 		mpNavNode->SetPos(Position());
 	}
 
-	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
-	CDebugPrint::Print("Pos:%f,%f,%f\n", Position().X(), Position().Y(), Position().Z());
 
 	mIsGrounded = false;
 
-	CDebugPrint::Print("FPS:%f\n", Times::FPS());
+#if _DEBUG
+	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
+	CDebugPrint::Print("Pos:%f,%f,%f\n", Position().X(), Position().Y(), Position().Z());
+	CDebugPrint::ForcePrint("FPS:%f\n", Times::FPS());
+#endif
+
 
 	// 調べるオブジェクトのリストをクリア
 	mNearInteractObjs.clear();

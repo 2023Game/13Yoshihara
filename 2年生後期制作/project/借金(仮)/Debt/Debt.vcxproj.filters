@@ -152,6 +152,9 @@
     <Filter Include="ソース ファイル\Game\UI\Result">
       <UniqueIdentifier>{35a77b06-1f9a-4ad9-8141-e4f09176ff7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Result\TrashGame">
+      <UniqueIdentifier>{55356f0b-8e3d-4978-9e87-4e230cf3916f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -586,8 +589,17 @@
     <ClCompile Include="src\Game\CTrashScoreUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashGameResultUI.cpp">
+    <ClCompile Include="src\Game\CResultScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResultUIBase.cpp">
       <Filter>ソース ファイル\Game\UI\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashGameResultUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Result\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CScoreManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1050,8 +1062,17 @@
     <ClInclude Include="src\Game\CTrashScoreUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTrashGameResultUI.h">
+    <ClInclude Include="src\Game\CResultScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResultUIBase.h">
       <Filter>ソース ファイル\Game\UI\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashGameResultUI.h">
+      <Filter>ソース ファイル\Game\UI\Result\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CScoreManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

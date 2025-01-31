@@ -10,7 +10,7 @@ CTextUI2D::CTextUI2D()
 	// タイトルロゴのフォントデータを生成
 	mpFont = new CFont("res\\Font\\toroman.ttf");
 	mpFont->SetFontSize(64);
-	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpFont->SetLineLength(WINDOW_WIDTH);
 
 	// 文字列描画用のクラスを生成
@@ -40,7 +40,7 @@ void CTextUI2D::Update()
 	// 描画する文字列を設定
 	mpText->SetText(mStr.c_str());
 	// 座標を設定
-	mpText->SetPos(Position());
+	mpText->SetPos(Position().X(),Position().Y());
 	mpText->Update();
 }
 
@@ -51,7 +51,7 @@ void CTextUI2D::Render()
 }
 
 // 描画する文字列を設定する
-void CTextUI2D::ChangeStr(const char* format, ...)
+void CTextUI2D::ChangeToStr(const char* format, ...)
 {
 	char buf[512];
 	va_list ap;

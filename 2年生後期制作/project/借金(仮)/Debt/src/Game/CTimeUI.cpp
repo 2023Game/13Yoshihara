@@ -2,7 +2,7 @@
 #include "CTextUI2D.h"
 
 // 時間UIのオフセット座標
-#define TIME_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.38f,10.0f,0.0f)
+#define TIME_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.78f,10.0f,0.0f)
 
 // コンストラクタ
 CTimeUI::CTimeUI(int maxTime)
@@ -21,7 +21,7 @@ CTimeUI::~CTimeUI()
 void CTimeUI::Update()
 {
 	// 描画する文字列を設定
-	mpTimeUI->ChangeStr("のこりじかん：%d\n", GetTime());
+	mpTimeUI->ChangeToStr("Time： % d\n", GetTime());
 	// 座標を設定
 	mpTimeUI->Position(TIME_UI_OFFSET_POS);
 	// 時間を数える
