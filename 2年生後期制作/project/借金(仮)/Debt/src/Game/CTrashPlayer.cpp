@@ -6,6 +6,10 @@
 #include "CGaugeUI2D.h"
 #include "CTrashBag.h"
 #include "CTrashField.h"
+#include "CSceneManager.h"
+#include "CScoreManager.h"
+#include "CTrashScoreUI.h"
+#include "CSound.h"
 
 // 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
@@ -86,6 +90,9 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 // ゴミ袋を落とすオフセット座標
 #define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
 
+// 効果音の音量
+#define SE_VOLUME 1.0f
+
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
 	: CPlayerBase()
@@ -106,6 +113,11 @@ CTrashPlayer::CTrashPlayer()
 	Scale(SCALE, SCALE, SCALE);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashPlayer", &ANIM_DATA);
+	// 効果音を設定
+	mpDamageSE = CResourceManager::Get<CSound>("DamageSE");
+	mpCriticalSE = CResourceManager::Get<CSound>("CriticalSE");
+	mpGuardSE = CResourceManager::Get<CSound>("GuardSE");
+	mpCollectorDamageSE = CResourceManager::Get<CSound>("CollectorDamageSE1");
 
 	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
@@ -295,6 +307,18 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				enemy->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				enemy->TakeDamage(GetAttackPower(), this, GetPower());
+				// 開いている場合
+				if (enemy->GetOpen())
+				{
+					// ダメージ音を再生
+					mpDamageSE->Play(SE_VOLUME,true);
+				}
+				// 開いていない場合
+				else
+				{
+					// ガード音を再生
+					mpGuardSE->Play(SE_VOLUME, true);
+				}
 			}
 		}
 		// 衝突した相手が回収員なら
@@ -309,6 +333,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				AddAttackHitObj(collector);
 				// 攻撃力分のダメージを与える
 				collector->TakeDamage(GetAttackPower(), this);
+				// ダメージ音を再生
+				mpCollectorDamageSE->Play(SE_VOLUME, true);
 			}
 		}
 		// 衝突した相手が車両なら
@@ -321,6 +347,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				AddAttackHitObj(vehicle);
 				// 攻撃力分のダメージを与える
 				vehicle->TakeDamage(GetAttackPower(), this);
+				// ダメージ音を再生
+				mpDamageSE->Play(SE_VOLUME, true);
 			}
 		}
 	}
@@ -346,6 +374,18 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				enemy->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// クリティカルダメージを与える
 				enemy->TakeCritical(GetAttackPower(), this, GetPower());
+				// 開いている場合
+				if (enemy->GetOpen())
+				{
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
+				}
+				// 開いていない場合
+				else
+				{
+					// ダメージ音を再生
+					mpDamageSE->Play(SE_VOLUME, true);
+				}
 			}
 		}
 		// 衝突した相手が回収員なら
@@ -360,6 +400,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				AddAttackHitObj(collector);
 				// 攻撃力分のダメージを与える
 				collector->TakeDamage(GetAttackPower(), this);
+				// ダメージ音を再生
+				mpCollectorDamageSE->Play(SE_VOLUME, true);
 			}
 		}
 		// 衝突した相手が車両なら
@@ -372,6 +414,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 				AddAttackHitObj(vehicle);
 				// 攻撃力分のダメージを与える
 				vehicle->TakeCritical(GetAttackPower(), this);
+				// クリティカル音を再生
+				mpCriticalSE->Play(SE_VOLUME, true);
 			}
 		}
 	}
@@ -387,6 +431,12 @@ bool CTrashPlayer::GetStickCollector() const
 void CTrashPlayer::SetStickCollector(bool stickCollector)
 {
 	mIsStickCollector = stickCollector;
+	// ついているのを解除する場合
+	if (!stickCollector)
+	{
+		// ポインタを初期化
+		mpStickCollector = nullptr;
+	}
 }
 
 // ついている回収員のポインタを取得
@@ -1096,12 +1146,14 @@ void CTrashPlayer::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// 移動をゼロ
+		mMoveSpeedY = 0.0f;
+		mMoveSpeed = CVector::zero;
 		// 重力無効
 		mIsGravity = false;
 		// 衝突無効
 		SetEnableCol(false);
 		ChangeAnimation((int)EAnimType::eDeath);
-		mMoveSpeed = CVector::zero;
 		mStateStep++;
 		break;
 
@@ -1112,8 +1164,21 @@ void CTrashPlayer::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ1：TODO：ゲーム終了画面を表示する
+		// ステップ1：リザルトシーンへ移行する
 	case 2:
+		// スコア表示UIクラスを取得
+		CTrashScoreUI * scoreUI = CTrashScoreUI::Instance();
+		// 得点管理クラスを取得
+		CScoreManager* scoreMgr = CScoreManager::Instance();
+		// シーン管理クラスを取得
+		CSceneManager * sceneMgr = CSceneManager::Instance();
+		
+		// スコアデータを設定
+		scoreMgr->SetTrashGameScoreData(scoreUI->GetScore(), GetTrashBag(), GetGoldTrashBag());
+		// ゲームの種類を今のシーンに設定
+		scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
+		// リザルトシーンへ移行
+		sceneMgr->LoadScene(EScene::eResult);
 
 		break;
 	}
@@ -1171,7 +1236,6 @@ void CTrashPlayer::AttackEnd()
 // ダメージを受ける
 void CTrashPlayer::TakeDamage(int damage, CObjectBase* causer, int dropNum)
 {
-
 	// 開いていればダメージを受ける
 	if (mIsOpen)
 	{

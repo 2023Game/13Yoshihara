@@ -7,13 +7,25 @@
 // 大きさの倍率
 #define SIZE_RATIO 1.5f
 
+// 効果音の音量
+#define SE_VOLUME 1.0f
+
+// 誤プッシュ回避用の待機時間
+#define WAIT_TIME 0.1f
+
 // コンストラクタ
 CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
 	, mSelectIndex(0)
 	, mIsOpened(false)
 	, mpPrevMenu(nullptr)
+	, mElapsedTime(0.0f)
 {
+	// 効果音
+	mpSelectSE = CResourceManager::Get<CSound>("SelectSE");
+	mpPushSE = CResourceManager::Get<CSound>("PushSE");
+	mpBuzzerSE = CResourceManager::Get<CSound>("BuzzerSE");
+
 	int menuItemMax = menuItemPathList.size();
 
 	mpBackground = new CImage
@@ -44,6 +56,7 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::str
 		item->SetPos(posX, spaceY * (i + 1));
 		item->SetColor(1.0f, 1.0f, 1.0f, MENU_ALPHA);
 		mMenuItems.push_back(item);
+		mMenuOnOff.push_back(true);
 
 		CText* text = new CText
 		(
@@ -84,6 +97,7 @@ void CGameMenuBase::Open()
 	SetEnable(true);
 	SetShow(true);
 	mSelectIndex = 0;
+	mElapsedTime = 0.0f;
 	CBGMManager::Instance()->Play(EBGMType::eMenu, false);
 	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
 }
@@ -111,21 +125,33 @@ void CGameMenuBase::Decide(int select)
 // 更新
 void CGameMenuBase::Update()
 {
-	int itemCount = mMenuItems.size();
-	if (CInput::PushKey('W'))
+	// 待機時間が経過しているなら操作可能
+	if (mElapsedTime >= WAIT_TIME)
 	{
-		mSelectIndex = (mSelectIndex + itemCount - 1) % itemCount;
-		// TODO : セレクト音を再生
+		int itemCount = mMenuItems.size();
+		if (CInput::PushKey('W'))
+		{
+			mSelectIndex = (mSelectIndex + itemCount - 1) % itemCount;
+			// セレクト音を再生
+			mpSelectSE->Play(SE_VOLUME, true);
+		}
+		else if (CInput::PushKey('S'))
+		{
+			mSelectIndex = (mSelectIndex + 1) % itemCount;
+			// セレクト音を再生
+			mpSelectSE->Play(SE_VOLUME, true);
+		}
+		else if (CInput::PushKey(VK_SPACE))
+		{
+			Decide(mSelectIndex);
+			// 決定音を再生
+			mpPushSE->Play(SE_VOLUME, true);
+		}
 	}
-	else if (CInput::PushKey('S'))
+	// 経過していないなら
+	else
 	{
-		mSelectIndex = (mSelectIndex + 1) % itemCount;
-		// TODO : セレクト音を再生
-	}
-	else if (CInput::PushKey(VK_SPACE))
-	{
-		Decide(mSelectIndex);
-		// TODO : 決定音を再生
+		mElapsedTime += Times::DeltaTime();
 	}
 
 	mpBackground->Update();
@@ -143,6 +169,16 @@ void CGameMenuBase::Render()
 	for (int i = 0; i < mMenuItems.size(); i++)
 	{
 		CImage* item = mMenuItems[i];
+		// オフの場合暗くする
+		if (!mMenuOnOff[i])
+		{
+			item->SetColor(0.1f, 0.1f, 0.1f);
+		}
+		// オンの場合明るくする
+		else
+		{
+			item->SetColor(1.0f, 1.0f, 1.0f);
+		}
 		item->Render();
 
 		if (i == mSelectIndex)
@@ -151,4 +187,10 @@ void CGameMenuBase::Render()
 			mpSelectFrame->Render();
 		}
 	}
+}
+
+// メニューの要素の有効無効を設定
+void CGameMenuBase::SetMenuOnOff(int num, bool isOnOff)
+{
+	mMenuOnOff[num] = isOnOff;
 }

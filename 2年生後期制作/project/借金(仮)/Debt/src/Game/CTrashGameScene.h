@@ -31,4 +31,8 @@ private:
 	CTimeUI* mpTimeUI;
 	// スコア表示UI
 	CTrashScoreUI* mpTrashScoreUI;
+	// 経過時間を計る
+	float mElapsedTime;
+	// ポーズしたかどうか
+	bool mIsPause;
 };

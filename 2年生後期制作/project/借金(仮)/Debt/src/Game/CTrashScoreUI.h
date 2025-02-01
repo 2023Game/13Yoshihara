@@ -7,6 +7,8 @@ class CTrashBagStatus;
 class CTrashScoreUI
 {
 public:
+	// スコア表示UIのインスタンスを取得
+	static CTrashScoreUI* Instance();
 	// コンストラクタ
 	CTrashScoreUI();
 	// デストラクタ
@@ -19,11 +21,15 @@ public:
 	int GetScore() const;
 
 private:
+	// スコア表示UIのインスタンス
+	static CTrashScoreUI* spInstance;
 	// スコア
 	int mScore;
 
-	// ゴミ袋ごとの得点取得用
-	CTrashBagStatus* mpTrashBagStatus;
+	// ゴミ袋一つの得点
+	int mTrashBagScore;
+	// ゴールドのゴミ袋一つの得点
+	int mGoldTrashBagScore;
 	// テキストUI
 	CTextUI2D* mpScoreUI;
 };

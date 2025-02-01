@@ -60,21 +60,3 @@ void CTrashField::Render()
 {
 	CFieldBase::Render();
 }
-
-// 地面のコライダ―取得
-CCollider* CTrashField::GetGroundCol()
-{
-	return mpGroundColliderMesh;
-}
-
-// 壁のコライダ―取得
-CCollider* CTrashField::GetWallCol()
-{
-	return mpWallColliderMesh;
-}
-
-// オブジェクトのコライダ―取得
-CCollider* CTrashField::GetObjCol()
-{
-	return mpObjectColliderMesh;
-}

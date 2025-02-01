@@ -1,11 +1,10 @@
 #include "CTextUI2D.h"
-#include "CText.h"
 #include "CFont.h"
 #include <stdarg.h>
 
 // コンストラクタ
-CTextUI2D::CTextUI2D()
-	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame)
+CTextUI2D::CTextUI2D(bool addTaskList)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame, false, addTaskList)
 {
 	// タイトルロゴのフォントデータを生成
 	mpFont = new CFont("res\\Font\\toroman.ttf");
@@ -71,4 +70,11 @@ void CTextUI2D::SetStr(std::string str)
 void CTextUI2D::SetFontSize(int fontSize)
 {
 	mpText->SetFontSize(fontSize);
+	mpFont->SetFontSize(fontSize);
+}
+
+// 文字の揃いの基準を設定
+void CTextUI2D::SetFontAligment(FTGL::TextAlignment aligment)
+{
+	mpFont->SetAlignment(aligment);
 }

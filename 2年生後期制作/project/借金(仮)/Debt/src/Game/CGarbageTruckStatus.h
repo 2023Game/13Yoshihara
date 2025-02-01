@@ -29,10 +29,17 @@ public:
 	// 回収員の人数を1減らす
 	void DecreaseCollectors();
 
+	// ゴミ袋の数の初期値を取得する
+	int GetDefaultBagNum() const;
+	// ゴールドゴミ袋の数の初期値を取得する
+	int GetDefaultGoldBagNum() const;
+
 	// お仕置き用かどうかを取得
 	bool GetPunisher() const;
 private:
 	float mReturnTime;		// 撤退までの時間
 	int mCollectorsNum;		// 回収員の人数
 	bool mIsPunisher;		// お仕置き用かどうか
+	int mDefaultBagNum;		// ゴミ袋の数の初期値
+	int mDefaultGoldBagNum;	// ゴールドゴミ袋の数の初期値
 };

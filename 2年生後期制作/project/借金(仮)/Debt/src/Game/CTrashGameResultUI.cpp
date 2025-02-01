@@ -9,15 +9,15 @@
 #define BACKGROUND_PATH "UI/trash_game_result_bg.png"
 
 // 得点のテキストのオフセット座標
-#define SCORE_OFFSET_POS	CVector(WINDOW_WIDTH * 0.48f, WINDOW_HEIGHT * 0.2f, 0.0f)
+#define SCORE_OFFSET_POS	CVector(0.0f, WINDOW_HEIGHT * 0.2f, 0.0f)
 // ゴミ袋の数のテキストのオフセット座標
-#define NUM_OFFSET_POS		CVector(WINDOW_WIDTH * 0.4f, WINDOW_HEIGHT * 0.4f, 0.0f)
+#define NUM_OFFSET_POS		CVector(WINDOW_WIDTH * 0.375f, WINDOW_HEIGHT * 0.4f, 0.0f)
 // ゴミ袋の値段のテキストのオフセット座標
 #define PRICE_OFFSET_POS	CVector(WINDOW_WIDTH * 0.55f, WINDOW_HEIGHT * 0.4f, 0.0f)
 // 単位のテキストのオフセット座標
-#define UNIT_OFFSET_POS		CVector(WINDOW_WIDTH * 0.45f, WINDOW_HEIGHT * 0.4f, 0.0f)
+#define UNIT_OFFSET_POS		CVector(WINDOW_WIDTH * 0.425f, WINDOW_HEIGHT * 0.4f, 0.0f)
 // ×のテキストのオフセット座標
-#define X_OFFSET_POS		CVector(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.4f, 0.0f)
+#define X_OFFSET_POS		CVector(0.0f, WINDOW_HEIGHT * 0.4f, 0.0f)
 
 // ゴミ袋の画像のサイズの倍率
 #define SIZE_RATE 0.25f
@@ -44,39 +44,42 @@ CTrashGameResultUI::CTrashGameResultUI()
 		scoreMgr->GetTrashGameScoreData();
 
 	// 得点のテキストを生成
-	mpScorePointText = new CTextUI2D();
+	mpScorePointText = new CTextUI2D(false);
 	// テキストを設定
 	mpScorePointText->ChangeToStr("%d\n", scoreData->mScore);
 	// 座標を設定
 	mpScorePointText->Position(SCORE_OFFSET_POS);
 	// フォントサイズを設定
 	mpScorePointText->SetFontSize(128);
+	// 文字の揃いの基準を設定
+	mpScorePointText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 
 	// ゴミ袋の数のテキストを生成
-	mpNumText = new CTextUI2D();
+	mpNumText = new CTextUI2D(false);
 	// テキストを設定
 	mpNumText->ChangeToStr("%d\n　\n　\n%d\n", scoreData->mTrashBagNum, scoreData->mGoldTrashBagNum);
 	// 座標を設定
 	mpNumText->Position(NUM_OFFSET_POS);
 
 	// ゴミ袋の値段のテキストを生成
-	mpPriceText = new CTextUI2D();
+	mpPriceText = new CTextUI2D(false);
 	// テキストを設定
 	mpPriceText->ChangeToStr("%d\n　\n　\n%d\n", trashBagPoint, goldTrashBagPoint);
 	// 座標を設定
 	mpPriceText->Position(PRICE_OFFSET_POS);
 
 	// 単位のテキストを生成
-	mpUnitText = new CTextUI2D();
+	mpUnitText = new CTextUI2D(false);
 	// テキストを設定
-	mpUnitText->SetStr("コ　　　　　円\n　\n　\nコ　　　　　円\n");
+	mpUnitText->SetStr("コ　　　　　　円\n　\n　\nコ　　　　　　円\n");
 	// 座標を設定
 	mpUnitText->Position(UNIT_OFFSET_POS);
 
 	// ×のテキストを生成
-	mpXText= new CTextUI2D();
+	mpXText= new CTextUI2D(false);
 	// テキストを設定
 	mpXText->SetStr("×\n　\n　\n×\n");
+	mpXText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 	// 座標を設定
 	mpXText->Position(X_OFFSET_POS);
 
@@ -117,20 +120,40 @@ CTrashGameResultUI::~CTrashGameResultUI()
 {
 	SAFE_DELETE(mpTrashBagImg);
 	SAFE_DELETE(mpGoldTrashBagImg);
+
+	SAFE_DELETE(mpScorePointText);
+	SAFE_DELETE(mpNumText);
+	SAFE_DELETE(mpPriceText);
+	SAFE_DELETE(mpUnitText);
+	SAFE_DELETE(mpXText);
 }
 
 // 更新
 void CTrashGameResultUI::Update()
 {
 	CResultUIBase::Update();
+	// 画像
 	mpTrashBagImg->Update();
 	mpGoldTrashBagImg->Update();
+	// テキスト
+	mpScorePointText->Update();
+	mpNumText->Update();
+	mpPriceText->Update();
+	mpUnitText->Update();
+	mpXText->Update();
 }
 
 // 描画
 void CTrashGameResultUI::Render()
 {
 	CResultUIBase::Render();
+	// 画像
 	mpTrashBagImg->Render();
 	mpGoldTrashBagImg->Render();
+	// テキスト
+	mpScorePointText->Render();
+	mpNumText->Render();
+	mpPriceText->Render();
+	mpUnitText->Render();
+	mpXText->Render();
 }

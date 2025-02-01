@@ -5,6 +5,7 @@ class CModel;
 class CNavNode;
 class CVehicleManager;
 class CFlamethrower;
+class CSound;
 
 // 前方コライダ―の座標
 #define FRONT_COL_OFFSET_POS CVector(0.0f,0.0f,60.0f)
@@ -148,4 +149,7 @@ protected:
 
 	bool mIsFrontVehicle;	// 前方に停止している車両がいるかどうか
 	bool mIsSideVehicle;	// 横に車両がいるかどうか
+
+	// 効果音
+	CSound* mpDamageSE;
 };

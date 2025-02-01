@@ -9,7 +9,7 @@
 CGameMenu::CGameMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_ITEM1, MENU_ITEM1, MENU_CLOSE}, MENU_SELECT)
 {
-
+	
 }
 
 // デストラクタ

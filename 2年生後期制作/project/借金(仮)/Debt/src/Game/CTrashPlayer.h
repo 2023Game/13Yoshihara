@@ -5,6 +5,8 @@
 #include "CTrashPlayerStatus.h"
 #include "CCollector.h"
 
+class CSound;
+
 /*
 ゴミ拾いゲームのプレイヤークラス
 プレイヤー基底クラスと
@@ -194,4 +196,10 @@ private:
 	bool mIsStickCollector;
 	// ついている回収員のポインタ
 	CCollector* mpStickCollector;
+
+	// 効果音
+	CSound* mpDamageSE;
+	CSound* mpCriticalSE;
+	CSound* mpGuardSE;
+	CSound* mpCollectorDamageSE;
 };

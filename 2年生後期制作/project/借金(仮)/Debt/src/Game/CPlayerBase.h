@@ -2,7 +2,6 @@
 //キャラクタクラスのインクルード
 #include "CXCharacter.h"
 #include "CRideableObject.h"
-#include "CSound.h"
 
 class CGaugeUI2D;
 class CInteractObject;

@@ -6,6 +6,7 @@
 #include "CNavNode.h"
 #include "Maths.h"
 #include "CFlamethrower.h"
+#include "CSound.h"
  
 #define FRONT_HEIGHT	13.0f	// 前方判定の高さ
 #define FRONT_WIDTH		40.0f	// 前方判定の幅
@@ -15,7 +16,6 @@
 
 // 炎のエフェクトのオフセット座標
 #define FLAME_OFFSET_POS CVector(0.0f,10.0f,20.0f)
-#define FLAME_OFFSET_ROT CQuaternion(90.0f,0.0f,0.0f)
 
 // 炎のスケール値の最大値
 #define FLAME_SCALE 5.0f
@@ -77,13 +77,16 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	(
 		this, nullptr,
 		FLAME_OFFSET_POS,
-		FLAME_OFFSET_ROT.Matrix()
+		CVector::up
 	);
 	mpFlamethrower->SetAddBlend(false);
 	mpFlamethrower->SetFlameColor(CColor(0.0f,0.0f,0.0f));
 	mpFlamethrower->SetFlameScale(FLAME_SCALE);
 	mpFlamethrower->SetFlameScaleAnimTime(FLAME_SCALE_ANIM_TIME);
 	mpFlamethrower->SetFlameMoveSpeed(FLAME_MOVE_SPEED);
+
+	// 効果音を設定
+	mpDamageSE = CResourceManager::Get<CSound>("DamageSE");
 }
 
 // デストラクタ

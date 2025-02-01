@@ -27,6 +27,13 @@ public:
 	// 描画
 	virtual void Render();
 
+	// 地面のコライダ―取得
+	CCollider* GetGroundCol();
+	// 壁のコライダ―取得
+	CCollider* GetWallCol();
+	// オブジェクトのコライダ―取得
+	CCollider* GetObjCol();
+
 protected:
 	// フィールドのオブジェクトを生成
 	virtual void CreateFieldObjects() = 0;

@@ -5,6 +5,8 @@
 #include "CTrashEnemyStatus.h"
 
 class CTrashBag;
+class CSound;
+
 /*
 ゴミ拾いゲームの敵クラス
 敵基底クラスと
@@ -198,4 +200,9 @@ private:
 	bool mIsJump;
 	// ゴミ袋へ移動しているか
 	bool mIsMoveToTrashBag;
+
+	// 効果音
+	CSound* mpDamageSE;
+	CSound* mpCriticalSE;
+	CSound* mpGuardSE;
 };

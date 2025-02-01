@@ -7,6 +7,7 @@
 #include "Primitive.h"
 #include "CVehicleManager.h"
 #include "CFlamethrower.h"
+#include "CSound.h"
 
 #define CAR_HEIGHT		9.0f	// 車の高さ
 #define CAR_WIDTH		25.0f	// 車の幅
@@ -174,18 +175,22 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// プレイヤークラスを取得
 				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
 
-				// 自分から相手の方向
-				CVector direction = player->Position() - Position();
-				direction = direction.Normalized();
-				direction.Y(0.0f);
-				// 相手が受けるノックバック速度に、
-				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				player->SetKnockbackReceived(direction * GetKnockbackDealt());
-				// 攻撃力分のダメージを与える
-				player->TakeDamage(GetAttackPower(), this, GetPower());
-
-				// 壊れた状態に変更
-				ChangeState(EState::eBroken);
+				if (player != nullptr)
+				{
+					// 攻撃を受けているなら処理しない
+					if (player->IsDamaging()) return;
+					// 自分から相手の方向
+					CVector direction = player->Position() - Position();
+					direction = direction.Normalized();
+					direction.Y(0.0f);
+					// 相手が受けるノックバック速度に、
+					// 自分が与えるノックバック速度を自分から相手の方向に設定
+					player->SetKnockbackReceived(direction * GetKnockbackDealt());
+					// クリティカルダメージを与える
+					player->TakeCritical(GetAttackPower(), this, GetPower());
+					// ダメージ音を再生
+					mpDamageSE->Play(1.0f,true);
+				}
 			}
 		}
 		// 衝突した相手が敵の場合
@@ -197,18 +202,22 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 敵クラスを取得
 				CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
 
-				// 自分から相手の方向
-				CVector direction = enemy->Position() - Position();
-				direction = direction.Normalized();
-				direction.Y(0.0f);
-				// 相手が受けるノックバック速度に、
-				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
-				// 攻撃力分のダメージを与える
-				enemy->TakeDamage(GetAttackPower(), this, GetPower());
-
-				// 壊れた状態に変更
-				ChangeState(EState::eBroken);
+				if (enemy != nullptr)
+				{
+					// 攻撃を受けているなら処理しない
+					if (enemy->IsDamaging()) return;
+					// 自分から相手の方向
+					CVector direction = enemy->Position() - Position();
+					direction = direction.Normalized();
+					direction.Y(0.0f);
+					// 相手が受けるノックバック速度に、
+					// 自分が与えるノックバック速度を自分から相手の方向に設定
+					enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+					// クリティカルダメージを与える
+					enemy->TakeCritical(GetAttackPower(), this, GetPower());
+					// ダメージ音を再生
+					mpDamageSE->Play(1.0f, true);
+				}
 			}
 		}
 		// 衝突した相手が回収員の場合
@@ -220,10 +229,8 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 				// 回収員クラスを取得
 				CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
 
-				if (collector != nullptr &&
-					!IsAttackHitObj(collector))
+				if (collector != nullptr)
 				{
-					AddAttackHitObj(collector);
 					// 攻撃力分のダメージを与える
 					collector->TakeDamage(GetAttackPower(), this);
 				}
@@ -354,6 +361,8 @@ void CCar::Reset()
 {
 	CVehicleBase::Reset();
 
+	// Hpをリセット
+	SetHp();
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
 

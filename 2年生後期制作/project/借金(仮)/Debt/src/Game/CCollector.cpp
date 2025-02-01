@@ -972,6 +972,8 @@ void CCollector::UpdateAttackTrue()
 			mIsGravity = true;
 			// 攻撃終了状態へ
 			ChangeState(EState::eAttackEnd);
+			// 攻撃終了
+			AttackEnd();
 		}
 		break;
 	}
@@ -1025,6 +1027,8 @@ void CCollector::UpdateAttackFalse()
 		{
 			// 攻撃終了状態へ
 			ChangeState(EState::eAttackEnd);
+			// 攻撃終了
+			AttackEnd();
 		}
 	}
 }
@@ -1048,8 +1052,8 @@ void CCollector::UpdateAttackEnd()
 			// 立ち上がるアニメーション再生
 			ChangeAnimation((int)EAnimType::eAttack_False_StandUp);
 		}
-		// 攻撃終了
-		AttackEnd();
+		// 攻撃が成功したかをリセット
+		mIsAttackSuccess = false;
 		mStateStep++;
 		break;
 	}
@@ -1072,8 +1076,6 @@ void CCollector::UpdateAttackEnd()
 				// 追跡状態へ
 				ChangeState(EState::eChase);
 			}
-			// 攻撃終了
-			AttackEnd();
 		}
 		break;
 	}
@@ -1172,8 +1174,6 @@ void CCollector::AttackEnd()
 	// ベースクラスの攻撃終了処理を呼び出し
 	CXCharacter::AttackEnd();
 
-	// 攻撃が成功したかをリセット
-	mIsAttackSuccess = false;
 	// 攻撃中でない
 	mIsAttacking = false;
 	// 重力を掛ける
@@ -1217,6 +1217,8 @@ void CCollector::ChangeState(EState state)
 		state != EState::eAttackEnd)
 	{
 		AttackEnd();
+		// 攻撃が成功したかをリセット
+		mIsAttackSuccess = false;
 	}
 
 	mState = state;

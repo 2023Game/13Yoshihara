@@ -12,6 +12,7 @@
 #include "CFlamethrower.h"
 #include "CTrashBag.h"
 #include "Maths.h"
+#include "CSound.h"
 
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
@@ -52,9 +53,6 @@
 // お仕置き用のHpゲージの画像のパス
 #define PUNISHER_HP_GAUGE_PATH "UI\\punisher_garbageTruck_hp_gauge.png"
 
-// 初期から持っておくゴミ袋の数
-#define DEFAULT_TRASH_BAG_NUM 5
-
 // ゴミ袋を落とすオフセット座標
 #define TRASH_BAG_OFFSET_POSY 5.0f		// Y座標
 #define TRASH_BAG_OFFSET_POSZ -30.0f	// Z座標
@@ -82,8 +80,6 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	{
 		// お仕置き用のHpゲージを設定
 		mpHpGauge = new CGaugeUI3D(this, PUNISHER_HP_GAUGE_PATH);
-		// ゴールドのみを所持
-		SetGoldTrashBag(DEFAULT_TRASH_BAG_NUM * 2);
 	}
 	// 通常の場合
 	else
@@ -101,9 +97,6 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		// プレイヤーと衝突判定
 		mpSearchCol->SetCollisionTags({ ETag::ePlayer });
 		mpSearchCol->SetCollisionLayers({ ELayer::ePlayer });
-		// 最初からゴミ袋を持っておく
-		SetTrashBag(DEFAULT_TRASH_BAG_NUM);
-		SetGoldTrashBag(DEFAULT_TRASH_BAG_NUM);
 	}
 
 	mpHpGauge->SetMaxPoint(GetMaxHp());
@@ -188,6 +181,10 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		// 無効にする
 		mpCollectors[i]->SetOnOff(false);
 	}
+
+	// ゴミ袋の数の初期値を設定
+	SetTrashBag(GetDefaultBagNum());
+	SetGoldTrashBag(GetDefaultGoldBagNum());
 }
 
 // デストラクタ
@@ -315,17 +312,22 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// プレイヤークラスを取得
 				CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
 
-				// 攻撃を受けているなら処理しない
-				if (player->IsDamaging()) return;
-				// 自分から相手の方向
-				CVector direction = player->Position() - Position();
-				direction = direction.Normalized();
-				direction.Y(0.0f);
-				// 相手が受けるノックバック速度に、
-				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				player->SetKnockbackReceived(direction * GetKnockbackDealt());
-				// 攻撃力分のダメージを与える
-				player->TakeDamage(GetAttackPower(), this, GetPower());
+				if (player != nullptr)
+				{
+					// 攻撃を受けているなら処理しない
+					if (player->IsDamaging()) return;
+					// 自分から相手の方向
+					CVector direction = player->Position() - Position();
+					direction = direction.Normalized();
+					direction.Y(0.0f);
+					// 相手が受けるノックバック速度に、
+					// 自分が与えるノックバック速度を自分から相手の方向に設定
+					player->SetKnockbackReceived(direction * GetKnockbackDealt());
+					// クリティカルダメージを与える
+					player->TakeCritical(GetAttackPower(), this, GetPower());
+					// ダメージ音を再生
+					mpDamageSE->Play(1.0f, true);
+				}
 			}
 		}
 		// 衝突した相手が敵の場合
@@ -337,17 +339,22 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// 敵クラスを取得
 				CTrashEnemy* enemy = dynamic_cast<CTrashEnemy*>(other->Owner());
 
-				// 攻撃を受けているなら処理しない
-				if (enemy->IsDamaging()) return;
-				// 自分から相手の方向
-				CVector direction = enemy->Position() - Position();
-				direction = direction.Normalized();
-				direction.Y(0.0f);
-				// 相手が受けるノックバック速度に、
-				// 自分が与えるノックバック速度を自分から相手の方向に設定
-				enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
-				// 攻撃力分のダメージを与える
-				enemy->TakeDamage(GetAttackPower(), this, GetPower());
+				if (enemy != nullptr)
+				{
+					// 攻撃を受けているなら処理しない
+					if (enemy->IsDamaging()) return;
+					// 自分から相手の方向
+					CVector direction = enemy->Position() - Position();
+					direction = direction.Normalized();
+					direction.Y(0.0f);
+					// 相手が受けるノックバック速度に、
+					// 自分が与えるノックバック速度を自分から相手の方向に設定
+					enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
+					// クリティカルダメージを与える
+					enemy->TakeCritical(GetAttackPower(), this, GetPower());
+					// ダメージ音を再生
+					mpDamageSE->Play(1.0f, true);
+				}
 			}
 		}
 		// 衝突した相手が回収員の場合
@@ -359,10 +366,8 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				// 回収員クラスを取得
 				CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
 
-				if (collector != nullptr &&
-					!IsAttackHitObj(collector))
+				if (collector != nullptr)
 				{
-					AddAttackHitObj(collector);
 					// 攻撃力分のダメージを与える
 					collector->TakeDamage(GetAttackPower(), this);
 				}

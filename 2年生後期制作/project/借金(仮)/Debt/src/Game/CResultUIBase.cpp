@@ -1,6 +1,6 @@
 #include "CResultUIBase.h"
 #include "CFont.h"
-#include "CText.h"
+#include "CTextUI2D.h"
 #include "CImage.h"
 #include "Maths.h"
 #include "CInput.h"
@@ -25,28 +25,11 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 	, mIsEnd(false)
 	, mSelectIndex(-1)
 {
-	// スコアのフォントデータを生成
-	mpScoreFont = new CFont("res\\Font\\toroman.ttf");
-	mpScoreFont->SetFontSize(116);
-	mpScoreFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
-	mpScoreFont->SetLineLength(WINDOW_WIDTH);
-
 	// スコアのテキストを生成
-	mpScoreText = new CText
-	(
-		mpScoreFont, 116,
-		CVector2(0.0f, 24.0f),
-		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
-		CColor(0.1f, 0.1f, 0.1f),
-		ETaskPriority::eUI,
-		0,
-		ETaskPauseType::eDefault,
-		false,
-		false
-	);
-	mpScoreText->SetText("Score");
-	mpScoreText->SetEnableOutline(true);
-	mpScoreText->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
+	mpScoreText = new CTextUI2D(false);
+	mpScoreText->SetStr("Score");
+	mpScoreText->SetFontSize(116);
+	mpScoreText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 
 	// リザルト画面の背景イメージを生成
 	mpResultBg = new CImage
@@ -79,7 +62,6 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 // デストラクタ
 CResultUIBase::~CResultUIBase()
 {
-	SAFE_DELETE(mpScoreFont);
 	SAFE_DELETE(mpScoreText);
 	SAFE_DELETE(mpResultBg);
 }

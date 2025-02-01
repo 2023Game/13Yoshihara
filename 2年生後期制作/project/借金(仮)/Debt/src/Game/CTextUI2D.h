@@ -1,7 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
+#include "CText.h"
 
-class CText;
 class CFont;
 
 // 2D空間に配置するテキストクラス
@@ -9,7 +9,7 @@ class CTextUI2D : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CTextUI2D();
+	CTextUI2D(bool addTaskList = true);
 	// デストラクタ
 	~CTextUI2D();
 
@@ -30,6 +30,9 @@ public:
 
 	// 文字のサイズを設定する
 	void SetFontSize(int fontSize);
+
+	// 文字の揃いの基準を設定
+	void SetFontAligment(FTGL::TextAlignment aligment);
 
 private:
 	CFont* mpFont;	// フォント

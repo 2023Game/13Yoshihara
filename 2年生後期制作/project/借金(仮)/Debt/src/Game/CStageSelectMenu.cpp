@@ -7,11 +7,17 @@
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 
+// 効果音の音量
+#define SE_VOLUME 1.0f
+
 // コンストラクタ
 CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_STAGE_TRASH, MENU_STAGE_DELIVERY, MENU_CLOSE}, MENU_SELECT)
 {
 	mpPrevMenu = prevMenu;
+	// ゲームはすべて無効
+	SetMenuOnOff(0, false);
+	SetMenuOnOff(1, false);
 }
 
 // デストラクタ
@@ -25,29 +31,29 @@ void CStageSelectMenu::Decide(int select)
 	switch (select)
 	{
 	case 0:
-		// ゴミ拾いがアンロック済みだったら
-		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eTrash))
+		// ゴミ拾いが有効なら
+		if (mMenuOnOff[select])
 		{
 			// 選択されている仕事をゴミ拾いに設定
 			CJobStatusManager::Instance()->SetSelectJob(EJobType::eTrash);
 		}
-		// アンロックしていないならブザー音を再生
+		// 無効ならブザー音
 		else
 		{
-			// TODO : ブザー音を再生
+			mpBuzzerSE->Play(SE_VOLUME, true);
 		}
 		break;
 	case 1:
-		// 配達がアンロック済みだったら
-		if (CJobStatusManager::Instance()->GetUnlock(EJobType::eDelivery))
+		// 配達が有効なら
+		if (mMenuOnOff[select])
 		{
 			// 選択されている仕事を配達に設定
 			CJobStatusManager::Instance()->SetSelectJob(EJobType::eDelivery);
 		}
-		// アンロックしていないならブザー音を再生
+		// 無効ならブザー音
 		else
 		{
-			// TODO : ブザー音を再生
+			mpBuzzerSE->Play(SE_VOLUME, true);
 		}
 		break;
 	default:	// 一つ前のメニューに戻る
@@ -61,4 +67,16 @@ void CStageSelectMenu::Decide(int select)
 void CStageSelectMenu::Update()
 {
 	CGameMenuBase::Update();
+	// ゴミ拾いがアンロック済みだったら
+	if (CJobStatusManager::Instance()->GetUnlock(EJobType::eTrash))
+	{
+		// 有効
+		SetMenuOnOff(0, true);
+	}
+	// 配達がアンロック済みだったら
+	if (CJobStatusManager::Instance()->GetUnlock(EJobType::eDelivery))
+	{
+		// 有効
+		SetMenuOnOff(1, true);
+	}
 }

@@ -19,13 +19,6 @@ public:
 	// 描画
 	void Render() override;
 
-	// 地面のコライダ―取得
-	CCollider* GetGroundCol();
-	// 壁のコライダ―取得
-	CCollider* GetWallCol();
-	// オブジェクトのコライダ―取得
-	CCollider* GetObjCol();
-
 private:
 	// フィールドのオブジェクト生成
 	void CreateFieldObjects() override;

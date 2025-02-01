@@ -9,6 +9,8 @@
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 
+#include "CSoundManager.h"
+
 //コンストラクタ
 CHomeScene::CHomeScene()
 	: CSceneBase(EScene::eHome)
@@ -34,23 +36,28 @@ void CHomeScene::Load()
 	CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
 
 	// 拠点
-	CResourceManager::Load<CModel>("HomeBase", "Field\\HomeBase\\HomeBase.obj");
-	CResourceManager::Load<CModel>("Bed", "Field\\Object\\Bed.obj");
-	CResourceManager::Load<CModel>("Chair", "Field\\Object\\Chair.obj");
-	CResourceManager::Load<CModel>("Computer", "Field\\Object\\Computer.obj");
-	CResourceManager::Load<CModel>("Desk", "Field\\Object\\Desk.obj");
-	CResourceManager::Load<CModel>("Door", "Field\\Object\\Door.obj");
-	CResourceManager::Load<CModel>("Rack", "Field\\Object\\Rack.obj");
+	CResourceManager::Load<CModel>(		"HomeBase",								"Field\\HomeBase\\HomeBase.obj");
+	CResourceManager::Load<CModel>(		"Bed",									"Field\\Object\\Bed.obj");
+	CResourceManager::Load<CModel>(		"Chair",								"Field\\Object\\Chair.obj");
+	CResourceManager::Load<CModel>(		"Computer",								"Field\\Object\\Computer.obj");
+	CResourceManager::Load<CModel>(		"Desk",									"Field\\Object\\Desk.obj");
+	CResourceManager::Load<CModel>(		"Door",									"Field\\Object\\Door.obj");
+	CResourceManager::Load<CModel>(		"Rack",									"Field\\Object\\Rack.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("HomeBase_Ground&Ceiling_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Ground&Ceiling_Collision.obj");
-	CResourceManager::Load<CModel>("HomeBase_Wall_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Wall_Collision.obj");
-	CResourceManager::Load<CModel>("HomeBase_Object_Collision", "Field\\HomeBase\\CollisionModel\\HomeBase_Object_Collision.obj");
-
+	CResourceManager::Load<CModel>(		"HomeBase_Ground&Ceiling_Collision",	"Field\\HomeBase\\CollisionModel\\HomeBase_Ground&Ceiling_Collision.obj");
+	CResourceManager::Load<CModel>(		"HomeBase_Wall_Collision",				"Field\\HomeBase\\CollisionModel\\HomeBase_Wall_Collision.obj");
+	CResourceManager::Load<CModel>(		"HomeBase_Object_Collision",			"Field\\HomeBase\\CollisionModel\\HomeBase_Object_Collision.obj");
+	/*
+	効果音
+	*/
+	CResourceManager::Load<CSound>(		"SelectSE",		"Sound\\SE\\MenuSound\\select.wav");
+	CResourceManager::Load<CSound>(		"PushSE",		"Sound\\SE\\MenuSound\\push.wav");
+	CResourceManager::Load<CSound>(		"BuzzerSE",		"Sound\\SE\\MenuSound\\buzzer.wav");
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
 
-	new CHomeField();
+	CHomeField* field = new CHomeField();
 
 	CHomePlayer* player = new CHomePlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
@@ -70,6 +77,10 @@ void CHomeScene::Load()
 		atPos + CVector(0.0f, 0.0f, 15.0f),
 		atPos
 	);
+	// 衝突判定するコライダ―を追加
+	mainCamera->AddCollider(field->GetGroundCol());
+	mainCamera->AddCollider(field->GetWallCol());
+	mainCamera->AddCollider(field->GetObjCol());
 
 	mainCamera->SetFollowTargetTf(player);
 

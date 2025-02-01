@@ -14,9 +14,13 @@
 #include "CNavManager.h"
 #include "CTimeUI.h"
 #include "CTrashScoreUI.h"
+#include "CScoreManager.h"
+#include "CTaskManager.h"
 
 // 制限時間
 #define MAX_TIME 100
+// リザルトシーンへ行く前の待機時間
+#define IDLE_TIME 1.0f
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -24,6 +28,8 @@ CTrashGameScene::CTrashGameScene()
 	, mpGameMenu(nullptr)
 	, mpVehicleManager(nullptr)
 	, mpResidentManager(nullptr)
+	, mElapsedTime(0.0f)
+	, mIsPause(false)
 {
 }
 
@@ -44,24 +50,36 @@ void CTrashGameScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 	
 	// CModelX
-	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
-	CResourceManager::Load<CModelX>("TrashEnemy", "Character\\TrashBox\\TrashBoxEnemy.x");
-	CResourceManager::Load<CModelX>("Collector", "Character\\Collector\\Fox.x");
-	CResourceManager::Load<CModelX>("PunisherCollector", "Character\\PunisherCollector\\PunisherFox.x");
-	CResourceManager::Load<CModelX>("Resident", "Character\\Resident\\Monkey.x");
+	CResourceManager::Load<CModelX>(	"TrashPlayer",					"Character\\TrashBox\\TrashBoxPlayer.x");
+	CResourceManager::Load<CModelX>(	"TrashEnemy",					"Character\\TrashBox\\TrashBoxEnemy.x");
+	CResourceManager::Load<CModelX>(	"Collector",					"Character\\Collector\\Fox.x");
+	CResourceManager::Load<CModelX>(	"PunisherCollector",			"Character\\PunisherCollector\\PunisherFox.x");
+	CResourceManager::Load<CModelX>(	"Resident",						"Character\\Resident\\Monkey.x");
 	// CModel
-	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
-	CResourceManager::Load<CModel>("Sky", "Field\\Sky\\Sky.obj");
-	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
-	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
-	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
-	CResourceManager::Load<CModel>("BlackTruck", "Character\\BlackTruck\\BlackTruck.obj");
-	CResourceManager::Load<CModel>("TrashBag", "Field\\Object\\TrashBag.obj");
-	CResourceManager::Load<CModel>("TrashBagGold", "Field\\Object\\TrashBagGold.obj");
+	CResourceManager::Load<CModel>(		"TrashStage",					"Field\\TrashStage\\TrashStage.obj");
+	CResourceManager::Load<CModel>(		"Sky",							"Field\\Sky\\Sky.obj");
+	CResourceManager::Load<CModel>(		"TrashBox",						"Field\\Object\\TrashBox.obj");
+	CResourceManager::Load<CModel>(		"Car",							"Character\\Car\\Car.obj");
+	CResourceManager::Load<CModel>(		"GarbageTruck",					"Character\\GarbageTruck\\GarbageTruck.obj");
+	CResourceManager::Load<CModel>(		"BlackTruck",					"Character\\BlackTruck\\BlackTruck.obj");
+	CResourceManager::Load<CModel>(		"TrashBag",						"Field\\Object\\TrashBag.obj");
+	CResourceManager::Load<CModel>(		"TrashBagGold",					"Field\\Object\\TrashBagGold.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
+	CResourceManager::Load<CModel>(		"TrashStage_Ground_Collision",	"Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
+	CResourceManager::Load<CModel>(		"TrashStage_Wall_Collision",	"Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
+	CResourceManager::Load<CModel>(		"TrashStage_Object_Collision",	"Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
+	/*
+	効果音
+	*/
+	// プレイヤーと敵の攻撃、車両がプレイヤー、敵、車両にダメージを与えた時の音
+	CResourceManager::Load<CSound>(		"DamageSE",						"Sound\\SE\\damage.wav");
+	// プレイヤーと敵のクリティカル攻撃がプレイヤー、敵、車両にダメージを与えたときの音
+	CResourceManager::Load<CSound>(		"CriticalSE",					"Sound\\SE\\critical.wav");
+	// プレイヤーと敵の蓋が閉じている時に攻撃を食らった音
+	CResourceManager::Load<CSound>(		"GuardSE",						"Sound\\SE\\guard.wav");
+	// プレイヤーの攻撃が回収員に当たった音
+	CResourceManager::Load<CSound>(		"CollectorDamageSE1",			"Sound\\SE\\collectorDamage.wav");
+
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eHome);
@@ -145,4 +163,30 @@ void CTrashGameScene::Update()
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新
 	mpTrashScoreUI->Update();
+
+	// 制限時間が0になったら
+	if (mpTimeUI->GetTime() < 0)
+	{
+		// ゲームをポーズ
+		CTaskManager::Instance()->Pause(PAUSE_GAME);
+		// 待機時間が経過したらリザルトシーンへ
+		mElapsedTime += Times::DeltaTime();
+		if (mElapsedTime >= IDLE_TIME)
+		{
+			// プレイヤークラスを取得
+			CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
+			// 得点管理クラスを取得
+			CScoreManager* scoreMgr = CScoreManager::Instance();
+			// シーン管理クラスを取得
+			CSceneManager* sceneMgr = CSceneManager::Instance();
+
+			// スコアデータを設定
+			scoreMgr->SetTrashGameScoreData(mpTrashScoreUI->GetScore(),
+				player->GetTrashBag(), player->GetGoldTrashBag());
+			// ゲームの種類を今のシーンに設定
+			scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
+			// リザルトシーンへ移行
+			sceneMgr->LoadScene(EScene::eResult);
+		}
+	}
 }

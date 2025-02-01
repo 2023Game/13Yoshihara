@@ -90,6 +90,24 @@ void CFieldBase::Render()
 	mpModel->Render(Matrix());
 }
 
+// 地面のコライダ―取得
+CCollider* CFieldBase::GetGroundCol()
+{
+	return mpGroundColliderMesh;
+}
+
+// 壁のコライダ―取得
+CCollider* CFieldBase::GetWallCol()
+{
+	return mpWallColliderMesh;
+}
+
+// オブジェクトのコライダ―取得
+CCollider* CFieldBase::GetObjCol()
+{
+	return mpObjectColliderMesh;
+}
+
 // 経路探索用のノードを作成
 void CFieldBase::CreateNavNodes()
 {

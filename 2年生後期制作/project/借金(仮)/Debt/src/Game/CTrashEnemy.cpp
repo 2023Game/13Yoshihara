@@ -9,6 +9,7 @@
 #include "Maths.h"
 #include "CGaugeUI3D.h"
 #include "CTrashBag.h"
+#include "CSound.h"
 
 // TODO：後で消すテスト用
 #include "CInput.h"
@@ -122,6 +123,9 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 // お仕置き用の敵が元から持っているゴミ袋の数
 #define DEFAULT_TRASH_BAG_NUM 10
 
+// 効果音の音量
+#define SE_VOLUME 1.0f
+
 // コンストラクタ
 CTrashEnemy::CTrashEnemy(bool punisher)
 	: CEnemyBase
@@ -180,7 +184,10 @@ CTrashEnemy::CTrashEnemy(bool punisher)
 	Scale(scale, scale, scale);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
-
+	// 効果音を設定
+	mpDamageSE = CResourceManager::Get<CSound>("DamageSE");
+	mpCriticalSE = CResourceManager::Get<CSound>("CriticalSE");
+	mpGuardSE = CResourceManager::Get<CSound>("GuardSE");
 
 	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
@@ -358,6 +365,18 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				player->SetKnockbackReceived(direction * GetKnockbackDealt());
 				// 攻撃力分のダメージを与える
 				player->TakeDamage(GetAttackPower(), this, GetPower());
+				// 開いている場合
+				if (player->GetOpen())
+				{
+					// ダメージ音を再生
+					mpDamageSE->Play(SE_VOLUME, true);
+				}
+				// 開いていない場合
+				else
+				{
+					// ガード音を再生
+					mpGuardSE->Play(SE_VOLUME, true);
+				}
 			}
 		}
 	}
@@ -383,6 +402,18 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				player->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
 				// 攻撃力分のダメージを与える
 				player->TakeCritical(GetAttackPower(), this, GetPower());
+				// 開いている場合
+				if (player->GetOpen())
+				{
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
+				}
+				// 開いていない場合
+				else
+				{
+					// ダメージ音を再生
+					mpDamageSE->Play(SE_VOLUME, true);
+				}
 			}
 		}
 	}
@@ -638,7 +669,11 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
-
+		// サイズと同じなら1減らす
+		if (mpMoveRoute.size() == mNextMoveIndex)
+		{
+			mNextMoveIndex--;
+		}
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 
@@ -1386,6 +1421,9 @@ void CTrashEnemy::UpdateDeath()
 	{
 		// ステップ0：死亡アニメーションを再生
 	case 0:
+		// 移動をゼロ
+		mMoveSpeedY = 0.0f;
+		mMoveSpeed = CVector::zero;
 		// 当たり判定をオフ
 		SetEnableCol(false);
 		// 重力をオフ

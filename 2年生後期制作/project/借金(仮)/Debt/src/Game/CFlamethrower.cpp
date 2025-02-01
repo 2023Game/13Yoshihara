@@ -17,6 +17,7 @@ CFlamethrower::CFlamethrower(CObjectBase* owner, const CMatrix* attach,
 	const CVector& offsetPos, const CMatrix& offsetRot)
 	: mpOwner(owner)
 	, mpAttachMtx(attach)
+	, mThrowDir(CVector::zero)
 	, mThrowOffsetPos(offsetPos)
 	, mThrowOffsetRot(offsetRot)
 	, mElapsedTime(0.0f)
@@ -28,6 +29,12 @@ CFlamethrower::CFlamethrower(CObjectBase* owner, const CMatrix* attach,
 	, mFlameMoveSpeed(FLAME_MOVE_SPEED)
 {
 
+}
+
+CFlamethrower::CFlamethrower(CObjectBase* owner, const CMatrix* attach, const CVector& offsetPos, const CVector& throwDir)
+	: CFlamethrower(owner, attach, offsetPos)
+{
+	SetThrowDir(throwDir);
 }
 
 // デストラクタ
@@ -56,6 +63,12 @@ void CFlamethrower::Stop()
 bool CFlamethrower::IsThrowing() const
 {
 	return mIsThrowing;
+}
+
+// 発射方向を設定
+void CFlamethrower::SetThrowDir(const CVector& dir)
+{
+	mThrowDir = dir;
 }
 
 // 発射時のオフセット位置を設定
@@ -124,6 +137,12 @@ CVector CFlamethrower::GetThrowPos() const
 // 炎の発射方向を取得
 CVector CFlamethrower::GetThrowDir() const
 {
+	// 発射方向ベクトルが設定されていたら、そちらを優先する
+	if (mThrowDir.LengthSqr() > 0.0f)
+	{
+		return mThrowDir;
+	}
+
 	// アタッチする行列が設定されている場合は、行列の正面方向ベクトルを返す
 	if (mpAttachMtx != nullptr)
 	{

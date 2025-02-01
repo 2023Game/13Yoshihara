@@ -4,6 +4,7 @@
 class CFont;
 class CImage;
 class CExpandButton;
+class CTextUI2D;
 
 class CResultUIBase : public CTask
 {
@@ -51,8 +52,7 @@ protected:
 	bool mIsEnd;		// タイトル画面終了フラグ
 	int mSelectIndex;	// 現在選択している項目
 
-	CFont* mpScoreFont;				// スコアのフォント
-	CText* mpScoreText;				// スコアという文字のテキスト
+	CTextUI2D* mpScoreText;			// スコアという文字のテキスト
 	CImage* mpResultBg;				// リザルト背景イメージ
 	CExpandButton* mpReturnButton;	// 拠点へ戻るボタン
 };
