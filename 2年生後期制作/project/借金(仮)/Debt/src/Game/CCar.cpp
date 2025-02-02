@@ -21,6 +21,9 @@
 
 #define ROTATE_SPEED 3.0f	// 回転速度
 
+// 効果音の音量
+#define SE_VOLUME 0.5f
+
 CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, 
 	ERoadType road, std::vector<CNavNode*> patrolPoints)
 	: CVehicleBase(model, pos, rotation, road, patrolPoints)
@@ -189,7 +192,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					// クリティカルダメージを与える
 					player->TakeCritical(GetAttackPower(), this, GetPower());
 					// ダメージ音を再生
-					mpDamageSE->Play(1.0f,true);
+					mpDamageSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -216,7 +219,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					// クリティカルダメージを与える
 					enemy->TakeCritical(GetAttackPower(), this, GetPower());
 					// ダメージ音を再生
-					mpDamageSE->Play(1.0f, true);
+					mpDamageSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -303,6 +306,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CCar::Render()
 {
 	CVehicleBase::Render();
+#if _DEBUG
 	// 移動状態であれば
 	if (mState == EState::eMove)
 	{
@@ -354,6 +358,7 @@ void CCar::Render()
 			2.0f
 		);
 	}
+#endif
 }
 
 // 変数をリセット

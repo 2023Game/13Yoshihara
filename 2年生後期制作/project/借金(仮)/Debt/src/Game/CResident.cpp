@@ -143,6 +143,7 @@ void CResident::Render()
 {
 	CEnemyBase::Render();
 
+#if _DEBUG
 	// 巡回状態であれば、
 	if (mState == EState::ePatrol)
 	{
@@ -159,6 +160,7 @@ void CResident::Render()
 			);
 		}
 	}
+#endif
 }
 
 // 次に巡回するポイントを変更する

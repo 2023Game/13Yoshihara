@@ -32,9 +32,6 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mpDamageCauser(nullptr)
 	, mpHpGauge(nullptr)
 {
-	// 視野範囲のデバッグ表示クラスを作成
-	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
-
 	// 経路探索用のノードを作成
 	mpNavNode = new CNavNode(Position(), true);
 	mpNavNode->SetColor(CColor::blue);
@@ -49,6 +46,11 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 		CNavNode* node = new CNavNode(point, true);
 		mpPatrolPoints.push_back(node);
 	}
+
+#if _DEBUG
+	// 視野範囲のデバッグ表示クラスを作成
+	mpDebugFov = new CDebugFieldOfView(this, mFovAngle, mFovLength);
+#endif
 }
 
 // デストラクタ

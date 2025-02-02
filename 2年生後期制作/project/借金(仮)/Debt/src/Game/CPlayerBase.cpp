@@ -38,6 +38,7 @@ CPlayerBase::CPlayerBase()
 	, mpAttackCol(nullptr)
 	, mpSearchCol(nullptr)
 	, mpHpGauge(nullptr)
+	, mIsGameEnd(false)
 {
 	spInstance = this;
 
@@ -376,4 +377,16 @@ CInteractObject* CPlayerBase::GetNearInteractObject() const
 		}
 	}
 	return nearObj;
+}
+
+// €–S‚É‚æ‚Á‚ÄƒQ[ƒ€‚ªI—¹‚·‚é‚©‚ğæ“¾‚·‚é
+bool CPlayerBase::GetGameEnd()
+{
+	return mIsGameEnd;
+}
+
+// €–S‚É‚æ‚Á‚ÄƒQ[ƒ€‚ªI—¹‚·‚é‚©‚ğİ’è‚·‚é
+void CPlayerBase::SetGameEnd(bool isEnd)
+{
+	mIsGameEnd = isEnd;
 }

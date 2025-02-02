@@ -124,7 +124,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define DEFAULT_TRASH_BAG_NUM 10
 
 // 効果音の音量
-#define SE_VOLUME 1.0f
+#define SE_VOLUME 0.5f
 
 // コンストラクタ
 CTrashEnemy::CTrashEnemy(bool punisher)
@@ -443,7 +443,7 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 void CTrashEnemy::Render()
 {
 	CEnemyBase::Render();
-
+#if _DEBUG
 	// 巡回状態であれば、
 	if (mState == EState::ePatrol)
 	{
@@ -516,6 +516,7 @@ void CTrashEnemy::Render()
 			);
 		}
 	}
+#endif
 }
 
 // 開いているかを取得
@@ -1464,10 +1465,16 @@ void CTrashEnemy::UpdateDeath()
 	case 4:
 		SetEnable(false);
 		SetShow(false);
-		mpDebugFov->SetEnable(false);
-		mpDebugFov->SetShow(false);
-		mpHpGauge->SetEnable(false);
-		mpHpGauge->SetShow(false);
+		if (mpDebugFov != nullptr)
+		{
+			mpDebugFov->SetEnable(false);
+			mpDebugFov->SetShow(false);
+		}
+		if (mpHpGauge != nullptr)
+		{
+			mpHpGauge->SetEnable(false);
+			mpHpGauge->SetShow(false);
+		}
 		break;
 	}
 }

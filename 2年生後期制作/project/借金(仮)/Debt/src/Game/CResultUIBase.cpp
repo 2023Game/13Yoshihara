@@ -14,7 +14,10 @@
 #define OPENED_WAIT_TIME 0.5f
 
 // ボタンのサイズ
-#define BUTTON_SIZE CVector2(425.0f*0.8f, 121.0f*0.8f)
+#define BUTTON_SIZE CVector2(340.0f, 96.0f)
+
+// テキストのオフセット座標
+#define TEXT_POS CVector(0.0f,25.0f,0.0f)
 
 // コンストラクタ
 CResultUIBase::CResultUIBase(std::string backGroundPath)
@@ -30,6 +33,7 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 	mpScoreText->SetStr("Score");
 	mpScoreText->SetFontSize(116);
 	mpScoreText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpScoreText->Position(TEXT_POS);
 
 	// リザルト画面の背景イメージを生成
 	mpResultBg = new CImage

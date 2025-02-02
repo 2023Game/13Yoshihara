@@ -10,6 +10,7 @@
 #include "CScoreManager.h"
 #include "CTrashScoreUI.h"
 #include "CSound.h"
+#include "CTaskManager.h"
 
 // 衝突相手のクラスを取得するためのインクルード
 #include "CVehicleBase.h"
@@ -91,7 +92,10 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 #define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
 
 // 効果音の音量
-#define SE_VOLUME 1.0f
+#define SE_VOLUME 0.5f
+
+// リザルトシーンへ行く前の待機時間
+#define IDLE_TIME 1.0f
 
 // コンストラクタ
 CTrashPlayer::CTrashPlayer()
@@ -1164,22 +1168,10 @@ void CTrashPlayer::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ1：リザルトシーンへ移行する
+		// ステップ1：ゲームシーンでプレイヤーが死亡した
+		// ことによるゲーム終了を取得するための変数設定
 	case 2:
-		// スコア表示UIクラスを取得
-		CTrashScoreUI * scoreUI = CTrashScoreUI::Instance();
-		// 得点管理クラスを取得
-		CScoreManager* scoreMgr = CScoreManager::Instance();
-		// シーン管理クラスを取得
-		CSceneManager * sceneMgr = CSceneManager::Instance();
-		
-		// スコアデータを設定
-		scoreMgr->SetTrashGameScoreData(scoreUI->GetScore(), GetTrashBag(), GetGoldTrashBag());
-		// ゲームの種類を今のシーンに設定
-		scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
-		// リザルトシーンへ移行
-		sceneMgr->LoadScene(EScene::eResult);
-
+		SetGameEnd(true);
 		break;
 	}
 }

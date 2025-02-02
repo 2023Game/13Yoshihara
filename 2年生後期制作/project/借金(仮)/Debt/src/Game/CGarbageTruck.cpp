@@ -61,7 +61,8 @@
 // ゴミ袋を落とす間隔
 #define TRASH_BAG_DROP_TIME 0.2f
 
-
+// 効果音の音量
+#define SE_VOLUME 0.5f
 
 
 // コンストラクタ
@@ -326,7 +327,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					// クリティカルダメージを与える
 					player->TakeCritical(GetAttackPower(), this, GetPower());
 					// ダメージ音を再生
-					mpDamageSE->Play(1.0f, true);
+					mpDamageSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -353,7 +354,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					// クリティカルダメージを与える
 					enemy->TakeCritical(GetAttackPower(), this, GetPower());
 					// ダメージ音を再生
-					mpDamageSE->Play(1.0f, true);
+					mpDamageSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -464,6 +465,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 void CGarbageTruck::Render()
 {
 	CVehicleBase::Render();
+#if _DEBUG
 	// 移動状態であれば
 	if (mState == EState::eMove)
 	{
@@ -515,6 +517,7 @@ void CGarbageTruck::Render()
 			2.0f
 		);
 	}
+#endif
 }
 
 // 車両の有効無効を切り替える

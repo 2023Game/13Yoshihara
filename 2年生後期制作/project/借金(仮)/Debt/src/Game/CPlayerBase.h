@@ -40,6 +40,11 @@ public:
 	// 一番近くにある調べるオブジェクトを取得
 	CInteractObject* GetNearInteractObject() const;
 
+	// 死亡によってゲームが終了するかを取得する
+	bool GetGameEnd();
+	// 死亡によってゲームが終了するかを設定する
+	void SetGameEnd(bool isEnd);
+
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
@@ -76,4 +81,7 @@ protected:
 
 	// Hpゲージ
 	CGaugeUI2D* mpHpGauge;
+
+	// 死亡してゲームが終了する時にtrueにする
+	bool mIsGameEnd;
 };

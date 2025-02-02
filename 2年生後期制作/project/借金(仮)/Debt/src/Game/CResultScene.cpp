@@ -8,6 +8,7 @@
 #include "CTrashGameResultUI.h"
 #include "CScoreManager.h"
 #include "SceneType.h"
+#include "CTaskManager.h"
 
 // コンストラクタ
 CResultScene::CResultScene()
@@ -23,6 +24,8 @@ CResultScene::~CResultScene()
 // シーン読み込み
 void CResultScene::Load()
 {
+	// ポーズを解除
+	CTaskManager::Instance()->UnPause(PAUSE_GAME);
 	// タイトル画面はカーソル表示
 	CInput::ShowCursor(true);
 	// 背景色設定

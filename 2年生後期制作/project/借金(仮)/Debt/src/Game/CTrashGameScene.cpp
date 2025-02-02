@@ -164,8 +164,12 @@ void CTrashGameScene::Update()
 	// スコア表示UIクラスの更新
 	mpTrashScoreUI->Update();
 
-	// 制限時間が0になったら
-	if (mpTimeUI->GetTime() < 0)
+	// プレイヤークラスを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
+	// 制限時間が0になったか、
+	// プレイヤーの死亡によってゲームを終了する時
+	if (mpTimeUI->GetTime() < 0 ||
+		player->GetGameEnd())
 	{
 		// ゲームをポーズ
 		CTaskManager::Instance()->Pause(PAUSE_GAME);
@@ -173,8 +177,6 @@ void CTrashGameScene::Update()
 		mElapsedTime += Times::DeltaTime();
 		if (mElapsedTime >= IDLE_TIME)
 		{
-			// プレイヤークラスを取得
-			CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
 			// 得点管理クラスを取得
 			CScoreManager* scoreMgr = CScoreManager::Instance();
 			// シーン管理クラスを取得

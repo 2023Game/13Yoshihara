@@ -17,6 +17,9 @@
 // タイトルメニューのアニメーション後の待ち時間
 #define OPENED_WAIT_TIME 0.5f
 
+// ボタンのサイズ
+#define BUTTON_SIZE CVector2(340.0f, 96.0f)
+
 // コンストラクタ
 CTitleUI::CTitleUI()
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eDefault)
@@ -85,7 +88,7 @@ CTitleUI::CTitleUI()
 	CExpandButton* btn1 = new CExpandButton
 	(
 		CVector2(WINDOW_WIDTH * 0.5f, 450.0f),
-		CVector2(181.0f, 47.0f),
+		BUTTON_SIZE,
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);
@@ -99,25 +102,25 @@ CTitleUI::CTitleUI()
 	// ボタンリストに追加
 	mButtons.push_back(btn1);
 
-	// [OPTION]ボタンを生成
-	CExpandButton* btn2 = new CExpandButton
-	(
-		CVector2(WINDOW_WIDTH * 0.5f, 550.0f),
-		CVector2(181.0f, 47.0f),
-		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
-		false, false
-	);
-	btn2->LoadButtonImage("UI/title_option0.png", "UI/title_option1.png");
-	btn2->SetOnClickFunc(std::bind(&CTitleUI::OnClickOption, this));
-	btn2->SetEnable(false);
-	btn2->SetScale(0.0f);
-	mButtons.push_back(btn2);
+	//// [OPTION]ボタンを生成
+	//CExpandButton* btn2 = new CExpandButton
+	//(
+	//	CVector2(WINDOW_WIDTH * 0.5f, 550.0f),
+	//	BUTTON_SIZE,
+	//	ETaskPriority::eUI, 0, ETaskPauseType::eGame,
+	//	false, false
+	//);
+	//btn2->LoadButtonImage("UI/title_option0.png", "UI/title_option1.png");
+	//btn2->SetOnClickFunc(std::bind(&CTitleUI::OnClickOption, this));
+	//btn2->SetEnable(false);
+	//btn2->SetScale(0.0f);
+	//mButtons.push_back(btn2);
 
 	// [QUIT]ボタンを生成
 	CExpandButton* btn3 = new CExpandButton
 	(
 		CVector2(WINDOW_WIDTH * 0.5f, 650.0f),
-		CVector2(181.0f, 47.0f),
+		BUTTON_SIZE,
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false
 	);

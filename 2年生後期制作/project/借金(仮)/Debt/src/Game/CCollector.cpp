@@ -304,7 +304,7 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 void CCollector::Render()
 {
 	CEnemyBase::Render();
-
+#if _DEBUG
 	// „‰ñó‘Ô‚Å‚ ‚ê‚ÎA
 	if (mState == EState::ePatrol)
 	{
@@ -377,6 +377,7 @@ void CCollector::Render()
 			);
 		}
 	}
+#endif
 }
 
 // ‰ñûˆõ‚Ì—LŒø–³Œø‚ğØ‚è‘Ö‚¦‚é

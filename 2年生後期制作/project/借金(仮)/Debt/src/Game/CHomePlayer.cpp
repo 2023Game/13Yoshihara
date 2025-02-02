@@ -78,7 +78,9 @@ void CHomePlayer::Update()
 
 	CPlayerBase::Update();
 
+#if _DEBUG
 	CDebugPrint::Print("State:%d\n", mState);
+#endif
 }
 
 void CHomePlayer::UpdateIdle()
