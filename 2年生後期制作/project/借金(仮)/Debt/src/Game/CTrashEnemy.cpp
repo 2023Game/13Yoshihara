@@ -670,11 +670,7 @@ void CTrashEnemy::UpdatePatrol()
 		{
 			ChangeAnimation((int)EAnimType::eMove_Open);
 		}
-		// サイズと同じなら1減らす
-		if (mpMoveRoute.size() == mNextMoveIndex)
-		{
-			mNextMoveIndex--;
-		}
+
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
 

@@ -3,7 +3,7 @@
 // 使わないベースステータスは値が0
 // 通常のゴミ収集車のステータス
 #define NORMAL_MAX_HP 30								// 最大HP
-#define NORMAL_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f	// 移動速度
+#define NORMAL_BASE_MOVE_SPEED 0.375f * 10.0f * 60.0f	// 移動速度
 #define NORMAL_JUMP_SPEED 0.0f							// ジャンプ速度
 #define NORMAL_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
 #define NORMAL_ATTACK_POWER 1							// 攻撃力
@@ -14,7 +14,7 @@
 #define NORMAL_DEFAULT_GOLD_BAG_NUM 5					// ゴールドゴミ袋の数の初期値
 // お仕置きのゴミ収集車のステータス
 #define PUNISHER_MAX_HP 100								// 最大HP
-#define PUNISHER_BASE_MOVE_SPEED 0.375f * 5.0f * 60.0f	// 移動速度
+#define PUNISHER_BASE_MOVE_SPEED 0.375f * 10.0f * 60.0f	// 移動速度
 #define PUNISHER_JUMP_SPEED 0.0f						// ジャンプ速度
 #define PUNISHER_KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
 #define PUNISHER_ATTACK_POWER 1							// 攻撃力

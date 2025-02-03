@@ -38,7 +38,7 @@ CTitleUI::CTitleUI()
 	mpTitleLogo = new CText
 	(
 		mpLogoFont, 128,
-		CVector2(0.0f, 32.0f),
+		CVector2(0.0f, 20.0f),
 		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
 		CColor(0.1f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
@@ -54,7 +54,7 @@ CTitleUI::CTitleUI()
 	// タイトル画面の背景イメージを生成
 	mpTitleBg = new CImage
 	(
-		"UI/title_bg.png",
+		"UI/trash_game_result_bg.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,

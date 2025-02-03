@@ -9,7 +9,9 @@ class CTextUI2D : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CTextUI2D(bool addTaskList = true);
+	CTextUI2D(ETaskPauseType pauseType = ETaskPauseType::eGame,
+		bool addTaskList = true,
+		char * fontPath = "res\\Font\\toroman.ttf");
 	// デストラクタ
 	~CTextUI2D();
 

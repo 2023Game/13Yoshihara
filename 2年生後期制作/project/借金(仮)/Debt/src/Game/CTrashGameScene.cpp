@@ -22,6 +22,13 @@
 // リザルトシーンへ行く前の待機時間
 #define IDLE_TIME 1.0f
 
+// プレイヤーの初期座標
+#define PLAYER_POS CVector(0.0f,0.0f,50.0f)
+// 敵の初期座標
+#define ENEMY_POS CVector(0.0f,0.0f,-50.0f)
+// 敵の初期方向
+#define ENEMY_ROT CVector(0.0f,180.0f,0.0f)
+
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
 	: CSceneBase(EScene::eTrashGame)
@@ -99,13 +106,15 @@ void CTrashGameScene::Load()
 		new CResidentManager();
 
 	CTrashPlayer* player = new CTrashPlayer();
+	player->Position(PLAYER_POS);
 
 	CTrashEnemy* enemy = new CTrashEnemy(false);
-	enemy->Position(0.0f, 0.0f, 5.0f);
+	enemy->Position(ENEMY_POS);
+	enemy->Rotation(ENEMY_ROT);
 
-	// 時間表示UI作成
+	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
-	// スコア表示UI作成
+	// スコア表示UI生成
 	mpTrashScoreUI = new CTrashScoreUI();
 
 	// CGameCameraのテスト
@@ -120,7 +129,7 @@ void CTrashGameScene::Load()
 	CVector atPos = player->Position() + CVector(0.0f, 8.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 0.0f, 50.0f),
+		atPos + CVector(0.0f, 10.0f, 50.0f),
 		atPos
 	);
 	// 衝突判定するコライダ―を追加
@@ -159,7 +168,7 @@ void CTrashGameScene::Update()
 
 	// 車両管理クラスの更新
 	mpVehicleManager->Update();
-	// 時間表示UIクラスの描画、更新
+	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新
 	mpTrashScoreUI->Update();

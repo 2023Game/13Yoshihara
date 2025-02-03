@@ -1,6 +1,7 @@
 #include "CVehicleManager.h"
 #include "CCar.h"
 #include "CGarbageTruck.h"
+#include "CPunisherTruck.h"
 #include <random>
 #include "Maths.h"
 #include "CNavNode.h"
@@ -378,8 +379,8 @@ void CVehicleManager::CreateVehicle(CModel* car, CModel* garbageTruck, CModel* b
 		mpCars.push_back(new CCar(car, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsL1));
 	}
 
-	mpGarbageTruck = new CGarbageTruck(garbageTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR1, false);
-	mpPunishTruck = new CGarbageTruck(blackTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR2, true);
+	mpGarbageTruck = new CGarbageTruck(garbageTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR1);
+	mpPunishTruck = new CPunisherTruck(blackTruck, VEHICLE_LEFT_POS1, VEHICLE_RIGHT_ROTATION, CVehicleBase::ERoadType::eLeft1, mpPatrolPointsR2);
 }
 
 // åoòHíTçıópÇÃÉmÅ[ÉhÇçÏê¨

@@ -1,7 +1,7 @@
 #pragma once
 #include "CTask.h"
 #include "CImage.h"
-#include "CText.h"
+#include "CTextUI2D.h"
 #include <vector>
 #include "CSound.h"
 
@@ -40,7 +40,7 @@ protected:
 	CImage* mpBackground;				// 背景画像
 	std::vector<CImage*> mMenuItems;	// メニューの要素
 	std::vector<bool> mMenuOnOff;		// メニューの要素が有効無効
-	std::vector<CText*> mMenuTexts;		// TODO：メニューのテキスト
+	std::vector<CTextUI2D*> mMenuTexts;	// メニューの説明用テキスト
 	CImage* mpSelectFrame;				// 選択中の画像
 	int mSelectIndex;					// 選択中の番号
 	bool mIsOpened;						// 開いているか

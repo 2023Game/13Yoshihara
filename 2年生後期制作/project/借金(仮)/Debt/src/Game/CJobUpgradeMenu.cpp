@@ -4,6 +4,7 @@
 
 #define MENU_UPGRADE_TRASH "UI/menu_upgrade_trash.png"
 #define MENU_UPGRADE_DELIVERY "UI/menu_upgrade_delivery.png"
+
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 #define UPGRADE_FLOAT 0.1f

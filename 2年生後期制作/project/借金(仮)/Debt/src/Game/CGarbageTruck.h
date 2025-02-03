@@ -24,7 +24,7 @@ public:
 	/// <param name="patrolPoints">巡回するポイントのリスト</param>
 	/// <param name="punisher">trueならば、お仕置き用</param>
 	CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
-		ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher);
+		ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher = false);
 	// デストラクタ
 	~CGarbageTruck();
 
@@ -72,7 +72,7 @@ protected:
 	bool mIsReturn;
 
 	// 移動処理
-	void UpdateMove();
+	virtual void UpdateMove();
 	// 停止処理
 	void UpdateStop();
 	// 壊れた処理
@@ -80,7 +80,7 @@ protected:
 	// 車線変更処理
 	void UpdateChangeRoad();
 	// 回収処理
-	void UpdateCollect();
+	virtual void UpdateCollect();
 	// 死亡(壊れた)
 	void Death() override;
 

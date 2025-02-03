@@ -8,8 +8,14 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
+#include "CToDoUI.h"
+#include "CSelectJobUI.h"
+#include "CJobStatusManager.h"
+#include "JobType.h"
 
-#include "CSoundManager.h"
+// やることのテキスト
+#define TODO_TEXT0 "PCから仕事を選択する"
+#define TODO_TEXT1 "ドアから仕事へ行く"
 
 //コンストラクタ
 CHomeScene::CHomeScene()
@@ -62,6 +68,14 @@ void CHomeScene::Load()
 	CHomePlayer* player = new CHomePlayer();
 	player->Scale(1.0f, 1.0f, 1.0f);
 
+	// やること表示UIを生成
+	mpToDoUI = new CToDoUI();
+	mpToDoUI->AddText(TODO_TEXT0);
+	mpToDoUI->AddText(TODO_TEXT1);
+
+	// 選択中の仕事名表示UIを生成
+	mpSelectJobUI = new CSelectJobUI();
+
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
 	//(
@@ -74,7 +88,7 @@ void CHomeScene::Load()
 	CVector atPos = player->Position() + CVector(0.0f, 10.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 0.0f, 15.0f),
+		atPos + CVector(0.0f, 10.0f, 15.0f),
 		atPos
 	);
 	// 衝突判定するコライダ―を追加
@@ -110,4 +124,19 @@ void CHomeScene::Update()
 			mpGameMenu->Open();
 		}
 	}
+	EJobType jobType = CJobStatusManager::Instance()->GetSelectJob();
+	// 仕事が選択されていない場合
+	if (jobType == EJobType::eNone)
+	{
+		mpToDoUI->SetText(0);
+	}
+	// 仕事が選択されている場合
+	else
+	{
+		mpToDoUI->SetText(1);
+	}
+	// やること表示UIの更新
+	mpToDoUI->Update();
+	// 選択中の仕事名表示UIの更新
+	mpSelectJobUI->Update();
 }

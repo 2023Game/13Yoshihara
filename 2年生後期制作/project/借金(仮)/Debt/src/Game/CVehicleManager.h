@@ -5,6 +5,7 @@
 
 class CCar;
 class CGarbageTruck;
+class CPunisherTruck;
 class CNavNode;
 
 // 位置
@@ -117,7 +118,7 @@ private:
 
 	std::list<CCar*> mpCars;		// 車のリスト
 	CGarbageTruck* mpGarbageTruck;	// 通常トラック
-	CGarbageTruck* mpPunishTruck;	// お仕置きトラック
+	CPunisherTruck* mpPunishTruck;	// お仕置きトラック
 
 	// 出現までの時間
 	float mCarPopTime;			// 車

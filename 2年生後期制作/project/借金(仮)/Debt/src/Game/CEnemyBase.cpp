@@ -439,7 +439,18 @@ void CEnemyBase::ChangePatrolPoint(float patrolNearDist)
 				node->SetPos(node->GetPos());
 			}
 			// 巡回ポイントまでの最短経路を求める
-			if (navMgr->Navigate(mpNavNode, mpPatrolPoints[mNextPatrolIndex], mpMoveRoute))
+			navMgr->Navigate(mpNavNode, mpPatrolPoints[mNextPatrolIndex], mpMoveRoute);
+			// 最短経路が見つからなかった場合
+			if (mpMoveRoute.size() < 2)
+			{
+				// ゴール地点を移動ルートとして設定する
+				mpMoveRoute.clear();
+				mpMoveRoute.push_back(mpPatrolPoints[mNextPatrolIndex]);
+				mNextMoveIndex = 0;
+			}
+			// 最短経路が見つかった場合
+			// 一番最初の地点（現在位置を除いて）を次の移動ポイントとする
+			else
 			{
 				// 次の目的地のインデックスを設定
 				mNextMoveIndex = 1;

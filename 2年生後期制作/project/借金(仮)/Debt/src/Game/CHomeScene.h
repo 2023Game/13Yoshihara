@@ -2,6 +2,8 @@
 #include "CSceneBase.h"
 class CGameMenu;
 class CSound;
+class CToDoUI;
+class CSelectJobUI;
 
 //タイトルシーン
 class CHomeScene :public CSceneBase
@@ -17,5 +19,10 @@ public:
 	void Update();
 
 private:
+	// ゲームメニュー
 	CGameMenu* mpGameMenu;
+	// やること表示UI
+	CToDoUI* mpToDoUI;
+	// 選択中の仕事名表示UI
+	CSelectJobUI* mpSelectJobUI;
 };

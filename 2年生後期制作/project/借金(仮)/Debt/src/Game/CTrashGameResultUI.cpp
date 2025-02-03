@@ -44,7 +44,7 @@ CTrashGameResultUI::CTrashGameResultUI()
 		scoreMgr->GetTrashGameScoreData();
 
 	// 得点のテキストを生成
-	mpScorePointText = new CTextUI2D(false);
+	mpScorePointText = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpScorePointText->ChangeToStr("%d\n", scoreData->mScore);
 	// 座標を設定
@@ -55,28 +55,28 @@ CTrashGameResultUI::CTrashGameResultUI()
 	mpScorePointText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 
 	// ゴミ袋の数のテキストを生成
-	mpNumText = new CTextUI2D(false);
+	mpNumText = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpNumText->ChangeToStr("%d\n　\n　\n%d\n", scoreData->mTrashBagNum, scoreData->mGoldTrashBagNum);
 	// 座標を設定
 	mpNumText->Position(NUM_OFFSET_POS);
 
 	// ゴミ袋の値段のテキストを生成
-	mpPriceText = new CTextUI2D(false);
+	mpPriceText = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpPriceText->ChangeToStr("%d\n　\n　\n%d\n", trashBagPoint, goldTrashBagPoint);
 	// 座標を設定
 	mpPriceText->Position(PRICE_OFFSET_POS);
 
 	// 単位のテキストを生成
-	mpUnitText = new CTextUI2D(false);
+	mpUnitText = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpUnitText->SetStr("コ　　　　　　円\n　\n　\nコ　　　　　　円\n");
 	// 座標を設定
 	mpUnitText->Position(UNIT_OFFSET_POS);
 
 	// ×のテキストを生成
-	mpXText= new CTextUI2D(false);
+	mpXText= new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpXText->SetStr("×\n　\n　\n×\n");
 	mpXText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);

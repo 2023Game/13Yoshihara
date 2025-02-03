@@ -896,6 +896,8 @@ void CCollector::UpdateAttackTrue()
 		// ステップ0：アニメーション再生
 	case 0:
 	{
+		// 衝突判定をオフ
+		SetEnableCol(false);
 		// 重力を掛けない
 		mIsGravity = false;
 		// 攻撃成功アニメーション再生
@@ -969,6 +971,8 @@ void CCollector::UpdateAttackTrue()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
+			// 衝突判定をオン
+			SetEnableCol(true);
 			// 重力を掛ける
 			mIsGravity = true;
 			// 攻撃終了状態へ

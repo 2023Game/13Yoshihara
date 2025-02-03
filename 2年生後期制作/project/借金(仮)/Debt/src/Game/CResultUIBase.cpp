@@ -29,7 +29,7 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 	, mSelectIndex(-1)
 {
 	// スコアのテキストを生成
-	mpScoreText = new CTextUI2D(false);
+	mpScoreText = new CTextUI2D(ETaskPauseType::eGame, false);
 	mpScoreText->SetStr("Score");
 	mpScoreText->SetFontSize(116);
 	mpScoreText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);

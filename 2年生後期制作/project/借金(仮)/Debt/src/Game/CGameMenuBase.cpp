@@ -2,6 +2,7 @@
 #include "CInput.h"
 #include "CTaskManager.h"
 #include "CBGMManager.h"
+#include "CTextUI2D.h"
 
 #define MENU_ALPHA 0.75f
 // 大きさの倍率
@@ -58,17 +59,9 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::str
 		mMenuItems.push_back(item);
 		mMenuOnOff.push_back(true);
 
-		CText* text = new CText
-		(
-			nullptr, 40,
-			CVector::zero,
-			CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
-			CColor::white,
-			ETaskPriority::eUI,
-			0,
-			ETaskPauseType::eGame,
-			false, false
-		);
+		CTextUI2D* text = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
+		text->Position(WINDOW_WIDTH * 0.5f, spaceY * (i + 1) - 75.0f, 0.0f);
+		mMenuTexts.push_back(text);
 	}
 
 	mpSelectFrame = new CImage
@@ -155,9 +148,12 @@ void CGameMenuBase::Update()
 	}
 
 	mpBackground->Update();
-	for (CImage* item : mMenuItems)
+	// アイテムとテキストのサイズは一緒
+	int size = mMenuItems.size();
+	for (int i = 0; i < size; i++)
 	{
-		item->Update();
+		mMenuItems[i]->Update();
+		mMenuTexts[i]->Update();
 	}
 	mpSelectFrame->Update();
 }
@@ -166,9 +162,12 @@ void CGameMenuBase::Update()
 void CGameMenuBase::Render()
 {
 	mpBackground->Render();
-	for (int i = 0; i < mMenuItems.size(); i++)
+	// アイテムとテキストのサイズは一緒
+	int size = mMenuItems.size();
+	for (int i = 0; i < size; i++)
 	{
 		CImage* item = mMenuItems[i];
+		CTextUI2D* text = mMenuTexts[i];
 		// オフの場合暗くする
 		if (!mMenuOnOff[i])
 		{
@@ -180,6 +179,7 @@ void CGameMenuBase::Render()
 			item->SetColor(1.0f, 1.0f, 1.0f);
 		}
 		item->Render();
+		text->Render();
 
 		if (i == mSelectIndex)
 		{

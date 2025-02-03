@@ -3,11 +3,11 @@
 #include <stdarg.h>
 
 // コンストラクタ
-CTextUI2D::CTextUI2D(bool addTaskList)
-	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame, false, addTaskList)
+CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, pauseType, false, addTaskList)
 {
 	// タイトルロゴのフォントデータを生成
-	mpFont = new CFont("res\\Font\\toroman.ttf");
+	mpFont = new CFont(fontPath);
 	mpFont->SetFontSize(64);
 	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpFont->SetLineLength(WINDOW_WIDTH);
@@ -21,7 +21,7 @@ CTextUI2D::CTextUI2D(bool addTaskList)
 		CColor(0.1f, 0.1f, 0.1f),
 		ETaskPriority::eUI,
 		0,
-		ETaskPauseType::eGame,
+		pauseType,
 		false,false
 	);
 	mpText->SetEnableOutline(true);
@@ -70,11 +70,15 @@ void CTextUI2D::SetStr(std::string str)
 void CTextUI2D::SetFontSize(int fontSize)
 {
 	mpText->SetFontSize(fontSize);
+	// nullなら処理しない
+	if (mpFont == nullptr) return;
 	mpFont->SetFontSize(fontSize);
 }
 
 // 文字の揃いの基準を設定
 void CTextUI2D::SetFontAligment(FTGL::TextAlignment aligment)
 {
+	// nullなら処理しない
+	if (mpFont == nullptr) return;
 	mpFont->SetAlignment(aligment);
 }

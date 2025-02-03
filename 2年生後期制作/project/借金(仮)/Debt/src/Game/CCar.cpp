@@ -19,7 +19,7 @@
 #define NODE_POS2	CVector(-15.0f,0.0f,-30.0f)
 #define NODE_POS3	CVector( 15.0f,0.0f,-30.0f)
 
-#define ROTATE_SPEED 3.0f	// ‰ñ“]‘¬“x
+#define ROTATE_SPEED 6.0f	// ‰ñ“]‘¬“x
 
 // Œø‰Ê‰¹‚Ì‰¹—Ê
 #define SE_VOLUME 0.5f

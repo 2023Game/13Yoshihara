@@ -3,6 +3,7 @@
 #include "CJobUnlockMenu.h"
 #include "CJobUpgradeMenu.h"
 #include "CStageSelectMenu.h"
+#include "CTextUI2D.h"
 
 #define MENU_JOB_UNLOCK "UI/menu_job_unlock.png"
 #define MENU_JOB_UPGRADE "UI/menu_job_upgrade.png"
@@ -12,6 +13,15 @@
 
 // 効果音の音量
 #define SE_VOLUME 1.0f
+
+// 説明テキストの座標
+#define UNLOCK_TEXT_POS		CVector(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.15f, 0.0f)
+#define UPGRADE_TEXT_POS	CVector(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.35f, 0.0f)
+#define SELECT_TEXT_POS		CVector(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.55f, 0.0f)
+// 説明テキストの内容
+#define UNLOCK_TEXT		"仕事を解放する\n"
+#define UPGRADE_TEXT	"仕事の内容を強化する\n（未実装）\n"
+#define SELECT_TEXT		"行う仕事を選択する\n"
 
 // コンストラクタ
 CBuyMenu::CBuyMenu()
@@ -28,6 +38,12 @@ CBuyMenu::CBuyMenu()
 	
 	// 仕事選択メニューを作成
 	mpStageSelectMenu = new CStageSelectMenu(this);
+
+
+	// 説明テキストを設定
+	mMenuTexts[0]->SetStr(UNLOCK_TEXT);
+	mMenuTexts[1]->SetStr(UPGRADE_TEXT);
+	mMenuTexts[2]->SetStr(SELECT_TEXT);
 }
 
 // デストラクタ

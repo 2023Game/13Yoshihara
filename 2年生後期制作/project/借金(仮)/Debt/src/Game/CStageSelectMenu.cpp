@@ -4,11 +4,18 @@
 
 #define MENU_STAGE_TRASH "UI/menu_stage_trash.png"
 #define MENU_STAGE_DELIVERY "UI/menu_stage_delivery.png"
+
 #define MENU_CLOSE "UI/menu_close.png"
 #define MENU_SELECT "UI/menu_select.png"
 
 // 効果音の音量
 #define SE_VOLUME 1.0f
+
+// 説明テキストの内容
+#define TRASH_TRUE_TEXT		"ゴミ拾いを選択する\n（解放済）\n"
+#define TRASH_FALSE_TEXT	"ゴミ拾いを選択する\n（未解放）\n"
+#define DELIVERY_TRUE_TEXT	"配達を選択する\n（解放済）（未実装）\n"
+#define DELIVERY_FALSE_TEXT	"配達を選択する\n（未解放）（未実装）\n"
 
 // コンストラクタ
 CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)
@@ -18,6 +25,10 @@ CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)
 	// ゲームはすべて無効
 	SetMenuOnOff(0, false);
 	SetMenuOnOff(1, false);
+
+	// 説明テキストの設定
+	mMenuTexts[0]->SetStr(TRASH_FALSE_TEXT);
+	mMenuTexts[1]->SetStr(DELIVERY_FALSE_TEXT);
 }
 
 // デストラクタ
@@ -72,11 +83,15 @@ void CStageSelectMenu::Update()
 	{
 		// 有効
 		SetMenuOnOff(0, true);
+		// ゴミ拾いを選択中のテキストに変更
+		mMenuTexts[0]->SetStr(TRASH_TRUE_TEXT);
 	}
 	// 配達がアンロック済みだったら
 	if (CJobStatusManager::Instance()->GetUnlock(EJobType::eDelivery))
 	{
 		// 有効
 		SetMenuOnOff(1, true);
+		// 配達を解放済みのテキストに変更
+		mMenuTexts[1]->SetStr(DELIVERY_TRUE_TEXT);
 	}
 }
