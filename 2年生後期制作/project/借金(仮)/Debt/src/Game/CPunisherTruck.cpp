@@ -1,6 +1,7 @@
 #include "CPunisherTruck.h"
 #include "CGaugeUI3D.h"
 #include "CTrashPlayer.h"
+#include "CPunisherCollector.h"
 
 // お仕置き用のHpゲージの画像のパス
 #define PUNISHER_HP_GAUGE_PATH "UI\\punisher_garbageTruck_hp_gauge.png"
@@ -23,6 +24,16 @@ CPunisherTruck::CPunisherTruck(CModel* model, const CVector& pos, const CVector&
 	// 最初は無効
 	mpHpGauge->SetEnable(false);
 	mpHpGauge->SetShow(false);
+
+	int num = GetCollectorsNum();
+	// 回収員を全て生成し、無効にしておく
+	for (int i = 0; i < num; i++)
+	{
+		mpCollectors.push_back(new CPunisherCollector(this,
+			{ mpNode0,mpNode1,mpNode2,mpNode3 }));
+		// 無効にする
+		mpCollectors[i]->SetOnOff(false);
+	}
 }
 
 // デストラクタ
@@ -36,18 +47,6 @@ void CPunisherTruck::Reset()
 	CGarbageTruck::Reset();
 	// Hpをリセット
 	SetHp();
-}
-
-// 更新
-void CPunisherTruck::Update()
-{
-	CGarbageTruck::Update();
-}
-
-// 描画
-void CPunisherTruck::Render()
-{
-	CGarbageTruck::Render();
 }
 
 // 移動処理

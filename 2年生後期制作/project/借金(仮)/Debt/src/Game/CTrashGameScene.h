@@ -3,6 +3,7 @@
 class CGameMenuBase;
 class CVehicleManager;
 class CResidentManager;
+class CTrashEnemyManager;
 class CSound;
 class CTimeUI;
 class CTrashScoreUI;
@@ -27,6 +28,8 @@ private:
 	CVehicleManager* mpVehicleManager;
 	// 住人管理クラス
 	CResidentManager* mpResidentManager;
+	// ゴミ拾いの敵管理クラス
+	CTrashEnemyManager* mpTrashEnemyManager;
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
 	// スコア表示UI

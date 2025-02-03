@@ -242,6 +242,12 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 車両とぶつかったら壊れる
 		else if (other->Layer() == ELayer::eVehicle)
 		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
 			// 移動していたら
 			if (IsMove())
 			{

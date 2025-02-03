@@ -72,8 +72,6 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 
 // 死んだときの消えるまでの時間
 #define DEATH_WAIT_TIME 2.0f
-// 死んだとき退避させる場所
-#define DEATH_POS CVector(100.0f,100.0f,100.0f)
 
 // ゴミ袋のオフセット座標
 #define TRASH_BAG_OFFSET_POS CVector(-0.5f,0.5f,0.5f)
@@ -386,8 +384,6 @@ void CCollector::SetOnOff(bool setOnOff)
 	// 無効にするとき
 	if (!setOnOff)
 	{
-		// 退避場所に移動する
-		Position(DEATH_POS);
 		// ゴミ収集車のクラスを取得
 		CGarbageTruck* owner = dynamic_cast<CGarbageTruck*>(mpOwner);
 		// 親がnullでない場合
@@ -401,6 +397,10 @@ void CCollector::SetOnOff(bool setOnOff)
 		// 持っている数をリセット
 		SetTrashBag(-GetTrashBag());
 		SetGoldTrashBag(-GetGoldTrashBag());
+#if _DEBUG
+		mpDebugFov->SetEnable(false);
+		mpDebugFov->SetShow(false);
+#endif
 	}
 	// 有効にするとき
 	else
@@ -413,6 +413,10 @@ void CCollector::SetOnOff(bool setOnOff)
 		ChangeAnimation((int)EState::eIdle);
 		SetEnableCol(true);
 		mIsGravity = true;
+#if _DEBUG
+		mpDebugFov->SetEnable(true);
+		mpDebugFov->SetShow(true);
+#endif
 	}
 	// 有効無効を設定する
 	SetEnable(setOnOff);
@@ -490,36 +494,59 @@ void CCollector::DropTrashBag(int power)
 	}
 }
 
+// 追跡状態への移行の条件をチェック
+bool CCollector::ChangeChase()
+{
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
+	// 道路内なら、
+	// 追跡状態へ移行
+	if (IsFoundPlayer() &&
+		!player->GetStickCollector() &&
+		!player->AreaOutX())
+	{
+		ChangeState(EState::eChase);
+		return true;
+	}
+	return false;
+}
+
+// 追跡状態から他の状態へ移行の条件をチェック
+bool CCollector::ChangeChaseToOther()
+{
+	// プレイヤークラス取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	CVector targetPos = player->Position();
+	// プレイヤーがエリア外か、既に回収員がくっついている場合
+	// 追いかけるのをやめる
+	if (player->AreaOutX() ||
+		player->GetStickCollector())
+	{
+		ChangeState(EState::eIdle);
+		return true;
+	}
+	// プレイヤーが見えなくなったら、見失った状態へ移行
+	if (!IsLookPlayer())
+	{
+		// 見失った位置にノードを配置
+		mpLostPlayerNode->SetPos(targetPos);
+		mpLostPlayerNode->SetEnable(true);
+		ChangeState(EState::eLost);
+		mStateStep = 0;
+		return true;
+	}
+	return false;
+}
+
 // 待機状態
 void CCollector::UpdateIdle()
 {
 	mMoveSpeed = CVector::zero;
-	// プレイヤーを取得
-	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// 通常用の場合
-	if (!GetPunisher())
+	// 条件を達成したら追跡へ
+	if (ChangeChase())
 	{
-		// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
-		// 道路内なら、
-		// 追跡状態へ移行
-		if (IsFoundPlayer() &&
-			!player->GetStickCollector() &&
-			!player->AreaOutX())
-		{
-			ChangeState(EState::eChase);
-			return;
-		}
-	}
-	// お仕置き用の場合
-	else
-	{
-		// 回収員がくっついていない場合
-		if (!player->GetStickCollector())
-		{
-			// 追跡状態へ移行
-			ChangeState(EState::eChase);
-			return;
-		}
+		return;
 	}
 
 	// 待機アニメーションを再生
@@ -548,32 +575,10 @@ void CCollector::UpdateIdle()
 // 巡回処理
 void CCollector::UpdatePatrol()
 {
-	// プレイヤーを取得
-	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// 通常用の場合
-	if (!GetPunisher())
+	// 条件を達成したら追跡へ
+	if (ChangeChase())
 	{
-		// プレイヤーが視野範囲内かつ、回収員がくっついていないかつ、
-		// プレイヤーが道路内の場合
-		// 追跡状態へ移行
-		if (IsFoundPlayer() &&
-			!player->GetStickCollector() &&
-			!player->AreaOutX())
-		{
-			ChangeState(EState::eChase);
-			return;
-		}
-	}
-	// お仕置き用の場合
-	else
-	{
-		// 回収員がくっついていないなら
-		// 追跡状態へ移行
-		if (!player->GetStickCollector())
-		{
-			ChangeState(EState::eChase);
-			return;
-		}
+		return;
 	}
 
 	// ステップごとに処理を切り替える
@@ -646,39 +651,11 @@ void CCollector::UpdateChase()
 	// プレイヤーの座標へ向けて移動する
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
-	// 通常用の場合
-	if (!GetPunisher())
+	if (ChangeChaseToOther())
 	{
-		// プレイヤーがエリア外か、既に回収員がくっついている場合
-		// 追いかけるのをやめる
-		if (player->AreaOutX() ||
-			player->GetStickCollector())
-		{
-			ChangeState(EState::eIdle);
-			return;
-		}
-		// プレイヤーが見えなくなったら、見失った状態へ移行
-		if (!IsLookPlayer())
-		{
-			// 見失った位置にノードを配置
-			mpLostPlayerNode->SetPos(targetPos);
-			mpLostPlayerNode->SetEnable(true);
-			ChangeState(EState::eLost);
-			mStateStep = 0;
-			return;
-		}
+		return;
 	}
-	// お仕置き用の場合
-	else
-	{
-		// 既に回収員がくっついている場合
-		// 追いかけるのをやめる
-		if (player->GetStickCollector())
-		{
-			ChangeState(EState::eIdle);
-			return;
-		}
-	}
+
 	// プレイヤーに攻撃できる距離ならば
 	if (CanAttackPlayer(ATTACK_RANGE))
 	{
@@ -817,7 +794,6 @@ void CCollector::UpdateReturn()
 		}
 		break;
 	}
-
 }
 
 // 攻撃開始
@@ -988,9 +964,8 @@ void CCollector::UpdateAttackTrue()
 void CCollector::UpdateAttackFalse()
 {
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// 攻撃が成功に変わって、回収員がプレイヤーについていなかったら
-	if (mIsAttackSuccess &&
-		!player->GetStickCollector())
+	// 攻撃が成功に変わっていたら
+	if (mIsAttackSuccess)
 	{
 		// 攻撃成功状態へ
 		ChangeState(EState::eAttackTrue);
@@ -1035,6 +1010,7 @@ void CCollector::UpdateAttackFalse()
 			// 攻撃終了
 			AttackEnd();
 		}
+		break;
 	}
 }
 

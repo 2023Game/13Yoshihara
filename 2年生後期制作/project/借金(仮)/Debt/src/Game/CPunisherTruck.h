@@ -13,11 +13,6 @@ public:
 	// 変数をリセット
 	void Reset() override;
 
-	// 更新
-	void Update();
-	// 描画
-	void Render();
-
 private:
 	// 移動処理
 	void UpdateMove() override;

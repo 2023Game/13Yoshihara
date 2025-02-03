@@ -158,6 +158,9 @@
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
       <UniqueIdentifier>{eb78e0f1-2470-470d-8213-3d41f983ce07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Enemy\Punisher">
+      <UniqueIdentifier>{12d4278a-4815-4f4e-a928-22cdc2dbe518}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -469,9 +472,6 @@
     <ClCompile Include="src\Game\CInteractUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashEnemyManager.cpp">
-      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\CColliderBox.cpp">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClCompile>
@@ -612,6 +612,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\CPunisherTruck.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPunisherCollector.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPunisherTrashEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -951,9 +960,6 @@
     <ClInclude Include="src\Game\CInteractUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTrashEnemyManager.h">
-      <Filter>ソース ファイル\Game\Character\TrashGame</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\CColliderBox.h">
       <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClInclude>
@@ -1094,6 +1100,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CPunisherTruck.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPunisherCollector.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPunisherTrashEnemy.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -453,8 +453,6 @@ CCollector* CTrashPlayer::GetStickCollectorPointer() const
 void CTrashPlayer::SetStickCollectorPointer(CCollector* collector)
 {
 	mpStickCollector = collector;
-	// ついている時は開いている
-	mIsOpen = true;
 }
 
 // 開いているかを取得
@@ -547,6 +545,8 @@ void CTrashPlayer::ActionInput()
 	// 回収員がくっついているかつ
 	if (GetStickCollector())
 	{
+		// ついている時は開いている
+		mIsOpen = true;
 		// 回収員のポインタ
 		CCollector* collector = GetStickCollectorPointer();
 		// ポインタがnullでないかつ、

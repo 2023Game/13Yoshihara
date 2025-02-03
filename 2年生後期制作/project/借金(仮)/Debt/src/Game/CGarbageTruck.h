@@ -61,7 +61,7 @@ public:
 
 protected:
 	// ƒSƒ~‘Ü‚ğ—‚Æ‚·ˆ—
-	void DropTrashBag(int power);
+	void DropTrashBag(int power) override;
 
 	// ‰ñûˆõ‚ÌƒŠƒXƒg
 	std::vector<CCollector*> mpCollectors;

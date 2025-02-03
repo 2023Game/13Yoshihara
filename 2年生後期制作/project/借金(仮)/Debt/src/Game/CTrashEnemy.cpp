@@ -59,10 +59,6 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Death.x",				false,   5.0f,  1.0f},	// 死亡					（開）
 };
 
-#define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
-#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
-#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
-
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
 #define EYE_HEIGHT 5.0f		// 視点の高さ
@@ -127,7 +123,8 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define SE_VOLUME 0.5f
 
 // コンストラクタ
-CTrashEnemy::CTrashEnemy(bool punisher)
+CTrashEnemy::CTrashEnemy(bool punisher,
+	float radius, float height, float width)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
@@ -193,9 +190,9 @@ CTrashEnemy::CTrashEnemy(bool punisher)
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::eEnemy,
-		CVector(BODY_WIDTH - BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
-		CVector(-BODY_WIDTH + BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
-		BODY_RADIUS
+		CVector(width - radius / scale, height, 0.0f),
+		CVector(-width + radius / scale, height, 0.0f),
+		radius
 	);
 	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用、ゴミ袋
 	// と衝突判定をする
@@ -1461,16 +1458,18 @@ void CTrashEnemy::UpdateDeath()
 	case 4:
 		SetEnable(false);
 		SetShow(false);
-		if (mpDebugFov != nullptr)
-		{
-			mpDebugFov->SetEnable(false);
-			mpDebugFov->SetShow(false);
-		}
 		if (mpHpGauge != nullptr)
 		{
 			mpHpGauge->SetEnable(false);
 			mpHpGauge->SetShow(false);
 		}
+#if _DEBUG
+		if (mpDebugFov != nullptr)
+		{
+			mpDebugFov->SetEnable(false);
+			mpDebugFov->SetShow(false);
+		}
+#endif
 		break;
 	}
 }

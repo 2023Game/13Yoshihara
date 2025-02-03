@@ -90,6 +90,8 @@
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CNavManager.cpp" />
     <ClCompile Include="src\Game\CNavNode.cpp" />
+    <ClCompile Include="src\Game\CPunisherCollector.cpp" />
+    <ClCompile Include="src\Game\CPunisherTrashEnemy.cpp" />
     <ClCompile Include="src\Game\CPunisherTruck.cpp" />
     <ClCompile Include="src\Game\CResident.cpp" />
     <ClCompile Include="src\Game\CResidentManager.cpp" />
@@ -99,6 +101,7 @@
     <ClCompile Include="src\Game\CScoreManager.cpp" />
     <ClCompile Include="src\Game\CSelectJobUI.cpp" />
     <ClCompile Include="src\Game\CToDoUI.cpp" />
+    <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashGameResultUI.cpp" />
     <ClCompile Include="src\Game\CTrashScoreUI.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
@@ -107,7 +110,6 @@
     <ClCompile Include="src\Game\CTimeUI.cpp" />
     <ClCompile Include="src\Game\CTrashBag.cpp" />
     <ClCompile Include="src\Game\CTrashBagStatus.cpp" />
-    <ClCompile Include="src\Game\CTrashEnemyManager.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyStatus.cpp" />
     <ClCompile Include="src\Game\CVehicleBase.cpp" />
     <ClCompile Include="src\Game\CVehicleManager.cpp" />
@@ -252,6 +254,8 @@
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CNavManager.h" />
     <ClInclude Include="src\Game\CNavNode.h" />
+    <ClInclude Include="src\Game\CPunisherCollector.h" />
+    <ClInclude Include="src\Game\CPunisherTrashEnemy.h" />
     <ClInclude Include="src\Game\CPunisherTruck.h" />
     <ClInclude Include="src\Game\CResident.h" />
     <ClInclude Include="src\Game\CResidentManager.h" />
@@ -261,6 +265,7 @@
     <ClInclude Include="src\Game\CScoreManager.h" />
     <ClInclude Include="src\Game\CSelectJobUI.h" />
     <ClInclude Include="src\Game\CToDoUI.h" />
+    <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashGameResultUI.h" />
     <ClInclude Include="src\Game\CTrashScoreUI.h" />
     <ClInclude Include="src\Game\CSky.h" />
@@ -269,7 +274,6 @@
     <ClInclude Include="src\Game\CTimeUI.h" />
     <ClInclude Include="src\Game\CTrashBag.h" />
     <ClInclude Include="src\Game\CTrashBagStatus.h" />
-    <ClInclude Include="src\Game\CTrashEnemyManager.h" />
     <ClInclude Include="src\Game\CTrashEnemyStatus.h" />
     <ClInclude Include="src\Game\CVehicleBase.h" />
     <ClInclude Include="src\Game\CVehicleManager.h" />

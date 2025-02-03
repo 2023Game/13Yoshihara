@@ -92,6 +92,16 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		// プレイヤーと衝突判定
 		mpSearchCol->SetCollisionTags({ ETag::ePlayer });
 		mpSearchCol->SetCollisionLayers({ ELayer::ePlayer });
+
+		int num = GetCollectorsNum();
+		// 回収員を全て生成し、無効にしておく
+		for (int i = 0; i < num; i++)
+		{
+			mpCollectors.push_back(new CCollector(punisher, this,
+				{ mpNode0,mpNode1,mpNode2,mpNode3 }));
+			// 無効にする
+			mpCollectors[i]->SetOnOff(false);
+		}
 	}
 
 	// 本体コライダ―
@@ -100,7 +110,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		this,ELayer::eVehicle,
 		CVector(0.0f,TRUCK_HEIGHT, TRUCK_WIDTH - TRUCK_RADIUS),
 		CVector(0.0f,TRUCK_HEIGHT,-TRUCK_WIDTH + TRUCK_RADIUS),
-		TRUCK_RADIUS, true
+		TRUCK_RADIUS
 	);
 	// 座標を設定
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
@@ -160,16 +170,6 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH * 1.2f + TRUCK_RADIUS),
 		TRUCK_RADIUS, true
 	);
-
-	int num = GetCollectorsNum();
-	// 回収員を全て生成し、無効にしておく
-	for (int i = 0; i < num; i++)
-	{
-		mpCollectors.push_back(new CCollector(punisher, this,
-			{ mpNode0,mpNode1,mpNode2,mpNode3 }));
-		// 無効にする
-		mpCollectors[i]->SetOnOff(false);
-	}
 
 	// ゴミ袋の数の初期値を設定
 	SetTrashBag(GetDefaultBagNum());
@@ -361,6 +361,16 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					collector->TakeDamage(GetAttackPower(), this);
 				}
 			}
+		}
+		// 衝突した相手が車両の場合
+		else if (other->Layer() == ELayer::eVehicle)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
 		}
 	}
 	// 前方コライダ―

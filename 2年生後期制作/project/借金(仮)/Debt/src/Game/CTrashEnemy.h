@@ -7,6 +7,10 @@
 class CTrashBag;
 class CSound;
 
+#define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
+#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
+#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
+
 /*
 ゴミ拾いゲームの敵クラス
 敵基底クラスと
@@ -19,7 +23,10 @@ public:
 	///	コンストラクタ
 	/// </summary>
 	/// <param name="punisher">trueならば、お仕置き用</param>
-	CTrashEnemy(bool punisher);
+	CTrashEnemy(bool punisher = false,
+		float radius = BODY_RADIUS,
+		float height = BODY_HEIGHT,
+		float width = BODY_WIDTH);
 	// デストラクタ
 	~CTrashEnemy();
 
@@ -62,9 +69,9 @@ public:
 	// 開いているかを取得
 	bool GetOpen() const;
 
-private:
+protected:
 	// ゴミ袋を落とす処理
-	void DropTrashBag(int power);
+	void DropTrashBag(int power) override;
 	// 一番近いゴミ袋との距離を取得
 	float GetTargetTrashBagDistance();
 

@@ -59,9 +59,13 @@ public :
 	void SetOwner(CObjectBase* owner);
 	// 回収員の持ち主を取得
 	CObjectBase* GetOwner() const;
-private:
+protected:
 	// ゴミ袋を落とす処理
-	void DropTrashBag(int power);
+	void DropTrashBag(int power) override;
+	// 追跡状態への移行の条件をチェック
+	virtual bool ChangeChase();
+	// 追跡状態から他の状態へ移行の条件をチェック
+	virtual bool ChangeChaseToOther();
 
 	/*
 アニメーションの種類

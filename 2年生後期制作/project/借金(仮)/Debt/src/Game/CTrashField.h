@@ -4,7 +4,7 @@
 class CVehicleBase;
 
 #define ROAD_X_AREA 90.0f	// ŽÔ“¹‚ÌX‚Ì”ÍˆÍ
-#define ROAD_Z_AREA 90.0f	// ŽÔ“¹‚ÌZ‚Ì”ÍˆÍ
+#define ROAD_Z_AREA 200.0f	// ŽÔ“¹‚ÌZ‚Ì”ÍˆÍ
 
 class CTrashField : public CFieldBase
 {

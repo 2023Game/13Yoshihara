@@ -72,7 +72,7 @@ public:
 
 private:
 	// ゴミ袋を落とす処理
-	void DropTrashBag(int power);
+	void DropTrashBag(int power) override;
 	/*
 	アクションのキー入力
 	回収員がついていないときのみ入力可能

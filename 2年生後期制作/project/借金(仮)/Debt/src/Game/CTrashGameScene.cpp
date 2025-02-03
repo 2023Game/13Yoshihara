@@ -10,12 +10,12 @@
 #include "CLineEffect.h"
 #include "CVehicleManager.h"
 #include "CResidentManager.h"
-#include "CTrashEnemy.h"
 #include "CNavManager.h"
 #include "CTimeUI.h"
 #include "CTrashScoreUI.h"
 #include "CScoreManager.h"
 #include "CTaskManager.h"
+#include "CTrashEnemyManager.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -108,9 +108,9 @@ void CTrashGameScene::Load()
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Position(PLAYER_POS);
 
-	CTrashEnemy* enemy = new CTrashEnemy(false);
-	enemy->Position(ENEMY_POS);
-	enemy->Rotation(ENEMY_ROT);
+	// ゴミ拾いの敵管理クラス作成
+	mpTrashEnemyManager =
+		new CTrashEnemyManager();
 
 	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
@@ -168,6 +168,8 @@ void CTrashGameScene::Update()
 
 	// 車両管理クラスの更新
 	mpVehicleManager->Update();
+	// 敵管理クラスの更新
+	mpTrashEnemyManager->Update();
 	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新

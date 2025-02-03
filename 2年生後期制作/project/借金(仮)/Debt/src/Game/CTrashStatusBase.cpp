@@ -91,3 +91,8 @@ int CTrashStatusBase::GetGoldTrashBag() const
 {
 	return mGoldTrashBagNum;
 }
+
+// ƒSƒ~‘Ü‚ğ—‚Æ‚·ˆ—
+void CTrashStatusBase::DropTrashBag(int power)
+{
+}

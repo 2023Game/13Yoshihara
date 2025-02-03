@@ -53,6 +53,9 @@ public:
 	void SetGoldTrashBag(int num);
 	// ゴールドゴミ袋の数を取得する
 	int GetGoldTrashBag() const;
+
+	// ゴミ袋を落とす処理
+	virtual void DropTrashBag(int power);
 private:
 	float mKnockbackDealt;		// 与えるノックバック速度
 	CVector mKnockbackReceived;	// 受けるノックバック
