@@ -11,9 +11,6 @@
 #include "CTrashBag.h"
 #include "CSound.h"
 
-// TODO：後で消すテスト用
-#include "CInput.h"
-
 // 衝突相手の車両クラスを取得するための
 // 車両のクラスのインクルード
 #include "CCar.h"
@@ -58,6 +55,10 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"Close.x",				false,	10.0f,	1.0f},	// 蓋を閉じる			（開）
 	{ ANIM_PATH"Death.x",				false,   5.0f,  1.0f},	// 死亡					（開）
 };
+
+#define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
+#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
+#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
 
 #define FOV_ANGLE 45.0f		// 視野範囲の角度
 #define FOV_LENGTH 100.0f	// 視野範囲の距離
@@ -113,18 +114,13 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define OPEN_DISTANCE 10.0f
 
 // 通常の敵のスケール
-#define SCALE 0.1f
-// お仕置き用の敵のスケール
-#define PUNISHER_SCALE 0.5f
-// お仕置き用の敵が元から持っているゴミ袋の数
-#define DEFAULT_TRASH_BAG_NUM 10
+#define SCALE CVector(0.1f,0.1f,0.1f)
 
 // 効果音の音量
 #define SE_VOLUME 0.5f
 
 // コンストラクタ
-CTrashEnemy::CTrashEnemy(bool punisher,
-	float radius, float height, float width)
+CTrashEnemy::CTrashEnemy(bool punisher, bool isDamageBody)
 	: CEnemyBase
 	(
 		FOV_ANGLE,
@@ -150,35 +146,13 @@ CTrashEnemy::CTrashEnemy(bool punisher,
 	, mpTargetTrashBag(nullptr)
 	, mTargetTrashBagDistance(FLT_MAX)
 	, mpSearchCol(nullptr)
+	, mIsDamageBody(isDamageBody)
 {
-	float scale;
-	// お仕置き用の場合
-	if (punisher)
-	{
-		scale = PUNISHER_SCALE;
-		SetGoldTrashBag(DEFAULT_TRASH_BAG_NUM);
-	}
-	// 通常の場合
-	else
-	{
-		scale = SCALE;
-		// ゴミ袋探知用コライダ―
-		mpSearchCol = new CColliderSphere
-		(
-			this, ELayer::eTrashBagSearch,
-			SEARCH_RADIUS / scale,
-			true
-		);
-		// ゴミ袋と衝突判定
-		mpSearchCol->SetCollisionTags({ ETag::eTrashBag });
-		mpSearchCol->SetCollisionLayers({ ELayer::eTrashBag });
-	}
-
 	// Hpゲージを設定
 	mpHpGauge = new CGaugeUI3D(this, HP_GAUGE_PATH);
 	mpHpGauge->SetMaxPoint(GetMaxHp());
 	mpHpGauge->SetCurrPoint(GetHp());
-	Scale(scale, scale, scale);
+	Scale(SCALE);
 	// アニメーションとモデルの初期化
 	InitAnimationModel("TrashEnemy", &ANIM_DATA);
 	// 効果音を設定
@@ -186,53 +160,15 @@ CTrashEnemy::CTrashEnemy(bool punisher,
 	mpCriticalSE = CResourceManager::Get<CSound>("CriticalSE");
 	mpGuardSE = CResourceManager::Get<CSound>("GuardSE");
 
-	// 本体コライダ―
-	mpBodyCol = new CColliderCapsule
-	(
-		this, ELayer::eEnemy,
-		CVector(width - radius / scale, height, 0.0f),
-		CVector(-width + radius / scale, height, 0.0f),
-		radius
-	);
-	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用、ゴミ袋
-	// と衝突判定をする
-	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle, ETag::eTrashBag });
-	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
-		ELayer::ePlayer, ELayer::eEnemy,ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle, ELayer::eTrashBag});
-
-	// 攻撃コライダー
-	mpAttackCol = new CColliderCapsule
-	(
-		this, ELayer::eAttackCol,
-		CVector(0.0f, ATTACK_COL_HEIGHT, ATTACK_COL_WIDTH - ATTACK_COL_RADIUS * 10),
-		CVector(0.0f, ATTACK_COL_HEIGHT, -ATTACK_COL_WIDTH + ATTACK_COL_RADIUS * 10),
-		ATTACK_COL_RADIUS
-	);
-	// クリティカル攻撃コライダー
-	mpCriticalCol = new CColliderCapsule
-	(
-		this, ELayer::eAttackCol,
-		CVector(0.0f, CRITICAL_COL_HEIGHT, CRITICAL_COL_WIDTH - CRITICAL_COL_RADIUS * 10),
-		CVector(0.0f, CRITICAL_COL_HEIGHT, -CRITICAL_COL_WIDTH + CRITICAL_COL_RADIUS * 10),
-		CRITICAL_COL_RADIUS
-	);
-
-	// プレイヤーと衝突判定するように設定
-	mpAttackCol->SetCollisionTags({ ETag::ePlayer});
-	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer});
-	mpCriticalCol->SetCollisionTags({ ETag::ePlayer});
-	mpCriticalCol->SetCollisionLayers({ ELayer::ePlayer});
-
-	// 自分の前に位置調整
-	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
-	mpCriticalCol->Position(CRITICAL_COL_OFFSET_POS);
-
-	// 攻撃コライダーは最初はオフにしておく
-	mpAttackCol->SetEnable(false);
-	mpCriticalCol->SetEnable(false);
-
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle_Close);
+
+	// 通常用なら
+	if (!punisher)
+	{
+		// コライダ―を生成
+		CreateCol();
+	}
 }
 
 // デストラクタ
@@ -273,9 +209,7 @@ void CTrashEnemy::Update()
 	CEnemyBase::Update();
 
 	// HPゲージを更新
-	mpHpGauge->Position(Position() + GAUGE_OFFSET_POS);
-	mpHpGauge->SetMaxPoint(GetMaxHp());
-	mpHpGauge->SetCurrPoint(GetHp());
+	UpdateHpGauge();
 
 #if _DEBUG
 	// 現在の状態に合わせて視野範囲の色を変更
@@ -311,6 +245,47 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 		}
 		// 衝突した相手がプレイヤーなら
 		else if (other->Layer() == ELayer::ePlayer)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+
+			// 体に触れるだけでダメージを与えないなら処理しない
+			if (!mIsDamageBody) return;
+			// プレイヤークラスを取得
+			CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(other->Owner());
+			if (player != nullptr)
+			{
+				// 攻撃を受けているなら処理しない
+				if (player->IsDamaging()) return;
+				// 自分から相手の方向
+				CVector direction = player->Position() - Position();
+				direction = direction.Normalized();
+				direction.Y(0.0f);
+				// 相手が受けるノックバック速度に、
+				// 自分が与えるノックバック速度の2倍を自分から相手の方向に設定
+				player->SetKnockbackReceived(direction * GetKnockbackDealt() * 2.0f);
+				// 攻撃力分のダメージを与える
+				player->TakeCritical(GetAttackPower(), this, GetPower());
+				// 開いている場合
+				if (player->GetOpen())
+				{
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
+				}
+				// 開いていない場合
+				else
+				{
+					// ダメージ音を再生
+					mpDamageSE->Play(SE_VOLUME, true);
+				}
+			}
+		}
+		// 衝突した相手が敵なら
+		else if (other->Layer() == ELayer::eEnemy)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
@@ -590,6 +565,157 @@ float CTrashEnemy::GetTargetTrashBagDistance()
 	return mTargetTrashBagDistance;
 }
 
+// コライダ―を生成する
+void CTrashEnemy::CreateCol()
+{
+	// 大きさの取得
+	float scale = Scale().X();
+	// 本体コライダ―
+	mpBodyCol = new CColliderCapsule
+	(
+		this, ELayer::eEnemy,
+		CVector(BODY_WIDTH - BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
+		CVector(-BODY_WIDTH + BODY_RADIUS / scale, BODY_HEIGHT, 0.0f),
+		BODY_RADIUS
+	);
+	// 地形、プレイヤー、敵、回収員、攻撃、車両、キャラの探知用、ゴミ袋
+	// と衝突判定をする
+	mpBodyCol->SetCollisionTags({ ETag::eField, ETag::ePlayer, ETag::eEnemy, ETag::eVehicle, ETag::eTrashBag });
+	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject,ELayer::eCharaSearch,
+		ELayer::ePlayer, ELayer::eEnemy,ELayer::eCollector, ELayer::eAttackCol, ELayer::eVehicle, ELayer::eTrashBag });
+
+	// 攻撃コライダー
+	mpAttackCol = new CColliderCapsule
+	(
+		this, ELayer::eAttackCol,
+		CVector(0.0f, ATTACK_COL_HEIGHT, ATTACK_COL_WIDTH - ATTACK_COL_RADIUS * 10),
+		CVector(0.0f, ATTACK_COL_HEIGHT, -ATTACK_COL_WIDTH + ATTACK_COL_RADIUS * 10),
+		ATTACK_COL_RADIUS
+	);
+	// クリティカル攻撃コライダー
+	mpCriticalCol = new CColliderCapsule
+	(
+		this, ELayer::eAttackCol,
+		CVector(0.0f, CRITICAL_COL_HEIGHT, CRITICAL_COL_WIDTH - CRITICAL_COL_RADIUS * 10),
+		CVector(0.0f, CRITICAL_COL_HEIGHT, -CRITICAL_COL_WIDTH + CRITICAL_COL_RADIUS * 10),
+		CRITICAL_COL_RADIUS
+	);
+
+	// プレイヤーと衝突判定するように設定
+	mpAttackCol->SetCollisionTags({ ETag::ePlayer });
+	mpAttackCol->SetCollisionLayers({ ELayer::ePlayer });
+	mpCriticalCol->SetCollisionTags({ ETag::ePlayer });
+	mpCriticalCol->SetCollisionLayers({ ELayer::ePlayer });
+
+	// 自分の前に位置調整
+	mpAttackCol->Position(ATTACK_COL_OFFSET_POS);
+	mpCriticalCol->Position(CRITICAL_COL_OFFSET_POS);
+
+	// 攻撃コライダーは最初はオフにしておく
+	mpAttackCol->SetEnable(false);
+	mpCriticalCol->SetEnable(false);
+
+	// ゴミ袋探知用コライダ―
+	mpSearchCol = new CColliderSphere
+	(
+		this, ELayer::eTrashBagSearch,
+		SEARCH_RADIUS / scale,
+		true
+	);
+	// ゴミ袋と衝突判定
+	mpSearchCol->SetCollisionTags({ ETag::eTrashBag });
+	mpSearchCol->SetCollisionLayers({ ELayer::eTrashBag });
+}
+
+// 巡回状態から他の状態へ移行する条件をチェック
+bool CTrashEnemy::ChangePatrolToOther()
+{
+	// プレイヤーを取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	// プレイヤーとの距離
+	float playerDistance = CVector::Distance(player->Position(), Position());
+	// プレイヤーの方がゴミ袋より近いかつ、
+	// プレイヤーが視野範囲内かつ、道路内の場合、
+	// 追跡状態へ移行
+	if (playerDistance < GetTargetTrashBagDistance() &&
+		IsFoundPlayer() &&
+		!player->AreaOutX())
+	{
+		ChangeState(EState::eChase);
+		return true;
+	}
+	// プレイヤーを見つけていないか、ゴミ袋の方が近いので
+	// ターゲットのゴミ袋が設定されていて、有効の場合
+	// ゴミ袋へ移動状態へ移行
+	else if (mpTargetTrashBag != nullptr &&
+		mpTargetTrashBag->IsEnable())
+	{
+		ChangeState(EState::eMoveToTrashBag);
+		return true;
+	}
+	return false;
+}
+
+// 追跡状態から他の状態へ移行する条件をチェック
+bool CTrashEnemy::ChangeChaseToOther()
+{
+	// プレイヤー取得
+	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
+	CVector targetPos = player->Position();
+	mElapsedTime += Times::DeltaTime();
+
+	// 最大で追いかける時間を過ぎたら
+	if (mElapsedTime >= CHASE_MAX_TIME)
+	{
+		// 待機状態へ
+		ChangeState(EState::eIdle);
+		return true;
+	}
+
+	// プレイヤーの座標が道路外なら追いかけるのをやめる
+	if (player->AreaOutX())
+	{
+		ChangeState(EState::eIdle);
+		return true;
+	}
+	// プレイヤーが見えなくなったら、見失った状態へ移行
+	if (!IsLookPlayer())
+	{
+		// 見失った位置にノードを配置
+		mpLostPlayerNode->SetPos(targetPos);
+		mpLostPlayerNode->SetEnable(true);
+		ChangeState(EState::eLost);
+		mStateStep = 0;
+		return true;
+	}
+	// プレイヤーに攻撃できるならば、攻撃状態へ移行
+	if (CanAttackPlayer(ATTACK_RANGE))
+	{
+		// 1から100までの100個の数から乱数を取得
+		int random = Math::Rand(1, 100);
+		// クリティカル確率以下の値ならクリティカル攻撃
+		if (random <= GetCriticalChance())
+		{
+			ChangeState(EState::eCriticalStart);
+		}
+		// それ以外の時は通常攻撃
+		else
+		{
+			ChangeState(EState::eAttackStart);
+		}
+		return true;
+	}
+	return false;
+}
+
+// Hpゲージの更新
+void CTrashEnemy::UpdateHpGauge()
+{
+	mpHpGauge->Position(Position() + GAUGE_OFFSET_POS);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
+}
+
 // 待機状態
 void CTrashEnemy::UpdateIdle()
 {
@@ -621,27 +747,10 @@ void CTrashEnemy::UpdateIdle()
 // 巡回処理
 void CTrashEnemy::UpdatePatrol()
 {
-	// プレイヤーを取得
-	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
-	// プレイヤーとの距離
-	float playerDistance = CVector::Distance(player->Position(), Position());
-	// プレイヤーの方がゴミ袋より近いかつ、
-	// プレイヤーが視野範囲内かつ、道路内の場合、
-	// 追跡状態へ移行
-	if (playerDistance < GetTargetTrashBagDistance() &&
-		IsFoundPlayer() &&
-		!player->AreaOutX())
+	// 他の状態へ移行するかチェック
+	if (ChangePatrolToOther())
 	{
-		ChangeState(EState::eChase);
-		return;
-	}
-	// プレイヤーを見つけていないか、ゴミ袋の方が近いので
-	// ターゲットのゴミ袋が設定されていて、有効の場合
-	// ゴミ袋へ移動状態へ移行
-	else if (mpTargetTrashBag != nullptr &&
-		mpTargetTrashBag->IsEnable())
-	{
-		ChangeState(EState::eMoveToTrashBag);
+		// 移行するなら処理しない
 		return;
 	}
 
@@ -712,48 +821,13 @@ void CTrashEnemy::UpdatePatrol()
 // 追跡処理
 void CTrashEnemy::UpdateChase()
 {
-	mElapsedTime += Times::DeltaTime();
-	// 最大で追いかける時間を過ぎたら
-	if (mElapsedTime >= CHASE_MAX_TIME)
-	{
-		// 待機状態へ
-		ChangeState(EState::eIdle);
-		return;
-	}
 	// プレイヤーの座標へ向けて移動する
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
-	// プレイヤーの座標が道路外なら追いかけるのをやめる
-	if (player->AreaOutX())
+	// 他の状態へ移行するかチェック
+	if (ChangeChaseToOther())
 	{
-		ChangeState(EState::eIdle);
-		return;
-	}
-	// プレイヤーが見えなくなったら、見失った状態へ移行
-	if (!IsLookPlayer())
-	{
-		// 見失った位置にノードを配置
-		mpLostPlayerNode->SetPos(targetPos);
-		mpLostPlayerNode->SetEnable(true);
-		ChangeState(EState::eLost);
-		mStateStep = 0;
-		return;
-	}
-	// プレイヤーに攻撃できるならば、攻撃状態へ移行
-	if (CanAttackPlayer(ATTACK_RANGE))
-	{
-		// 1から100までの100個の数から乱数を取得
-		int random = Math::Rand(1, 100);
-		// クリティカル確率以下の値ならクリティカル攻撃
-		if (random <= GetCriticalChance())
-		{
-			ChangeState(EState::eCriticalStart);
-		}
-		// それ以外の時は通常攻撃
-		else
-		{
-			ChangeState(EState::eAttackStart);
-		}
+		// 移行するなら処理しない
 		return;
 	}
 

@@ -16,6 +16,7 @@
 #include "CScoreManager.h"
 #include "CTaskManager.h"
 #include "CTrashEnemyManager.h"
+#include "CTrashWarningUI.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -116,6 +117,8 @@ void CTrashGameScene::Load()
 	mpTimeUI = new CTimeUI(MAX_TIME);
 	// スコア表示UI生成
 	mpTrashScoreUI = new CTrashScoreUI();
+	// 警告表示用UI生成
+	CTrashWarningUI* warningUI = new CTrashWarningUI();
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -174,7 +177,6 @@ void CTrashGameScene::Update()
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新
 	mpTrashScoreUI->Update();
-
 	// プレイヤークラスを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
 	// 制限時間が0になったか、

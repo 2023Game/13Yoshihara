@@ -76,6 +76,9 @@ public:
 	/// </param>
 	/// <returns></returns>
 	std::vector<CNavNode*> GetPatrolPoints(CVehicleBase::ERoadType road);
+
+	// お仕置き用のトラックが生成されているか
+	bool GetPopPunisherTruck() const;
 private:
 	// 使用するトラックを全て生成
 	void CreateVehicle(CModel* car, CModel* garbageTruck, CModel* blackTruck);

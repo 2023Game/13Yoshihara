@@ -398,8 +398,11 @@ void CCollector::SetOnOff(bool setOnOff)
 		SetTrashBag(-GetTrashBag());
 		SetGoldTrashBag(-GetGoldTrashBag());
 #if _DEBUG
-		mpDebugFov->SetEnable(false);
-		mpDebugFov->SetShow(false);
+		if (mpDebugFov != nullptr)
+		{
+			mpDebugFov->SetEnable(false);
+			mpDebugFov->SetShow(false);
+		}
 #endif
 	}
 	// 有効にするとき
@@ -414,8 +417,11 @@ void CCollector::SetOnOff(bool setOnOff)
 		SetEnableCol(true);
 		mIsGravity = true;
 #if _DEBUG
-		mpDebugFov->SetEnable(true);
-		mpDebugFov->SetShow(true);
+		if (mpDebugFov != nullptr)
+		{
+			mpDebugFov->SetEnable(true);
+			mpDebugFov->SetShow(true);
+		}
 #endif
 	}
 	// 有効無効を設定する
@@ -651,8 +657,10 @@ void CCollector::UpdateChase()
 	// プレイヤーの座標へ向けて移動する
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CPlayerBase::Instance());
 	CVector targetPos = player->Position();
+	// 他の状態へ移行するかチェック
 	if (ChangeChaseToOther())
 	{
+		// 移行するなら処理しない
 		return;
 	}
 

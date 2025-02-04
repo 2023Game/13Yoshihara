@@ -7,6 +7,7 @@ class CTrashEnemyManager;
 class CSound;
 class CTimeUI;
 class CTrashScoreUI;
+class CImage;
 
 //タイトルシーン
 class CTrashGameScene :public CSceneBase

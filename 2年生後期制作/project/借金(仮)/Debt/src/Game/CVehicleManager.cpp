@@ -9,6 +9,7 @@
 #include "Primitive.h"
 #include "CTrashPlayer.h"
 #include "CTrashField.h"
+#include "CTrashEnemyManager.h"
 
 CVehicleManager* CVehicleManager::spInstance = nullptr;
 
@@ -306,16 +307,20 @@ void CVehicleManager::Update()
 {
 	HideVehicle();
 
-	// 出現までの時間をカウント
-	CountCarPopTime();
-	CountTruckPopTime();
-	CountBlackTruckPopTime();
-	// それぞれの道の生成可能までの時間をカウント
-	CountLeft1CanPopTime();
-	CountLeft2CanPopTime();
-	CountRight1CanPopTime();
-	CountRight2CanPopTime();
-
+	// お仕置き用の敵が出現していないなら
+	CTrashEnemyManager* enemyMgr = CTrashEnemyManager::Instance();
+	if (!enemyMgr->GetPopPunisherEnemy())
+	{
+		// 出現までの時間をカウント
+		CountCarPopTime();
+		CountTruckPopTime();
+		CountBlackTruckPopTime();
+		// それぞれの道の生成可能までの時間をカウント
+		CountLeft1CanPopTime();
+		CountLeft2CanPopTime();
+		CountRight1CanPopTime();
+		CountRight2CanPopTime();
+	}
 
 	// 出現までの時間が0以下なら出現
 	SpawnVehicle();
@@ -369,6 +374,12 @@ std::vector<CNavNode*> CVehicleManager::GetPatrolPoints(CVehicleBase::ERoadType 
 	{
 		return mpPatrolPointsR2;
 	}
+}
+
+// お仕置き用のトラックが生成されているか
+bool CVehicleManager::GetPopPunisherTruck() const
+{
+	return mpPunishTruck->IsEnable();
 }
 
 // 使用するトラックを全て生成

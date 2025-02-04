@@ -32,6 +32,10 @@ public:
 
 	// 文字のサイズを設定する
 	void SetFontSize(int fontSize);
+	// 文字の色を設定する
+	void SetFontColor(CColor color);
+	// アウトラインの色を設定する
+	void SetOutLineColor(CColor color);
 
 	// 文字の揃いの基準を設定
 	void SetFontAligment(FTGL::TextAlignment aligment);

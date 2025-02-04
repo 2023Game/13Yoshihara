@@ -104,6 +104,5 @@ void CTrashEnemyManager::PopPunisherEnemy()
 		mpPunisherEnemy->Rotation(PUNISHER_ROT_M);
 	}
 	// —LŒø‚É‚·‚é
-	mpPunisherEnemy->SetEnable(true);
-	mpPunisherEnemy->SetShow(true);
+	mpPunisherEnemy->SetOnOff(true);
 }

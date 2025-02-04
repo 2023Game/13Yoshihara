@@ -18,9 +18,15 @@ public:
 	int GetCriticalChance();
 	// クリティカル確率を設定
 	void SetCriticalChance(int criticalChance);
+
+	// ゴミ袋の数の初期値を取得する
+	int GetDefaultBagNum() const;
+	// ゴールドゴミ袋の数の初期値を取得する
+	int GetDefaultGoldBagNum() const;
+
 private:
-	// クリティカル確率
-	int mCriticalChance;
-	// お仕置き用かどうか
-	bool mIsPunisher;
+	int mCriticalChance;	// クリティカル確率
+	bool mIsPunisher;		// お仕置き用かどうか
+	int mDefaultBagNum;		// ゴミ袋の数の初期値
+	int mDefaultGoldBagNum;	// ゴールドゴミ袋の数の初期値
 };

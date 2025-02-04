@@ -129,6 +129,11 @@ bool CObjectBase::IsDamaging() const
 	return mIsDamage;
 }
 
+// コライダーを作成
+void CObjectBase::CreateCol()
+{
+}
+
 // 攻撃がヒットしたオブジェクトを追加
 void CObjectBase::AddAttackHitObj(CObjectBase* obj)
 {

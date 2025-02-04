@@ -149,6 +149,7 @@
     <ClCompile Include="src\Game\CTrashPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CTrashJobStatus.cpp" />
     <ClCompile Include="src\Game\CTrashStatusBase.cpp" />
+    <ClCompile Include="src\Game\CTrashWarningUI.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="src\Game\CTrashPlayerStatus.h" />
     <ClInclude Include="src\Game\CTrashJobStatus.h" />
     <ClInclude Include="src\Game\CTrashStatusBase.h" />
+    <ClInclude Include="src\Game\CTrashWarningUI.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\JobType.h" />

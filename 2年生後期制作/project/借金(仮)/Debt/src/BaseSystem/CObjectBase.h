@@ -91,6 +91,8 @@ private:
 	bool mIsEnableCol;	// 衝突判定を行うかどうか
 
 protected:
+	// コライダーを作成
+	virtual void CreateCol();
 	/// <summary>
 	/// 攻撃がヒットしたオブジェクトを追加
 	/// </summary>

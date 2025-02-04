@@ -75,6 +75,18 @@ void CTextUI2D::SetFontSize(int fontSize)
 	mpFont->SetFontSize(fontSize);
 }
 
+// 文字の色を設定する
+void CTextUI2D::SetFontColor(CColor color)
+{
+	mpText->SetColor(color);
+}
+
+// アウトラインの色を設定する
+void CTextUI2D::SetOutLineColor(CColor color)
+{
+	mpText->SetOutlineColor(color);
+}
+
 // 文字の揃いの基準を設定
 void CTextUI2D::SetFontAligment(FTGL::TextAlignment aligment)
 {

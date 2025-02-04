@@ -36,6 +36,7 @@ public:
 
 	// お仕置き用かどうかを取得
 	bool GetPunisher() const;
+
 private:
 	float mReturnTime;		// 撤退までの時間
 	int mCollectorsNum;		// 回収員の人数

@@ -7,10 +7,6 @@
 class CTrashBag;
 class CSound;
 
-#define BODY_RADIUS 2.5f	// 本体のコライダ―の半径
-#define BODY_HEIGHT 25.0f	// 本体のコライダ―の高さ
-#define BODY_WIDTH 50.0f	// 本体のコライダ―の幅
-
 /*
 ゴミ拾いゲームの敵クラス
 敵基底クラスと
@@ -23,10 +19,8 @@ public:
 	///	コンストラクタ
 	/// </summary>
 	/// <param name="punisher">trueならば、お仕置き用</param>
-	CTrashEnemy(bool punisher = false,
-		float radius = BODY_RADIUS,
-		float height = BODY_HEIGHT,
-		float width = BODY_WIDTH);
+	/// <param name="isDamageBody">trueならば、体に触れるだけでダメージを与える</param>
+	CTrashEnemy(bool punisher = false, bool isDamageBody = false);
 	// デストラクタ
 	~CTrashEnemy();
 
@@ -74,6 +68,14 @@ protected:
 	void DropTrashBag(int power) override;
 	// 一番近いゴミ袋との距離を取得
 	float GetTargetTrashBagDistance();
+	// コライダ―を作成する
+	void CreateCol() override;
+	// 巡回状態から他の状態へ移行する条件をチェック
+	virtual bool ChangePatrolToOther();
+	// 追跡状態から他の状態へ移行する条件をチェック
+	virtual bool ChangeChaseToOther();
+	// Hpゲージの更新
+	virtual void UpdateHpGauge();
 
 	/*
 	アニメーションの種類
@@ -207,6 +209,8 @@ protected:
 	bool mIsJump;
 	// ゴミ袋へ移動しているか
 	bool mIsMoveToTrashBag;
+	// 体が触れるだけでダメージを与えるか
+	bool mIsDamageBody;
 
 	// 効果音
 	CSound* mpDamageSE;
