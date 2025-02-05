@@ -18,14 +18,18 @@ public:
 private:
 	// 得点のテキスト
 	CTextUI2D* mpScorePointText;
-	// ゴミ袋の数のテキスト
-	CTextUI2D* mpNumText;
-	// ゴミ袋の値段のテキスト
-	CTextUI2D* mpPriceText;
+	// 数値のテキスト1
+	CTextUI2D* mpNumText1;
+	// 数値のテキスト2
+	CTextUI2D* mpNumText2;
+	// 計算結果のテキスト
+	CTextUI2D* mpTotalText;
 	// 単位のテキスト
 	CTextUI2D* mpUnitText;
-	// ×のテキスト
-	CTextUI2D* mpXText;
+	// 記号のテキスト
+	CTextUI2D* mpSymbolText;
+	// 一番下の計算の説明テキスト
+	CTextUI2D* mpDescriptionText;
 
 	// ゴミ袋の画像
 	CImage* mpTrashBagImg;

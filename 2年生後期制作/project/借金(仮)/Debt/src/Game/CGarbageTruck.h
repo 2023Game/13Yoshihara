@@ -60,9 +60,6 @@ public:
 	bool CanCollectPosZ();
 
 protected:
-	// ゴミ袋を落とす処理
-	void DropTrashBag(int power) override;
-
 	// 回収員のリスト
 	std::vector<CCollector*> mpCollectors;
 	// プレイヤーと敵の探知用

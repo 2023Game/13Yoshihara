@@ -13,10 +13,12 @@ public:
 		int mBestScore;				// 最高スコア
 		int mTrashBagNum;			// 拾ったゴミ袋の数
 		int mGoldTrashBagNum;		// 拾ったゴールドゴミ袋の数
+		float mHpPer;				// 残りHPの割合
 		TrashGameScoreData(int score, int bestScore,
-			int trashBagNum, int goldTrashBagNum) :
+			int trashBagNum, int goldTrashBagNum, float hpPer) :
 			mScore(score), mBestScore(bestScore),
-			mTrashBagNum(trashBagNum), mGoldTrashBagNum(goldTrashBagNum) {}
+			mTrashBagNum(trashBagNum), mGoldTrashBagNum(goldTrashBagNum),
+			mHpPer(hpPer){}
 	};
 
 	// インスタンスを取得
@@ -30,7 +32,8 @@ public:
 	~CScoreManager();
 
 	// ゴミ拾いのスコアデータを設定する
-	void SetTrashGameScoreData(int score, int trashBagNum, int goldTrashBagNum);
+	void SetTrashGameScoreData(int score, int trashBagNum,
+		int goldTrashBagNum, float hpPer);
 	// ゴミ拾いのスコアデータを取得する
 	TrashGameScoreData* GetTrashGameScoreData() const;
 

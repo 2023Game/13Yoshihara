@@ -497,55 +497,6 @@ bool CTrashEnemy::GetOpen() const
 	return mIsOpen;
 }
 
-// ゴミ袋を落とす処理
-void CTrashEnemy::DropTrashBag(int power)
-{
-	// 落とす力が0以下なら処理しない
-	if (power <= 0) return;
-
-	// ゴミ袋を一つでも所持していたら落とす
-	if (GetTrashBag() > 0)
-	{
-		// パワーの最終的な結果
-		int powerResult = power;
-		// ゴミ袋の数がパワーより少ない場合
-		if (GetTrashBag() < power)
-		{
-			// パワーの最終的な結果をゴミ袋の数に設定
-			powerResult = GetTrashBag();
-		}
-		// ゴミ袋の数を最終的なパワー分減らす
-		SetTrashBag(-powerResult);
-		for (int i = 0; i < powerResult; i++)
-		{
-			CTrashBag* trashBag = new CTrashBag(false);
-			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
-			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
-		}
-	}
-	// 通常のゴミ袋を一つも持っていない場合かつ
-	// ゴールドゴミ袋持っている場合に落とす
-	else if (GetGoldTrashBag() > 0)
-	{
-		// パワーの最終的な結果
-		int powerResult = power;
-		// ゴミ袋の数がパワーより少ない場合
-		if (GetGoldTrashBag() < power)
-		{
-			// パワーの最終的な結果をゴミ袋の数に設定
-			powerResult = GetGoldTrashBag();
-		}
-		// ゴミ袋の数を最終的なパワー分減らす
-		SetGoldTrashBag(-powerResult);
-		for (int i = 0; i < powerResult; i++)
-		{
-			CTrashBag* trashBag = new CTrashBag(true);
-			trashBag->Position(Position() + TRASH_BAG_OFFSET_POS * (i + 1));
-			trashBag->SetThrowSpeed(VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
-		}
-	}
-}
-
 // ターゲットのゴミ袋との距離を取得
 float CTrashEnemy::GetTargetTrashBagDistance()
 {
@@ -1511,7 +1462,7 @@ void CTrashEnemy::UpdateDeath()
 		// ステップ2：全てのゴミ袋を落とす
 	case 2:
 		// ゴミ袋を1つずつ落とす
-		DropTrashBag(1);
+		DropTrashBag(1, Position(), VectorZ(), VectorX(), TRASH_BAG_OFFSET_POS);
 		// 通常とゴールドのゴミ袋が両方の数が0以下なら
 		if (GetTrashBag() <= 0 &&
 			GetGoldTrashBag() <= 0)
@@ -1606,7 +1557,7 @@ void CTrashEnemy::TakeDamage(int damage, CObjectBase* causer, int dropNum)
 		// ダメージを受ける
 		CCharaStatusBase::TakeDamage(damage, causer);
 		// ゴミ袋を落とす
-		DropTrashBag(dropNum);
+		DropTrashBag(dropNum, Position(), VectorZ(), VectorX(), TRASH_BAG_OFFSET_POS);
 
 		// 死亡していなければ
 		if (!IsDeath())
@@ -1643,7 +1594,7 @@ void CTrashEnemy::TakeCritical(int damage, CObjectBase* causer, int dropNum)
 		// ダメージを受ける
 		CCharaStatusBase::TakeDamage(criticalDamage, causer);
 		// ゴミ袋を落とす
-		DropTrashBag(criticalDropNum);
+		DropTrashBag(criticalDropNum, Position(), VectorZ(), VectorX(), TRASH_BAG_OFFSET_POS);
 	}
 	// 閉じていても通常のダメージを受ける
 	else
@@ -1651,7 +1602,7 @@ void CTrashEnemy::TakeCritical(int damage, CObjectBase* causer, int dropNum)
 		// ダメージを受ける
 		CCharaStatusBase::TakeDamage(damage, causer);
 		// ゴミ袋を落とす
-		DropTrashBag(dropNum);
+		DropTrashBag(dropNum, Position(), VectorZ(), VectorX(), TRASH_BAG_OFFSET_POS);
 	}
 
 	// 死亡していなければ

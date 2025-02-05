@@ -4,6 +4,7 @@
 #include "CNavNode.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
+#include "CSound.h"
 
 // 基本の重力
 #define GRAVITY 0.0625f
@@ -14,6 +15,9 @@
 #define BODY_COL_OFFSET_POS CVector(0.0f,1.2f,0.0f)
 
 #define SCALE 2.0f
+
+// 効果音の音量
+#define SE_VOLUME 0.5f
 
 // コンストラクタ
 CTrashBag::CTrashBag(bool gold)
@@ -30,7 +34,11 @@ CTrashBag::CTrashBag(bool gold)
 {
 	Scale(SCALE, SCALE, SCALE);
 
+	// ゴールドかを設定
 	SetGold(gold);
+
+	// 拾った音を設定
+	mpGetSE = CResourceManager::Get<CSound>("GetSE");
 
 	// 本体コライダ―
 	mpBodyCol = new CColliderSphere
@@ -189,6 +197,8 @@ void CTrashBag::Collision(CCollider* self, CCollider* other, const CHitInfo& hit
 			// 開いているなら
 			if (player->GetOpen())
 			{
+				// 拾った音を再生
+				mpGetSE->Play(SE_VOLUME, true);
 				// 無効にする
 				SetOnOff(false);
 				// ゴールドじゃない場合
@@ -219,6 +229,8 @@ void CTrashBag::Collision(CCollider* self, CCollider* other, const CHitInfo& hit
 			// 開いているなら
 			if (enemy->GetOpen())
 			{
+				// 拾った音を再生
+				mpGetSE->Play(SE_VOLUME, true);
 				// 無効にする
 				SetOnOff(false);
 				// ゴールドじゃない場合

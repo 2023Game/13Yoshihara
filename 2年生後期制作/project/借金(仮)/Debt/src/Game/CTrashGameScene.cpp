@@ -17,6 +17,7 @@
 #include "CTaskManager.h"
 #include "CTrashEnemyManager.h"
 #include "CTrashWarningUI.h"
+#include "Maths.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -87,10 +88,11 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CSound>(		"GuardSE",						"Sound\\SE\\guard.wav");
 	// プレイヤーの攻撃が回収員に当たった音
 	CResourceManager::Load<CSound>(		"CollectorDamageSE1",			"Sound\\SE\\collectorDamage.wav");
-
+	// ゴミを拾った音
+	CResourceManager::Load<CSound>(		"GetSE",						"Sound\\SE\\get.wav");
 
 	// ゲームBGMを読み込み
-	CBGMManager::Instance()->Play(EBGMType::eHome);
+	CBGMManager::Instance()->Play(EBGMType::eTrashGame);
 
 	// 経路探索管理クラスを作成
 	new CNavManager();
@@ -195,9 +197,11 @@ void CTrashGameScene::Update()
 			// シーン管理クラスを取得
 			CSceneManager* sceneMgr = CSceneManager::Instance();
 
+			// 残りHPの割合を求める
+			float hpPer = Math::Clamp01((float)player->GetHp() / player->GetMaxHp());
 			// スコアデータを設定
 			scoreMgr->SetTrashGameScoreData(mpTrashScoreUI->GetScore(),
-				player->GetTrashBag(), player->GetGoldTrashBag());
+				player->GetTrashBag(), player->GetGoldTrashBag(),hpPer);
 			// ゲームの種類を今のシーンに設定
 			scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
 			// リザルトシーンへ移行

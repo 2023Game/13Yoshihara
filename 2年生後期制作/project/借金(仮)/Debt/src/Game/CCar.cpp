@@ -191,8 +191,8 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					player->SetKnockbackReceived(direction * GetKnockbackDealt());
 					// クリティカルダメージを与える
 					player->TakeCritical(GetAttackPower(), this, GetPower());
-					// ダメージ音を再生
-					mpDamageSE->Play(SE_VOLUME, true);
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -218,8 +218,8 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 					enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
 					// クリティカルダメージを与える
 					enemy->TakeCritical(GetAttackPower(), this, GetPower());
-					// ダメージ音を再生
-					mpDamageSE->Play(SE_VOLUME, true);
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -253,6 +253,8 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			{
 				// 壊れた状態へ移行
 				ChangeState(EState::eBroken);
+				// クリティカル音を再生
+				mpCriticalSE->Play(SE_VOLUME, true);
 			}
 		}
 	}

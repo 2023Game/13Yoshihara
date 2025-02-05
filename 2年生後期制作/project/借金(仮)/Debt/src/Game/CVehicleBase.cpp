@@ -86,7 +86,7 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 	mpFlamethrower->SetFlameMoveSpeed(FLAME_MOVE_SPEED);
 
 	// 効果音を設定
-	mpDamageSE = CResourceManager::Get<CSound>("DamageSE");
+	mpCriticalSE = CResourceManager::Get<CSound>("CriticalSE");
 }
 
 // デストラクタ

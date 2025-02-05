@@ -22,8 +22,12 @@ void CSky::Update()
 {
 }
 
-// 描画
+// どのオブジェクトより後ろに描画する
 void CSky::Render()
 {
+	glDepthRange(0.99, 1.0); // 遠い位置に描画
+	
 	mpModel->Render(Matrix());
+
+	glDepthRange(0.0, 1.0); // 通常の描画設定に戻す
 }

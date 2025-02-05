@@ -54,8 +54,17 @@ public:
 	// ゴールドゴミ袋の数を取得する
 	int GetGoldTrashBag() const;
 
-	// ゴミ袋を落とす処理
-	virtual void DropTrashBag(int power);
+	/// <summary>
+	/// ゴミ袋を落とす処理
+	/// </summary>
+	/// <param name="power">落とす力</param>
+	/// <param name="pos">自分の座標</param>
+	/// <param name="front">正面方向</param>
+	/// <param name="side">横方向</param>
+	/// <param name="offsetPos">ゴミ袋を落とすオフセット座標</param>
+	void DropTrashBag(int power,
+		CVector pos, CVector front, CVector side,
+		CVector offsetPos);
 private:
 	float mKnockbackDealt;		// 与えるノックバック速度
 	CVector mKnockbackReceived;	// 受けるノックバック

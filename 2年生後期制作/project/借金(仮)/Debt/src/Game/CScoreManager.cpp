@@ -24,7 +24,7 @@ void CScoreManager::ClearInstance()
 CScoreManager::CScoreManager()
 	: mGameType((int)EScene::eTrashGame)
 {
-	mpTrashGameScore = new CScoreManager::TrashGameScoreData(0, 0, 0, 0);
+	mpTrashGameScore = new CScoreManager::TrashGameScoreData(0, 0, 0, 0, 0.0f);
 }
 
 // デストラクタ
@@ -35,7 +35,8 @@ CScoreManager::~CScoreManager()
 }
 
 // ゴミ拾いのスコアデータを設定する
-void CScoreManager::SetTrashGameScoreData(int score, int trashBagNum, int goldTrashBagNum)
+void CScoreManager::SetTrashGameScoreData(int score, int trashBagNum,
+	int goldTrashBagNum, float hpPer)
 {
 	// 今回のスコアを設定
 	mpTrashGameScore->mScore = score;
@@ -48,6 +49,8 @@ void CScoreManager::SetTrashGameScoreData(int score, int trashBagNum, int goldTr
 	mpTrashGameScore->mTrashBagNum = trashBagNum;
 	// 拾ったゴールドゴミ袋の数を設定
 	mpTrashGameScore->mGoldTrashBagNum = goldTrashBagNum;
+	// 残りHPの割合を取得
+	mpTrashGameScore->mHpPer = hpPer;
 }
 
 // ゴミ拾いのスコアデータを取得する

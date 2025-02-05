@@ -49,12 +49,11 @@
 #define HP_GAUGE_PATH "UI\\garbageTruck_hp_gauge.png"
 
 // ゴミ袋を落とすオフセット座標
-#define TRASH_BAG_OFFSET_POSY 5.0f		// Y座標
-#define TRASH_BAG_OFFSET_POSZ -30.0f	// Z座標
+#define TRASH_BAG_OFFSET_POS CVector(20.0f,5.0f,-30.0f)
 // ゴミ袋を落とすX座標のランダム範囲
 #define TRASH_BAG_RAND_POSX 20.0f
 // ゴミ袋を落とす間隔
-#define TRASH_BAG_DROP_TIME 0.2f
+#define TRASH_BAG_DROP_TIME 0.5f
 
 // 効果音の音量
 #define SE_VOLUME 0.5f
@@ -314,8 +313,8 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					player->SetKnockbackReceived(direction * GetKnockbackDealt());
 					// クリティカルダメージを与える
 					player->TakeCritical(GetAttackPower(), this, GetPower());
-					// ダメージ音を再生
-					mpDamageSE->Play(SE_VOLUME, true);
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -341,8 +340,8 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 					enemy->SetKnockbackReceived(direction * enemy->GetKnockbackDealt());
 					// クリティカルダメージを与える
 					enemy->TakeCritical(GetAttackPower(), this, GetPower());
-					// ダメージ音を再生
-					mpDamageSE->Play(SE_VOLUME, true);
+					// クリティカル音を再生
+					mpCriticalSE->Play(SE_VOLUME, true);
 				}
 			}
 		}
@@ -561,82 +560,19 @@ bool CGarbageTruck::CanCollectPosZ()
 	return false;
 }
 
-// ゴミ袋を落とす処理
-void CGarbageTruck::DropTrashBag(int power)
-{
-	// 落とす力が0以下なら処理しない
-	if (power <= 0) return;
-
-	// ゴミ袋を一つでも所持していたら落とす
-	if (GetTrashBag() > 0)
-	{
-		// パワーの最終的な結果
-		int powerResult = power;
-		// ゴミ袋の数がパワーより少ない場合
-		if (GetTrashBag() < power)
-		{
-			// パワーの最終的な結果をゴミ袋の数に設定
-			powerResult = GetTrashBag();
-		}
-		// ゴミ袋の数を最終的なパワー分減らす
-		SetTrashBag(-powerResult);
-		for (int i = 0; i < powerResult; i++)
-		{
-			// ゴミ袋を生成
-			CTrashBag* trashBag = new CTrashBag(false);
-			// 落とすX座標をXの範囲で求める
-			float randomPosX = Math::Rand(-TRASH_BAG_RAND_POSX, TRASH_BAG_RAND_POSX);
-			// オフセット座標を求める
-			CVector offsetPos = VectorX() * randomPosX
-				+ VectorY() * TRASH_BAG_OFFSET_POSY
-				+ VectorZ() * TRASH_BAG_OFFSET_POSZ;
-			trashBag->Position(Position() + offsetPos);
-			trashBag->SetThrowSpeed(-VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
-		}
-	}
-	// 通常のゴミ袋を一つも持っていない場合かつ
-	// ゴールドゴミ袋持っている場合に落とす
-	else if (GetGoldTrashBag() > 0)
-	{
-		// パワーの最終的な結果
-		int powerResult = power;
-		// ゴミ袋の数がパワーより少ない場合
-		if (GetGoldTrashBag() < power)
-		{
-			// パワーの最終的な結果をゴミ袋の数に設定
-			powerResult = GetGoldTrashBag();
-		}
-		// ゴミ袋の数を最終的なパワー分減らす
-		SetGoldTrashBag(-powerResult);
-		for (int i = 0; i < powerResult; i++)
-		{
-			// ゴミ袋を生成
-			CTrashBag* trashBag = new CTrashBag(true);
-			// 落とすX座標をXの範囲で求める
-			float randomPosX = Math::Rand(-TRASH_BAG_RAND_POSX, TRASH_BAG_RAND_POSX);
-			// オフセット座標を求める
-			CVector offsetPos = VectorX() * randomPosX
-				+ VectorY() * TRASH_BAG_OFFSET_POSY
-				+ VectorZ() * TRASH_BAG_OFFSET_POSZ;
-			trashBag->Position(Position() + offsetPos);
-			trashBag->SetThrowSpeed(-VectorZ() * GetKnockbackDealt(), GetKnockbackDealt());
-		}
-	}
-}
-
 // 移動処理
 void CGarbageTruck::UpdateMove()
 {
 	// 死んでいる場合
 	if (IsDeath())
 	{
-		mElapsedTime += Times::DeltaTime();
+		mElapsedTime -= Times::DeltaTime();
 		// ゴミ袋を落とす間隔の時間が経過したら
-		if (mElapsedTime >= TRASH_BAG_DROP_TIME)
+		if (mElapsedTime <= TRASH_BAG_DROP_TIME)
 		{
 			// ゴミ袋を落とす
-			DropTrashBag(1);
-			mElapsedTime -= TRASH_BAG_DROP_TIME;
+			DropTrashBag(1, Position(), VectorZ(), VectorX(), TRASH_BAG_OFFSET_POS);
+			mElapsedTime = TRASH_BAG_DROP_TIME;
 		}
 	}
 	// 動いている

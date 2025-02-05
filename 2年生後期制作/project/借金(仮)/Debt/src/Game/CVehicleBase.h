@@ -151,5 +151,5 @@ protected:
 	bool mIsSideVehicle;	// ‰¡‚ÉŽÔ—¼‚ª‚¢‚é‚©‚Ç‚¤‚©
 
 	// Œø‰Ê‰¹
-	CSound* mpDamageSE;
+	CSound* mpCriticalSE;
 };

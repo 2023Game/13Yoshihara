@@ -13,6 +13,8 @@
 // タイトルメニューのアニメーション後の待ち時間
 #define OPENED_WAIT_TIME 0.5f
 
+// ボタンのオフセット座標
+#define BUTTON_POS CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.8f)
 // ボタンのサイズ
 #define BUTTON_SIZE CVector2(340.0f, 96.0f)
 
@@ -49,7 +51,7 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 	// [拠点へ]ボタンを生成
 	mpReturnButton = new CExpandButton
 	(
-		CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.8f),
+		BUTTON_POS,
 		BUTTON_SIZE,
 		ETaskPriority::eUI, 0, ETaskPauseType::eGame,
 		false, false

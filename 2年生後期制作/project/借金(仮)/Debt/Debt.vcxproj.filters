@@ -164,6 +164,27 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D\TrashGame">
       <UniqueIdentifier>{1f6b1e9f-bbfa-4574-aa05-aaf89155409a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector">
+      <UniqueIdentifier>{d061500b-a1f2-42ad-99ab-5b7e62d8eda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck">
+      <UniqueIdentifier>{19415ff8-5275-405c-9743-15e1952ff111}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident">
+      <UniqueIdentifier>{418a8300-1c23-4724-b55c-5216e6ba2e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag">
+      <UniqueIdentifier>{8ad931ec-46aa-4d0c-9cc0-680bc1fcbde7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy">
+      <UniqueIdentifier>{4ee0154e-1408-468c-a0d0-50d3d7790a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer">
+      <UniqueIdentifier>{cf11da80-18cf-4f4a-9e1b-553536cc6fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle">
+      <UniqueIdentifier>{4fb37653-7168-4455-872f-6d701b4263b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -532,19 +553,7 @@
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp">
       <Filter>ソース ファイル\Game\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CTrashStatusBase.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CVehicleStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CFieldBase.cpp">
@@ -565,23 +574,14 @@
     <ClCompile Include="src\Game\CCollector.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CCollectorStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CResident.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CResidentStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CResidentManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashBag.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTrashBagStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGaugeUI2D.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
@@ -627,6 +627,27 @@
     </ClCompile>
     <ClCompile Include="src\Game\CTrashScoreUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCollectorStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResidentStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashBagStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CVehicleStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1023,19 +1044,7 @@
     <ClInclude Include="src\Game\CDebugFieldOfView.h">
       <Filter>ソース ファイル\Game\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CGarbageTruckStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashPlayerStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CTrashStatusBase.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CVehicleStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CFieldBase.h">
@@ -1056,23 +1065,14 @@
     <ClInclude Include="src\Game\CCollector.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CCollectorStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CResident.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CResidentStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CResidentManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashBag.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTrashBagStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGaugeUI2D.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
@@ -1118,6 +1118,27 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTrashScoreUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCollectorStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGarbageTruckStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResidentStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashBagStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CVehicleStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -6,7 +6,7 @@
 #include "CVehicleManager.h"
 
 // 警告画像のパス
-#define WARNING_PATH "UI/trash_game_result_bg.png"
+#define WARNING_PATH "UI/trash_game_warning.png"
 // 警告テキストの座標
 #define TEXT_POS CVector(0.0f, WINDOW_HEIGHT * 0.4f, 0.0f)
 
@@ -17,23 +17,13 @@ CTrashWarningUI::CTrashWarningUI()
 	// エリア外の警告画像
 	mpWarningImg = new CImage
 	(
-		"UI\\white.png",
+		WARNING_PATH,
 		ETaskPriority::eUI, 0,
 		ETaskPauseType::eGame,
 		false, false
 	);
-	mpWarningImg->SetColor(CColor::black);
 	mpWarningImg->SetAlpha(0.5f);
 	mpWarningImg->SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-	// エリア外の警告テキスト
-	mpWarningText = new CTextUI2D(ETaskPauseType::eGame, false);
-	mpWarningText->SetStr("Warning");
-	mpWarningText->SetFontSize(128);
-	mpWarningText->SetFontColor(CColor::red);
-	mpWarningText->SetOutLineColor(CColor::black);
-	mpWarningText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
-	mpWarningText->Position(TEXT_POS);
 }
 
 // デストラクタ
@@ -45,7 +35,6 @@ CTrashWarningUI::~CTrashWarningUI()
 // 更新
 void CTrashWarningUI::Update()
 {
-	mpWarningText->Update();
 }
 
 // 描画
@@ -62,7 +51,6 @@ void CTrashWarningUI::Render()
 	{
 		// TODO：警告音再生
 		mpWarningImg->Render();
-		mpWarningText->Render();
 		return;
 	}
 	// 敵管理クラス取得
@@ -74,7 +62,6 @@ void CTrashWarningUI::Render()
 	{
 		// TODO：警告音再生
 		mpWarningImg->Render();
-		mpWarningText->Render();
 		return;
 	}
 }

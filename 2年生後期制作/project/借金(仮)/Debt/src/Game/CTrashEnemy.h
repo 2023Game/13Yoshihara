@@ -64,8 +64,6 @@ public:
 	bool GetOpen() const;
 
 protected:
-	// ゴミ袋を落とす処理
-	void DropTrashBag(int power) override;
 	// 一番近いゴミ袋との距離を取得
 	float GetTargetTrashBagDistance();
 	// コライダ―を作成する

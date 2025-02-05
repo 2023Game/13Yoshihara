@@ -3,6 +3,7 @@
 #include "CTrashBagStatus.h"
 
 class CModel;
+class CSound;
 
 class CTrashBag : public CObjectBase , public CTrashBagStatus
 {
@@ -50,6 +51,8 @@ private:
 	CCollider* mpBodyCol;
 	// 3Dモデル
 	CModel* mpModel;
+	// 拾った音
+	CSound* mpGetSE;
 
 	// 前後左右の移動速度
 	CVector mMoveSpeed;

@@ -44,7 +44,6 @@ void CInteractUI3D::Update()
 	mpInteractUIImg->Update();
 }
 
-// TODOF•¶š—ñ‚ğ•\¦‚·‚é‚æ‚¤‚É•ÏX
 // •`‰æ
 void CInteractUI3D::Render()
 {
