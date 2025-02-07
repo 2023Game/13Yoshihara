@@ -11,9 +11,6 @@
 #include "CTrashPlayer.h"
 #include "CTrashBag.h"
 
-// TODO：後で消すテスト用
-#include "CInput.h"
-
 // 衝突相手の車両クラスを取得するための
 // 車両のクラスのインクルード
 #include "CCar.h"
@@ -197,6 +194,12 @@ void CCollector::Update()
 		mpTrashBag->UpdateMtx();
 	}
 
+	// もしもコライダ―オフの時に床をすり抜けたときの保険
+	if (Position().Y() < 0.0f)
+	{
+		Position(Position().X(), 0.0f, Position().Z());
+	}
+
 #if _DEBUG
 	// 現在の状態に合わせて視野範囲の色を変更
 	mpDebugFov->SetColor(GetStateColor(mState));
@@ -218,16 +221,12 @@ void CCollector::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 		// 衝突した相手が車両なら
 		if (other->Layer() == ELayer::eVehicle)
 		{
-			// 死んでないなら押し戻す
-			if (!IsDeath())
-			{
-				// 押し戻しベクトル
-				CVector adjust = hit.adjust;
-				adjust.Y(0.0f);
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
 
-				// 押し戻しベクトルの分、座標を移動
-				Position(Position() + adjust * hit.weight);
-			}
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
 
 			// 相手の持ち主と自分の持ち主が一致しているかつ、
 			// 自分が撤退状態なら
@@ -653,6 +652,32 @@ void CCollector::UpdateChase()
 			// 自身のノードからプレイヤーのノードまで繋がっていたら、
 			// 移動する位置を次のノードの位置に設定
 			targetPos = mpMoveRoute[1]->GetPos();
+			// 自分と同じ位置が目的地の場合に対処
+			for (int i = 2; i; i++)
+			{
+				CVector vec = targetPos - Position();
+				vec.Y(0.0f);
+				// ベクトルの長さの2乗を計算
+				float moveDist = vec.LengthSqr();
+				// 距離が0ではない場合
+				if (!moveDist == 0.0f)
+				{
+					// ループ終了
+					break;
+				}
+				// 距離が0なら
+				else
+				{
+					// サイズと同じになったら最後の要素を指定してループ終了
+					if (i == mpMoveRoute.size())
+					{
+						targetPos = mpMoveRoute[mpMoveRoute.size() - 1]->GetPos();
+						break;
+					}
+					// 最短経路の次のノードを指定
+					targetPos = mpMoveRoute[i]->GetPos();
+				}
+			}
 		}
 	}
 	// 移動処理

@@ -13,6 +13,10 @@
 #define CAR_WIDTH		25.0f	// 車の幅
 #define CAR_RADIUS		10.0f	// 車の半径
 
+// 車両同士の距離の最低値
+// 前方コライダ―に他の車両がいるときにこれより近くなれば停止する
+#define VEHICLE_DIST 40.0f
+
 // ノードの座標
 #define NODE_POS0	CVector( 15.0f,0.0f, 30.0f)
 #define NODE_POS1	CVector(-15.0f,0.0f, 30.0f)
@@ -84,15 +88,6 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	// 車両と衝突判定する
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
-
-	// 経路探索用のコライダ―作成
-	mpNavCol = new CColliderCapsule
-	(
-		this, ELayer::eNone,
-		CVector(0.0f, CAR_HEIGHT, CAR_WIDTH * 1.2f - CAR_RADIUS),
-		CVector(0.0f, CAR_HEIGHT, -CAR_WIDTH * 1.2f + CAR_RADIUS),
-		CAR_RADIUS, true
-	);
 }
 
 CCar::~CCar()
@@ -267,6 +262,9 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 車両クラスを取得
 			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
 
+			// 相手と自分の座標の距離を求める
+			float dist = CVector::Distance(vehicle->Position(), Position());
+
 			// 相手が動いていないかつ壊れていない場合
 			if (!vehicle->IsMove() &&
 				!vehicle->IsBroken())
@@ -295,6 +293,14 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			{
 				mIsFrontVehicle = true;
 				// いなくなれば進めるのでそれまで停止
+				ChangeState(EState::eStop);
+			}
+			// 相手が動いていても近い場合は停止する
+			else if (vehicle->IsMove() &&
+				dist < VEHICLE_DIST)
+			{
+				mIsFrontVehicle = true;
+				// 停止状態へ移行
 				ChangeState(EState::eStop);
 			}
 		}

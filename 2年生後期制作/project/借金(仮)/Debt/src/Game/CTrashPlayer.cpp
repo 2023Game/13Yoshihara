@@ -267,18 +267,8 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 			// 回収員のクラスを取得
 			CCollector* collector = dynamic_cast<CCollector*>(other->Owner());
 
-			// 攻撃中でないなら
-			if (!collector->IsAttacking())
-			{
-				// 押し戻しベクトル
-				CVector adjust = hit.adjust;
-				adjust.Y(0.0f);
-
-				// 押し戻しベクトルの分、座標を移動
-				Position(Position() + adjust * hit.weight);
-			}
 			// 攻撃中なら
-			else if (collector->IsAttacking())
+			if (collector->IsAttacking())
 			{
 				// 蓋が開いていない場合
 				if (!mIsOpen)

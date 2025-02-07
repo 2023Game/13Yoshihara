@@ -145,7 +145,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 		TRUCK_RADIUS, true
 	);
 	// もう一つの車道が左にある車道
-	if (mRoadType == ERoadType::eLeft2 ||
+	if (mRoadType == ERoadType::eLeft1 ||
 		mRoadType == ERoadType::eRight1)
 	{
 		// 座標を設定
@@ -160,15 +160,6 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	// 車両と衝突判定する
 	mpSideCol->SetCollisionTags({ ETag::eVehicle });
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
-
-	// 経路探索用のコライダ―作成
-	mpNavCol = new CColliderCapsule
-	(
-		this, ELayer::eNone,
-		CVector(0.0f, TRUCK_HEIGHT, TRUCK_WIDTH * 1.2f - TRUCK_RADIUS),
-		CVector(0.0f, TRUCK_HEIGHT, -TRUCK_WIDTH * 1.2f + TRUCK_RADIUS),
-		TRUCK_RADIUS, true
-	);
 
 	// ゴミ袋の数の初期値を設定
 	SetTrashBag(GetDefaultBagNum());

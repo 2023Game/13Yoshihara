@@ -249,7 +249,7 @@ bool CVehicleManager::NavCollisionRay(const CVector& start, const CVector& end, 
 		if (car->IsMove()) continue;
 
 		// 車との衝突判定
-		if (CCollider::CollisionRay(car->GetNavCol(), start, end, &tHit))
+		if (CCollider::CollisionRay(car->GetBodyCol(), start, end, &tHit))
 		{
 			// まだ他に衝突していない場合か、
 			// 既に衝突しているコライダ―より近い場合は、
@@ -268,7 +268,7 @@ bool CVehicleManager::NavCollisionRay(const CVector& start, const CVector& end, 
 		!mpGarbageTruck->IsMove())
 	{
 		// トラックとの衝突判定
-		if (CCollider::CollisionRay(mpGarbageTruck->GetNavCol(), start, end, &tHit))
+		if (CCollider::CollisionRay(mpGarbageTruck->GetBodyCol(), start, end, &tHit))
 		{
 			// まだ他に衝突していない場合か、
 			// 既に衝突しているコライダ―より近い場合は、
@@ -287,7 +287,7 @@ bool CVehicleManager::NavCollisionRay(const CVector& start, const CVector& end, 
 		!mpPunishTruck->IsMove())
 	{
 		// お仕置きトラックとの衝突判定
-		if (CCollider::CollisionRay(mpPunishTruck->GetNavCol(), start, end, &tHit))
+		if (CCollider::CollisionRay(mpPunishTruck->GetBodyCol(), start, end, &tHit))
 		{
 			// まだ他に衝突していない場合か、
 			// 既に衝突しているコライダ―より近い場合は、

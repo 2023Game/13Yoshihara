@@ -16,6 +16,7 @@ CBootMenuScene::CBootMenuScene()
 		{ "ゲームの結果画面",EScene::eResult},
 		{ "拠点画面", EScene::eHome },
 		{ "ゴミ拾いゲーム画面", EScene::eTrashGame},
+		{ "配達ゲーム画面", EScene::eDeliveryGame},
 		{ "", EScene::eNone },
 		{ "■デバッグ", EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest},

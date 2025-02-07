@@ -37,8 +37,10 @@ CTrashGameScene::CTrashGameScene()
 	, mpGameMenu(nullptr)
 	, mpVehicleManager(nullptr)
 	, mpResidentManager(nullptr)
+	, mpTrashEnemyManager(nullptr)
+	, mpTimeUI(nullptr)
+	, mpTrashScoreUI(nullptr)
 	, mElapsedTime(0.0f)
-	, mIsPause(false)
 {
 }
 
@@ -90,6 +92,11 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CSound>(		"CollectorDamageSE1",			"Sound\\SE\\collectorDamage.wav");
 	// ÉSÉ~ÇèEÇ¡ÇΩâπ
 	CResourceManager::Load<CSound>(		"GetSE",						"Sound\\SE\\get.wav");
+	// ÉÅÉjÉÖÅ[âπê∫
+	CResourceManager::Load<CSound>(		"SelectSE",						"Sound\\SE\\MenuSound\\select.wav");
+	CResourceManager::Load<CSound>(		"PushSE",						"Sound\\SE\\MenuSound\\push.wav");
+	CResourceManager::Load<CSound>(		"BuzzerSE",						"Sound\\SE\\MenuSound\\buzzer.wav");
+
 
 	// ÉQÅ[ÉÄBGMÇì«Ç›çûÇ›
 	CBGMManager::Instance()->Play(EBGMType::eTrashGame);

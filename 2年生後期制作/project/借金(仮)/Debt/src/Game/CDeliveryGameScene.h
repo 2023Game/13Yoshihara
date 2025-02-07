@@ -1,20 +1,17 @@
 #pragma once
 #include "CSceneBase.h"
 class CGameMenuBase;
-class CVehicleManager;
-class CResidentManager;
-class CTrashEnemyManager;
 class CTimeUI;
 class CTrashScoreUI;
 
 //タイトルシーン
-class CTrashGameScene :public CSceneBase
+class CDeliveryGameScene :public CSceneBase
 {
 public:
 	//コンストラクタ
-	CTrashGameScene();
+	CDeliveryGameScene();
 	//デストラクタ
-	~CTrashGameScene();
+	~CDeliveryGameScene();
 	//シーン読み込み
 	void Load();
 	//シーンの更新処理
@@ -23,12 +20,7 @@ public:
 private:
 	// ゲームメニュー
 	CGameMenuBase* mpGameMenu;
-	// 車両管理クラス
-	CVehicleManager* mpVehicleManager;
-	// 住人管理クラス
-	CResidentManager* mpResidentManager;
-	// ゴミ拾いの敵管理クラス
-	CTrashEnemyManager* mpTrashEnemyManager;
+
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
 	// スコア表示UI

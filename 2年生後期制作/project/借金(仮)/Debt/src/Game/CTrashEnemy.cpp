@@ -205,7 +205,7 @@ void CTrashEnemy::Update()
 	case EState::eDeath:			UpdateDeath();			break;
 	}
 
-	// キャラクターの更新
+	// 基底クラスの更新
 	CEnemyBase::Update();
 
 	// HPゲージを更新
@@ -286,16 +286,6 @@ void CTrashEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 		}
 		// 衝突した相手が敵なら
 		else if (other->Layer() == ELayer::eEnemy)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-		// 衝突した相手が回収員なら
-		else if (other->Layer() == ELayer::eCollector)
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
@@ -730,8 +720,35 @@ void CTrashEnemy::UpdatePatrol()
 
 		// 最短経路の次のノードまで移動
 		CNavNode* moveNode = mpMoveRoute[mNextMoveIndex];
+		// 目的地
+		CVector targetPos = moveNode->GetPos();
 
-		if (MoveTo(moveNode->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
+		// 車両管理クラス取得
+		CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+		CHitInfo hit;
+		bool isHit = false;
+		// 衝突していたら最短経路を求める
+		if (vehicleMgr->NavCollisionRay(Position(), moveNode->GetOffsetPos(),
+			&hit, isHit))
+		{
+			// 経路探索管理クラスが存在すれば
+			CNavManager* navMgr = CNavManager::Instance();
+			if (navMgr != nullptr)
+			{
+				// 経路探索用のノードの座標を更新
+				mpNavNode->SetPos(Position());
+
+				// 自身のノードから巡回のノードまでの最短経路を求める
+				if (navMgr->Navigate(mpNavNode, moveNode, mpMoveRoute))
+				{
+					// 自身のノードからプレイヤーのノードまで繋がっていたら、
+					// 移動する位置を次のノードの位置に設定
+					targetPos = mpMoveRoute[1]->GetPos();
+				}
+			}
+		}
+
+		if (MoveTo(targetPos, GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
 			// 移動が終われば、次のノードへ切り替え
 			mNextMoveIndex++;

@@ -7,12 +7,6 @@
 #include "Maths.h"
 #include "CFlamethrower.h"
 #include "CSound.h"
- 
-#define FRONT_HEIGHT	13.0f	// 前方判定の高さ
-#define FRONT_WIDTH		40.0f	// 前方判定の幅
-#define FRONT_RADIUS	12.0f	// 前方判定の半径
-#define TURN_SPEED		CVector(0.0f,0.5f,0.0f)	// 車両の方向転換速度
-#define TURN_MAX		CVector(0.0f,22.5f,0.0f)// 車両の方向転換の最大値
 
 // 炎のエフェクトのオフセット座標
 #define FLAME_OFFSET_POS CVector(0.0f,10.0f,20.0f)
@@ -96,7 +90,6 @@ CVehicleBase::~CVehicleBase()
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpFrontCol);
 	SAFE_DELETE(mpSideCol);
-	SAFE_DELETE(mpNavCol);
 }
 
 // 更新
@@ -160,7 +153,7 @@ void CVehicleBase::ChangeRoadType(ERoadType roadType)
 	mRoadType = roadType;
 	// 横方向コライダ―の位置も設定
 	// もう一つの車道が左にある車道
-	if (mRoadType == ERoadType::eLeft2 ||
+	if (mRoadType == ERoadType::eLeft1 ||
 		mRoadType == ERoadType::eRight1)
 	{
 		mpSideCol->Position(LEFT_COL_OFFSET_POS);
@@ -182,12 +175,6 @@ CVehicleBase::ERoadType CVehicleBase::GetRoadType() const
 CCollider* CVehicleBase::GetBodyCol() const
 {
 	return mpBodyCol;
-}
-
-// 経路探索用コライダ―を取得する
-CCollider* CVehicleBase::GetNavCol() const
-{
-	return mpNavCol;
 }
 
 // 巡回ポイントのリストを設定する

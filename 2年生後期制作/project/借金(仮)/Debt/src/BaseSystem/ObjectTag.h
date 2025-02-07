@@ -10,12 +10,14 @@ enum class ETag
 	eRideableObject,	// 乗ることができるオブジェクト
 	eInteractObject,	// 調べるオブジェクト
 	eItem,	// アイテムのオブジェクト
+	eObstruction,	// 障害物
 
-	ePlayer,// プレイヤー
-	eEnemy,	// エネミー
-	eVehicle,		// 車両
+	ePlayer,	// プレイヤー
+	eEnemy,		// エネミー
+	eVehicle,	// 車両
 
-	eTrashBag, // ゴミ袋
+
+	eTrashBag,		// ゴミ袋
 	eBullet,// 弾丸
 	eFlame,	// 炎
 	eSlash,	// 斬撃

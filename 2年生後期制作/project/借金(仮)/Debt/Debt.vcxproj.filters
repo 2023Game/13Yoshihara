@@ -185,6 +185,15 @@
     <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle">
       <UniqueIdentifier>{4fb37653-7168-4455-872f-6d701b4263b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame">
+      <UniqueIdentifier>{cfb1de2b-91ed-4beb-81d7-9f3e55edb84c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\Player">
+      <UniqueIdentifier>{ede81e4f-d00a-46ab-872b-f62928f56340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\Enemy">
+      <UniqueIdentifier>{4310a4a6-e10e-4738-b4a1-ae67a7470fb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -648,6 +657,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\CVehicleStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryGameScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1139,6 +1157,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CVehicleStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryGameScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemy.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryPlayer.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

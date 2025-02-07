@@ -4,6 +4,7 @@
 #include "CResultScene.h"
 #include "CHomeScene.h"
 #include "CTrashGameScene.h"
+#include "CDeliveryGameScene.h"
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"
@@ -107,17 +108,19 @@ void CSceneManager::ChangeNextScene()
 	switch (mNextScene)
 	{
 		//タイトルシーン
-		case EScene::eTitle:	mpScene = new CTitleScene();	break;
+		case EScene::eTitle:		mpScene = new CTitleScene();	break;
 		// ゲームの結果シーン
-		case EScene::eResult:	mpScene = new CResultScene();	break;
+		case EScene::eResult:		mpScene = new CResultScene();	break;
 		//ホームシーン
-		case EScene::eHome:		mpScene = new CHomeScene();		break;
+		case EScene::eHome:			mpScene = new CHomeScene();		break;
 		//ゴミ拾いゲームシーン
-		case EScene::eTrashGame:mpScene = new CTrashGameScene();break;
+		case EScene::eTrashGame:	mpScene = new CTrashGameScene();break;
+		//配達ゲームシーン
+		case EScene::eDeliveryGame:	mpScene = new CDeliveryGameScene(); break;
 		//起動時メニュー
-		case EScene::eBootMenu:	mpScene = new CBootMenuScene();	break;
+		case EScene::eBootMenu:		mpScene = new CBootMenuScene();	break;
 		//衝突判定テスト
-		case EScene::eColTest:	mpScene = new CCollisionTestScene(); break;
+		case EScene::eColTest:		mpScene = new CCollisionTestScene(); break;
 	}
 
 	//シーンを新しく生成できたら、

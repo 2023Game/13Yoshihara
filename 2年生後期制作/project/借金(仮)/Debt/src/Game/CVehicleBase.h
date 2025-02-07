@@ -8,7 +8,7 @@ class CFlamethrower;
 class CSound;
 
 // 前方コライダ―の座標
-#define FRONT_COL_OFFSET_POS CVector(0.0f,0.0f,60.0f)
+#define FRONT_COL_OFFSET_POS	CVector(0.0f,0.0f,60.0f)
 // 横コライダーの座標
 #define LEFT_COL_OFFSET_POS		CVector(-40.0f,0.0f,0.0f)	// 左
 #define RIGHT_COL_OFFSET_POS	CVector( 40.0f,0.0f,0.0f)	// 右
@@ -82,8 +82,6 @@ public:
 
 	// 本体コライダ―を取得する
 	CCollider* GetBodyCol() const;
-	// 経路探索用コライダ―を取得する
-	CCollider* GetNavCol() const;
 
 	// 巡回ポイントのリストを設定する
 	void SetPatrolPoints(std::vector<CNavNode*> patrolPoints);
@@ -119,8 +117,6 @@ protected:
 	CCollider* mpFrontCol;
 	// 横に車がいるかの確認用コライダ―
 	CCollider* mpSideCol;
-	// 経路探索用のコライダ―
-	CCollider* mpNavCol;
 	// 炎のエフェクト
 	CFlamethrower* mpFlamethrower;
 
