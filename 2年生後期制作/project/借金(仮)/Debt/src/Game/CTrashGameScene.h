@@ -24,11 +24,11 @@ private:
 	// ゲームメニュー
 	CGameMenuBase* mpGameMenu;
 	// 車両管理クラス
-	CVehicleManager* mpVehicleManager;
+	CVehicleManager* mpVehicleMgr;
 	// 住人管理クラス
-	CResidentManager* mpResidentManager;
+	CResidentManager* mpResidentMgr;
 	// ゴミ拾いの敵管理クラス
-	CTrashEnemyManager* mpTrashEnemyManager;
+	CTrashEnemyManager* mpTrashEnemyMgr;
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
 	// スコア表示UI

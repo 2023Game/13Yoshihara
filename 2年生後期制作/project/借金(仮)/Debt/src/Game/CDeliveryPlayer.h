@@ -1,11 +1,11 @@
 #pragma once
 #include "CPlayerBase.h"
+#include "CCharaStatusBase.h"
 
-#include "CObjectBase.h"
 /*
 配達ゲームのプレイヤークラス
 */
-class CDeliveryPlayer : public CObjectBase
+class CDeliveryPlayer : public CPlayerBase , public CCharaStatusBase
 {
 public:
 	// コンストラクタ
@@ -28,11 +28,36 @@ public:
 	void Render();
 
 private:
+	// 状態
+	enum class EState
+	{
+		eMove,			// 移動
+		eChangeRoad,	// 車線変更
+	};
+	// 状態切り替え
+	void ChangeState(EState state);
+	EState mState;	// プレイヤーの状態
+	int mStateStep;				// 状態内のステップ管理用
+	float mElapsedTime;			// 経過時間計測用
+
+#if _DEBUG
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
+#endif
+	// 移動の更新処理
+	void UpdateMove();
+	// 車線変更の更新処理
+	void UpdateChangeRoad();
+
 	// コライダ―を生成
 	void CreateCol();
+	// 指定した位置まで移動する
+	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
+	// アクションのキー入力
+	void ActionInput();
 
 	// 3dモデル
 	CModel* mpModel;
-
-	CCollider* mpBodyCol;
+	// 車線変更の目的地
+	CVector mTargetPos;
 };

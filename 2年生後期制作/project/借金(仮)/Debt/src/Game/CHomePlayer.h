@@ -8,9 +8,12 @@
 class CHomePlayer : public CPlayerBase
 {
 public:
+	// コンストラクタ
 	CHomePlayer();
+	// デストラクタ
 	~CHomePlayer();
 
+	// 更新
 	void Update();
 
 	/// <summary>
@@ -26,6 +29,9 @@ private:
 	void UpdateIdle();
 	// 移動処理
 	void UpdateMove();
+
+	// アクションのキー入力
+	void ActionInput();
 	
 	// アニメーションの種類
 	enum class EAnimType

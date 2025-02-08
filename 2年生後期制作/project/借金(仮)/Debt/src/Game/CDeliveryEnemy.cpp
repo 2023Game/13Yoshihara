@@ -10,6 +10,15 @@
 
 #define EYE_HEIGHT 5.0f		// 視点の高さ
 
+#define MAX_HP 10						// 最大HP
+#define BASE_MOVE_SPEED 7.5f * 60.0f	// 移動速度
+#define JUMP_SPEED 1.5f					// ジャンプ速度
+#define KNOCKBACK_SPEED 0.375f * 2.0f	// ノックバック速度
+#define ATTACK_POWER 1					// 攻撃力
+
+// 初期の方向
+#define ROTATION CVector(0.0f,180.0f,0.0f)
+
 // コンストラクタ
 CDeliveryEnemy::CDeliveryEnemy()
 	: CEnemyBase
@@ -18,7 +27,11 @@ CDeliveryEnemy::CDeliveryEnemy()
 		{},
 		EYE_HEIGHT
 	)
+	, CCharaStatusBase(MAX_HP, BASE_MOVE_SPEED, JUMP_SPEED, ATTACK_POWER)
+
 {
+	// 方向を設定
+	Rotation(ROTATION);
 	mpModel = CResourceManager::Get<CModel>("DeliveryEnemy");
 
 	// コライダ―を生成
@@ -33,6 +46,7 @@ CDeliveryEnemy::~CDeliveryEnemy()
 // 更新
 void CDeliveryEnemy::Update()
 {
+	mMoveSpeed = VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime();
 	// 基底クラスの更新
 	CEnemyBase::Update();
 }
@@ -53,9 +67,6 @@ void CDeliveryEnemy::Render()
 // コライダ―を生成
 void CDeliveryEnemy::CreateCol()
 {
-	// 大きさの取得
-	float scale = Scale().X();
-
 	// 本体コライダ―
 	mpBodyCol = new CColliderCapsule
 	(

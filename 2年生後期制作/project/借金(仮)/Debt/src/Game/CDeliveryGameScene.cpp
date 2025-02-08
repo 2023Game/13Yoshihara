@@ -11,7 +11,8 @@
 #include "CTrashScoreUI.h"
 #include "CInput.h"
 #include "Maths.h"
-#include "CTrashField.h"
+#include "CDeliveryField.h"
+#include "CDeliveryFieldManager.h"
 #include "CTrashPlayer.h"
 #include "CDeliveryPlayer.h"
 #include "CDeliveryEnemy.h"
@@ -22,14 +23,13 @@
 #define IDLE_TIME 1.0f
 
 // プレイヤーの初期座標
-#define PLAYER_POS CVector(0.0f,0.0f,50.0f)
+#define PLAYER_POS CVector(0.0f,10.0f,50.0f)
 
 //コンストラクタ
 CDeliveryGameScene::CDeliveryGameScene()
 	: CSceneBase(EScene::eDeliveryGame)
 	, mpGameMenu(nullptr)
 	, mpTimeUI(nullptr)
-	, mpTrashScoreUI(nullptr)
 	, mElapsedTime(0.0f)
 {
 }
@@ -48,16 +48,15 @@ void CDeliveryGameScene::Load()
 	System::SetClearColor(0.1921569f, 0.3019608f, 0.4745098f, 1.0f);
 
 	// CModelX
-	CResourceManager::Load<CModelX>(	"TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
+	CResourceManager::Load<CModelX>(	"TrashPlayer",		"Character\\TrashBox\\TrashBoxPlayer.x");
 	// CModel
-	CResourceManager::Load<CModel>(		"TrashStage",		"Field\\TrashStage\\TrashStage.obj");
+	CResourceManager::Load<CModel>(		"DeliveryStage",	"Field\\DeliveryStage\\DeliveryStage.obj");
 	CResourceManager::Load<CModel>(		"Sky",				"Field\\Sky\\Sky.obj");
 	CResourceManager::Load<CModel>(		"DeliveryPlayer",	"Character\\DeliveryTruck\\DeliveryTruck_Player.obj");
 	CResourceManager::Load<CModel>(		"DeliveryEnemy",	"Character\\DeliveryTruck\\DeliveryTruck_Enemy.obj");
+	CResourceManager::Load<CModel>(		"DeliveryItem",		"Field\\Object\\DeliveryItem.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
+	CResourceManager::Load<CModel>("DeliveryStage_Ground_Collision", "Field\\DeliveryStage\\CollisionModel\\DeliveryStage_Ground_Collision.obj");
 	/*
 	効果音
 	*/
@@ -83,21 +82,18 @@ void CDeliveryGameScene::Load()
 	// 経路探索管理クラスを作成
 	new CNavManager();
 
-	// ゴミ拾いのフィールドクラスを作成
-	CTrashField* field = new CTrashField();
+	// 配達のフィールド管理クラスを作成
+	mpFieldMgr = new CDeliveryFieldManager();
 
-	CTrashPlayer* player = new CTrashPlayer();
-	player->Position(PLAYER_POS);
-
-	CDeliveryPlayer* deliveryPlayer = new CDeliveryPlayer();
-	deliveryPlayer->Position(-20.0f, 0.0f, 0.0f);
+	CDeliveryPlayer* player = new CDeliveryPlayer();
+	player->Position(-20.0f, 10.0f, 0.0f);
 	CDeliveryEnemy* enemy = new CDeliveryEnemy();
-	enemy->Position(20.0f, 0.0f, 0.0f);
+	enemy->Position(20.0f, 10.0f, 0.0f);
 
 	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
-	// スコア表示UI生成
-	mpTrashScoreUI = new CTrashScoreUI();
+	// TOOD：スコア表示UI生成
+
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -111,13 +107,22 @@ void CDeliveryGameScene::Load()
 	CVector atPos = player->Position() + CVector(0.0f, 8.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 10.0f, 50.0f),
+		atPos + CVector(0.0f, 10.0f, 400.0f),
 		atPos
 	);
-	// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
-	mainCamera->AddCollider(field->GetObjCol());
+	bool end = false;
+	// 全てのフィールドのコライダーを追加するまでループ
+	for (int i = 0; i >= 0; i++)
+	{
+		CDeliveryField* field = mpFieldMgr->GetField(i, end);
+		// 衝突判定するコライダ―を追加
+		mainCamera->AddCollider(field->GetGroundCol());
+		mainCamera->AddCollider(field->GetWallCol());
+		mainCamera->AddCollider(field->GetObjCol());
+
+		// 最後の要素のコライダ―まで追加したらループ終了
+		if (end) break;
+	}
 
 	mainCamera->SetFollowTargetTf(player);
 
@@ -142,12 +147,14 @@ void CDeliveryGameScene::Update()
 		}
 	}
 
+	// フィールド管理クラスの更新
+	mpFieldMgr->Update();
 	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
-	// スコア表示UIクラスの更新
-	mpTrashScoreUI->Update();
+	// TODO：スコア表示UIクラスの更新
+	
 	// プレイヤークラスを取得
-	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
+	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());
 	// 制限時間が0になったか、
 	// プレイヤーの死亡によってゲームを終了する時
 	if (mpTimeUI->GetTime() < 0 ||
@@ -167,8 +174,8 @@ void CDeliveryGameScene::Update()
 			// 残りHPの割合を求める
 			float hpPer = Math::Clamp01((float)player->GetHp() / player->GetMaxHp());
 			// スコアデータを設定
-			scoreMgr->SetTrashGameScoreData(mpTrashScoreUI->GetScore(),
-				player->GetTrashBag(), player->GetGoldTrashBag(), hpPer);
+			//scoreMgr->SetTrashGameScoreData(mpTrashScoreUI->GetScore(),
+			//	player->GetTrashBag(), player->GetGoldTrashBag(), hpPer);
 			// ゲームの種類を今のシーンに設定
 			scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
 			// リザルトシーンへ移行

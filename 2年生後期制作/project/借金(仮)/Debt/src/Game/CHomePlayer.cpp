@@ -23,6 +23,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ ANIM_PATH"walk.x",		true,	63.0f,	1.0f},	// 歩行
 };
 
+// コンストラクタ
 CHomePlayer::CHomePlayer()
 	: CPlayerBase()
 	, mState(EState::eIdle)
@@ -39,7 +40,8 @@ CHomePlayer::CHomePlayer()
 		BODY_RADIUS
 	);
 	//フィールド、壁、オブジェクトとだけ衝突
-	mpBodyCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall, ELayer::eObject });
+	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
+		ELayer::eWall, ELayer::eObject });
 
 	// 調べるオブジェクトを探知するコライダ―
 	mpSearchCol = new CColliderSphere
@@ -56,11 +58,13 @@ CHomePlayer::CHomePlayer()
 	ChangeAnimation((int)EAnimType::eIdle);
 }
 
+// デストラクタ
 CHomePlayer::~CHomePlayer()
 {
 
 }
 
+// 更新
 void CHomePlayer::Update()
 {
 	switch (mState)
@@ -83,22 +87,11 @@ void CHomePlayer::Update()
 #endif
 }
 
+// 待機状態
 void CHomePlayer::UpdateIdle()
 {
-	// 接地していれば
-	if (mIsGrounded)
-	{
-		// 近くの調べるオブジェクトを取得
-		CInteractObject* obj = GetNearInteractObject();
-		if (obj != nullptr)
-		{
-			// Fキーを押したら、近くの調べるオブジェクトを調べる
-			if (CInput::PushKey('F'))
-			{
-				obj->Interact();
-			}
-		}
-	}
+	// キー入力
+	ActionInput();
 }
 
 // 移動の更新処理
@@ -130,6 +123,26 @@ void CHomePlayer::UpdateMove()
 	}
 }
 
+// アクションのキー入力
+void CHomePlayer::ActionInput()
+{
+	// 接地していれば
+	if (mIsGrounded)
+	{
+		// 近くの調べるオブジェクトを取得
+		CInteractObject* obj = GetNearInteractObject();
+		if (obj != nullptr)
+		{
+			// Fキーを押したら、近くの調べるオブジェクトを調べる
+			if (CInput::PushKey('F'))
+			{
+				obj->Interact();
+			}
+		}
+	}
+}
+
+// 衝突処理
 void CHomePlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);

@@ -78,7 +78,10 @@
     <ClCompile Include="src\Game\CCollectorStatus.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CDeliveryEnemy.cpp" />
+    <ClCompile Include="src\Game\CDeliveryField.cpp" />
+    <ClCompile Include="src\Game\CDeliveryFieldManager.cpp" />
     <ClCompile Include="src\Game\CDeliveryGameScene.cpp" />
+    <ClCompile Include="src\Game\CDeliveryItem.cpp" />
     <ClCompile Include="src\Game\CDeliveryPlayer.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
@@ -246,7 +249,10 @@
     <ClInclude Include="src\Game\CCollectorStatus.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CDeliveryEnemy.h" />
+    <ClInclude Include="src\Game\CDeliveryField.h" />
+    <ClInclude Include="src\Game\CDeliveryFieldManager.h" />
     <ClInclude Include="src\Game\CDeliveryGameScene.h" />
+    <ClInclude Include="src\Game\CDeliveryItem.h" />
     <ClInclude Include="src\Game\CDeliveryPlayer.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />

@@ -194,6 +194,18 @@
     <Filter Include="ソース ファイル\Game\Character\DeliveryGame\Enemy">
       <UniqueIdentifier>{4310a4a6-e10e-4738-b4a1-ae67a7470fb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Field\TrashGame">
+      <UniqueIdentifier>{4181491e-706f-41dd-a81e-ede8d3e0de61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\DeliveryGame">
+      <UniqueIdentifier>{093ec83d-3185-4968-8f05-d1a326506e4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Home">
+      <UniqueIdentifier>{1de60eba-12e9-4155-a669-28582493e32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\DeliveryItem">
+      <UniqueIdentifier>{2c11333d-2d41-4435-9643-0d16d0ae1a55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -303,9 +315,6 @@
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CDebugPrint.cpp">
       <Filter>ソース ファイル\BaseSystem\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CHomeField.cpp">
-      <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CXCharacter.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -487,9 +496,6 @@
     <ClCompile Include="src\Game\CPlayerBase.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashField.cpp">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CHomePlayer.cpp">
       <Filter>ソース ファイル\Game\Character\Home</Filter>
     </ClCompile>
@@ -667,6 +673,21 @@
     <ClCompile Include="src\Game\CDeliveryPlayer.cpp">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CTrashField.cpp">
+      <Filter>ソース ファイル\Game\Field\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeField.cpp">
+      <Filter>ソース ファイル\Game\Field\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryField.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryFieldManager.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryItem.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -797,9 +818,6 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CDebugPrint.h">
       <Filter>ソース ファイル\BaseSystem\Debug</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CHomeField.h">
-      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CXCharacter.h">
       <Filter>ソース ファイル\Game\Character</Filter>
@@ -987,9 +1005,6 @@
     <ClInclude Include="src\Game\CPlayerBase.h">
       <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTrashField.h">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CHomePlayer.h">
       <Filter>ソース ファイル\Game\Character\Home</Filter>
     </ClInclude>
@@ -1166,6 +1181,21 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryPlayer.h">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashField.h">
+      <Filter>ソース ファイル\Game\Field\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeField.h">
+      <Filter>ソース ファイル\Game\Field\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryField.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryFieldManager.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryItem.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

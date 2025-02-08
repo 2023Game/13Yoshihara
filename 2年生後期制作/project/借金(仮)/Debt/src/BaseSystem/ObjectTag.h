@@ -9,8 +9,8 @@ enum class ETag
 	eField,	// フィールドを構成するオブジェクト
 	eRideableObject,	// 乗ることができるオブジェクト
 	eInteractObject,	// 調べるオブジェクト
-	eItem,	// アイテムのオブジェクト
-	eObstruction,	// 障害物
+	eItem,				// アイテムのオブジェクト
+	eObstruction,		// 障害物
 
 	ePlayer,	// プレイヤー
 	eEnemy,		// エネミー

@@ -45,7 +45,7 @@ protected:
 	// フィールドのモデル
 	CModel* mpModel;
 	// 空のモデル
-	CModel* mpSky;
+	CModel* mpSkyModel;
 	// フィールドの地面の衝突判定
 	CColliderMesh* mpGroundColliderMesh;
 	// フィールドの壁の衝突判定

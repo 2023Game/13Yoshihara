@@ -1,6 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 class CGameMenuBase;
+class CDeliveryFieldManager;
 class CTimeUI;
 class CTrashScoreUI;
 
@@ -21,10 +22,12 @@ private:
 	// ゲームメニュー
 	CGameMenuBase* mpGameMenu;
 
+	// フィールド管理クラス
+	CDeliveryFieldManager* mpFieldMgr;
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
 	// スコア表示UI
-	CTrashScoreUI* mpTrashScoreUI;
+	//CTrashScoreUI* mpTrashScoreUI;
 	// 経過時間を計る
 	float mElapsedTime;
 };

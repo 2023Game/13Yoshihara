@@ -32,6 +32,7 @@ CPlayerBase::CPlayerBase()
 	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
 	, mIsGravity(true)
+	, mIsMoveDir(true)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
 	, mpBodyCol(nullptr)
@@ -195,8 +196,10 @@ void CPlayerBase::Update()
 	// 移動
 	Position(Position() + moveSpeed);
 
-	// 攻撃を受けていない時は
-	if (!mIsDamage)
+	// 攻撃を受けていない時と
+	// 移動方向を向く設定がオンの時
+	if (!mIsDamage&&
+		mIsMoveDir)
 	{
 		// プレイヤーを移動方向へ向ける
 		CVector current = VectorZ();

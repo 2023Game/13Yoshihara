@@ -1,11 +1,12 @@
 #pragma once
 #include "CEnemyBase.h"
+#include "CCharaStatusBase.h"
 
 /*
 配達ゲームの敵クラス
 敵基底クラスを継承
 */
-class CDeliveryEnemy : public CEnemyBase
+class CDeliveryEnemy : public CEnemyBase, public CCharaStatusBase
 {
 public:
 	// コンストラクタ

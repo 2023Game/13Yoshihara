@@ -32,9 +32,9 @@ CTrashField::~CTrashField()
 // フィールドのオブジェクト生成
 void CTrashField::CreateFieldObjects()
 {
-	mpSky = CResourceManager::Get<CModel>("Sky");
+	mpSkyModel = CResourceManager::Get<CModel>("Sky");
 	
-	new CSky(mpSky, SKY_POS, SKY_SCALE, SKY_ROTATION);
+	new CSky(mpSkyModel, SKY_POS, SKY_SCALE, SKY_ROTATION);
 }
 
 // 経路探索用のノードを生成

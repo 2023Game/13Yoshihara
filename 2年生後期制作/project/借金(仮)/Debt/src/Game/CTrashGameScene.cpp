@@ -35,9 +35,9 @@
 CTrashGameScene::CTrashGameScene()
 	: CSceneBase(EScene::eTrashGame)
 	, mpGameMenu(nullptr)
-	, mpVehicleManager(nullptr)
-	, mpResidentManager(nullptr)
-	, mpTrashEnemyManager(nullptr)
+	, mpVehicleMgr(nullptr)
+	, mpResidentMgr(nullptr)
+	, mpTrashEnemyMgr(nullptr)
 	, mpTimeUI(nullptr)
 	, mpTrashScoreUI(nullptr)
 	, mElapsedTime(0.0f)
@@ -108,18 +108,18 @@ void CTrashGameScene::Load()
 	CTrashField* field = new CTrashField();
 
 	// 車両の管理クラス作成
-	mpVehicleManager =
+	mpVehicleMgr =
 		new CVehicleManager();
 
 	// 住人の管理クラス作成
-	mpResidentManager =
+	mpResidentMgr =
 		new CResidentManager();
 
 	CTrashPlayer* player = new CTrashPlayer();
 	player->Position(PLAYER_POS);
 
 	// ゴミ拾いの敵管理クラス作成
-	mpTrashEnemyManager =
+	mpTrashEnemyMgr =
 		new CTrashEnemyManager();
 
 	// 時間表示UI生成
@@ -179,9 +179,9 @@ void CTrashGameScene::Update()
 	}
 
 	// 車両管理クラスの更新
-	mpVehicleManager->Update();
+	mpVehicleMgr->Update();
 	// 敵管理クラスの更新
-	mpTrashEnemyManager->Update();
+	mpTrashEnemyMgr->Update();
 	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
 	// スコア表示UIクラスの更新
