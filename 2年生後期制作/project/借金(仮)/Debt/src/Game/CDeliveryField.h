@@ -1,7 +1,15 @@
 #pragma once
 #include "CFieldBase.h"
 
-#define ROAD_X_AREA 87.5f	// 車道のXの範囲
+class CDeliveryHome;
+
+// スケールの倍率
+#define SCALE_RATIO 1.5f
+
+#define ROAD_X_AREA 90.0f		// 端の車道のX
+// 車道のZの範囲
+#define ROAD_Z_AREA_P  170.0f	// プラス方向
+#define ROAD_Z_AREA_M -300.0f	// マイナス方向
 
 class CDeliveryField : public CFieldBase
 {
@@ -16,7 +24,15 @@ public:
 	// 描画
 	void Render() override;
 
+	// 家の位置をランダムに決める
+	void RandomHome();
+
 private:
 	// フィールドのオブジェクト生成
 	void CreateFieldObjects() override;
+
+	// 家
+	CDeliveryHome* mpHome;
+	// 家のオフセット座標
+	CVector mHomeOffsetPos;
 };

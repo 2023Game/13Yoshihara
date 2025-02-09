@@ -1,5 +1,5 @@
 #include "CDeliveryGameScene.h"
-#include "CGameCamera2.h"
+#include "CCamera.h"
 #include "CGameMenu.h"
 #include "CTaskManager.h"
 #include "CSceneManager.h"
@@ -8,7 +8,7 @@
 #include "CBGMManager.h"
 #include "CNavManager.h"
 #include "CTimeUI.h"
-#include "CTrashScoreUI.h"
+#include "CDeliveryScoreUI.h"
 #include "CInput.h"
 #include "Maths.h"
 #include "CDeliveryField.h"
@@ -55,8 +55,11 @@ void CDeliveryGameScene::Load()
 	CResourceManager::Load<CModel>(		"DeliveryPlayer",	"Character\\DeliveryTruck\\DeliveryTruck_Player.obj");
 	CResourceManager::Load<CModel>(		"DeliveryEnemy",	"Character\\DeliveryTruck\\DeliveryTruck_Enemy.obj");
 	CResourceManager::Load<CModel>(		"DeliveryItem",		"Field\\Object\\DeliveryItem.obj");
+	CResourceManager::Load<CModel>(		"DeliveryHome",		"Field\\Object\\DeliveryHome\\DeliveryHome.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("DeliveryStage_Ground_Collision", "Field\\DeliveryStage\\CollisionModel\\DeliveryStage_Ground_Collision.obj");
+	CResourceManager::Load<CModel>(		"DeliveryStage_Ground_Collision",	"Field\\DeliveryStage\\CollisionModel\\DeliveryStage_Ground_Collision.obj");
+	CResourceManager::Load<CModel>(		"DeliveryHome_Wall_Collision",		"Field\\Object\\DeliveryHome\\CollisionModel\\DeliveryHome_Wall_Collision.obj");
+	CResourceManager::Load<CModel>(		"DeliveryHome_Goal_Collision",		"Field\\Object\\DeliveryHome\\CollisionModel\\DeliveryHome_Goal_Collision.obj");
 	/*
 	効果音
 	*/
@@ -86,45 +89,46 @@ void CDeliveryGameScene::Load()
 	mpFieldMgr = new CDeliveryFieldManager();
 
 	CDeliveryPlayer* player = new CDeliveryPlayer();
-	player->Position(-20.0f, 10.0f, 0.0f);
-	CDeliveryEnemy* enemy = new CDeliveryEnemy();
-	enemy->Position(20.0f, 10.0f, 0.0f);
+	player->Position(-30.0f, 0.0f, 0.0f);
+
+	//CDeliveryEnemy* enemy = new CDeliveryEnemy();
+	//enemy->Position(30.0f, 0.0f, 0.0f);
 
 	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
-	// TOOD：スコア表示UI生成
+	// スコア表示UI生成
+	mpDeliveryScoreUI = new CDeliveryScoreUI();
 
-
-	// CGameCameraのテスト
-	//CGameCamera* mainCamera = new CGameCamera
-	//(
-	//	//CVector(5.0f, -15.0f, 180.0f),
-	//	CVector(0.0f, 50.0f, 75.0f),
-	//	player->Position()
-	//);
-	// 
-	// CGameCamera2のテスト
-	CVector atPos = player->Position() + CVector(0.0f, 8.0f, 0.0f);
-	CGameCamera2* mainCamera = new CGameCamera2
+	// Cameraのテスト
+	CVector atPos = CVector(0.0f, 8.0f, 0.0f);
+	CCamera* mainCamera = new CCamera
 	(
-		atPos + CVector(0.0f, 10.0f, 400.0f),
+		atPos + CVector(0.0f, 400.0f, 200.0f),
 		atPos
 	);
-	bool end = false;
-	// 全てのフィールドのコライダーを追加するまでループ
-	for (int i = 0; i >= 0; i++)
-	{
-		CDeliveryField* field = mpFieldMgr->GetField(i, end);
-		// 衝突判定するコライダ―を追加
-		mainCamera->AddCollider(field->GetGroundCol());
-		mainCamera->AddCollider(field->GetWallCol());
-		mainCamera->AddCollider(field->GetObjCol());
+	 
+	// CGameCamera2のテスト
+	//CVector atPos = player->Position() + CVector(0.0f, 8.0f, 0.0f);
+	//CGameCamera2* mainCamera = new CGameCamera2
+	//(
+	//	atPos + CVector(0.0f, 10.0f, 400.0f),
+	//	atPos
+	//);
+	//bool end = false;
+	//// 全てのフィールドのコライダーを追加するまでループ
+	//for (int i = 0; i >= 0; i++)
+	//{
+	//	CDeliveryField* field = mpFieldMgr->GetField(i, end);
+	//	// 衝突判定するコライダ―を追加
+	//	mainCamera->AddCollider(field->GetGroundCol());
+	//	mainCamera->AddCollider(field->GetWallCol());
+	//	mainCamera->AddCollider(field->GetObjCol());
 
-		// 最後の要素のコライダ―まで追加したらループ終了
-		if (end) break;
-	}
+	//	// 最後の要素のコライダ―まで追加したらループ終了
+	//	if (end) break;
+	//}
 
-	mainCamera->SetFollowTargetTf(player);
+	//mainCamera->SetFollowTargetTf(player);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
@@ -151,8 +155,9 @@ void CDeliveryGameScene::Update()
 	mpFieldMgr->Update();
 	// 時間表示UIクラスの更新
 	mpTimeUI->Update();
-	// TODO：スコア表示UIクラスの更新
-	
+	// スコア表示UIクラスの更新
+	mpDeliveryScoreUI->Update();
+
 	// プレイヤークラスを取得
 	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());
 	// 制限時間が0になったか、

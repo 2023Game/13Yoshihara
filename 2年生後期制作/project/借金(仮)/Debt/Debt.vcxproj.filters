@@ -206,6 +206,15 @@
     <Filter Include="ソース ファイル\Game\Character\DeliveryGame\DeliveryItem">
       <UniqueIdentifier>{2c11333d-2d41-4435-9643-0d16d0ae1a55}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\DeliveryGame">
+      <UniqueIdentifier>{1152218b-e086-4634-9627-785fefed7429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D\DeliveryGame">
+      <UniqueIdentifier>{5b1f8b25-9f65-4fd3-b866-82bbc5925766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Result\DeliveryGame">
+      <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -687,6 +696,27 @@
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryItem.cpp">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHome.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryScoreUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CScoreUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryItemStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1196,6 +1226,27 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryItem.h">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHome.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryScoreUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CScoreUIBase.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryItemStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryGameResultUI.h">
+      <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

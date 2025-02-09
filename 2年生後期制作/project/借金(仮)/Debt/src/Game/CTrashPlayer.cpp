@@ -1111,7 +1111,7 @@ void CTrashPlayer::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ1：ゲームシーンでプレイヤーが死亡した
+		// ステップ2：ゲームシーンでプレイヤーが死亡した
 		// ことによるゲーム終了を取得するための変数設定
 	case 2:
 		SetGameEnd(true);

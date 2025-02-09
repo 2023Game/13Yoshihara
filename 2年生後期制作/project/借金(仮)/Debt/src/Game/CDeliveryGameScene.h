@@ -3,7 +3,7 @@
 class CGameMenuBase;
 class CDeliveryFieldManager;
 class CTimeUI;
-class CTrashScoreUI;
+class CDeliveryScoreUI;
 
 //タイトルシーン
 class CDeliveryGameScene :public CSceneBase
@@ -27,7 +27,7 @@ private:
 	// 時間表示UI
 	CTimeUI* mpTimeUI;
 	// スコア表示UI
-	//CTrashScoreUI* mpTrashScoreUI;
+	CDeliveryScoreUI* mpDeliveryScoreUI;
 	// 経過時間を計る
 	float mElapsedTime;
 };

@@ -1,18 +1,25 @@
 #pragma once
 #include "CEnemyBase.h"
-#include "CCharaStatusBase.h"
+#include "CDeliveryEnemyStatus.h"
 
 /*
 配達ゲームの敵クラス
 敵基底クラスを継承
 */
-class CDeliveryEnemy : public CEnemyBase, public CCharaStatusBase
+class CDeliveryEnemy : public CEnemyBase, public CDeliveryEnemyStatus
 {
 public:
 	// コンストラクタ
 	CDeliveryEnemy();
 	// デストラクタ
 	~CDeliveryEnemy();
+
+	/// <summary>
+	/// ダメージを受ける
+	/// </summary>
+	/// <param name="damage">受けるダメージ</param>
+	/// <param name="causer">攻撃してきた相手</param>
+	void TakeDamage(int damage, CObjectBase* causer) override;
 
 	// 更新
 	void Update();
@@ -29,9 +36,44 @@ public:
 	void Render();
 
 private:
+	// 状態
+	enum class EState
+	{
+		eMove,			// 移動
+		eChangeRoad,	// 車線変更
+		eDeath,			// 死亡
+	};
+	// 状態切り替え
+	void ChangeState(EState state);
+	EState mState;	// 敵の状態
+	int mStateStep;				// 状態内のステップ管理用
+	float mElapsedTime;			// 経過時間計測用
+	float mInvincibleTime;		// 無敵時間計測用
+	float mHitFlashTime;		// 点滅間隔計測用
+
+#if _DEBUG
+	// 状態の文字列を取得
+	std::string GetStateStr(EState state) const;
+#endif
+	// 移動の更新処理
+	void UpdateMove();
+	// 車線変更の更新処理
+	void UpdateChangeRoad();
+	// 死亡の更新処理
+	void UpdateDeath();
+	// 死亡
+	void Death() override;
+
 	// コライダ―を生成
 	void CreateCol();
+	// 指定した位置まで移動する
+	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
+	// ダメージの点滅と無敵時間の処理
+	void HitFlash();
 
 	// 3dモデル
 	CModel* mpModel;
+
+	// 車線変更の目的地
+	CVector mTargetPos;
 };

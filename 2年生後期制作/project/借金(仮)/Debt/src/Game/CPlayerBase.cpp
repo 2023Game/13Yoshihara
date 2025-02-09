@@ -196,7 +196,7 @@ void CPlayerBase::Update()
 	// ˆÚ“®
 	Position(Position() + moveSpeed);
 
-	// UŒ‚‚ğó‚¯‚Ä‚¢‚È‚¢‚Æ
+	// UŒ‚‚ğó‚¯‚Ä‚¢‚È‚¢‚©‚Â
 	// ˆÚ“®•ûŒü‚ğŒü‚­İ’è‚ªƒIƒ“‚Ì
 	if (!mIsDamage&&
 		mIsMoveDir)

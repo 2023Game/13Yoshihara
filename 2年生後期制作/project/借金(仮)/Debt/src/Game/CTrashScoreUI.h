@@ -1,14 +1,10 @@
 #pragma once
-
-class CTextUI2D;
-class CTrashBagStatus;
+#include "CScoreUIBase.h"
 
 // ゴミ拾いのスコア表示UI
-class CTrashScoreUI
+class CTrashScoreUI : public CScoreUIBase
 {
 public:
-	// スコア表示UIのインスタンスを取得
-	static CTrashScoreUI* Instance();
 	// コンストラクタ
 	CTrashScoreUI();
 	// デストラクタ
@@ -18,18 +14,11 @@ public:
 	void Update();
 
 	// スコアを取得する
-	int GetScore() const;
+	int GetScore() const override;
 
 private:
-	// スコア表示UIのインスタンス
-	static CTrashScoreUI* spInstance;
-	// スコア
-	int mScore;
-
 	// ゴミ袋一つの得点
 	int mTrashBagScore;
 	// ゴールドのゴミ袋一つの得点
 	int mGoldTrashBagScore;
-	// テキストUI
-	CTextUI2D* mpScoreUI;
 };

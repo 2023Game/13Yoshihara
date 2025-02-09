@@ -6,6 +6,7 @@
 #include "CBGMManager.h"
 #include "CResultUIBase.h"
 #include "CTrashGameResultUI.h"
+#include "CDeliveryGameResultUI.h"
 #include "CScoreManager.h"
 #include "SceneType.h"
 #include "CTaskManager.h"
@@ -49,6 +50,11 @@ void CResultScene::Load()
 	{
 		// ゴミ拾いのリザルトUIを生成
 		mpResultUI = new CTrashGameResultUI();
+	}
+	if (scoreMgr->GetGameType() == (int)EScene::eDeliveryGame)
+	{
+		// 配達のリザルトUIを生成
+		mpResultUI = new CDeliveryGameResultUI();
 	}
 	AddTask(mpResultUI);
 }

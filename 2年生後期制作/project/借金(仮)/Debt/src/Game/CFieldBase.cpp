@@ -13,7 +13,7 @@ CFieldBase* CFieldBase::Instance()
 
 // コンストラクタ
 CFieldBase::CFieldBase()
-	: CObjectBase(ETag::eField, ETaskPriority::eBackground)
+	: CObjectBase(ETag::eField, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
 	, mpModel(nullptr)
 	, mpSkyModel(nullptr)
 	, mpGroundColliderMesh(nullptr)

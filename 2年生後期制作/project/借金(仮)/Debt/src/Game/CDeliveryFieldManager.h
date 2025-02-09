@@ -36,6 +36,6 @@ private:
 	// フィールド
 	std::vector<CDeliveryField*> mFields;
 
-	// 一番奥のフィールドのZ座標
-	float mFieldPosZ;
+	// 一番遠いのフィールド
+	CDeliveryField* mpFarField;
 };

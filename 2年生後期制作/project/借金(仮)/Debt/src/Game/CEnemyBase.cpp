@@ -20,6 +20,7 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	, mGravity(GRAVITY)
 	, mIsGrounded(false)
 	, mIsGravity(true)
+	, mIsMoveDir(true)
 	, mpRideObject(nullptr)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
@@ -141,8 +142,10 @@ void CEnemyBase::Update()
 	// ˆÚ“®
 	Position(Position() + moveSpeed);
 
-	// UŒ‚‚ğó‚¯‚Ä‚¢‚È‚¢‚Í
-	if (!mIsDamage)
+	// UŒ‚‚ğó‚¯‚Ä‚¢‚È‚¢‚©‚Â
+	// ˆÚ“®•ûŒü‚ğŒü‚­İ’è‚ªƒIƒ“‚Ì
+	if (!mIsDamage &&
+		mIsMoveDir)
 	{
 		// “G‚ğˆÚ“®•ûŒü‚ÖŒü‚¯‚é
 		CVector current = VectorZ();

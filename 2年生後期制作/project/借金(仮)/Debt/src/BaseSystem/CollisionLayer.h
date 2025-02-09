@@ -11,6 +11,7 @@ enum class ELayer
 	eObject,		// オブジェクト
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用
+	eGoal,			// ゴール
 	eObstruction,	// 障害物
 	ePlayer,		// プレイヤー
 	eEnemy,			// 敵
