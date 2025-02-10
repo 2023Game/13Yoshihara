@@ -15,7 +15,7 @@
 #define PATROLPOINT_R_2 CVector(100.0f, 4.0f, 100.0f)
  
 // 住人の最大数
-#define RESIDENT_MAX_NUM 0
+#define RESIDENT_MAX_NUM 2
 
 // 住人管理クラスのインスタンス
 CResidentManager* CResidentManager::spInstance = nullptr;

@@ -1,9 +1,10 @@
 #pragma once
 #include "CCharaBase.h"
+#include "RoadType.h"
 
 class CModel;
 class CNavNode;
-class CVehicleManager;
+class CTrashVehicleManager;
 class CFlamethrower;
 class CSound;
 
@@ -14,27 +15,15 @@ class CSound;
 #define RIGHT_COL_OFFSET_POS	CVector( 40.0f,0.0f,0.0f)	// 右
 
 // 車両の基底クラス
-class CVehicleBase : public CCharaBase
+class CTrashVehicleBase : public CCharaBase
 {
-	friend CVehicleManager;
+	friend CTrashVehicleManager;
 public:
-	// どの道にいる状態か
-	enum class ERoadType
-	{
-		None = -1,
-
-		eLeft1,		// 左から一番目の道
-		eLeft2,		// 左から二番目の道
-		eRight1,	// 右から一番目の道
-		eRight2,	// 右から二番目の道
-
-	};
-
 	// コンストラクタ
-	CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
+	CTrashVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
 		ERoadType road, std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
-	~CVehicleBase();
+	~CTrashVehicleBase();
 	/// <summary>
 	/// ダメージを受ける
 	/// </summary>
@@ -128,7 +117,7 @@ protected:
 	/// 車線変更で移動するノードの座標を設定する
 	/// </summary>
 	/// <param name="frontVehicle">前にいる車のポインタ</param>
-	void SetChangeRoadPoint(CVehicleBase* frontVehicle);
+	void SetChangeRoadPoint(CTrashVehicleBase* frontVehicle);
 
 	// 車線変更時の移動先のノード
 	CNavNode* mpChangeRoadPoint;

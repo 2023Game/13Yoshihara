@@ -13,7 +13,7 @@
 #include "CTaskManager.h"
 
 // 衝突相手のクラスを取得するためのインクルード
-#include "CVehicleBase.h"
+#include "CTrashVehicleBase.h"
 #include "CCollector.h"
 
 // コライダのインクルード
@@ -334,7 +334,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 		// 衝突した相手が車両なら
 		else if (other->Layer() == ELayer::eVehicle)
 		{
-			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			CTrashVehicleBase* vehicle = dynamic_cast<CTrashVehicleBase*>(other->Owner());
 			if (vehicle != nullptr &&
 				!IsAttackHitObj(vehicle))
 			{
@@ -401,7 +401,7 @@ void CTrashPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 		// 衝突した相手が車両なら
 		else if (other->Layer() == ELayer::eVehicle)
 		{
-			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			CTrashVehicleBase* vehicle = dynamic_cast<CTrashVehicleBase*>(other->Owner());
 			if (vehicle != nullptr &&
 				!IsAttackHitObj(vehicle))
 			{

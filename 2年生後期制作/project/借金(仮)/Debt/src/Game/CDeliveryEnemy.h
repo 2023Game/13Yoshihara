@@ -19,7 +19,9 @@ public:
 	/// </summary>
 	/// <param name="damage">受けるダメージ</param>
 	/// <param name="causer">攻撃してきた相手</param>
-	void TakeDamage(int damage, CObjectBase* causer) override;
+	/// <param name="causer">自分の射撃による減少か</param>
+	void TakeDamage(int damage, CObjectBase* causer, bool isShot = false);
+
 
 	// 更新
 	void Update();
@@ -34,6 +36,9 @@ public:
 
 	// 描画
 	void Render();
+
+	// 有効無効を切り替える
+	void SetOnOff(bool setOnOff);
 
 private:
 	// 状態

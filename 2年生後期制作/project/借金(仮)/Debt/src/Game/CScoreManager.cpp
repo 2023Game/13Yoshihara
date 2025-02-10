@@ -24,7 +24,8 @@ void CScoreManager::ClearInstance()
 CScoreManager::CScoreManager()
 	: mGameType((int)EScene::eTrashGame)
 {
-	mpTrashGameScore = new CScoreManager::TrashGameScoreData(0, 0, 0, 0, 0.0f);
+	mpTrashGameScore = new CScoreManager::TrashGameScoreData();
+	mpDeliveryGameScore = new CScoreManager::DeliveryGameScoreData();
 }
 
 // デストラクタ
@@ -57,6 +58,31 @@ void CScoreManager::SetTrashGameScoreData(int score, int trashBagNum,
 CScoreManager::TrashGameScoreData* CScoreManager::GetTrashGameScoreData() const
 {
 	return mpTrashGameScore;
+}
+
+// 配達のスコアデータを設定する
+void CScoreManager::SetDeliveryGameScoreData(int score, int deliveryNum,
+	int destroyEnemyNum, float accuracy)
+{
+	// 今回のスコアを設定
+	mpDeliveryGameScore->mScore = score;
+	// 今回のスコアが最高点より高ければ設定
+	if (mpDeliveryGameScore->mBestScore < score)
+	{
+		mpDeliveryGameScore->mBestScore = score;
+	}
+	// 配達した数を設定
+	mpDeliveryGameScore->mDeliveryNum = deliveryNum;
+	// 壊した敵の数を設定
+	mpDeliveryGameScore->mDestroyEnemyNum = destroyEnemyNum;
+	// 命中率を設定
+	mpDeliveryGameScore->mAccuracy = accuracy;
+}
+
+// 配達のスコアデータを取得する
+CScoreManager::DeliveryGameScoreData* CScoreManager::GetDeliveryGameScoreData() const
+{
+	return mpDeliveryGameScore;
 }
 
 // ゲームの種類を設定する

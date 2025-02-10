@@ -46,7 +46,7 @@ void CPunisherTruck::Reset()
 {
 	CGarbageTruck::Reset();
 	// Hp‚ğƒŠƒZƒbƒg
-	SetHp();
+	ResetHp();
 }
 
 // ˆÚ“®ˆ—

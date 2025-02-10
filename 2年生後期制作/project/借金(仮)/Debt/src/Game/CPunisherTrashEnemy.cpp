@@ -61,7 +61,7 @@ CPunisherTrashEnemy::~CPunisherTrashEnemy()
 void CPunisherTrashEnemy::SetOnOff(bool isOnOff)
 {
 	// HPをリセット
-	SetHp();
+	ResetHp();
 	// 有効無効を切り替える
 	SetEnable(isOnOff);
 	SetShow(isOnOff);

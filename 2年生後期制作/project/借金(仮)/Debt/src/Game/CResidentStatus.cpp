@@ -10,8 +10,6 @@
 #define MAX_THROW_NUM 3					// 投げれるゴミの最大数
 #define GOLD_CHANCE 10					// ゴールド袋が出る確率
 
-// ゴミを投げる速度を計算するときランダムで掛ける最大値
-#define THROW_SPEED_RANDOM_MAX 1.5f
 // ゴミを投げるまでの時間を計算するときランダムで掛ける最大数
 #define THROW_TIME_RANDOM_MAX 5
 
@@ -35,9 +33,7 @@ CResidentStatus::~CResidentStatus()
 // ゴミ袋を投げる速度を設定する
 void CResidentStatus::SetThrowSpeed()
 {
-	// 等倍から最大値までのランダムな数値を掛ける
-	int random = Math::Rand(1.0f, THROW_SPEED_RANDOM_MAX);
-	mThrowSpeed = THROW_SPEED * random;
+	mThrowSpeed = THROW_SPEED;
 }
 
 // ゴミ袋を投げる速度を取得する

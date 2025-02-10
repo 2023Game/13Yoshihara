@@ -4,6 +4,8 @@
 #include "CInput.h"
 #include "CDeliveryItem.h"
 #include "CDeliveryField.h"
+#include "CDeliveryHpUI2D.h"
+#include "CDeliveryEnemy.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
@@ -46,6 +48,8 @@ CDeliveryPlayer::CDeliveryPlayer()
 	, mTargetPos(CVector::zero)
 	, mDeliveryNum(0)
 	, mDestroyEnemyNum(0)
+	, mShotNum(0)
+	, mHitNum(0)
 {
 	// 移動状態
 	ChangeState(EState::eMove);
@@ -57,6 +61,11 @@ CDeliveryPlayer::CDeliveryPlayer()
 	mIsGravity = false;
 	mpModel = CResourceManager::Get<CModel>("DeliveryPlayer");
 
+	// HpUIを生成
+	mpHpUI = new CDeliveryHpUI2D(this);
+	// 現在のHPを設定
+	mpHpUI->SetCurrPoint(GetHp());
+
 	// コライダ―を生成
 	CreateCol();
 }
@@ -64,17 +73,22 @@ CDeliveryPlayer::CDeliveryPlayer()
 // デストラクタ
 CDeliveryPlayer::~CDeliveryPlayer()
 {
+	// HpUIが存在したら、一緒に削除する
+	if (mpHpUI != nullptr)
+	{
+		mpHpUI->SetOwner(nullptr);
+		mpHpUI->Kill();
+	}
 }
 
-// ダメージを受ける
-void CDeliveryPlayer::TakeDamage(int damage, CObjectBase* causer)
+// オブジェクト削除処理
+void CDeliveryPlayer::DeleteObject(CObjectBase* obj)
 {
-	// ダメージを受けている時は処理しない
-	if (IsDamaging()) return;
-	// ダメージを受けている
-	mIsDamage = true;
-	// ダメージを受ける
-	CCharaStatusBase::TakeDamage(damage, causer);
+	CPlayerBase::DeleteObject(obj);
+	if (obj == mpHpUI)
+	{
+		mpHpUI = nullptr;
+	}
 }
 
 // 更新
@@ -96,9 +110,13 @@ void CDeliveryPlayer::Update()
 	// 基底クラスの更新
 	CPlayerBase::Update();
 
+	// 現在のHPを設定
+	mpHpUI->SetCurrPoint(GetHp());
+
 #if _DEBUG
 	CDebugPrint::Print("PlayerState：%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("PlayerHP：%d\n", GetHp());
+	CDebugPrint::Print("PlayerTargetPos：%f,%f,%f\n", mTargetPos.X(), mTargetPos.Y(), mTargetPos.Z());
 #endif
 }
 
@@ -107,36 +125,27 @@ void CDeliveryPlayer::Collision(CCollider* self, CCollider* other, const CHitInf
 {
 	// 基底クラスの衝突処理
 	CPlayerBase::Collision(self, other, hit);
+	// 本体コライダ―
+	if (self == mpBodyCol)
+	{
+		// 敵の場合
+		if (other->Layer() == ELayer::eEnemy)
+		{
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			Position(Position() + adjust * hit.weight);
+			
+			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
+			enemy->TakeDamage(GetAttackPower(), this);
+		}
+	}
 }
 
 // 描画
 void CDeliveryPlayer::Render()
 {
 	mpModel->Render(Matrix());
-}
-
-// 配達した数を1増やす
-void CDeliveryPlayer::IncreaseDeliveryNum()
-{
-	mDeliveryNum++;
-}
-
-// 配達した数を取得する
-int CDeliveryPlayer::GetDeliveryNum() const
-{
-	return mDeliveryNum;
-}
-
-// 壊したトラックの数を1増やす
-void CDeliveryPlayer::IncreaseDestroyEnemyNum()
-{
-	mDestroyEnemyNum++;
-}
-
-// 壊したトラックの数を取得する
-int CDeliveryPlayer::GetDestroyEnemyNum() const
-{
-	return mDestroyEnemyNum;
 }
 
 // 状態切り替え
@@ -186,9 +195,26 @@ std::string CDeliveryPlayer::GetStateStr(EState state) const
 // 移動の更新処理
 void CDeliveryPlayer::UpdateMove()
 {
+	float targetPosX = 0.0f;
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		targetPosX = ROAD_LEFT1_POSX;
+		break;
+	case ERoadType::eLeft2:
+		targetPosX = ROAD_LEFT2_POSX;
+		break;
+	case ERoadType::eRight1:
+		targetPosX = ROAD_RIGHT1_POSX;
+		break;
+	case ERoadType::eRight2:
+		targetPosX = ROAD_RIGHT2_POSX;
+		break;
+	}
 	// 使用しないので
 	// 目的地を自分に設定しておく
-	mTargetPos = Position();
+	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
+	Position(mTargetPos);
 
 	mMoveSpeed = CVector::zero;
 	CVector forward = CVector::Slerp(VectorZ(), CVector::back, 0.125f);
@@ -201,6 +227,7 @@ void CDeliveryPlayer::UpdateMove()
 	// 移動がプラス方向なら
 	if (move.Z() > 0.0f)
 	{
+		// プラス方向の範囲外なら
 		if (Position().Z() >= ROAD_Z_AREA_P)
 		{
 			// Z座標を範囲に設定して
@@ -241,6 +268,8 @@ void CDeliveryPlayer::UpdateChangeRoad()
 	if (Position().X() <= mTargetPos.X() + CHANGE_ROAD_THRESHOLD &&
 		Position().X() >= mTargetPos.X() - CHANGE_ROAD_THRESHOLD)
 	{
+		// 目的地の車道のタイプに変更
+		mRoadType = mTargetRoadType;
 		// 移動状態へ
 		ChangeState(EState::eMove);
 		return;
@@ -310,17 +339,13 @@ bool CDeliveryPlayer::MoveTo(const CVector& targetPos, float speed, float rotate
 // アクションのキー入力
 void CDeliveryPlayer::ActionInput()
 {
-	if (CInput::PushKey('1'))
-	{
-		TakeDamage(1, nullptr);
-	}
 	// Aキーで、左へ移動
 	if (CInput::PushKey('A'))
 	{
 		// 一番左の車道なら処理しない
-		if (mTargetPos.X() <= -ROAD_X_AREA + 30.0f) return;
+		if (mTargetPos.X() <= ROAD_LEFT1_POSX + 30.0f) return;
 		// 目的地を設定
-		mTargetPos = mTargetPos + CHANGE_ROAD_OFFSET_POS_L;
+		mTargetPos = GetTargetPos(true);
 		// 車線変更状態へ
 		ChangeState(EState::eChangeRoad);
 		return;
@@ -329,61 +354,72 @@ void CDeliveryPlayer::ActionInput()
 	else if (CInput::PushKey('D'))
 	{
 		// 一番右の車道なら処理しない
-		if (mTargetPos.X() >= ROAD_X_AREA - 30.0f) return;
+		if (mTargetPos.X() >= ROAD_RIGHT1_POSX - 30.0f) return;
 		// 目的地を設定
-		mTargetPos = mTargetPos + CHANGE_ROAD_OFFSET_POS_R;
+		mTargetPos = GetTargetPos(false);
 		// 車線変更状態へ
 		ChangeState(EState::eChangeRoad);
 		return;
 	}
 
-	//// 車線変更中は射撃できない
-	//if (mState == EState::eChangeRoad) return;
-
 	// 左クリックで、左方向へ射撃
 	if (CInput::PushKey(VK_LBUTTON))
 	{
-		// 配達物を生成
-		CDeliveryItem* item = new CDeliveryItem(this);
-		// 座標を設定
-		item->Position(Position() + BULLET_OFFSET_POS_L);
-		// 回転を設定
-		item->Rotation(BULLET_ROT_LR);
-		// 移動速度
-		float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
-		// 移動を設定
-		item->SetMoveSpeed(-VectorX() * moveSpeedX);
+		// Hpが1以上ある場合
+		if (GetHp() >= 1)
+		{
+			// 配達物を生成
+			CDeliveryItem* item = new CDeliveryItem(this);
+			// 座標を設定
+			item->Position(Position() + BULLET_OFFSET_POS_L);
+			// 回転を設定
+			item->Rotation(BULLET_ROT_LR);
+			// 移動速度
+			float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
+			// 移動を設定
+			item->SetMoveSpeed(-VectorX() * moveSpeedX);
+
+			// Hpを減らす
+			TakeDamage(1, nullptr, true);
+		}
 	}
 	// 右クリックで、右方向へ射撃
 	if (CInput::PushKey(VK_RBUTTON))
 	{
-		// 配達物を生成
-		CDeliveryItem* item = new CDeliveryItem(this);
-		// 座標を設定
-		item->Position(Position() + BULLET_OFFSET_POS_R);
-		// 回転を設定
-		item->Rotation(BULLET_ROT_LR);
-		// 移動速度
-		float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
-		// 移動を設定
-		item->SetMoveSpeed(VectorX() * moveSpeedX);
+		// Hpが1以上ある場合
+		if (GetHp() >= 1)
+		{
+			// 配達物を生成
+			CDeliveryItem* item = new CDeliveryItem(this);
+			// 座標を設定
+			item->Position(Position() + BULLET_OFFSET_POS_R);
+			// 回転を設定
+			item->Rotation(BULLET_ROT_LR);
+			// 移動速度
+			float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
+			// 移動を設定
+			item->SetMoveSpeed(VectorX() * moveSpeedX);
+
+			// Hpを減らす
+			TakeDamage(1, nullptr, true);
+		}
 	}
 	// スペースキーで、後方へ射撃
 	if (CInput::PushKey(VK_SPACE))
 	{
-		// 配達物1を生成
-		CDeliveryItem* item1 = new CDeliveryItem(this);
-		// 座標を設定
-		item1->Position(Position() + BULLET_OFFSET_POS_B1);
-		// 移動を設定
-		item1->SetMoveSpeed(-VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime());
+		// Hpが1以上ある場合
+		if (GetHp() >= 1)
+		{
+			// 配達物1を生成
+			CDeliveryItem* item1 = new CDeliveryItem(this);
+			// 座標を設定
+			item1->Position(Position() + BULLET_OFFSET_POS_B1);
+			// 移動を設定
+			item1->SetMoveSpeed(-VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime());
 
-		// 配達物2を生成
-		CDeliveryItem* item2 = new CDeliveryItem(this);
-		// 座標を設定
-		item2->Position(Position() + BULLET_OFFSET_POS_B2);
-		// 移動を設定
-		item2->SetMoveSpeed(-VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime());
+			// Hpを減らす
+			TakeDamage(1, nullptr, true);
+		}
 	}
 }
 
@@ -415,4 +451,158 @@ void CDeliveryPlayer::HitFlash()
 		mHitFlashTime += Times::DeltaTime();
 		mInvincibleTime += Times::DeltaTime();
 	}
+}
+
+// 車線変更先の座標を求める
+CVector CDeliveryPlayer::GetTargetPos(bool isLeft)
+{
+	CVector targetPos = Position();
+	targetPos.X(0.0f);
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT1_POSX);
+			mTargetRoadType = ERoadType::eLeft1;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_LEFT2_POSX);
+			mTargetRoadType = ERoadType::eLeft2;
+		}
+		break;
+	case ERoadType::eLeft2:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT1_POSX);
+			mTargetRoadType = ERoadType::eLeft1;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT2_POSX);
+			mTargetRoadType = ERoadType::eRight2;
+		}
+		break;
+	case ERoadType::eRight1:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_RIGHT2_POSX);
+			mTargetRoadType = ERoadType::eRight2;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT1_POSX);
+			mTargetRoadType = ERoadType::eRight1;
+		}
+		break;
+	case ERoadType::eRight2:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT2_POSX);
+			mTargetRoadType = ERoadType::eLeft2;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT1_POSX);
+			mTargetRoadType = ERoadType::eRight1;
+		}
+		break;
+	}
+	return targetPos;
+}
+
+// 配達した数を1増やす
+void CDeliveryPlayer::IncreaseDeliveryNum()
+{
+	mDeliveryNum++;
+}
+
+// 配達した数を取得する
+int CDeliveryPlayer::GetDeliveryNum() const
+{
+	return mDeliveryNum;
+}
+
+// 壊したトラックの数を1増やす
+void CDeliveryPlayer::IncreaseDestroyEnemyNum()
+{
+	mDestroyEnemyNum++;
+}
+
+// 壊したトラックの数を取得する
+int CDeliveryPlayer::GetDestroyEnemyNum() const
+{
+	return mDestroyEnemyNum;
+}
+
+// 発射した数を1増やす
+void CDeliveryPlayer::IncreaseShotNum()
+{
+	mShotNum++;
+}
+
+// 発射した数を取得する
+int CDeliveryPlayer::GetShotNum() const
+{
+	return mShotNum;
+}
+
+// 当たった数を1増やす
+void CDeliveryPlayer::IncreaseHitNum()
+{
+	mHitNum++;
+}
+
+// 当たった数を取得する
+int CDeliveryPlayer::GetHitNum() const
+{
+	return mHitNum;
+}
+
+// 現在の車道を設定
+void CDeliveryPlayer::SetRoadType(ERoadType roadType)
+{
+	mRoadType = roadType;
+}
+
+// 現在の車道を取得
+ERoadType CDeliveryPlayer::GetRoadType() const
+{
+	return mRoadType;
+}
+
+// ダメージを受ける
+void CDeliveryPlayer::TakeDamage(int damage, CObjectBase* causer, bool isShot)
+{
+	// ダメージを受けている時はダメージを受けない
+	if (IsDamaging()) return;
+
+	// 死亡状態なら、ダメージを受けない
+	if (mState == EState::eDeath) return;
+
+	// 自分の射撃による減少ではない場合
+	if (!isShot)
+	{
+		// ダメージを受けている
+		mIsDamage = true;
+	}
+
+	// Hpが0の時攻撃を受けたら死亡
+	if (GetHp() == 0)
+	{
+		Death();
+		return;
+	}
+
+	// Hpをダメージ分減らす
+	SetHp(-damage);
 }

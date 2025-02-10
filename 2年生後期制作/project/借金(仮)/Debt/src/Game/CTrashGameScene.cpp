@@ -8,7 +8,7 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CResidentManager.h"
 #include "CNavManager.h"
 #include "CTimeUI.h"
@@ -109,7 +109,7 @@ void CTrashGameScene::Load()
 
 	// 車両の管理クラス作成
 	mpVehicleMgr =
-		new CVehicleManager();
+		new CTrashVehicleManager();
 
 	// 住人の管理クラス作成
 	mpResidentMgr =

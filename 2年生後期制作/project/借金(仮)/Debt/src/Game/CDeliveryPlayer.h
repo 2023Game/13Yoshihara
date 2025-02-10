@@ -1,6 +1,9 @@
 #pragma once
 #include "CPlayerBase.h"
 #include "CDeliveryPlayerStatus.h"
+#include "RoadType.h"
+
+class CDeliveryHpUI2D;
 
 /*
 配達ゲームのプレイヤークラス
@@ -13,12 +16,16 @@ public:
 	// デストラクタ
 	~CDeliveryPlayer();
 
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
+
 	/// <summary>
 	/// ダメージを受ける
 	/// </summary>
 	/// <param name="damage">受けるダメージ</param>
 	/// <param name="causer">攻撃してきた相手</param>
-	void TakeDamage(int damage, CObjectBase* causer) override;
+	/// <param name="causer">自分の射撃による減少か</param>
+	void TakeDamage(int damage, CObjectBase* causer, bool isShot = false);
 
 	// 更新
 	void Update();
@@ -42,6 +49,20 @@ public:
 	void IncreaseDestroyEnemyNum();
 	// 壊したトラックの数を取得する
 	int GetDestroyEnemyNum() const;
+	// 発射した数を1増やす
+	void IncreaseShotNum();
+	// 発射した数を取得する
+	int GetShotNum() const;
+	// 当たった数を1増やす
+	void IncreaseHitNum();
+	// 当たった数を取得する
+	int GetHitNum() const;
+
+	// 現在の車道を設定
+	void SetRoadType(ERoadType roadType);
+	// 現在の車道を取得
+	ERoadType GetRoadType() const;
+
 
 private:
 	// 状態
@@ -83,12 +104,30 @@ private:
 
 	// 3dモデル
 	CModel* mpModel;
+	// HpUI
+	CDeliveryHpUI2D* mpHpUI;
 
 	// 車線変更の目的地
 	CVector mTargetPos;
+	// 目的地の車道の種類
+	ERoadType mTargetRoadType;
+
+	// 現在の車道
+	ERoadType mRoadType;
+	
+	/// <summary>
+	/// 車線変更先の座標を求める
+	/// </summary>
+	/// <param name="isLeft">左か</param>
+	/// <returns></returns>
+	CVector GetTargetPos(bool isLeft);
 
 	// 配達した数
 	int mDeliveryNum;
 	// 敵を破壊した数
 	int mDestroyEnemyNum;
+	// 発射した数
+	int mShotNum;
+	// 当たった数
+	int mHitNum;
 };

@@ -1,7 +1,7 @@
-#include "CVehicleBase.h"
+#include "CTrashVehicleBase.h"
 #include "CModel.h"
 #include "CColliderCapsule.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "Maths.h"
@@ -19,7 +19,7 @@
 #define FLAME_MOVE_SPEED 35.0f
 
 // コンストラクタ
-CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
+CTrashVehicleBase::CTrashVehicleBase(CModel* model, const CVector& pos, const CVector& rotation,
 	ERoadType road, std::vector<CNavNode*> patrolPoints)
 	: CCharaBase(ETag::eVehicle, ETaskPriority::eVehicle)
 	, mpModel(model)
@@ -84,7 +84,7 @@ CVehicleBase::CVehicleBase(CModel* model, const CVector& pos, const CVector& rot
 }
 
 // デストラクタ
-CVehicleBase::~CVehicleBase()
+CTrashVehicleBase::~CTrashVehicleBase()
 {
 	// コライダ―の削除
 	SAFE_DELETE(mpBodyCol);
@@ -93,7 +93,7 @@ CVehicleBase::~CVehicleBase()
 }
 
 // 更新
-void CVehicleBase::Update()
+void CTrashVehicleBase::Update()
 {
 	CVector moveSpeed = mMoveSpeed;
 
@@ -104,48 +104,48 @@ void CVehicleBase::Update()
 }
 
 // 衝突処理
-void CVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CTrashVehicleBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 }
 
 // 描画
-void CVehicleBase::Render()
+void CTrashVehicleBase::Render()
 {
 	mpModel->Render(Matrix());
 }
 
 // 移動中かどうか
-bool CVehicleBase::IsMove() const
+bool CTrashVehicleBase::IsMove() const
 {
 	return mIsMove;
 }
 
 // 最後の巡回ポイントまでの移動が終了したかどうか
-bool CVehicleBase::GetMoveEnd() const
+bool CTrashVehicleBase::GetMoveEnd() const
 {
 	return mIsMoveEnd;
 }
 
 // 壊れているか
-bool CVehicleBase::IsBroken() const
+bool CTrashVehicleBase::IsBroken() const
 {
 	return mIsBroken;
 }
 
 // 前方に停止している車両がいるかどうか
-bool CVehicleBase::GetIsFrontVehicle() const
+bool CTrashVehicleBase::GetIsFrontVehicle() const
 {
 	return mIsFrontVehicle;
 }
 
 // 車線を変更する
-void CVehicleBase::ChangeRoad(bool& isEnd)
+void CTrashVehicleBase::ChangeRoad(bool& isEnd)
 {
 
 }
 
 // どの道にいる状態かを変更する
-void CVehicleBase::ChangeRoadType(ERoadType roadType)
+void CTrashVehicleBase::ChangeRoadType(ERoadType roadType)
 {
 	// 同じなら処理しない
 	if (roadType == mRoadType) return;
@@ -166,25 +166,25 @@ void CVehicleBase::ChangeRoadType(ERoadType roadType)
 }
 
 // 今どの道にいるか取得する
-CVehicleBase::ERoadType CVehicleBase::GetRoadType() const
+ERoadType CTrashVehicleBase::GetRoadType() const
 {
 	return mRoadType;
 }
 
 // 本体コライダ―を取得する
-CCollider* CVehicleBase::GetBodyCol() const
+CCollider* CTrashVehicleBase::GetBodyCol() const
 {
 	return mpBodyCol;
 }
 
 // 巡回ポイントのリストを設定する
-void CVehicleBase::SetPatrolPoints(std::vector<CNavNode*> patrolPoints)
+void CTrashVehicleBase::SetPatrolPoints(std::vector<CNavNode*> patrolPoints)
 {
 	mpPatrolPoints = patrolPoints;
 }
 
 // 車両の有効無効を切り替える
-void CVehicleBase::SetOnOff(bool isOnOff)
+void CTrashVehicleBase::SetOnOff(bool isOnOff)
 {
 	// 有効無効を設定
 	SetEnable(isOnOff);
@@ -194,7 +194,7 @@ void CVehicleBase::SetOnOff(bool isOnOff)
 }
 
 // 変数をリセット
-void CVehicleBase::Reset()
+void CTrashVehicleBase::Reset()
 {
 	mNextPatrolIndex = -1;
 	mIsMoveEnd = false;
@@ -207,7 +207,7 @@ void CVehicleBase::Reset()
 }
 
 // 指定した位置まで移動する
-bool CVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpeed)
+bool CTrashVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpeed)
 {
 	// 目的地までのベクトルを求める
 	CVector pos = Position();
@@ -247,7 +247,7 @@ bool CVehicleBase::MoveTo(const CVector& targetPos, float speed, float rotateSpe
 }
 
 // 次に巡回するポイントを変更
-void CVehicleBase::ChangePatrolPoint()
+void CTrashVehicleBase::ChangePatrolPoint()
 {
 	// 巡回ポイントが設定されていない場合は、処理しない
 	int size = mpPatrolPoints.size();
@@ -297,10 +297,10 @@ void CVehicleBase::ChangePatrolPoint()
 }
 
 // 車線変更で移動するノードの座標を設定する
-void CVehicleBase::SetChangeRoadPoint(CVehicleBase* frontVehicle)
+void CTrashVehicleBase::SetChangeRoadPoint(CTrashVehicleBase* frontVehicle)
 {
 	// 前の車の座標
-	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 	if (vehicleMgr == nullptr) return;
 	CVector frontVehiclePos = frontVehicle->Position();
 	CVector pos;

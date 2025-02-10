@@ -1,7 +1,7 @@
 #include "CTrashField.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CSky.h"
 
 #define SKY_POS			CVector(0.0f,0.0f,0.0f)

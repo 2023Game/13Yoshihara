@@ -1,7 +1,7 @@
 #pragma once
 #include "CFieldBase.h"
 
-class CVehicleBase;
+class CTrashVehicleBase;
 
 #define ROAD_X_AREA 87.5f	// ŽÔ“¹‚ÌX‚Ì”ÍˆÍ
 #define ROAD_Z_AREA 200.0f	// ŽÔ“¹‚ÌZ‚Ì”ÍˆÍ

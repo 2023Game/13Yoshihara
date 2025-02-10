@@ -14,8 +14,8 @@
 // 説明テキストの内容
 #define TRASH_TRUE_TEXT		"ゴミ拾いを選択する\n（解放済）\n"
 #define TRASH_FALSE_TEXT	"ゴミ拾いを選択する\n（未解放）\n"
-#define DELIVERY_TRUE_TEXT	"配達を選択する\n（解放済）（未実装）\n"
-#define DELIVERY_FALSE_TEXT	"配達を選択する\n（未解放）（未実装）\n"
+#define DELIVERY_TRUE_TEXT	"配達を選択する\n（解放済）\n"
+#define DELIVERY_FALSE_TEXT	"配達を選択する\n（未解放）\n"
 
 // コンストラクタ
 CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)

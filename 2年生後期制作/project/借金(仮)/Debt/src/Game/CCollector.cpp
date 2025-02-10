@@ -6,14 +6,14 @@
 #include "Primitive.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "Maths.h"
 #include "CTrashPlayer.h"
 #include "CTrashBag.h"
 
 // 衝突相手の車両クラスを取得するための
 // 車両のクラスのインクルード
-#include "CCar.h"
+#include "CTrashCar.h"
 #include "CGarbageTruck.h"
 
 // コライダのインクルード
@@ -194,12 +194,6 @@ void CCollector::Update()
 		mpTrashBag->UpdateMtx();
 	}
 
-	// もしもコライダ―オフの時に床をすり抜けたときの保険
-	if (Position().Y() < 0.0f)
-	{
-		Position(Position().X(), 0.0f, Position().Z());
-	}
-
 #if _DEBUG
 	// 現在の状態に合わせて視野範囲の色を変更
 	mpDebugFov->SetColor(GetStateColor(mState));
@@ -335,7 +329,7 @@ void CCollector::Render()
 
 	CPlayerBase* player = CPlayerBase::Instance();
 	CFieldBase* field = CFieldBase::Instance();
-	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 	if (player != nullptr && field != nullptr)
 	{
 		CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
@@ -411,7 +405,7 @@ void CCollector::SetOnOff(bool setOnOff)
 	else
 	{
 		// Hpをリセットする
-		SetHp();
+		ResetHp();
 		// ゴミ袋を持っているかをリセット
 		SetHaveBag(false);
 		ChangeState(EState::eIdle);
@@ -934,8 +928,6 @@ void CCollector::UpdateAttackTrue()
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
-			// 衝突判定をオン
-			SetEnableCol(true);
 			// 重力を掛ける
 			mIsGravity = true;
 			// 攻撃終了状態へ
@@ -1142,6 +1134,8 @@ void CCollector::AttackEnd()
 	// ベースクラスの攻撃終了処理を呼び出し
 	CXCharacter::AttackEnd();
 
+	// 衝突判定をオン
+	SetEnableCol(true);
 	// 攻撃中でない
 	mIsAttacking = false;
 	// 重力を掛ける

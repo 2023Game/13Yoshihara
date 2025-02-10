@@ -1,7 +1,7 @@
 #pragma once
 #include "CCharaBase.h"
 #include "CGarbageTruckStatus.h"
-#include "CVehicleBase.h"
+#include "CTrashVehicleBase.h"
 #include "CGarbageTruckStatus.h"
 
 class CModel;
@@ -11,7 +11,7 @@ class CGaugeUI3D;
 // ゴミ収集車のクラス
 // 車のクラスを継承
 // ゴミ収集車のステータスを継承
-class CGarbageTruck : public CVehicleBase , public CGarbageTruckStatus
+class CGarbageTruck : public CTrashVehicleBase, public CGarbageTruckStatus
 {
 public:
 	/// <summary>

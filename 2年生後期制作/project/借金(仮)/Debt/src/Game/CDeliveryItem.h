@@ -1,10 +1,11 @@
 #pragma once
 #include "CObjectBase.h"
+#include "CDeliveryItemStatus.h"
 
 class CModel;
 class CSound;
 
-class CDeliveryItem : public CObjectBase
+class CDeliveryItem : public CObjectBase, public CDeliveryItemStatus
 {
 public:
 	// コンストラクタ
@@ -49,4 +50,6 @@ private:
 	bool mIsMove;
 	// 経過時間
 	float mElapsedTime;
+	// 持ち主がプレイヤーか
+	bool mIsPlayer;
 };

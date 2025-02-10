@@ -1,6 +1,7 @@
 #include "CDeliveryEnemy.h"
 #include "CModel.h"
 #include "CColliderCapsule.h"
+#include "CDeliveryPlayer.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
@@ -68,14 +69,30 @@ CDeliveryEnemy::~CDeliveryEnemy()
 }
 
 // ダメージを受ける
-void CDeliveryEnemy::TakeDamage(int damage, CObjectBase* causer)
+void CDeliveryEnemy::TakeDamage(int damage, CObjectBase* causer, bool isShot)
 {
 	// ダメージを受けている時は処理しない
 	if (IsDamaging()) return;
-	// ダメージを受けている
-	mIsDamage = true;
-	// ダメージを受ける
-	CCharaStatusBase::TakeDamage(damage, causer);
+
+	// 死亡状態なら、ダメージを受けない
+	if (mState == EState::eDeath) return;
+
+	// 自分の射撃による減少ではない場合
+	if (!isShot)
+	{
+		// ダメージを受けている
+		mIsDamage = true;
+	}
+
+	// Hpが0の時攻撃を受けたら死亡
+	if (GetHp() == 0)
+	{
+		Death();
+		return;
+	}
+
+	// Hpをダメージ分減らす
+	SetHp(-damage);
 }
 
 // 更新
@@ -104,12 +121,35 @@ void CDeliveryEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo
 {
 	// 基底クラスの衝突処理
 	CEnemyBase::Collision(self, other, hit);
+	// 本体コライダ―
+	if (self == mpBodyCol)
+	{
+		// プレイヤーの場合
+		if (other->Layer() == ELayer::ePlayer)
+		{
+			CVector adjust = hit.adjust;
+			adjust.Y(0.0f);
+
+			Position(Position() + adjust * hit.weight);
+
+			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
+			player->TakeDamage(GetAttackPower(), this);
+		}
+	}
 }
 
 // 描画
 void CDeliveryEnemy::Render()
 {
 	mpModel->Render(Matrix());
+}
+
+// 有効無効を切り替える
+void CDeliveryEnemy::SetOnOff(bool setOnOff)
+{
+	// 有効無効を設定
+	SetEnable(setOnOff);
+	SetShow(setOnOff);
 }
 
 // 状態切り替え
@@ -162,18 +202,22 @@ void CDeliveryEnemy::UpdateChangeRoad()
 // 死亡の更新処理
 void CDeliveryEnemy::UpdateDeath()
 {
-	mMoveSpeed = -VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime();
+	float moveSpeed = GetBaseMoveSpeed() * 0.2f * Times::DeltaTime();
+	mMoveSpeed = -VectorZ() * moveSpeed;
 	if (Position().Z() > DELETE_POSZ)
 	{
 		// 無効
-		SetEnable(false);
-		SetShow(false);
+		SetOnOff(false);
 	}
 }
 
 // 死亡
 void CDeliveryEnemy::Death()
 {
+	// 壊した敵の数を増やす
+	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());
+	player->IncreaseDestroyEnemyNum();
+	// 攻撃を受けていない
 	mIsDamage = false;
 	// 死亡状態へ
 	ChangeState(EState::eDeath);

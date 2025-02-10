@@ -1,11 +1,11 @@
-#include "CCar.h"
+#include "CTrashCar.h"
 #include "CColliderCapsule.h"
 #include "CModel.h"
 #include "CNavNode.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
 #include "Primitive.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CFlamethrower.h"
 #include "CSound.h"
 
@@ -28,9 +28,9 @@
 // 効果音の音量
 #define SE_VOLUME 0.5f
 
-CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation, 
+CTrashCar::CTrashCar(CModel* model, const CVector& pos, const CVector& rotation, 
 	ERoadType road, std::vector<CNavNode*> patrolPoints)
-	: CVehicleBase(model, pos, rotation, road, patrolPoints)
+	: CTrashVehicleBase(model, pos, rotation, road, patrolPoints)
 	, CVehicleStatus()
 	, mState(EState::eMove)
 	, mStateStep(0)
@@ -90,20 +90,20 @@ CCar::CCar(CModel* model, const CVector& pos, const CVector& rotation,
 	mpSideCol->SetCollisionLayers({ ELayer::eVehicle });
 }
 
-CCar::~CCar()
+CTrashCar::~CTrashCar()
 {
 
 }
 
 // ダメージを受ける
-void CCar::TakeDamage(int damage, CObjectBase* causer)
+void CTrashCar::TakeDamage(int damage, CObjectBase* causer)
 {
 	// ダメージを受ける
 	CCharaStatusBase::TakeDamage(damage, causer);
 }
 
 // クリティカルダメージを受ける
-void CCar::TakeCritical(int damage, CObjectBase* causer)
+void CTrashCar::TakeCritical(int damage, CObjectBase* causer)
 {
 	// 攻撃力の2倍のダメージ
 	int criticalDamage = damage * 2;
@@ -111,7 +111,7 @@ void CCar::TakeCritical(int damage, CObjectBase* causer)
 	CCharaStatusBase::TakeDamage(criticalDamage, causer);
 }
 
-void CCar::Update()
+void CTrashCar::Update()
 {
 	switch (mState)
 	{
@@ -125,7 +125,7 @@ void CCar::Update()
 	case EState::eChangeRoad:	UpdateChangeRoad(); break;
 	}
 
-	CVehicleBase::Update();
+	CTrashVehicleBase::Update();
 
 	// 移動しているもしくは、自身が有効でない場合
 	if (mIsMove || !IsEnable())
@@ -157,9 +157,9 @@ void CCar::Update()
 }
 
 // 衝突処理
-void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CTrashCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	CVehicleBase::Collision(self, other, hit);
+	CTrashVehicleBase::Collision(self, other, hit);
 
 	// 本体コライダ―
 	if (self == mpBodyCol)
@@ -260,7 +260,7 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		if (other->Layer() == ELayer::eVehicle)
 		{
 			// 車両クラスを取得
-			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			CTrashVehicleBase* vehicle = dynamic_cast<CTrashVehicleBase*>(other->Owner());
 
 			// 相手と自分の座標の距離を求める
 			float dist = CVector::Distance(vehicle->Position(), Position());
@@ -317,9 +317,9 @@ void CCar::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 }
 
 // 描画
-void CCar::Render()
+void CTrashCar::Render()
 {
-	CVehicleBase::Render();
+	CTrashVehicleBase::Render();
 #if _DEBUG
 	// 移動状態であれば
 	if (mState == EState::eMove)
@@ -376,12 +376,12 @@ void CCar::Render()
 }
 
 // 変数をリセット
-void CCar::Reset()
+void CTrashCar::Reset()
 {
-	CVehicleBase::Reset();
+	CTrashVehicleBase::Reset();
 
 	// Hpをリセット
-	SetHp();
+	ResetHp();
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
 
@@ -389,7 +389,7 @@ void CCar::Reset()
 }
 
 // 移動処理
-void CCar::UpdateMove()
+void CTrashCar::UpdateMove()
 {
 	// 動いている
 	mIsMove = true;
@@ -434,7 +434,7 @@ void CCar::UpdateMove()
 }
 
 // 停止処理
-void CCar::UpdateStop()
+void CTrashCar::UpdateStop()
 {
 	switch (mStateStep)
 	{
@@ -460,7 +460,7 @@ void CCar::UpdateStop()
 }
 
 // 壊れた処理
-void CCar::UpdateBroken()
+void CTrashCar::UpdateBroken()
 {
 	switch (mStateStep)
 	{
@@ -502,7 +502,7 @@ void CCar::UpdateBroken()
 }
 
 // 車線変更処理
-void CCar::UpdateChangeRoad()
+void CTrashCar::UpdateChangeRoad()
 {
 	switch (mStateStep)
 	{
@@ -517,7 +517,7 @@ void CCar::UpdateChangeRoad()
 		// 移動が終わったら
 		if (MoveTo(mpChangeRoadPoint->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
-			CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+			CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 			if (vehicleMgr == nullptr) return;
 
 			/*
@@ -563,14 +563,14 @@ void CCar::UpdateChangeRoad()
 }
 
 // 死亡(壊れた)
-void CCar::Death()
+void CTrashCar::Death()
 {
 	// 壊れた状態へ
 	ChangeState(EState::eBroken);
 }
 
 // 状態切り替え
-void CCar::ChangeState(EState state)
+void CTrashCar::ChangeState(EState state)
 {
 	// 同じなら処理しない
 	if (state == mState) return;
@@ -596,7 +596,7 @@ void CCar::ChangeState(EState state)
 
 #if _DEBUG
 // 状態の文字列を取得
-std::string CCar::GetStateStr(EState state) const
+std::string CTrashCar::GetStateStr(EState state) const
 {
 	switch (state)
 	{

@@ -1,18 +1,18 @@
 #pragma once
-#include "CVehicleBase.h"
+#include "CTrashVehicleBase.h"
 #include "CVehicleStatus.h"
 
 class CModel;
 
 // 車のクラス
-class CCar : public CVehicleBase, public CVehicleStatus
+class CTrashCar : public CTrashVehicleBase, public CVehicleStatus
 {
 public:
 	// コンストラクタ
-	CCar(CModel* model, const CVector& pos, const CVector& rotation,
+	CTrashCar(CModel* model, const CVector& pos, const CVector& rotation,
 		ERoadType road, std::vector<CNavNode*> patrolPoints);
 	// デストラクタ
-	~CCar();
+	~CTrashCar();
 
 	/// <summary>
 	/// ダメージを受ける

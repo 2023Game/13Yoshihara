@@ -1,9 +1,9 @@
 #pragma once
 #include "CModel.h"
 #include "CColliderMesh.h"
-#include "CVehicleBase.h"
+#include "RoadType.h"
 
-class CCar;
+class CTrashCar;
 class CGarbageTruck;
 class CPunisherTruck;
 class CNavNode;
@@ -19,15 +19,15 @@ class CNavNode;
 #define VEHICLE_RIGHT_ROTATION CVector(0.0f, 90.0f,0.0f)	// 左方向
 
 // 車両管理クラス
-class CVehicleManager
+class CTrashVehicleManager
 {
 public:
 	// 車両管理クラスのインスタンスを取得
-	static CVehicleManager* Instance();
+	static CTrashVehicleManager* Instance();
 	// コンストラクタ
-	CVehicleManager();
+	CTrashVehicleManager();
 	// デストラクタ
-	~CVehicleManager();
+	~CTrashVehicleManager();
 
 	/// <summary>
 	/// レイと全ての車両との衝突判定
@@ -59,7 +59,7 @@ public:
 	/// </summary>
 	/// <param name="roadType">どの道にいるか</param>
 	/// <returns>trueならば、生成できる</returns>
-	bool IsSpawn(CVehicleBase::ERoadType roadType);
+	bool IsSpawn(ERoadType roadType);
 
 	/// <summary>
 	/// 道のX座標を取得
@@ -67,7 +67,7 @@ public:
 	/// <param name="road">道の指定
 	/// </param>
 	/// <returns></returns>
-	float GetRoadPosX(CVehicleBase::ERoadType road);
+	float GetRoadPosX(ERoadType road);
 
 	/// <summary>
 	/// 指定した道の巡回ポイントを取得
@@ -75,7 +75,7 @@ public:
 	/// <param name="road">道の指定
 	/// </param>
 	/// <returns></returns>
-	std::vector<CNavNode*> GetPatrolPoints(CVehicleBase::ERoadType road);
+	std::vector<CNavNode*> GetPatrolPoints(ERoadType road);
 
 	// お仕置き用のトラックが生成されているか
 	bool GetPopPunisherTruck() const;
@@ -109,17 +109,17 @@ private:
 	/// <param name="roadType">どの道にいるか</param>
 	/// <param name="popPos">出現する場所</param>
 	/// <returns>trueならば、生成場所が決定</returns>
-	bool RandomDecidePopPosition(CVehicleBase::ERoadType& roadType, CVector& popPos);
+	bool RandomDecidePopPosition(ERoadType& roadType, CVector& popPos);
 
 
 	// 車両管理クラスのインスタンスへのポインタ
-	static CVehicleManager* spInstance;
+	static CTrashVehicleManager* spInstance;
 
 	CModel* mpCarModel;	// 車のモデル
 	CModel* mpGarbageTruckModel;	// 通常トラックのモデル
 	CModel* mpPunishTruckModel;		// お仕置きトラックのモデル
 
-	std::list<CCar*> mpCars;		// 車のリスト
+	std::list<CTrashCar*> mpCars;		// 車のリスト
 	CGarbageTruck* mpGarbageTruck;	// 通常トラック
 	CPunisherTruck* mpPunishTruck;	// お仕置きトラック
 

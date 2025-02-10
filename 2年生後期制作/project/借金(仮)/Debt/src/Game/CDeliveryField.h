@@ -6,10 +6,15 @@ class CDeliveryHome;
 // スケールの倍率
 #define SCALE_RATIO 1.5f
 
-#define ROAD_X_AREA 90.0f		// 端の車道のX
 // 車道のZの範囲
 #define ROAD_Z_AREA_P  170.0f	// プラス方向
 #define ROAD_Z_AREA_M -300.0f	// マイナス方向
+
+// 車道のX座標
+#define ROAD_LEFT1_POSX	-90.0f
+#define ROAD_LEFT2_POSX	-30.0f
+#define ROAD_RIGHT1_POSX	 90.0f
+#define ROAD_RIGHT2_POSX	 30.0f
 
 class CDeliveryField : public CFieldBase
 {

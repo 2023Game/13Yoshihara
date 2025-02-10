@@ -12,10 +12,6 @@
 // 消滅までの時間
 #define DELETE_TIME 3.0f
 
-#define DAMAGE 1
-
-#define POINT 1
-
 #define SE_VOLUME 0.5f
 
 // スケールの倍率
@@ -25,12 +21,23 @@
 CDeliveryItem::CDeliveryItem(CObjectBase* owner)
 	: CObjectBase(ETag::eBullet, ETaskPriority::eWeapon,
 		0, ETaskPauseType::eGame)
+	, CDeliveryItemStatus()
 	, mMoveSpeed(CVector::zero)
 	, mElapsedTime(0.0f)
 	, mpOwner(owner)
 	, mOwnerPos(owner->Position())
 	, mIsMove(true)
+	, mIsPlayer(false)
 {
+	// プレイヤーが持ち主なら
+	if (mpOwner == CDeliveryPlayer::Instance())
+	{
+		// 発射した数を増やす
+		CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(mpOwner);
+		player->IncreaseShotNum();
+		// プレイヤーが持ち主
+		mIsPlayer = true;
+	}
 	Scale(Scale() * SCALE_RATIO);
 	// ゴール音を取得
 	mpGoalSE = CResourceManager::Get<CSound>("GetSE");
@@ -90,22 +97,29 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		// プレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
-			// 持ち主がプレイヤーなら処理しない
+			// コライダーと自分の持ち主が同じなら処理しない
 			if (mpOwner == other->Owner()) return;
 			// プレイヤー取得
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
-			player->TakeDamage(DAMAGE, this);
+			player->TakeDamage(GetDamage(), this);
 			// 消滅
 			Kill();
 		}
 		// 敵の場合
 		else if (other->Layer() == ELayer::eEnemy)
 		{
-			// 持ち主が敵なら処理しない
+			// コライダーと自分の持ち主が同じなら処理しない
 			if (mpOwner == other->Owner()) return;
 			// 敵取得
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
-			enemy->TakeDamage(DAMAGE, this);
+				enemy->TakeDamage(GetDamage(), this);
+			// プレイヤーが持ち主なら
+			if (mIsPlayer)
+			{
+				// 当たった数を増やす
+				CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(mpOwner);
+				player->IncreaseHitNum();
+			}
 			// 消滅
 			Kill();
 		}
@@ -118,6 +132,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			{
 				// 配達した数を1増やす
 				owner->IncreaseDeliveryNum();
+				// 当たった数を増やす
+				owner->IncreaseHitNum();
 				// ゴール音を再生
 				mpGoalSE->Play(SE_VOLUME, true);
 			}

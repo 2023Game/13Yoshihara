@@ -2,20 +2,22 @@
 #include "CFont.h"
 #include <stdarg.h>
 
+#define DEFAULT_FONT_SIZE 64
+
 // コンストラクタ
 CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, pauseType, false, addTaskList)
 {
 	// タイトルロゴのフォントデータを生成
 	mpFont = new CFont(fontPath);
-	mpFont->SetFontSize(64);
+	mpFont->SetFontSize(DEFAULT_FONT_SIZE);
 	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);
 	mpFont->SetLineLength(WINDOW_WIDTH);
 
 	// 文字列描画用のクラスを生成
 	mpText = new CText
 	(
-		mpFont, 64,
+		mpFont, DEFAULT_FONT_SIZE,
 		CVector::zero,
 		CVector2(WINDOW_WIDTH,WINDOW_HEIGHT),
 		CColor(0.1f, 0.1f, 0.1f),

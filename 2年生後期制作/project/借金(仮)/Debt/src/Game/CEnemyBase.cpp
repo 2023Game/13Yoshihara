@@ -5,7 +5,7 @@
 #include "CFieldBase.h"
 #include "CNavNode.h"
 #include "CNavManager.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CGaugeUI3D.h"
 
 // 基本の重力
@@ -309,7 +309,7 @@ bool CEnemyBase::IsLookPlayer() const
 	CFieldBase* field = CFieldBase::Instance();
 	if (field == nullptr) return true;
 	// 車両管理クラスが存在しない場合は、車両がないので見える
-	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 	if (vehicleMgr == nullptr) return true;
 
 	CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);

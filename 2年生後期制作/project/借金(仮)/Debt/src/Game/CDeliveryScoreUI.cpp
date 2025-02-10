@@ -33,7 +33,7 @@ void CDeliveryScoreUI::Update()
 	CScoreUIBase::Update();
 }
 
-// スコアを取得する
+// スコアを計算して取得する
 int CDeliveryScoreUI::GetScore() const
 {
 	// プレイヤーを取得
@@ -46,4 +46,16 @@ int CDeliveryScoreUI::GetScore() const
 	int score = deliveryNum * mDeliveryItemScore;
 	score += destroyNum * mDestroyEnemyScore;
 	return score;
+}
+
+// 配達1個当たりの得点を取得
+int CDeliveryScoreUI::GetDeliveryItemScore() const
+{
+	return mDeliveryItemScore;
+}
+
+// 敵を1体壊すと貰える得点を取得
+int CDeliveryScoreUI::GetDestroyEnemyScore() const
+{
+	return mDestroyEnemyScore;
 }

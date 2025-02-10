@@ -6,7 +6,7 @@
 #include "CTrashPlayer.h"
 #include "CTrashEnemy.h"
 #include "Primitive.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "CCollector.h"
 #include "CGaugeUI3D.h"
 #include "CFlamethrower.h"
@@ -62,7 +62,7 @@
 // コンストラクタ
 CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& rotation,
 	ERoadType road, std::vector<CNavNode*> patrolPoints, bool punisher)
-	: CVehicleBase(model, pos, rotation, road, patrolPoints)
+	: CTrashVehicleBase(model, pos, rotation, road, patrolPoints)
 	, CGarbageTruckStatus(punisher)
 	, mState(EState::eMove)
 	, mStateStep(0)
@@ -227,7 +227,7 @@ void CGarbageTruck::Update()
 	case EState::eCollect:		UpdateCollect();	break;
 	}
 
-	CVehicleBase::Update();
+	CTrashVehicleBase::Update();
 
 	// HPゲージを更新
 	mpHpGauge->Position(Position() + GAUGE_OFFSET_POS);
@@ -277,7 +277,7 @@ void CGarbageTruck::Update()
 // 衝突処理
 void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	CVehicleBase::Collision(self, other, hit);
+	CTrashVehicleBase::Collision(self, other, hit);
 
 	// 本体コライダ―
 	if (self == mpBodyCol)
@@ -370,7 +370,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		if (other->Layer() == ELayer::eVehicle)
 		{
 			// 車両クラスを取得
-			CVehicleBase* vehicle = dynamic_cast<CVehicleBase*>(other->Owner());
+			CTrashVehicleBase* vehicle = dynamic_cast<CTrashVehicleBase*>(other->Owner());
 
 			// 相手と自分の座標の距離を求める
 			float dist = CVector::Distance(vehicle->Position(), Position());
@@ -452,7 +452,7 @@ void CGarbageTruck::Collision(CCollider* self, CCollider* other, const CHitInfo&
 // 描画
 void CGarbageTruck::Render()
 {
-	CVehicleBase::Render();
+	CTrashVehicleBase::Render();
 #if _DEBUG
 	// 移動状態であれば
 	if (mState == EState::eMove)
@@ -511,7 +511,7 @@ void CGarbageTruck::Render()
 // 車両の有効無効を切り替える
 void CGarbageTruck::SetOnOff(bool setOnOff)
 {
-	CVehicleBase::SetOnOff(setOnOff);
+	CTrashVehicleBase::SetOnOff(setOnOff);
 	// 有効にする場合
 	if (setOnOff)
 	{
@@ -529,7 +529,7 @@ void CGarbageTruck::SetOnOff(bool setOnOff)
 // 変数をリセット
 void CGarbageTruck::Reset()
 {
-	CVehicleBase::Reset();
+	CTrashVehicleBase::Reset();
 
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
@@ -699,7 +699,7 @@ void CGarbageTruck::UpdateChangeRoad()
 		// 移動が終わったら
 		if (MoveTo(mpChangeRoadPoint->GetPos(), GetBaseMoveSpeed(), ROTATE_SPEED))
 		{
-			CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+			CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 			if (vehicleMgr == nullptr) return;
 
 			/*

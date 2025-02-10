@@ -3,7 +3,7 @@
 #include "CInput.h"
 #include <assert.h>
 #include "CFieldBase.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "Primitive.h"
 
 CNavManager* CNavManager::spInstance = nullptr;
@@ -78,7 +78,7 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 		bool isHit = false;
 
 		CFieldBase* fieldBase = CFieldBase::Instance();
-		CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+		CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 
 		// フィールドがあるなら衝突判定をする
 		if (fieldBase != nullptr)

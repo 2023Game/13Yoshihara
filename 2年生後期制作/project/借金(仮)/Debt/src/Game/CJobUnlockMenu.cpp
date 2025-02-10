@@ -23,8 +23,6 @@ CJobUnlockMenu::CJobUnlockMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_UNLOCK_TRASH, MENU_UNLOCK_DELIVERY, MENU_CLOSE}, MENU_SELECT)
 {
 	mpPrevMenu = prevMenu;
-	// 配達は無効
-	SetMenuOnOff(1, false);
 
 	// 説明テキストの設定
 	mMenuTexts[0]->SetStr(TRASH_UNLOCK_FALSE_TEXT);

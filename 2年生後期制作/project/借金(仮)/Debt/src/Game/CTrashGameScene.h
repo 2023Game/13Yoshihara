@@ -1,7 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 class CGameMenuBase;
-class CVehicleManager;
+class CTrashVehicleManager;
 class CResidentManager;
 class CTrashEnemyManager;
 class CTimeUI;
@@ -24,7 +24,7 @@ private:
 	// ゲームメニュー
 	CGameMenuBase* mpGameMenu;
 	// 車両管理クラス
-	CVehicleManager* mpVehicleMgr;
+	CTrashVehicleManager* mpVehicleMgr;
 	// 住人管理クラス
 	CResidentManager* mpResidentMgr;
 	// ゴミ拾いの敵管理クラス

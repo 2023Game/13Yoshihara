@@ -9,7 +9,6 @@
 CTrashBagStatus::CTrashBagStatus(bool gold)
 	: mIsGold(gold)
 	, mDeleteTime(DELETE_TIME)
-
 {
 }
 

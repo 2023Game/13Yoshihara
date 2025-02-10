@@ -5,7 +5,7 @@
 #include "Primitive.h"
 #include "CNavManager.h"
 #include "CNavNode.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 #include "Maths.h"
 #include "CGaugeUI3D.h"
 #include "CTrashBag.h"
@@ -13,7 +13,7 @@
 
 // 衝突相手の車両クラスを取得するための
 // 車両のクラスのインクルード
-#include "CCar.h"
+#include "CTrashCar.h"
 #include "CGarbageTruck.h"
 
 // コライダのインクルード
@@ -436,7 +436,7 @@ void CTrashEnemy::Render()
 
 	CPlayerBase* player = CPlayerBase::Instance();
 	CFieldBase* field = CFieldBase::Instance();
-	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 	if (player != nullptr && field != nullptr)
 	{
 		CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
@@ -724,7 +724,7 @@ void CTrashEnemy::UpdatePatrol()
 		CVector targetPos = moveNode->GetPos();
 
 		// 車両管理クラス取得
-		CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+		CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 		CHitInfo hit;
 		bool isHit = false;
 		// 衝突していたら最短経路を求める

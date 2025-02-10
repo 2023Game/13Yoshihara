@@ -90,9 +90,10 @@ void CDeliveryGameScene::Load()
 
 	CDeliveryPlayer* player = new CDeliveryPlayer();
 	player->Position(-30.0f, 0.0f, 0.0f);
+	player->SetRoadType(ERoadType::eLeft2);
 
-	//CDeliveryEnemy* enemy = new CDeliveryEnemy();
-	//enemy->Position(30.0f, 0.0f, 0.0f);
+	CDeliveryEnemy* enemy = new CDeliveryEnemy();
+	enemy->Position(30.0f, 0.0f, 0.0f);
 
 	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
@@ -175,12 +176,23 @@ void CDeliveryGameScene::Update()
 			CScoreManager* scoreMgr = CScoreManager::Instance();
 			// シーン管理クラスを取得
 			CSceneManager* sceneMgr = CSceneManager::Instance();
-
-			// 残りHPの割合を求める
-			float hpPer = Math::Clamp01((float)player->GetHp() / player->GetMaxHp());
+			
+			int accuracyInt = 0;
+			float accuracy = 0.0f;
+			// 1発も打っていない場合は処理しない
+			if (!player->GetShotNum() == 0)
+			{
+				// 命中率を求める
+				// 割合計算後に小数点表記から%表記に変換して小数点以下2桁より後を切り捨てる
+				accuracyInt = Math::Clamp01((float)player->GetHitNum() / player->GetShotNum()) * 100;
+				// 小数点表記に戻す
+				accuracy = accuracyInt / 100.0f;
+			}
+			
 			// スコアデータを設定
-			//scoreMgr->SetTrashGameScoreData(mpTrashScoreUI->GetScore(),
-			//	player->GetTrashBag(), player->GetGoldTrashBag(), hpPer);
+			scoreMgr->SetDeliveryGameScoreData(mpDeliveryScoreUI->GetScore(),
+				player->GetDeliveryNum(), player->GetDestroyEnemyNum(),
+				accuracy);
 			// ゲームの種類を今のシーンに設定
 			scoreMgr->SetGameType((int)sceneMgr->GetCurrentScene());
 			// リザルトシーンへ移行

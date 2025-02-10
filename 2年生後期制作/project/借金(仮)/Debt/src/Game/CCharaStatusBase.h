@@ -22,8 +22,11 @@ public:
 	void SetMaxHp(int maxHp);
 	// 現在HPを取得
 	int GetHp() const;
+	// 現在HPを加減算する
+	void SetHp(int num);
 	// 現在HPをリセット
-	void SetHp();
+	void ResetHp();
+
 
 	// 基礎移動速度を取得
 	float GetBaseMoveSpeed() const;

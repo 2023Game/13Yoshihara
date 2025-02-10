@@ -14,11 +14,24 @@ public:
 		int mTrashBagNum;			// 拾ったゴミ袋の数
 		int mGoldTrashBagNum;		// 拾ったゴールドゴミ袋の数
 		float mHpPer;				// 残りHPの割合
-		TrashGameScoreData(int score, int bestScore,
-			int trashBagNum, int goldTrashBagNum, float hpPer) :
-			mScore(score), mBestScore(bestScore),
-			mTrashBagNum(trashBagNum), mGoldTrashBagNum(goldTrashBagNum),
-			mHpPer(hpPer){}
+		TrashGameScoreData() :
+			mScore(0), mBestScore(0),
+			mTrashBagNum(0), mGoldTrashBagNum(0),
+			mHpPer(0.0f){}
+	};
+	// 配達のスコアデータ
+	struct DeliveryGameScoreData
+	{
+		int mScore;				// スコア
+		int mBestScore;			// 最高スコア
+		int mDeliveryNum;		// 配達した数
+		int mDestroyEnemyNum;	// 壊した敵の数
+		float mAccuracy;		// 命中率
+		DeliveryGameScoreData() :
+			mScore(0), mBestScore(0),
+			mDeliveryNum(0), 
+			mDestroyEnemyNum(0),
+			mAccuracy(0.0f){}
 	};
 
 	// インスタンスを取得
@@ -37,6 +50,12 @@ public:
 	// ゴミ拾いのスコアデータを取得する
 	TrashGameScoreData* GetTrashGameScoreData() const;
 
+	// 配達のスコアデータを設定する
+	void SetDeliveryGameScoreData(int score, int deliveryNum,
+		int destroyEnemyNum, float accuracy);
+	// 配達のスコアデータを取得する
+	DeliveryGameScoreData* GetDeliveryGameScoreData() const;
+
 	// ゲームの種類を設定する
 	void SetGameType(int gameType);
 	// ゲームの種類を取得する
@@ -47,6 +66,8 @@ private:
 	static CScoreManager* spInstance;
 	// ゴミ拾いのスコアデータ
 	TrashGameScoreData* mpTrashGameScore;
+	// 配達のスコアデータ
+	DeliveryGameScoreData* mpDeliveryGameScore;
 	// ゲームの種類
 	int mGameType;
 };

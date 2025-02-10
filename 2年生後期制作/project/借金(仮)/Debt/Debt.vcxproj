@@ -84,6 +84,8 @@
     <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp" />
     <ClCompile Include="src\Game\CDeliveryGameScene.cpp" />
     <ClCompile Include="src\Game\CDeliveryHome.cpp" />
+    <ClCompile Include="src\Game\CDeliveryHpUI2D.cpp" />
+    <ClCompile Include="src\Game\CDeliveryHpUI3D.cpp" />
     <ClCompile Include="src\Game\CDeliveryItem.cpp" />
     <ClCompile Include="src\Game\CDeliveryItemStatus.cpp" />
     <ClCompile Include="src\Game\CDeliveryPlayer.cpp" />
@@ -97,7 +99,7 @@
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
-    <ClCompile Include="src\Game\CCar.cpp" />
+    <ClCompile Include="src\Game\CTrashCar.cpp" />
     <ClCompile Include="src\Game\CCharaStatusBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
     <ClCompile Include="src\Game\CNavManager.cpp" />
@@ -124,8 +126,8 @@
     <ClCompile Include="src\Game\CTrashBag.cpp" />
     <ClCompile Include="src\Game\CTrashBagStatus.cpp" />
     <ClCompile Include="src\Game\CTrashEnemyStatus.cpp" />
-    <ClCompile Include="src\Game\CVehicleBase.cpp" />
-    <ClCompile Include="src\Game\CVehicleManager.cpp" />
+    <ClCompile Include="src\Game\CTrashVehicleBase.cpp" />
+    <ClCompile Include="src\Game\CTrashVehicleManager.cpp" />
     <ClCompile Include="src\Game\CVehicleStatus.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
     <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
@@ -262,6 +264,8 @@
     <ClInclude Include="src\Game\CDeliveryGameResultUI.h" />
     <ClInclude Include="src\Game\CDeliveryGameScene.h" />
     <ClInclude Include="src\Game\CDeliveryHome.h" />
+    <ClInclude Include="src\Game\CDeliveryHpUI2D.h" />
+    <ClInclude Include="src\Game\CDeliveryHpUI3D.h" />
     <ClInclude Include="src\Game\CDeliveryItem.h" />
     <ClInclude Include="src\Game\CDeliveryItemStatus.h" />
     <ClInclude Include="src\Game\CDeliveryPlayer.h" />
@@ -275,7 +279,7 @@
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />
-    <ClInclude Include="src\Game\CCar.h" />
+    <ClInclude Include="src\Game\CTrashCar.h" />
     <ClInclude Include="src\Game\CCharaStatusBase.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
     <ClInclude Include="src\Game\CNavManager.h" />
@@ -302,8 +306,8 @@
     <ClInclude Include="src\Game\CTrashBag.h" />
     <ClInclude Include="src\Game\CTrashBagStatus.h" />
     <ClInclude Include="src\Game\CTrashEnemyStatus.h" />
-    <ClInclude Include="src\Game\CVehicleBase.h" />
-    <ClInclude Include="src\Game\CVehicleManager.h" />
+    <ClInclude Include="src\Game\CTrashVehicleBase.h" />
+    <ClInclude Include="src\Game\CTrashVehicleManager.h" />
     <ClInclude Include="src\Game\CVehicleStatus.h" />
     <ClInclude Include="src\Game\CComputer.h" />
     <ClInclude Include="src\Game\CDeliveryStatus.h" />
@@ -344,6 +348,7 @@
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\JobType.h" />
+    <ClInclude Include="src\Game\RoadType.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColBox.h" />

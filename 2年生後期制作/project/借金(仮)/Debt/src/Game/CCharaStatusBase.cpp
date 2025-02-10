@@ -66,8 +66,19 @@ int CCharaStatusBase::GetHp() const
 	return mHp;
 }
 
+// Œ»İHP‚ğ‰ÁŒ¸Z‚·‚é
+void CCharaStatusBase::SetHp(int num)
+{
+	mHp += num;
+	// Hp‚ª0ˆÈ‰º‚È‚ç0‚É‚·‚é
+	if (mHp <= 0)
+	{
+		mHp = 0;
+	}
+}
+
 // Œ»İHP‚ğƒŠƒZƒbƒg
-void CCharaStatusBase::SetHp()
+void CCharaStatusBase::ResetHp()
 {
 	mHp = mMaxHp;
 }

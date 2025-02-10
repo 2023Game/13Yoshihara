@@ -511,7 +511,7 @@
     <ClCompile Include="src\Game\CTrashPlayer.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CCar.cpp">
+    <ClCompile Include="src\Game\CTrashCar.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGarbageTruck.cpp">
@@ -565,7 +565,7 @@
     <ClCompile Include="src\Game\CGaugeUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CVehicleBase.cpp">
+    <ClCompile Include="src\Game\CTrashVehicleBase.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CEnemyBase.cpp">
@@ -592,7 +592,7 @@
     <ClCompile Include="src\Game\CSky.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CVehicleManager.cpp">
+    <ClCompile Include="src\Game\CTrashVehicleManager.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CCollector.cpp">
@@ -717,6 +717,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp">
       <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHpUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHpUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1041,7 +1047,7 @@
     <ClInclude Include="src\Game\CTrashPlayer.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CCar.h">
+    <ClInclude Include="src\Game\CTrashCar.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGarbageTruck.h">
@@ -1095,7 +1101,7 @@
     <ClInclude Include="src\Game\CGaugeUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CVehicleBase.h">
+    <ClInclude Include="src\Game\CTrashVehicleBase.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CEnemyBase.h">
@@ -1122,7 +1128,7 @@
     <ClInclude Include="src\Game\CSky.h">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CVehicleManager.h">
+    <ClInclude Include="src\Game\CTrashVehicleManager.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CCollector.h">
@@ -1247,6 +1253,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryGameResultUI.h">
       <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHpUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHpUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\RoadType.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

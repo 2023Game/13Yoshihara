@@ -3,7 +3,7 @@
 #include "CTextUI2D.h"
 #include "CTrashPlayer.h"
 #include "CTrashEnemyManager.h"
-#include "CVehicleManager.h"
+#include "CTrashVehicleManager.h"
 
 // 警告画像のパス
 #define WARNING_PATH "UI/trash_game_warning.png"
@@ -43,7 +43,7 @@ void CTrashWarningUI::Render()
 	// プレイヤーを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
 	// 車両管理クラス取得
-	CVehicleManager* vehicleMgr = CVehicleManager::Instance();
+	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
 	// プレイヤーがXのエリア外かつ
 	// お仕置き用のトラックが出現していない場合描画
 	if (player->AreaOutX() &&

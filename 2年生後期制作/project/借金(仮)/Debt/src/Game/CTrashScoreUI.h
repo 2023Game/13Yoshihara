@@ -13,8 +13,13 @@ public:
 	// 更新
 	void Update();
 
-	// スコアを取得する
+	// スコアを計算して取得する
 	int GetScore() const override;
+
+	// ゴミ袋一つの得点を取得
+	int GetTrashBagScore() const;
+	// ゴールドのゴミ袋一つの得点を取得
+	int GetGoldTrashBagScore() const;
 
 private:
 	// ゴミ袋一つの得点

@@ -42,3 +42,15 @@ int CTrashScoreUI::GetScore() const
 	score += goldTrashBagNum * mGoldTrashBagScore;
 	return score;
 }
+
+// ゴミ袋一つの得点を取得
+int CTrashScoreUI::GetTrashBagScore() const
+{
+	return mTrashBagScore;
+}
+
+// ゴールドのゴミ袋一つの得点を取得
+int CTrashScoreUI::GetGoldTrashBagScore() const
+{
+	return mGoldTrashBagScore;
+}

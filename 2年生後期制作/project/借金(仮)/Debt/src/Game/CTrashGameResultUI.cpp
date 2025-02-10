@@ -8,21 +8,26 @@
 
 // 背景画像のパス
 #define BACKGROUND_PATH "UI/trash_game_result_bg.png"
+// 画像のパス
+#define BAG_PATH		"UI/trashBag.png"
+#define GOLD_BAG_PATH	"UI/gold_trashBag.png"
 
 // 得点のテキストのオフセット座標
-#define SCORE_OFFSET_POS			CVector2(WINDOW_WIDTH * 0.0f,   WINDOW_HEIGHT * 0.2f)
+#define SCORE_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.0f,   WINDOW_HEIGHT * 0.2f)
 // ゴミ袋の数のテキストのオフセット座標
-#define NUM_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.3f,   WINDOW_HEIGHT * 0.4f)
+#define NUM_OFFSET_POS					CVector2(WINDOW_WIDTH * 0.3f,   WINDOW_HEIGHT * 0.4f)
 // ゴミ袋の値段のテキストのオフセット座標
-#define PRICE_OFFSET_POS			CVector2(WINDOW_WIDTH * 0.475f, WINDOW_HEIGHT * 0.4f)
+#define PRICE_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.475f, WINDOW_HEIGHT * 0.4f)
 // ゴミ袋の値段のテキストのオフセット座標
-#define TOTAL_OFFSET_POS			CVector2(WINDOW_WIDTH * 0.7f,   WINDOW_HEIGHT * 0.4f)
+#define TOTAL_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.7f,   WINDOW_HEIGHT * 0.4f)
 // 単位のテキストのオフセット座標
-#define UNIT_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.35f,  WINDOW_HEIGHT * 0.4f)
+#define UNIT_OFFSET_POS					CVector2(WINDOW_WIDTH * 0.35f,  WINDOW_HEIGHT * 0.4f)
 // 記号のテキストのオフセット座標
-#define SYMBOL_OFFSET_POS			CVector2(WINDOW_WIDTH * 0.42f,  WINDOW_HEIGHT * 0.4f)
+#define SYMBOL_OFFSET_POS				CVector2(WINDOW_WIDTH * 0.42f,  WINDOW_HEIGHT * 0.4f)
 // 一番下の計算の説明テキストのオフセット座標
-#define DESCRIPTION_OFFSET_POS		CVector2(WINDOW_WIDTH * 0.15f, WINDOW_HEIGHT * 0.76f)
+#define DESCRIPTION_OFFSET_POS			CVector2(WINDOW_WIDTH * 0.15f, WINDOW_HEIGHT * 0.76f)
+// ボーナスの説明テキストのオフセット座標
+#define BONUS_DESCRIPTION_OFFSET_POS	CVector2(WINDOW_WIDTH * 0.475f, WINDOW_HEIGHT * 0.83f)
 
 // ゴミ袋の画像のサイズの倍率
 #define SIZE_RATE 0.25f
@@ -41,7 +46,7 @@ CTrashGameResultUI::CTrashGameResultUI()
 	mpReturnButton->SetPos(BUTTON_OFFSET_POS);
 	// ゴミ袋の得点取得用
 	CTrashBagStatus* trashBagStatus = new CTrashBagStatus(false);
-	// ゴミ袋の得点を記憶
+	// ゴミ袋の得点を取得
 	int trashBagPoint = trashBagStatus->GetPoint(false);
 	int goldTrashBagPoint = trashBagStatus->GetPoint(true);
 	// 不要なので削除
@@ -54,12 +59,19 @@ CTrashGameResultUI::CTrashGameResultUI()
 		scoreMgr->GetTrashGameScoreData();
 
 	// それぞれのゴミ袋のスコアの合計を計算
-	int trashBagTotalScore = scoreData->mTrashBagNum * trashBagPoint;
-	int goldBagTotalScore = scoreData->mGoldTrashBagNum * goldTrashBagPoint;
+	int trashBagTotalScore = 
+		scoreData->mTrashBagNum * trashBagPoint;
+	int goldBagTotalScore =
+		scoreData->mGoldTrashBagNum * goldTrashBagPoint;
+	// 全てのスコアの合計
+	int totalScore = trashBagTotalScore + goldBagTotalScore;
 	// ボーナスの倍率
-	float bonus = 1.0f + scoreData->mHpPer;
-	// ボーナスも含めた全てのスコアの合計
-	int totalScore = (trashBagTotalScore + goldBagTotalScore) * bonus;
+	float bonus = scoreData->mHpPer;
+	// ボーナスのスコアを計算
+	int bonusScore = totalScore * bonus;
+	// 合計スコアに加算する
+	totalScore += bonusScore;
+
 
 	// 得点のテキストを生成
 	mpScorePointText = new CTextUI2D(ETaskPauseType::eGame, false);
@@ -76,7 +88,9 @@ CTrashGameResultUI::CTrashGameResultUI()
 	mpNumText1 = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpNumText1->ChangeToStr("%d\n　\n　\n%d\n　\n　\n%d\n",
-		scoreData->mTrashBagNum, scoreData->mGoldTrashBagNum, trashBagTotalScore + goldBagTotalScore);
+		scoreData->mTrashBagNum, 
+		scoreData->mGoldTrashBagNum, 
+		trashBagTotalScore + goldBagTotalScore);
 	// 座標を設定
 	mpNumText1->Position(NUM_OFFSET_POS);
 
@@ -84,16 +98,19 @@ CTrashGameResultUI::CTrashGameResultUI()
 	mpNumText2 = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpNumText2->ChangeToStr("%d\n　\n　\n%d\n　\n　\n%.1f\n",
-		trashBagPoint, goldTrashBagPoint, bonus);
+		trashBagPoint,
+		goldTrashBagPoint,
+		bonus);
 	// 座標を設定
 	mpNumText2->Position(PRICE_OFFSET_POS);
-
 
 	// 計算結果のテキストを生成
 	mpTotalText = new CTextUI2D(ETaskPauseType::eGame, false);
 	// テキストを設定
 	mpTotalText->ChangeToStr("%d\n　\n　\n%d\n　\n　\n%d\n",
-		trashBagTotalScore, goldBagTotalScore, totalScore);
+		trashBagTotalScore,
+		goldBagTotalScore,
+		bonusScore);
 	// 座標を設定
 	mpTotalText->Position(TOTAL_OFFSET_POS);
 
@@ -121,10 +138,19 @@ CTrashGameResultUI::CTrashGameResultUI()
 	// 文字の色を設定
 	mpDescriptionText->SetFontColor(CColor(0.9f, 0.0f, 0.0f));
 
+	// ボーナスの説明テキスト
+	mpBonusDescriptionText = new CTextUI2D(ETaskPauseType::eGame, false, nullptr);
+	// テキストを設定
+	mpBonusDescriptionText->SetStr("残HP割合");
+	// フォントサイズを設定
+	mpBonusDescriptionText->SetFontSize(32);
+	// 座標を設定
+	mpBonusDescriptionText->Position(BONUS_DESCRIPTION_OFFSET_POS);
+
 	// ゴミ袋の画像を生成
 	mpTrashBagImg = new CImage
 	(
-		"UI/trashBag.png",
+		BAG_PATH,
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -141,7 +167,7 @@ CTrashGameResultUI::CTrashGameResultUI()
 	// ゴールドゴミ袋の画像を生成
 	mpGoldTrashBagImg = new CImage
 	(
-		"UI/gold_trashBag.png",
+		GOLD_BAG_PATH,
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,
@@ -158,24 +184,22 @@ CTrashGameResultUI::CTrashGameResultUI()
 
 CTrashGameResultUI::~CTrashGameResultUI()
 {
-	SAFE_DELETE(mpTrashBagImg);
-	SAFE_DELETE(mpGoldTrashBagImg);
-
 	SAFE_DELETE(mpScorePointText);
 	SAFE_DELETE(mpNumText1);
 	SAFE_DELETE(mpNumText2);
 	SAFE_DELETE(mpUnitText);
 	SAFE_DELETE(mpSymbolText);
 	SAFE_DELETE(mpDescriptionText);
+	SAFE_DELETE(mpBonusDescriptionText);
+
+	SAFE_DELETE(mpTrashBagImg);
+	SAFE_DELETE(mpGoldTrashBagImg);
 }
 
 // 更新
 void CTrashGameResultUI::Update()
 {
 	CResultUIBase::Update();
-	// 画像
-	mpTrashBagImg->Update();
-	mpGoldTrashBagImg->Update();
 	// テキスト
 	mpScorePointText->Update();
 	mpNumText1->Update();
@@ -184,15 +208,16 @@ void CTrashGameResultUI::Update()
 	mpUnitText->Update();
 	mpSymbolText->Update();
 	mpDescriptionText->Update();
+	mpBonusDescriptionText->Update();
+	// 画像
+	mpTrashBagImg->Update();
+	mpGoldTrashBagImg->Update();
 }
 
 // 描画
 void CTrashGameResultUI::Render()
 {
 	CResultUIBase::Render();
-	// 画像
-	mpTrashBagImg->Render();
-	mpGoldTrashBagImg->Render();
 	// テキスト
 	mpScorePointText->Render();
 	mpNumText1->Render();
@@ -201,4 +226,8 @@ void CTrashGameResultUI::Render()
 	mpUnitText->Render();
 	mpSymbolText->Render();
 	mpDescriptionText->Render();
+	mpBonusDescriptionText->Render();
+	// 画像
+	mpTrashBagImg->Render();
+	mpGoldTrashBagImg->Render();
 }

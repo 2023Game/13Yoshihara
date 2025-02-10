@@ -30,6 +30,8 @@ private:
 	CTextUI2D* mpSymbolText;
 	// 一番下の計算の説明テキスト
 	CTextUI2D* mpDescriptionText;
+	// ボーナスの説明テキスト
+	CTextUI2D* mpBonusDescriptionText;
 
 	// ゴミ袋の画像
 	CImage* mpTrashBagImg;

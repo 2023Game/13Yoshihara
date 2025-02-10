@@ -10,6 +10,9 @@
 #include "CScoreManager.h"
 #include "SceneType.h"
 #include "CTaskManager.h"
+#if _DEBUG
+#include "CInput.h"
+#endif
 
 // コンストラクタ
 CResultScene::CResultScene()
@@ -71,4 +74,20 @@ void CResultScene::Update()
 			CSceneManager::Instance()->LoadScene(EScene::eHome);
 		}
 	}
+#if _DEBUG
+	if (CInput::PushKey('1'))
+	{
+		// ゴミ拾い
+		CScoreManager::Instance()->SetGameType((int)EScene::eTrashGame);
+		// 読み込みなおし
+		CSceneManager::Instance()->LoadScene(EScene::eResult);
+	}
+	else if (CInput::PushKey('2'))
+	{
+		// 配達
+		CScoreManager::Instance()->SetGameType((int)EScene::eDeliveryGame);
+		// 読み込みなおし
+		CSceneManager::Instance()->LoadScene(EScene::eResult);
+	}
+#endif
 }
