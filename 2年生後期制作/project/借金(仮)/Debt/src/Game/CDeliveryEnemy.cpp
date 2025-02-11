@@ -2,6 +2,7 @@
 #include "CModel.h"
 #include "CColliderCapsule.h"
 #include "CDeliveryPlayer.h"
+#include "CDeliveryField.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
@@ -51,6 +52,8 @@ CDeliveryEnemy::CDeliveryEnemy()
 	, mHitFlashTime(0.0f)
 
 {
+	// 移動状態
+	ChangeState(EState::eMove);
 	// 方向を設定
 	Rotation(ROTATION);
 	// 移動方向を向かない
@@ -112,7 +115,9 @@ void CDeliveryEnemy::Update()
 	CEnemyBase::Update();
 
 #if _DEBUG
+	CDebugPrint::Print("EnemyState：%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("EnemyHp：%d\n", GetHp());
+	CDebugPrint::Print("EnemyTargetPos：%f,%f,%f\n", mTargetPos.X(), mTargetPos.Y(), mTargetPos.Z());
 #endif
 }
 
@@ -127,11 +132,6 @@ void CDeliveryEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo
 		// プレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			Position(Position() + adjust * hit.weight);
-
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			player->TakeDamage(GetAttackPower(), this);
 		}
@@ -150,6 +150,18 @@ void CDeliveryEnemy::SetOnOff(bool setOnOff)
 	// 有効無効を設定
 	SetEnable(setOnOff);
 	SetShow(setOnOff);
+}
+
+// 現在の車道を設定
+void CDeliveryEnemy::SetRoadType(ERoadType roadType)
+{
+	mRoadType = roadType;
+}
+
+// 現在の車道を取得
+ERoadType CDeliveryEnemy::GetRoadType() const
+{
+	return ERoadType();
 }
 
 // 状態切り替え
@@ -179,6 +191,27 @@ std::string CDeliveryEnemy::GetStateStr(EState state) const
 // 移動の更新処理
 void CDeliveryEnemy::UpdateMove()
 {
+	// 今いる道のX座標
+	float targetPosX = 0.0f;
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		targetPosX = ROAD_LEFT1_POSX;
+		break;
+	case ERoadType::eLeft2:
+		targetPosX = ROAD_LEFT2_POSX;
+		break;
+	case ERoadType::eRight1:
+		targetPosX = ROAD_RIGHT1_POSX;
+		break;
+	case ERoadType::eRight2:
+		targetPosX = ROAD_RIGHT2_POSX;
+		break;
+	}
+	// 使用しないので
+	// 目的地を自分に設定しておく
+	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
+	Position(mTargetPos);
 }
 
 // 車線変更の更新処理
@@ -193,6 +226,8 @@ void CDeliveryEnemy::UpdateChangeRoad()
 	if (Position().X() <= mTargetPos.X() + CHANGE_ROAD_THRESHOLD &&
 		Position().X() >= mTargetPos.X() - CHANGE_ROAD_THRESHOLD)
 	{
+		// 目的地の車道のタイプに変更
+		mRoadType = mTargetRoadType;
 		// 移動状態へ
 		ChangeState(EState::eMove);
 		return;

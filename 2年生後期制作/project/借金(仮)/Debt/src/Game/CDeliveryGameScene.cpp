@@ -94,6 +94,7 @@ void CDeliveryGameScene::Load()
 
 	CDeliveryEnemy* enemy = new CDeliveryEnemy();
 	enemy->Position(30.0f, 0.0f, 0.0f);
+	enemy->SetRoadType(ERoadType::eRight2);
 
 	// éûä‘ï\é¶UIê∂ê¨
 	mpTimeUI = new CTimeUI(MAX_TIME);

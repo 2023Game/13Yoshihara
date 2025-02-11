@@ -111,6 +111,8 @@ private:
 	CVector mTargetPos;
 	// –Ú“I’n‚ÌÔ“¹‚Ìí—Ş
 	ERoadType mTargetRoadType;
+	// ¶ˆÚ“®‚©
+	bool mIsLeftMove;
 
 	// Œ»İ‚ÌÔ“¹
 	ERoadType mRoadType;

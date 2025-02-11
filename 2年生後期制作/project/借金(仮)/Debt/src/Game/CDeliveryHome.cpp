@@ -1,4 +1,5 @@
 #include "CDeliveryHome.h"
+#include "CDeliveryField.h"
 #include "CColliderMesh.h"
 
 // コンストラクタ
@@ -33,6 +34,9 @@ CDeliveryHome::~CDeliveryHome()
 // 更新
 void CDeliveryHome::Update()
 {
+	// 強制移動の速度分、手前へ移動
+	float moveSpeed = FORCE_MOVE_SPEED * Times::DeltaTime();
+	Position(Position() + CVector::forward * moveSpeed);
 }
 
 // 描画

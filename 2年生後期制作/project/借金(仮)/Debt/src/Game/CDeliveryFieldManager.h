@@ -1,6 +1,7 @@
 #pragma once
 
 class CDeliveryField;
+class CDeliveryHome;
 class CSky;
 
 /*
@@ -29,13 +30,19 @@ public:
 private:
 	// フィールドを生成
 	void CreateField();
+	// 家を生成するか判定する
+	void CreateHome();
 
 	// フィールド管理クラスのインスタンス
 	static CDeliveryFieldManager* spInstance;
 
 	// フィールド
 	std::vector<CDeliveryField*> mFields;
+	// 家
+	std::vector<CDeliveryHome*> mHomes;
 
-	// 一番遠いのフィールド
+	// 一番遠いフィールド
 	CDeliveryField* mpFarField;
+	// 最後に家の生成判定をしたZ座標
+	float mLastPopZ;
 };

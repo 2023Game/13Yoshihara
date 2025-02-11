@@ -50,6 +50,7 @@ CDeliveryPlayer::CDeliveryPlayer()
 	, mDestroyEnemyNum(0)
 	, mShotNum(0)
 	, mHitNum(0)
+	, mIsLeftMove(false)
 {
 	// 移動状態
 	ChangeState(EState::eMove);
@@ -101,10 +102,15 @@ void CDeliveryPlayer::Update()
 	case EState::eDeath:		UpdateDeath();			break;
 	}
 
-	// キー入力可能
-	ActionInput();
+	// 移動か車線変更状態なら
+	if (mState == EState::eMove ||
+		mState == EState::eChangeRoad)
+	{
+		// キー入力可能
+		ActionInput();
+	}
 
-	// ダメージを受けていたら点滅する
+	// 被弾の点滅
 	HitFlash();
 	
 	// 基底クラスの更新
@@ -131,13 +137,40 @@ void CDeliveryPlayer::Collision(CCollider* self, CCollider* other, const CHitInf
 		// 敵の場合
 		if (other->Layer() == ELayer::eEnemy)
 		{
+			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
+			adjust.X(0.0f);
 			adjust.Y(0.0f);
 
+			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
-			
+
+			// 敵にダメージを与える
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
 			enemy->TakeDamage(GetAttackPower(), this);
+
+			// 車線変更状態の場合
+			if (mState == EState::eChangeRoad)
+			{
+				// プレイヤーのX座標
+				float playerPosX = Position().X();
+				// 敵のX座標
+				float enemyPosX = enemy->Position().X();
+				// 左移動でプレイヤーの方が右にいるなら
+				if (mIsLeftMove &&
+					playerPosX > enemyPosX)
+				{
+					// 自分のいた道へ戻る
+					mTargetRoadType = mRoadType;
+				}
+				// 右移動でプレイヤーの方が左にいるなら
+				else if (!mIsLeftMove &&
+					playerPosX < enemyPosX)
+				{
+					// 自分のいた道へ戻る
+					mTargetRoadType = mRoadType;
+				}
+			}
 		}
 	}
 }
@@ -195,6 +228,7 @@ std::string CDeliveryPlayer::GetStateStr(EState state) const
 // 移動の更新処理
 void CDeliveryPlayer::UpdateMove()
 {
+	// 今いる道のX座標
 	float targetPosX = 0.0f;
 	switch (mRoadType)
 	{
@@ -260,6 +294,25 @@ void CDeliveryPlayer::UpdateMove()
 void CDeliveryPlayer::UpdateChangeRoad()
 {
 	mMoveSpeed = CVector::zero;
+	// 目的地のX座標
+	float targetPosX = 0.0f;
+	switch (mTargetRoadType)
+	{
+	case ERoadType::eLeft1:
+		targetPosX = ROAD_LEFT1_POSX;
+		break;
+	case ERoadType::eLeft2:
+		targetPosX = ROAD_LEFT2_POSX;
+		break;
+	case ERoadType::eRight1:
+		targetPosX = ROAD_RIGHT1_POSX;
+		break;
+	case ERoadType::eRight2:
+		targetPosX = ROAD_RIGHT2_POSX;
+		break;
+	}
+	// 目的地を設定
+	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
 
 	// 目的地へ移動
 	MoveTo(mTargetPos, GetBaseMoveSpeed(), ROTATE_SPEED);
@@ -456,8 +509,12 @@ void CDeliveryPlayer::HitFlash()
 // 車線変更先の座標を求める
 CVector CDeliveryPlayer::GetTargetPos(bool isLeft)
 {
+	// 左右どちらへ移動するかを設定
+	mIsLeftMove = isLeft;
+	// 自分の座標を取得
 	CVector targetPos = Position();
-	targetPos.X(0.0f);
+	// 自分が今いる道と左右どちらかの移動なのか
+	// から目的地を決定
 	switch (mRoadType)
 	{
 	case ERoadType::eLeft1:

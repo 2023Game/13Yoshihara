@@ -1,6 +1,7 @@
 #pragma once
 #include "CEnemyBase.h"
 #include "CDeliveryEnemyStatus.h"
+#include "RoadType.h"
 
 /*
 配達ゲームの敵クラス
@@ -22,7 +23,6 @@ public:
 	/// <param name="causer">自分の射撃による減少か</param>
 	void TakeDamage(int damage, CObjectBase* causer, bool isShot = false);
 
-
 	// 更新
 	void Update();
 
@@ -39,6 +39,10 @@ public:
 
 	// 有効無効を切り替える
 	void SetOnOff(bool setOnOff);
+	// 現在の車道を設定
+	void SetRoadType(ERoadType roadType);
+	// 現在の車道を取得
+	ERoadType GetRoadType() const;
 
 private:
 	// 状態
@@ -81,4 +85,9 @@ private:
 
 	// 車線変更の目的地
 	CVector mTargetPos;
+	// 目的地の車道の種類
+	ERoadType mTargetRoadType;
+
+	// 現在の車道
+	ERoadType mRoadType;
 };

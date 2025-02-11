@@ -9,6 +9,8 @@
 #define ITEM_WIDTH	4.5f	// 幅
 #define ITEM_RADIUS	2.75f	// 半径
 
+// 消滅するZ座標
+#define DELETE_POSZ 250.0f
 // 消滅までの時間
 #define DELETE_TIME 3.0f
 
@@ -67,6 +69,13 @@ void CDeliveryItem::Update()
 		CVector move = mpOwner->Position() - mOwnerPos;
 		Position(Position() + move);
 		mOwnerPos = mpOwner->Position();
+	}
+
+	// 消滅するZ座標より手前にいるなら
+	if (Position().Z() > DELETE_POSZ)
+	{
+		// 削除
+		Kill();
 	}
 
 	// 消滅までの時間が経過していないなら
