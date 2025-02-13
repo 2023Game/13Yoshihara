@@ -29,8 +29,7 @@
 // 弾丸のオフセット座標
 #define BULLET_OFFSET_POS_L  CVector(-20.0f,14.75f,10.0f)	// 左
 #define BULLET_OFFSET_POS_R  CVector( 19.0f,14.75f,10.0f)	// 右
-#define BULLET_OFFSET_POS_B1 CVector( 6.5f, 14.75f,41.0f)	// 後ろ1
-#define BULLET_OFFSET_POS_B2 CVector(-7.5f, 14.75f,41.0f)	// 後ろ2
+#define BULLET_OFFSET_POS_B  CVector( 0.0f, 14.75f,41.0f)	// 後ろ
 // 弾丸の方向
 #define BULLET_ROT_LR	CVector(0.0f,90.0f,0.0f) // 左右
 
@@ -203,12 +202,12 @@ void CDeliveryPlayer::CreateCol()
 		TRUCK_RADIUS
 	);
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
-	// 地形、敵、障害物、発射物の攻撃判定
+	// 地形、敵、障害物、発射物の攻撃判定、アイテム
 	// と衝突判定をする
 	mpBodyCol->SetCollisionTags({ ETag::eField,ETag::eEnemy,
-		ETag::eObstruction,ETag::eBullet });
+		ETag::eObstruction,ETag::eBullet,ETag::eItem });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,ELayer::eEnemy,
-		ELayer::eObstruction,ELayer::eAttackCol });
+		ELayer::eObstruction,ELayer::eAttackCol,ELayer::eItem });
 }
 
 #if _DEBUG
@@ -428,7 +427,7 @@ void CDeliveryPlayer::ActionInput()
 			// 回転を設定
 			item->Rotation(BULLET_ROT_LR);
 			// 移動速度
-			float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
+			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
 			item->SetMoveSpeed(-VectorX() * moveSpeedX);
 
@@ -449,7 +448,7 @@ void CDeliveryPlayer::ActionInput()
 			// 回転を設定
 			item->Rotation(BULLET_ROT_LR);
 			// 移動速度
-			float moveSpeedX = GetBaseMoveSpeed() * Times::DeltaTime();
+			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
 			item->SetMoveSpeed(VectorX() * moveSpeedX);
 
@@ -466,9 +465,11 @@ void CDeliveryPlayer::ActionInput()
 			// 配達物1を生成
 			CDeliveryItem* item1 = new CDeliveryItem(this);
 			// 座標を設定
-			item1->Position(Position() + BULLET_OFFSET_POS_B1);
+			item1->Position(Position() + BULLET_OFFSET_POS_B);
+			// 移動速度
+			float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
-			item1->SetMoveSpeed(-VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime());
+			item1->SetMoveSpeed(-VectorZ() * moveSpeedZ);
 
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);

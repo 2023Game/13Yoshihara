@@ -29,7 +29,7 @@ public:
 
 
 	// Šî‘bˆÚ“®‘¬“x‚ğæ“¾
-	float GetBaseMoveSpeed() const;
+	virtual float GetBaseMoveSpeed() const;
 	// Šî‘bˆÚ“®‘¬“x‚ğİ’è
 	void SetBaseMoveSpeed(float baseMoveSpeed);
 

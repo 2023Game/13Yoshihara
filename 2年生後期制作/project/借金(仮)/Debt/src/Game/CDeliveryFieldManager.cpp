@@ -1,6 +1,8 @@
 #include "CDeliveryFieldManager.h"
 #include "CDeliveryField.h"
+#include "CDeliveryFieldItem.h"
 #include "CDeliveryHome.h"
+#include "CDeliveryObstruction.h"
 #include "CDeliveryPlayer.h"
 #include "CSky.h"
 #include "Maths.h"
@@ -22,17 +24,31 @@ CDeliveryFieldManager* CDeliveryFieldManager::spInstance = nullptr;
 // 家のオフセット座標
 #define HOME_OFFSET_POSX   250.0f
 #define HOME_OFFSET_POSY    10.0f
-#define HOME_OFFSET_POSZ -450.0f
+#define HOME_OFFSET_POSZ  -450.0f
 // 家の方向
 #define HOME_ROT_L CVector(0.0f,-90.0f,0.0f)
 #define HOME_ROT_R CVector(0.0f, 90.0f,0.0f)
-
 // 最後に家の生成判定をした座標が
 // この値を超えたら次の家の生成判定をする
 #define HOME_JUDGE_POSZ -100.0f
-
 // 家の生成率
 #define HOME_POP_RATE 25.0f
+
+// 障害物のオフセット座標
+#define OBSTRUCTION_OFFSET_POSZ -450.0f
+// 最後に障害物の生成判定をした座標が
+// この値を超えたら次の障害物の生成判定をする
+#define OBSTRUCTION_JUDGE_POSZ -100.0f
+// 障害物の生成率
+#define OBSTRUCTION_POP_RATE 50.0f
+
+// アイテムのオフセット座標
+#define ITEM_OFFSET_POSZ -550.0f
+// 最後にアイテムの生成判定をした座標が
+// この値を超えたら次のアイテムの生成判定をする
+#define ITEM_JUDGE_POSZ -200.0f
+// アイテムの生成率
+#define ITEM_POP_RATE 50.0f
 
 // インスタンスを取得
 CDeliveryFieldManager* CDeliveryFieldManager::Instance()
@@ -42,7 +58,9 @@ CDeliveryFieldManager* CDeliveryFieldManager::Instance()
 
 // コンストラクタ
 CDeliveryFieldManager::CDeliveryFieldManager()
-	: mLastPopZ(HOME_OFFSET_POSZ)
+	: mLastHomePopZ(HOME_OFFSET_POSZ)
+	, mLastObstructionPopZ(OBSTRUCTION_OFFSET_POSZ)
+	, mLastFieldItemPopZ(ITEM_OFFSET_POSZ)
 {
 	spInstance = this;
 
@@ -61,12 +79,28 @@ void CDeliveryFieldManager::Update()
 {
 	// 最後に家の生成判定をしたZ座標を手前へ移動していく
 	float moveSpeed = FORCE_MOVE_SPEED * Times::DeltaTime();
-	mLastPopZ = mLastPopZ + moveSpeed;
+	mLastHomePopZ = mLastHomePopZ + moveSpeed;
 	// 最後に生成したZ座標が判定を超えたら
-	if (mLastPopZ > HOME_JUDGE_POSZ)
+	if (mLastHomePopZ > HOME_JUDGE_POSZ)
 	{
 		// 家を生成するか判定する
 		CreateHome();
+	}
+	// 最後に障害物の生成判定をしたZ座標を手前へ移動していく
+	mLastObstructionPopZ = mLastObstructionPopZ + moveSpeed;
+	// 最後に生成したZ座標が判定を超えたら
+	if (mLastObstructionPopZ > OBSTRUCTION_JUDGE_POSZ)
+	{
+		// 障害物を生成するか判定する
+		CreateObstruction();
+	}
+	// 最後に障害物の生成判定をしたZ座標を手前へ移動していく
+	mLastFieldItemPopZ = mLastFieldItemPopZ + moveSpeed;
+	// 最後に生成したZ座標が判定を超えたら
+	if (mLastFieldItemPopZ > ITEM_JUDGE_POSZ)
+	{
+		// アイテムを生成するか判定する
+		CreateFieldItem();
 	}
 
 	// プレイヤーの座標を取得
@@ -109,6 +143,23 @@ void CDeliveryFieldManager::Update()
 			// 無効
 			home->SetEnable(false);
 			home->SetShow(false);
+		}
+	}
+	// 全ての障害物とプレイヤーの距離を計算する
+	for (CDeliveryObstruction* obstruction : mObstructions)
+	{
+		CVector obstructionPos = obstruction->Position();
+		// プレイヤーより奥にあるなら次へ
+		if (obstructionPos.Z() < playerPos.Z()) continue;
+
+		// プレイヤーとの距離
+		float dist = obstructionPos.Z() - playerPos.Z();
+		// プレイヤーとの距離が最高値以上なら
+		if (dist > PLAYER_DIST)
+		{
+			// 無効
+			obstruction->SetEnable(false);
+			obstruction->SetShow(false);
 		}
 	}
 }
@@ -229,5 +280,311 @@ void CDeliveryFieldManager::CreateHome()
 	}
 
 	// 最後に判定したZ座標を家の生成場所に設定
-	mLastPopZ = HOME_OFFSET_POSZ;
+	mLastHomePopZ = HOME_OFFSET_POSZ;
+}
+
+// 障害物を生成するか判定する
+void CDeliveryFieldManager::CreateObstruction()
+{
+	// 生成するか
+	bool isPopL1 = false;	// 左1
+	bool isPopL2 = false;	// 左2
+	bool isPopR1 = false;	// 右1
+	bool isPopR2 = false;	// 右2
+
+	// 1から100までの100個の数字からランダムで取得
+	float pop = Math::Rand(1, 100);
+	// 生成率以下なら左1に生成
+	if (pop <= OBSTRUCTION_POP_RATE) isPopL1 = true;
+	// もう一度ランダム取得
+	pop = Math::Rand(1, 100);
+	// 生成率以下なら左1に生成
+	if (pop <= OBSTRUCTION_POP_RATE) isPopL2= true;
+	// もう一度ランダム取得
+	pop = Math::Rand(1, 100);
+	// 生成率以下なら右1に生成
+	if (pop <= OBSTRUCTION_POP_RATE) isPopR1 = true;
+	// もう一度ランダム取得
+	pop = Math::Rand(1, 100);
+	// 生成率以下なら右1に生成
+	if (pop <= OBSTRUCTION_POP_RATE) isPopR2 = true;
+
+	// 生成できたか
+	bool isPopSuccessL1 = false;	// 左1
+	bool isPopSuccessL2 = false;	// 左2
+	bool isPopSuccessR1 = false;	// 右1
+	bool isPopSuccessR2 = false;	// 右2
+	// 生成しないなら生成できたことにする
+	if (!isPopL1) isPopSuccessL1 = true;
+	if (!isPopL2) isPopSuccessL2 = true;
+	if (!isPopR1) isPopSuccessR1 = true;
+	if (!isPopR2) isPopSuccessR2 = true;
+
+	// 通れない状態を作らないため
+	// 全て生成するなら一つ生成しない
+	if (!isPopSuccessL1 &&
+		!isPopSuccessL2 &&
+		!isPopSuccessR1 &&
+		!isPopSuccessR2)
+	{
+		int random = Math::Rand(1, 4);
+		switch (random)
+		{
+		case 1:
+			// 左1を生成しない
+			isPopSuccessL1 = true;
+			break;
+		case 2:
+			// 左2を生成しない
+			isPopSuccessL2 = true;
+			break;
+		case 3:
+			// 右1を生成しない
+			isPopSuccessR1 = true;
+			break;
+		case 4:
+			// 右2を生成しない
+			isPopSuccessR2 = true;
+			break;
+		}
+	}
+
+	for (CDeliveryObstruction* obstruction : mObstructions)
+	{
+		// 全て生成出来たらループ終了
+		if (isPopSuccessL1 &&
+			isPopSuccessL2 &&
+			isPopSuccessR1 &&
+			isPopSuccessR2) break;
+		// 既に有効なら次へ
+		if (obstruction->IsEnable()) continue;
+
+		// 左1をまだ生成していないなら
+		if (!isPopSuccessL1)
+		{
+			// 左の座標を設定
+			obstruction->Position(
+				ROAD_LEFT1_POSX,
+				0.0f,
+				OBSTRUCTION_OFFSET_POSZ
+			);
+			isPopSuccessL1 = true;
+		}
+		// 左2をまだ生成していないなら
+		else if (!isPopSuccessL2)
+		{
+			// 左の座標を設定
+			obstruction->Position(
+				ROAD_LEFT2_POSX,
+				0.0f,
+				OBSTRUCTION_OFFSET_POSZ
+			);
+			isPopSuccessL2 = true;
+		}
+		// 右1をまだ生成していないなら
+		else if (!isPopSuccessR1)
+		{
+			// 右の座標を設定
+			obstruction->Position(
+				ROAD_RIGHT1_POSX,
+				0.0f,
+				OBSTRUCTION_OFFSET_POSZ
+			);
+			isPopSuccessR1 = true;
+		}
+		// 右2をまだ生成していないなら
+		else if (!isPopSuccessR2)
+		{
+			// 右の座標を設定
+			obstruction->Position(
+				ROAD_RIGHT2_POSX,
+				0.0f,
+				OBSTRUCTION_OFFSET_POSZ
+			);
+			isPopSuccessR2 = true;
+		}
+		// 有効
+		obstruction->SetEnable(true);
+		obstruction->SetShow(true);
+	}
+
+	// 左1をまだ生成していないなら
+	if (!isPopSuccessL1)
+	{
+		// 新しい障害物を生成
+		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
+		// 左の座標を設定
+		obstruction->Position(
+			ROAD_LEFT1_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// リストに追加
+		mObstructions.push_back(obstruction);
+	}
+	// 左2をまだ生成していないなら
+	if (!isPopSuccessL2)
+	{
+		// 新しい障害物を生成
+		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
+		// 左の座標を設定
+		obstruction->Position(
+			ROAD_LEFT2_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// リストに追加
+		mObstructions.push_back(obstruction);
+	}
+	// 右1をまだ生成していないなら
+	if (!isPopSuccessR1)
+	{
+		// 新しい障害物を生成
+		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
+		// 右の座標を設定
+		obstruction->Position(
+			ROAD_RIGHT1_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// リストに追加
+		mObstructions.push_back(obstruction);
+	}
+	// 右2をまだ生成していないなら
+	if (!isPopSuccessR2)
+	{
+		// 新しい障害物を生成
+		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
+		// 右の座標を設定
+		obstruction->Position(
+			ROAD_RIGHT2_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// リストに追加
+		mObstructions.push_back(obstruction);
+	}
+
+	// 最後に判定したZ座標を家の生成場所に設定
+	mLastObstructionPopZ = OBSTRUCTION_OFFSET_POSZ;
+}
+
+// アイテムを生成するか判定する
+void CDeliveryFieldManager::CreateFieldItem()
+{
+	// 生成するか
+	bool isPop = false;
+
+	// 1から100までの100個の数字からランダムで取得
+	float pop = Math::Rand(1, 100);
+	// 生成率以下なら生成
+	if (pop <= ITEM_POP_RATE) isPop = true;
+	// 生成しないなら処理しない
+	if (!isPop) return;
+
+	// 生成できたか
+	bool isPopSuccess = false;
+
+	for (CDeliveryFieldItem* fieldItem : mFieldItems)
+	{
+		// 生成出来たらループ終了
+		if (isPopSuccess) break;
+		// 既に有効なら次へ
+		if (fieldItem->IsEnable()) continue;
+
+		// まだ生成していないなら
+		if (!isPopSuccess)
+		{
+			// 1から4でランダム
+			int random = Math::Rand(1, 4);
+			switch (random)
+			{
+			case 1:
+				// 左1の座標を設定
+				fieldItem->Position(
+					ROAD_LEFT1_POSX,
+					0.0f,
+					ITEM_OFFSET_POSZ
+				);
+				break;
+			case 2:
+				// 左2の座標を設定
+				fieldItem->Position(
+					ROAD_LEFT2_POSX,
+					0.0f,
+					ITEM_OFFSET_POSZ
+				);
+				break;
+			case 3:
+				// 右1の座標を設定
+				fieldItem->Position(
+					ROAD_RIGHT1_POSX,
+					0.0f,
+					ITEM_OFFSET_POSZ
+				);
+				break;
+			case 4:
+				// 右2の座標を設定
+				fieldItem->Position(
+					ROAD_RIGHT2_POSX,
+					0.0f,
+					ITEM_OFFSET_POSZ
+				);
+				break;
+			}
+		}
+		// 生成した
+		isPopSuccess = true;
+		// 有効
+		fieldItem->SetEnable(true);
+		fieldItem->SetShow(true);
+	}
+
+	// まだ生成していないなら
+	if (!isPopSuccess)
+	{
+		// 新しい障害物を生成
+		CDeliveryFieldItem* fieldItem = new CDeliveryFieldItem();
+		int random = Math::Rand(1, 4);
+		switch (random)
+		{
+		case 1:
+			// 左1の座標を設定
+			fieldItem->Position(
+				ROAD_LEFT1_POSX,
+				0.0f,
+				ITEM_OFFSET_POSZ
+			);
+			break;
+		case 2:
+			// 左2の座標を設定
+			fieldItem->Position(
+				ROAD_LEFT2_POSX,
+				0.0f,
+				ITEM_OFFSET_POSZ
+			);
+			break;
+		case 3:
+			// 右1の座標を設定
+			fieldItem->Position(
+				ROAD_RIGHT1_POSX,
+				0.0f,
+				ITEM_OFFSET_POSZ
+			);
+			break;
+		case 4:
+			// 右2の座標を設定
+			fieldItem->Position(
+				ROAD_RIGHT2_POSX,
+				0.0f,
+				ITEM_OFFSET_POSZ
+			);
+			break;
+		}
+		// リストに追加
+		mFieldItems.push_back(fieldItem);
+	}
+
+	// 最後に判定したZ座標を家の生成場所に設定
+	mLastFieldItemPopZ = ITEM_OFFSET_POSZ;
 }

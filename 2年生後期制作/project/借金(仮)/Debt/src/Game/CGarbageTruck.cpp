@@ -118,7 +118,7 @@ CGarbageTruck::CGarbageTruck(CModel* model, const CVector& pos, const CVector& r
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
 		ETag::eVehicle,ETag::eField,ETag::eTrashBag });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eCollector,ELayer::eAttackCol,
-		ELayer::eSpawnZone,ELayer::eVehicle,ELayer::eVehicleSearch,
+		ELayer::eVehicle,ELayer::eVehicleSearch,
 		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eTrashBag });
 
 	// 前方向コライダ―

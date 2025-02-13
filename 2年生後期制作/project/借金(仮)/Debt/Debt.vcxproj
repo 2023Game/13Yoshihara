@@ -80,6 +80,7 @@
     <ClCompile Include="src\Game\CDeliveryEnemy.cpp" />
     <ClCompile Include="src\Game\CDeliveryEnemyStatus.cpp" />
     <ClCompile Include="src\Game\CDeliveryField.cpp" />
+    <ClCompile Include="src\Game\CDeliveryFieldItem.cpp" />
     <ClCompile Include="src\Game\CDeliveryFieldManager.cpp" />
     <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp" />
     <ClCompile Include="src\Game\CDeliveryGameScene.cpp" />
@@ -88,6 +89,7 @@
     <ClCompile Include="src\Game\CDeliveryHpUI3D.cpp" />
     <ClCompile Include="src\Game\CDeliveryItem.cpp" />
     <ClCompile Include="src\Game\CDeliveryItemStatus.cpp" />
+    <ClCompile Include="src\Game\CDeliveryObstruction.cpp" />
     <ClCompile Include="src\Game\CDeliveryPlayer.cpp" />
     <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CDeliveryScoreUI.cpp" />
@@ -260,6 +262,7 @@
     <ClInclude Include="src\Game\CDeliveryEnemy.h" />
     <ClInclude Include="src\Game\CDeliveryEnemyStatus.h" />
     <ClInclude Include="src\Game\CDeliveryField.h" />
+    <ClInclude Include="src\Game\CDeliveryFieldItem.h" />
     <ClInclude Include="src\Game\CDeliveryFieldManager.h" />
     <ClInclude Include="src\Game\CDeliveryGameResultUI.h" />
     <ClInclude Include="src\Game\CDeliveryGameScene.h" />
@@ -268,6 +271,7 @@
     <ClInclude Include="src\Game\CDeliveryHpUI3D.h" />
     <ClInclude Include="src\Game\CDeliveryItem.h" />
     <ClInclude Include="src\Game\CDeliveryItemStatus.h" />
+    <ClInclude Include="src\Game\CDeliveryObstruction.h" />
     <ClInclude Include="src\Game\CDeliveryPlayer.h" />
     <ClInclude Include="src\Game\CDeliveryPlayerStatus.h" />
     <ClInclude Include="src\Game\CDeliveryScoreUI.h" />

@@ -56,6 +56,7 @@ void CDeliveryGameScene::Load()
 	CResourceManager::Load<CModel>(		"DeliveryEnemy",	"Character\\DeliveryTruck\\DeliveryTruck_Enemy.obj");
 	CResourceManager::Load<CModel>(		"DeliveryItem",		"Field\\Object\\DeliveryItem.obj");
 	CResourceManager::Load<CModel>(		"DeliveryHome",		"Field\\Object\\DeliveryHome\\DeliveryHome.obj");
+	CResourceManager::Load<CModel>(		"Obstruction",		"Field\\Object\\Obstruction\\Obstruction.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>(		"DeliveryStage_Ground_Collision",	"Field\\DeliveryStage\\CollisionModel\\DeliveryStage_Ground_Collision.obj");
 	CResourceManager::Load<CModel>(		"DeliveryHome_Wall_Collision",		"Field\\Object\\DeliveryHome\\CollisionModel\\DeliveryHome_Wall_Collision.obj");

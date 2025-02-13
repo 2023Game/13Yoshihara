@@ -26,7 +26,7 @@
 // 弾丸のオフセット座標
 #define BULLET_OFFSET_POS_L  CVector(-20.0f,14.75f,10.0f)	// 左
 #define BULLET_OFFSET_POS_R  CVector( 19.0f,14.75f,10.0f)	// 右
-#define BULLET_OFFSET_POS_B1 CVector( 6.5f, 14.75f,41.0f)	// 後ろ1
+#define BULLET_OFFSET_POS_B CVector( 6.5f, 14.75f,41.0f)	// 後ろ1
 #define BULLET_OFFSET_POS_B2 CVector(-7.5f, 14.75f,41.0f)	// 後ろ2
 // 弾丸の方向
 #define BULLET_ROT_LR	CVector(0.0f,90.0f,0.0f) // 左右
@@ -270,12 +270,12 @@ void CDeliveryEnemy::CreateCol()
 		TRUCK_RADIUS
 	);
 	mpBodyCol->Position(BODY_COL_OFFSET_POS);
-	// 地形、プレイヤー、障害物、発射物の攻撃判定
+	// 地形、プレイヤー、障害物、発射物の攻撃判定、アイテム
 	// と衝突判定をする
 	mpBodyCol->SetCollisionTags({ ETag::eField,ETag::ePlayer,
-		ETag::eObstruction,ETag::eBullet });
+		ETag::eObstruction,ETag::eBullet,ETag::eItem });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,ELayer::ePlayer,
-		ELayer::eObstruction,ELayer::eAttackCol });
+		ELayer::eObstruction,ELayer::eAttackCol,ELayer::eItem });
 }
 
 // 指定した位置まで移動する

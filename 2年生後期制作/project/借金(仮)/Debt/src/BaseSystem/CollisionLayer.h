@@ -9,6 +9,7 @@ enum class ELayer
 	eGround,		// 地面
 	eWall,			// 壁
 	eObject,		// オブジェクト
+	eItem,			// アイテム
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用
 	eGoal,			// ゴール
@@ -22,7 +23,6 @@ enum class ELayer
 	eCharaSearch,	// キャラクター探知用
 	eVehicle,		// 車両
 	eVehicleSearch,	// 車両の探知用
-	eSpawnZone,		// 生成場所
 
 	eAttackCol,		// 攻撃判定
 };

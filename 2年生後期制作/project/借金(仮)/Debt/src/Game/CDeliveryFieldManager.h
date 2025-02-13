@@ -2,6 +2,8 @@
 
 class CDeliveryField;
 class CDeliveryHome;
+class CDeliveryObstruction;
+class CDeliveryFieldItem;
 class CSky;
 
 /*
@@ -32,6 +34,10 @@ private:
 	void CreateField();
 	// 家を生成するか判定する
 	void CreateHome();
+	// 障害物を生成するか判定する
+	void CreateObstruction();
+	// アイテムを生成するか判定する
+	void CreateFieldItem();
 
 	// フィールド管理クラスのインスタンス
 	static CDeliveryFieldManager* spInstance;
@@ -40,9 +46,19 @@ private:
 	std::vector<CDeliveryField*> mFields;
 	// 家
 	std::vector<CDeliveryHome*> mHomes;
+	// 障害物
+	std::vector<CDeliveryObstruction*> mObstructions;
+	// アイテム
+	std::vector<CDeliveryFieldItem*> mFieldItems;
 
 	// 一番遠いフィールド
 	CDeliveryField* mpFarField;
+	
 	// 最後に家の生成判定をしたZ座標
-	float mLastPopZ;
+	float mLastHomePopZ;
+	// 最後に障害物の生成判定をしたZ座標
+	float mLastObstructionPopZ;
+	// 最後にアイテムの生成判定をしたZ座標
+	float mLastFieldItemPopZ;
+
 };
