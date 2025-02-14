@@ -359,114 +359,92 @@ void CDeliveryFieldManager::CreateObstruction()
 		// 既に有効なら次へ
 		if (obstruction->IsEnable()) continue;
 
-		// 左1をまだ生成していないなら
-		if (!isPopSuccessL1)
-		{
-			// 左の座標を設定
-			obstruction->Position(
-				ROAD_LEFT1_POSX,
-				0.0f,
-				OBSTRUCTION_OFFSET_POSZ
-			);
-			isPopSuccessL1 = true;
-		}
-		// 左2をまだ生成していないなら
-		else if (!isPopSuccessL2)
-		{
-			// 左の座標を設定
-			obstruction->Position(
-				ROAD_LEFT2_POSX,
-				0.0f,
-				OBSTRUCTION_OFFSET_POSZ
-			);
-			isPopSuccessL2 = true;
-		}
-		// 右1をまだ生成していないなら
-		else if (!isPopSuccessR1)
-		{
-			// 右の座標を設定
-			obstruction->Position(
-				ROAD_RIGHT1_POSX,
-				0.0f,
-				OBSTRUCTION_OFFSET_POSZ
-			);
-			isPopSuccessR1 = true;
-		}
-		// 右2をまだ生成していないなら
-		else if (!isPopSuccessR2)
-		{
-			// 右の座標を設定
-			obstruction->Position(
-				ROAD_RIGHT2_POSX,
-				0.0f,
-				OBSTRUCTION_OFFSET_POSZ
-			);
-			isPopSuccessR2 = true;
-		}
+		// 障害物の座標をランダムで設定
+		ObstructionRandomPos(obstruction,
+			isPopSuccessL1,isPopSuccessL2,
+			isPopSuccessR1, isPopSuccessR2);
 		// 有効
 		obstruction->SetEnable(true);
 		obstruction->SetShow(true);
 	}
 
-	// 左1をまだ生成していないなら
-	if (!isPopSuccessL1)
+	while (!isPopSuccessL1 ||
+		!isPopSuccessL2 ||
+		!isPopSuccessR1 ||
+		!isPopSuccessR2)
 	{
 		// 新しい障害物を生成
 		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
-		// 左の座標を設定
-		obstruction->Position(
-			ROAD_LEFT1_POSX,
-			0.0f,
-			OBSTRUCTION_OFFSET_POSZ
-		);
-		// リストに追加
-		mObstructions.push_back(obstruction);
-	}
-	// 左2をまだ生成していないなら
-	if (!isPopSuccessL2)
-	{
-		// 新しい障害物を生成
-		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
-		// 左の座標を設定
-		obstruction->Position(
-			ROAD_LEFT2_POSX,
-			0.0f,
-			OBSTRUCTION_OFFSET_POSZ
-		);
-		// リストに追加
-		mObstructions.push_back(obstruction);
-	}
-	// 右1をまだ生成していないなら
-	if (!isPopSuccessR1)
-	{
-		// 新しい障害物を生成
-		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
-		// 右の座標を設定
-		obstruction->Position(
-			ROAD_RIGHT1_POSX,
-			0.0f,
-			OBSTRUCTION_OFFSET_POSZ
-		);
-		// リストに追加
-		mObstructions.push_back(obstruction);
-	}
-	// 右2をまだ生成していないなら
-	if (!isPopSuccessR2)
-	{
-		// 新しい障害物を生成
-		CDeliveryObstruction* obstruction = new CDeliveryObstruction();
-		// 右の座標を設定
-		obstruction->Position(
-			ROAD_RIGHT2_POSX,
-			0.0f,
-			OBSTRUCTION_OFFSET_POSZ
-		);
+		// 障害物の座標をランダムで設定
+		ObstructionRandomPos(obstruction,
+			isPopSuccessL1, isPopSuccessL2,
+			isPopSuccessR1, isPopSuccessR2);
 		// リストに追加
 		mObstructions.push_back(obstruction);
 	}
 
 	// 最後に判定したZ座標を家の生成場所に設定
 	mLastObstructionPopZ = OBSTRUCTION_OFFSET_POSZ;
+}
+
+// 障害物の座標をランダムで設定
+void CDeliveryFieldManager::ObstructionRandomPos(
+	CDeliveryObstruction* obstruction,
+	bool& isPopSuccessL1, bool& isPopSuccessL2,
+	bool& isPopSuccessR1, bool& isPopSuccessR2)
+{
+	// 左1をまだ生成していないなら
+	if (!isPopSuccessL1)
+	{
+		// 左の座標を設定
+		obstruction->Position(
+			ROAD_LEFT1_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// 道を設定
+		obstruction->SetRoadType(ERoadType::eLeft1);
+		isPopSuccessL1 = true;
+	}
+	// 左2をまだ生成していないなら
+	else if (!isPopSuccessL2)
+	{
+		// 左の座標を設定
+		obstruction->Position(
+			ROAD_LEFT2_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// 道を設定
+		obstruction->SetRoadType(ERoadType::eLeft2);
+		isPopSuccessL2 = true;
+	}
+	// 右1をまだ生成していないなら
+	else if (!isPopSuccessR1)
+	{
+		// 右の座標を設定
+		obstruction->Position(
+			ROAD_RIGHT1_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// 道を設定
+		obstruction->SetRoadType(ERoadType::eRight1);
+		isPopSuccessR1 = true;
+	}
+	// 右2をまだ生成していないなら
+	else if (!isPopSuccessR2)
+	{
+		// 右の座標を設定
+		obstruction->Position(
+			ROAD_RIGHT2_POSX,
+			0.0f,
+			OBSTRUCTION_OFFSET_POSZ
+		);
+		// 道を設定
+		obstruction->SetRoadType(ERoadType::eRight2);
+		isPopSuccessR2 = true;
+	}
 }
 
 // アイテムを生成するか判定する
@@ -495,43 +473,8 @@ void CDeliveryFieldManager::CreateFieldItem()
 		// まだ生成していないなら
 		if (!isPopSuccess)
 		{
-			// 1から4でランダム
-			int random = Math::Rand(1, 4);
-			switch (random)
-			{
-			case 1:
-				// 左1の座標を設定
-				fieldItem->Position(
-					ROAD_LEFT1_POSX,
-					0.0f,
-					ITEM_OFFSET_POSZ
-				);
-				break;
-			case 2:
-				// 左2の座標を設定
-				fieldItem->Position(
-					ROAD_LEFT2_POSX,
-					0.0f,
-					ITEM_OFFSET_POSZ
-				);
-				break;
-			case 3:
-				// 右1の座標を設定
-				fieldItem->Position(
-					ROAD_RIGHT1_POSX,
-					0.0f,
-					ITEM_OFFSET_POSZ
-				);
-				break;
-			case 4:
-				// 右2の座標を設定
-				fieldItem->Position(
-					ROAD_RIGHT2_POSX,
-					0.0f,
-					ITEM_OFFSET_POSZ
-				);
-				break;
-			}
+			// 座標をランダムで設定
+			ItemRandomPos(fieldItem);
 		}
 		// 生成した
 		isPopSuccess = true;
@@ -545,46 +488,63 @@ void CDeliveryFieldManager::CreateFieldItem()
 	{
 		// 新しい障害物を生成
 		CDeliveryFieldItem* fieldItem = new CDeliveryFieldItem();
-		int random = Math::Rand(1, 4);
-		switch (random)
-		{
-		case 1:
-			// 左1の座標を設定
-			fieldItem->Position(
-				ROAD_LEFT1_POSX,
-				0.0f,
-				ITEM_OFFSET_POSZ
-			);
-			break;
-		case 2:
-			// 左2の座標を設定
-			fieldItem->Position(
-				ROAD_LEFT2_POSX,
-				0.0f,
-				ITEM_OFFSET_POSZ
-			);
-			break;
-		case 3:
-			// 右1の座標を設定
-			fieldItem->Position(
-				ROAD_RIGHT1_POSX,
-				0.0f,
-				ITEM_OFFSET_POSZ
-			);
-			break;
-		case 4:
-			// 右2の座標を設定
-			fieldItem->Position(
-				ROAD_RIGHT2_POSX,
-				0.0f,
-				ITEM_OFFSET_POSZ
-			);
-			break;
-		}
+		
+		// 座標をランダムで設定
+		ItemRandomPos(fieldItem);
+		
 		// リストに追加
 		mFieldItems.push_back(fieldItem);
 	}
 
 	// 最後に判定したZ座標を家の生成場所に設定
 	mLastFieldItemPopZ = ITEM_OFFSET_POSZ;
+}
+
+// アイテムの座標をランダムで設定
+void CDeliveryFieldManager::ItemRandomPos(CDeliveryFieldItem* fieldItem)
+{
+	int random = Math::Rand(1, 4);
+	switch (random)
+	{
+	case 1:
+		// 左1の座標を設定
+		fieldItem->Position(
+			ROAD_LEFT1_POSX,
+			0.0f,
+			ITEM_OFFSET_POSZ
+		);
+		// 道を設定
+		fieldItem->SetRoadType(ERoadType::eLeft1);
+		break;
+	case 2:
+		// 左2の座標を設定
+		fieldItem->Position(
+			ROAD_LEFT2_POSX,
+			0.0f,
+			ITEM_OFFSET_POSZ
+		);
+		// 道を設定
+		fieldItem->SetRoadType(ERoadType::eLeft2);
+		break;
+	case 3:
+		// 右1の座標を設定
+		fieldItem->Position(
+			ROAD_RIGHT1_POSX,
+			0.0f,
+			ITEM_OFFSET_POSZ
+		);
+		// 道を設定
+		fieldItem->SetRoadType(ERoadType::eRight1);
+		break;
+	case 4:
+		// 右2の座標を設定
+		fieldItem->Position(
+			ROAD_RIGHT2_POSX,
+			0.0f,
+			ITEM_OFFSET_POSZ
+		);
+		// 道を設定
+		fieldItem->SetRoadType(ERoadType::eRight2);
+		break;
+	}
 }

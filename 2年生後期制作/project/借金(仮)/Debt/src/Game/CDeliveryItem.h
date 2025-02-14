@@ -5,6 +5,7 @@
 class CModel;
 class CSound;
 
+// 発射する配達物
 class CDeliveryItem : public CObjectBase, public CDeliveryItemStatus
 {
 public:
@@ -29,6 +30,9 @@ public:
 
 	// 移動を設定
 	void SetMoveSpeed(CVector moveSpeed);
+
+	// 持ち主を取得する
+	CObjectBase* GetOwner();
 
 private:
 	// コライダ―を生成

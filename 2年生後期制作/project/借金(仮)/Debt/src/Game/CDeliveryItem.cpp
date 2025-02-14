@@ -167,6 +167,18 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// フィールドの座標を取得
 			mOwnerPos = mpOwner->Position();
 		}
+		// 発射物の場合
+		else if (other->Layer() == ELayer::eAttackCol)
+		{
+			// 発射する配達物の取得
+			CDeliveryItem* item = dynamic_cast<CDeliveryItem*>(other->Owner());
+
+			// 持ち主が同じなら処理しない
+			if (mpOwner == item->GetOwner()) return;
+
+			// 消滅
+			Kill();
+		}
 	}
 }
 
@@ -174,6 +186,12 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 void CDeliveryItem::SetMoveSpeed(CVector moveSpeed)
 {
 	mMoveSpeed = moveSpeed;
+}
+
+// 持ち主を取得する
+CObjectBase* CDeliveryItem::GetOwner()
+{
+	return mpOwner;
 }
 
 // コライダ―を生成
@@ -186,4 +204,10 @@ void CDeliveryItem::CreateCol()
 		CVector(0.0f, ITEM_HEIGHT, -ITEM_WIDTH + ITEM_RADIUS),
 		ITEM_RADIUS * Scale().X()
 	);
+	// プレイヤー、敵、ゴール、発射物、壁、障害物
+	// と衝突判定
+	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
+		ETag::eField,ETag::eBullet,ETag::eObstruction });
+	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
+		ELayer::eGoal,ELayer::eAttackCol,ELayer::eWall,ELayer::eObstruction });
 }

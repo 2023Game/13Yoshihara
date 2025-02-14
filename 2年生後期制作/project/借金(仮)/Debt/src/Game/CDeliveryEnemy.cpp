@@ -3,12 +3,22 @@
 #include "CColliderCapsule.h"
 #include "CDeliveryPlayer.h"
 #include "CDeliveryField.h"
+#include "CDeliveryObstruction.h"
+#include "CDeliveryItem.h"
+#include "CDeliveryFieldItem.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
 #define TRUCK_RADIUS	12.5f	// トラックの半径
 // 本体コライダ―のオフセット座標
 #define BODY_COL_OFFSET_POS CVector(0.0f,0.0f,-3.0f)
+
+// 探知コライダー
+#define SEARCH_HEIGHT	13.0f	// 高さ
+#define SEARCH_WIDTH	32.5f*5.0f	// 幅
+#define SEARCH_RADIUS	12.5f*2.0f	// 半径
+// 探知コライダーのオフセット座標
+#define SEARCH_OFFSET_POS CVector(0.0f,0.0f,50.0f)
 
 #define EYE_HEIGHT 5.0f		// 視点の高さ
 
@@ -20,24 +30,35 @@
 // 車線変更時の車線のオフセット座標
 #define CHANGE_ROAD_OFFSET_POS_L CVector(-40.0f,0.0f,-10.0f)
 #define CHANGE_ROAD_OFFSET_POS_R CVector( 40.0f,0.0f,-10.0f)
-// 閾値
+// 車線変更時の閾値
 #define CHANGE_ROAD_THRESHOLD 0.1f
 
 // 弾丸のオフセット座標
 #define BULLET_OFFSET_POS_L  CVector(-20.0f,14.75f,10.0f)	// 左
 #define BULLET_OFFSET_POS_R  CVector( 19.0f,14.75f,10.0f)	// 右
-#define BULLET_OFFSET_POS_B CVector( 6.5f, 14.75f,41.0f)	// 後ろ1
-#define BULLET_OFFSET_POS_B2 CVector(-7.5f, 14.75f,41.0f)	// 後ろ2
+#define BULLET_OFFSET_POS_B  CVector( 0.0f, 14.75f,41.0f)	// 後ろ
 // 弾丸の方向
 #define BULLET_ROT_LR	CVector(0.0f,90.0f,0.0f) // 左右
 
 // ダメージ後の無敵時間
 #define INVINCIBLE_TIME 1.0f
 // 点滅間隔
-#define HIT_FLASH_INTERVAL 0.25f
+#define HIT_FLASH_INTERVAL 0.1f
+// 撃てる間隔
+#define SHOOT_INTERVAL 0.5f
 
 // 消滅するZ座標
 #define DELETE_POSZ 300.0f
+
+// 移動の間隔の時間
+#define MOVE_INTERVAL_TIME 0.4f
+// プレイヤーが横にいるかの閾値
+#define SIDE_PLAYER_THRESHOLD 200.0f
+// 車線変更するかの閾値
+#define CHANGE_ROAD_PLAYER_THRESHOLD 50.0f
+
+// 敵の定位置のZ座標
+#define ENEMY_POSZ -50.0f
 
 // コンストラクタ
 CDeliveryEnemy::CDeliveryEnemy()
@@ -50,6 +71,17 @@ CDeliveryEnemy::CDeliveryEnemy()
 	, CDeliveryEnemyStatus()
 	, mInvincibleTime(0.0f)
 	, mHitFlashTime(0.0f)
+	, mLeftShootTime(0.0f)
+	, mRightShootTime(0.0f)
+	, mBackShootTime(0.0f)
+	, mIsLeft1Danger(false)
+	, mIsLeft2Danger(false)
+	, mIsRight1Danger(false)
+	, mIsRight2Danger(false)
+	, mIsLeft1Item(false)
+	, mIsLeft2Item(false)
+	, mIsRight1Item(false)
+	, mIsRight2Item(false)
 
 {
 	// 移動状態
@@ -69,6 +101,7 @@ CDeliveryEnemy::CDeliveryEnemy()
 // デストラクタ
 CDeliveryEnemy::~CDeliveryEnemy()
 {
+	SAFE_DELETE(mpSearchCol);
 }
 
 // ダメージを受ける
@@ -111,6 +144,25 @@ void CDeliveryEnemy::Update()
 	// ダメージを受けていたら点滅する
 	HitFlash();
 
+	// 移動か車線変更状態なら
+	if (mState == EState::eMove ||
+		mState == EState::eChangeRoad)
+	{
+		// 条件を満たしたとき射撃
+		Shoot();
+	}
+
+	// 道が危険かをリセット
+	SetRoadDanger(ERoadType::eLeft1, false);
+	SetRoadDanger(ERoadType::eLeft2, false);
+	SetRoadDanger(ERoadType::eRight1, false);
+	SetRoadDanger(ERoadType::eRight2, false);
+	// 道にアイテムがあるかをリセット
+	SetRoadItem(ERoadType::eLeft1, false);
+	SetRoadItem(ERoadType::eLeft2, false);
+	SetRoadItem(ERoadType::eRight1, false);
+	SetRoadItem(ERoadType::eRight2, false);
+
 	// 基底クラスの更新
 	CEnemyBase::Update();
 
@@ -134,6 +186,30 @@ void CDeliveryEnemy::Collision(CCollider* self, CCollider* other, const CHitInfo
 		{
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			player->TakeDamage(GetAttackPower(), this);
+		}
+	}
+	// 探知コライダ―
+	else if (self == mpSearchCol)
+	{
+		// 障害物の場合
+		if (other->Layer() == ELayer::eObstruction)
+		{
+			// 障害物の取得
+			CDeliveryObstruction* obstruction = dynamic_cast<CDeliveryObstruction*>(other->Owner());
+			// 存在する道
+			ERoadType roadType = obstruction->GetRoadType();
+			// 存在する道が危険
+			SetRoadDanger(roadType, true);
+		}
+		// アイテムの場合
+		else if (other->Layer() == ELayer::eItem)
+		{
+			// フィールドアイテムクラスの取得
+			CDeliveryFieldItem* fieldItem = dynamic_cast<CDeliveryFieldItem*>(other->Owner());
+			// 存在する道
+			ERoadType roadType = fieldItem->GetRoadType();
+			// 道にアイテムがあることを設定
+			SetRoadItem(roadType, true);
 		}
 	}
 }
@@ -208,16 +284,116 @@ void CDeliveryEnemy::UpdateMove()
 		targetPosX = ROAD_RIGHT2_POSX;
 		break;
 	}
-	// 使用しないので
-	// 目的地を自分に設定しておく
-	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
-	Position(mTargetPos);
+
+	// プレイヤー取得
+	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());
+	// プレイヤーの座標
+	CVector playerPos = player->Position();
+	// プレイヤーのいる道
+	ERoadType playerRoadType = player->GetRoadType();
+	// 同じ道かつ、プレイヤーの方が奥にいるかつ、
+	// エリア内かつ、ダメージを受けていない場合
+	if (mRoadType == playerRoadType &&
+		Position().Z() > playerPos.Z() &&
+		playerPos.Z() >= ROAD_Z_AREA_M &&
+		!player->IsDamaging())
+	{
+		// プレイヤーを目的地にする
+		mTargetPos = CVector(targetPosX, Position().Y(), playerPos.Z());
+	}
+	// それ以外は
+	else
+	{
+		// 目的地は定位置
+		mTargetPos = CVector(targetPosX, Position().Y(), ENEMY_POSZ);
+	}
+	// 目的地へ移動
+	// 移動方向は向かない
+	if (MoveTo(mTargetPos, GetBaseMoveSpeed(), 0.0f))
+	{
+
+	}
+
+	CVector forward = CVector::Slerp(VectorZ(), CVector::back, 0.125f);
+	Rotation(CQuaternion::LookRotation(forward));
+
+	// 経過時間を計算
+	mElapsedTime += Times::DeltaTime();
+
+	// 今いる道が危険なら車線変更する
+	if (GetNowRoadDanger())
+	{
+		switch (mRoadType)
+		{
+		case ERoadType::eLeft1:
+			// 右へ移動
+			GetTargetPos(false);
+			break;
+		case ERoadType::eLeft2:
+			// 左の道が危険でない場合
+			if (!GetRoadDanger(ERoadType::eLeft1))
+			{
+				// 左へ移動
+				GetTargetPos(true);
+			}
+			// それ以外右へ移動
+			else
+			{
+				// 右へ移動
+				GetTargetPos(false);
+			}
+			break;
+		case ERoadType::eRight1:
+			// 左へ移動
+			GetTargetPos(true);
+			break;
+		case ERoadType::eRight2:
+			// 右の道が危険でない場合
+			if (!GetRoadDanger(ERoadType::eRight1))
+			{
+				// 右へ移動
+				GetTargetPos(false);
+			}
+			// それ以外右へ移動
+			else
+			{
+				// 左へ移動
+				GetTargetPos(true);
+			}
+			break;
+		}
+		// 車線変更状態へ
+		ChangeState(EState::eChangeRoad);
+		return;
+	}
+
+	// 左右にアイテムがあり、安全の場合は車線を変更する
+	ChangeRoadToItem();
 }
 
 // 車線変更の更新処理
 void CDeliveryEnemy::UpdateChangeRoad()
 {
 	mMoveSpeed = CVector::zero;
+	// 目的地のX座標
+	float targetPosX = 0.0f;
+	switch (mTargetRoadType)
+	{
+	case ERoadType::eLeft1:
+		targetPosX = ROAD_LEFT1_POSX;
+		break;
+	case ERoadType::eLeft2:
+		targetPosX = ROAD_LEFT2_POSX;
+		break;
+	case ERoadType::eRight1:
+		targetPosX = ROAD_RIGHT1_POSX;
+		break;
+	case ERoadType::eRight2:
+		targetPosX = ROAD_RIGHT2_POSX;
+		break;
+	}
+	// 目的地を設定
+	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
 
 	// 目的地へ移動
 	MoveTo(mTargetPos, GetBaseMoveSpeed(), ROTATE_SPEED);
@@ -237,8 +413,13 @@ void CDeliveryEnemy::UpdateChangeRoad()
 // 死亡の更新処理
 void CDeliveryEnemy::UpdateDeath()
 {
+	// 奥側を向かせる
+	CVector forward = CVector::Slerp(VectorZ(), CVector::back, 0.125f);
+	Rotation(CQuaternion::LookRotation(forward));
+	// 手前へ移動
 	float moveSpeed = GetBaseMoveSpeed() * 0.2f * Times::DeltaTime();
-	mMoveSpeed = -VectorZ() * moveSpeed;
+	mMoveSpeed = CVector::forward * moveSpeed;
+	// 削除座標を超えたら
 	if (Position().Z() > DELETE_POSZ)
 	{
 		// 無効
@@ -256,6 +437,37 @@ void CDeliveryEnemy::Death()
 	mIsDamage = false;
 	// 死亡状態へ
 	ChangeState(EState::eDeath);
+}
+
+// 死んでいるかどうか
+bool CDeliveryEnemy::IsDeath() const
+{
+	// 死亡状態の場合
+	if (mState == EState::eDeath)
+	{
+		return true;
+	}
+	return false;
+}
+
+// 道が危険かを設定
+void CDeliveryEnemy::SetRoadDanger(ERoadType roadType, bool danger)
+{
+	switch (roadType)
+	{
+	case ERoadType::eLeft1:
+		mIsLeft1Danger = danger;
+		break;
+	case ERoadType::eLeft2:
+		mIsLeft2Danger = danger;
+		break;
+	case ERoadType::eRight1:
+		mIsRight1Danger = danger;
+		break;
+	case ERoadType::eRight2:
+		mIsRight2Danger = danger;
+		break;
+	}
 }
 
 // コライダ―を生成
@@ -276,6 +488,20 @@ void CDeliveryEnemy::CreateCol()
 		ETag::eObstruction,ETag::eBullet,ETag::eItem });
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,ELayer::ePlayer,
 		ELayer::eObstruction,ELayer::eAttackCol,ELayer::eItem });
+
+	// 探知コライダー
+	mpSearchCol = new CColliderCapsule
+	(
+		this, ELayer::eSearch,
+		CVector(SEARCH_WIDTH - SEARCH_RADIUS, SEARCH_HEIGHT, 0.0f),
+		CVector(-SEARCH_WIDTH + SEARCH_RADIUS, SEARCH_HEIGHT, 0.0f),
+		SEARCH_RADIUS,
+		true
+	);
+	mpSearchCol->Position(SEARCH_OFFSET_POS);
+	// 障害物、アイテムと衝突判定
+	mpSearchCol->SetCollisionTags({ ETag::eObstruction,ETag::eItem });
+	mpSearchCol->SetCollisionLayers({ ELayer::eObstruction,ELayer::eItem });
 }
 
 // 指定した位置まで移動する
@@ -345,5 +571,295 @@ void CDeliveryEnemy::HitFlash()
 		}
 		mHitFlashTime += Times::DeltaTime();
 		mInvincibleTime += Times::DeltaTime();
+	}
+}
+
+// 条件を満たしたときに射撃する
+void CDeliveryEnemy::Shoot()
+{
+	// Hpが5以上ある場合しか撃たない
+	if (GetHp() <= 5) return;
+
+	// プレイヤー取得
+	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());
+	// プレイヤー座標
+	CVector playerPos = player->Position();
+	// プレイヤーのいる道
+	ERoadType playerRoadType = player->GetRoadType();
+	mBackShootTime -= Times::DeltaTime();
+	// 同じ道かつ、後ろにいるかつ、
+	// 撃つインターバルが終わっている場合
+	if (mRoadType == playerRoadType &&
+		Position().Z() < playerPos.Z() &&
+		mBackShootTime <= 0.0f)
+	{
+		// インターバルを設定
+		mBackShootTime = SHOOT_INTERVAL;
+		// 配達物1を生成
+		CDeliveryItem* item1 = new CDeliveryItem(this);
+		// 座標を設定
+		item1->Position(Position() + BULLET_OFFSET_POS_B);
+		// 移動速度
+		float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
+		// 移動を設定
+		item1->SetMoveSpeed(-VectorZ() * moveSpeedZ);
+
+		// Hpを減らす
+		TakeDamage(1, nullptr, true);
+	}
+}
+
+// 車線変更先の座標を求める
+CVector CDeliveryEnemy::GetTargetPos(bool isLeft)
+{
+	// 自分の座標を取得
+	CVector targetPos = Position();
+	// 車線変更中の場合
+	if (mState == EState::eChangeRoad)
+	{
+		// 移動の方向が逆なら
+		if (mIsLeftMove != isLeft)
+		{
+			// 自分の道に戻す
+			mTargetRoadType = mRoadType;
+			// 座標を設定
+			switch (mTargetRoadType)
+			{
+			case ERoadType::eLeft1:
+				targetPos.X(ROAD_LEFT1_POSX);
+				break;
+			case ERoadType::eLeft2:
+				targetPos.X(ROAD_LEFT2_POSX);
+				break;
+			case ERoadType::eRight1:
+				targetPos.X(ROAD_RIGHT1_POSX);
+				break;
+			case ERoadType::eRight2:
+				targetPos.X(ROAD_RIGHT2_POSX);
+				break;
+			}
+			// 移動方向を設定
+			mIsLeftMove = isLeft;
+			// 目標座標を返す
+			return targetPos;
+		}
+	}
+	// 左右どちらへ移動するかを設定
+	mIsLeftMove = isLeft;
+	// 自分が今いる道と左右どちらかの移動なのか
+	// から目的地を決定
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT1_POSX);
+			mTargetRoadType = ERoadType::eLeft1;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_LEFT2_POSX);
+			mTargetRoadType = ERoadType::eLeft2;
+		}
+		break;
+	case ERoadType::eLeft2:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT1_POSX);
+			mTargetRoadType = ERoadType::eLeft1;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT2_POSX);
+			mTargetRoadType = ERoadType::eRight2;
+		}
+		break;
+	case ERoadType::eRight1:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_RIGHT2_POSX);
+			mTargetRoadType = ERoadType::eRight2;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT1_POSX);
+			mTargetRoadType = ERoadType::eRight1;
+		}
+		break;
+	case ERoadType::eRight2:
+		// 左移動
+		if (isLeft)
+		{
+			targetPos.X(ROAD_LEFT2_POSX);
+			mTargetRoadType = ERoadType::eLeft2;
+		}
+		// 右移動
+		else
+		{
+			targetPos.X(ROAD_RIGHT1_POSX);
+			mTargetRoadType = ERoadType::eRight1;
+		}
+		break;
+	}
+	return targetPos;
+}
+
+// 今いる道が危険か
+bool CDeliveryEnemy::GetNowRoadDanger() const
+{
+	// 自分がいる道が危険か
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		return mIsLeft1Danger;
+		break;
+	case ERoadType::eLeft2:
+		return mIsLeft2Danger;
+		break;
+	case ERoadType::eRight1:
+		return mIsRight1Danger;
+		break;
+	case ERoadType::eRight2:
+		return mIsRight2Danger;
+		break;
+	}
+}
+
+// 指定した道が危険か
+bool CDeliveryEnemy::GetRoadDanger(ERoadType roadType) const
+{
+	switch (roadType)
+	{
+	case ERoadType::eLeft1:
+		return mIsLeft1Danger;
+		break;
+	case ERoadType::eLeft2:
+		return mIsLeft2Danger;
+		break;
+	case ERoadType::eRight1:
+		return mIsRight1Danger;
+		break;
+	case ERoadType::eRight2:
+		return mIsRight2Danger;
+		break;
+	}
+}
+
+// 指定した道にアイテムがあるかを設定する
+void CDeliveryEnemy::SetRoadItem(ERoadType roadType, bool isItem)
+{
+	switch (roadType)
+	{
+	case ERoadType::eLeft1:
+		mIsLeft1Item = isItem;
+		break;
+	case ERoadType::eLeft2:
+		mIsLeft2Item = isItem;
+		break;
+	case ERoadType::eRight1:
+		mIsRight1Item = isItem;
+		break;
+	case ERoadType::eRight2:
+		mIsRight2Item = isItem;
+		break;
+	}
+}
+
+// 指定した道にアイテムがあるか
+bool CDeliveryEnemy::GetRoadItem(ERoadType roadType) const
+{
+	switch (roadType)
+	{
+	case ERoadType::eLeft1:
+		return mIsLeft1Item;
+		break;
+	case ERoadType::eLeft2:
+		return mIsLeft2Item;
+		break;
+	case ERoadType::eRight1:
+		return mIsRight1Item;
+		break;
+	case ERoadType::eRight2:
+		return mIsRight2Item;
+		break;
+	}
+}
+
+// 左右にアイテムがある場合に車線を変更する
+void CDeliveryEnemy::ChangeRoadToItem()
+{
+	// 車線変更をするか
+	bool isChangeRoad = false;
+	switch (mRoadType)
+	{
+	case ERoadType::eLeft1:
+		// 右の道にアイテムがあり、安全な場合
+		if (GetRoadItem(ERoadType::eLeft2) &&
+			!GetRoadDanger(ERoadType::eLeft2))
+		{
+			// 右へ移動
+			GetTargetPos(false);
+			isChangeRoad = true;
+		}
+		break;
+	case ERoadType::eLeft2:
+		// 右の道にアイテムがあり、安全な場合
+		if (GetRoadItem(ERoadType::eRight2) &&
+			!GetRoadDanger(ERoadType::eRight2))
+		{
+			// 右へ移動
+			GetTargetPos(false);
+			isChangeRoad = true;
+		}
+		// 左の道にアイテムがあり、安全な場合
+		else if (GetRoadItem(ERoadType::eLeft1) &&
+			!GetRoadDanger(ERoadType::eLeft1))
+		{
+			// 左へ移動
+			GetTargetPos(true);
+			isChangeRoad = true;
+		}
+		break;
+	case ERoadType::eRight1:
+		// 左の道にアイテムがあり、安全な場合
+		if (GetRoadItem(ERoadType::eRight2) &&
+			!GetRoadDanger(ERoadType::eRight2))
+		{
+			// 左へ移動
+			GetTargetPos(true);
+			isChangeRoad = true;
+		}
+		break;
+	case ERoadType::eRight2:
+		// 右の道にアイテムがあり、安全な場合
+		if (GetRoadItem(ERoadType::eRight1) &&
+			!GetRoadDanger(ERoadType::eRight1))
+		{
+			// 右へ移動
+			GetTargetPos(false);
+			isChangeRoad = true;
+		}
+		// 左の道にアイテムがあり、安全な場合
+		else if (GetRoadItem(ERoadType::eLeft2) &&
+			!GetRoadDanger(ERoadType::eLeft2))
+		{
+			// 左へ移動
+			GetTargetPos(true);
+			isChangeRoad = true;
+		}
+		break;
+	}
+
+	// 車線変更するなら
+	if (isChangeRoad)
+	{
+		// 車線変更状態へ
+		ChangeState(EState::eChangeRoad);
 	}
 }

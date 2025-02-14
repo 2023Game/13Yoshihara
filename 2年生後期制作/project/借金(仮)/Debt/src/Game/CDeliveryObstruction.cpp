@@ -19,6 +19,7 @@
 // コンストラクタ
 CDeliveryObstruction::CDeliveryObstruction()
 	: CObjectBase(ETag::eObstruction, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
+	, mRoadType(ERoadType::eLeft1)
 {
 	// スケールを設定
 	Scale(Scale() * 2.0f);
@@ -86,6 +87,18 @@ void CDeliveryObstruction::Collision(CCollider* self, CCollider* other, const CH
 	}
 }
 
+// どの道にいるかを取得する
+ERoadType CDeliveryObstruction::GetRoadType() const
+{
+	return mRoadType;
+}
+
+// どの道にいるか設定する
+void CDeliveryObstruction::SetRoadType(ERoadType roadType)
+{
+	mRoadType = roadType;
+}
+
 // コライダ―を生成
 void CDeliveryObstruction::CreateCol()
 {
@@ -96,11 +109,11 @@ void CDeliveryObstruction::CreateCol()
 		BODY_RADIUS,
 		true
 	);
-	// プレイヤー、敵、発射物、アイテム
+	// プレイヤー、敵、発射物、アイテム、探知
 	// と衝突判定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
 		ETag::eBullet,ETag::eItem });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eAttackCol,ELayer::eItem });
+		ELayer::eAttackCol,ELayer::eItem,ELayer::eSearch });
 	mpBodyCol->Position(BODY_OFFSET_POS);
 }

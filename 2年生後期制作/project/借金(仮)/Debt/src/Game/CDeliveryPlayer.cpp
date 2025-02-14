@@ -36,7 +36,9 @@
 // ダメージ後の無敵時間
 #define INVINCIBLE_TIME 1.0f
 // 点滅間隔
-#define HIT_FLASH_INTERVAL 0.25f
+#define HIT_FLASH_INTERVAL 0.1f
+// 撃てる間隔
+#define SHOOT_INTERVAL 0.1f
 
 // コンストラクタ
 CDeliveryPlayer::CDeliveryPlayer()
@@ -44,6 +46,9 @@ CDeliveryPlayer::CDeliveryPlayer()
 	, CDeliveryPlayerStatus()
 	, mInvincibleTime(0.0f)
 	, mHitFlashTime(0.0f)
+	, mLeftShootTime(0.0f)
+	, mRightShootTime(0.0f)
+	, mBackShootTime(0.0f)
 	, mTargetPos(CVector::zero)
 	, mDeliveryNum(0)
 	, mDestroyEnemyNum(0)
@@ -169,6 +174,33 @@ void CDeliveryPlayer::Collision(CCollider* self, CCollider* other, const CHitInf
 					// 自分のいた道へ戻る
 					mTargetRoadType = mRoadType;
 				}
+			}
+			// 移動状態かつ、敵が死んでいる場合
+			else if (mState==EState::eMove &&
+				enemy->IsDeath())
+			{
+				switch (mRoadType)
+				{
+				case ERoadType::eLeft1:
+					mIsLeftMove = false;
+					mTargetRoadType = ERoadType::eLeft2;
+					break;
+				case ERoadType::eLeft2:
+					mIsLeftMove = false;
+					mTargetRoadType = ERoadType::eRight2;
+					break;
+				case ERoadType::eRight1:
+					mIsLeftMove = true;
+					mTargetRoadType = ERoadType::eRight2;
+					break;
+				case ERoadType::eRight2:
+					mIsLeftMove = true;
+					mTargetRoadType = ERoadType::eLeft2;
+					break;
+				}
+				// 車線変更
+				ChangeState(EState::eChangeRoad);
+				return;
 			}
 		}
 	}
@@ -413,13 +445,20 @@ void CDeliveryPlayer::ActionInput()
 		ChangeState(EState::eChangeRoad);
 		return;
 	}
-
+	// Hpが一つもない場合撃てない
+	if (GetHp() <= 0) return;
+	// インターバルを経過させる
+	mLeftShootTime -= Times::DeltaTime();
+	mRightShootTime -= Times::DeltaTime();
+	mBackShootTime -= Times::DeltaTime();
 	// 左クリックで、左方向へ射撃
 	if (CInput::PushKey(VK_LBUTTON))
 	{
-		// Hpが1以上ある場合
-		if (GetHp() >= 1)
+		// 撃つインターバルが終わっている
+		if (mLeftShootTime <= 0.0f)
 		{
+			// インターバルを設定
+			mLeftShootTime = SHOOT_INTERVAL;
 			// 配達物を生成
 			CDeliveryItem* item = new CDeliveryItem(this);
 			// 座標を設定
@@ -438,9 +477,11 @@ void CDeliveryPlayer::ActionInput()
 	// 右クリックで、右方向へ射撃
 	if (CInput::PushKey(VK_RBUTTON))
 	{
-		// Hpが1以上ある場合
-		if (GetHp() >= 1)
+		// 撃つインターバルが終わっている
+		if (mRightShootTime <= 0.0f)
 		{
+			// インターバルを設定
+			mRightShootTime = SHOOT_INTERVAL;
 			// 配達物を生成
 			CDeliveryItem* item = new CDeliveryItem(this);
 			// 座標を設定
@@ -459,9 +500,11 @@ void CDeliveryPlayer::ActionInput()
 	// スペースキーで、後方へ射撃
 	if (CInput::PushKey(VK_SPACE))
 	{
-		// Hpが1以上ある場合
-		if (GetHp() >= 1)
+		// 撃つインターバルが終わっている
+		if (mBackShootTime <= 0.0f)
 		{
+			// インターバルを設定
+			mBackShootTime = SHOOT_INTERVAL;
 			// 配達物1を生成
 			CDeliveryItem* item1 = new CDeliveryItem(this);
 			// 座標を設定
@@ -510,10 +553,46 @@ void CDeliveryPlayer::HitFlash()
 // 車線変更先の座標を求める
 CVector CDeliveryPlayer::GetTargetPos(bool isLeft)
 {
-	// 左右どちらへ移動するかを設定
-	mIsLeftMove = isLeft;
 	// 自分の座標を取得
 	CVector targetPos = Position();
+	// 車線変更中の場合
+	if (mState == EState::eChangeRoad)
+	{
+		// 移動の方向が逆なら
+		if (mIsLeftMove != isLeft)
+		{
+			// 自分の道に戻す
+			mTargetRoadType = mRoadType;
+			// 座標を設定
+			switch (mTargetRoadType)
+			{
+			case ERoadType::eLeft1:
+				targetPos.X(ROAD_LEFT1_POSX);
+				break;
+			case ERoadType::eLeft2:
+				targetPos.X(ROAD_LEFT2_POSX);
+				break;
+			case ERoadType::eRight1:
+				targetPos.X(ROAD_RIGHT1_POSX);
+				break;
+			case ERoadType::eRight2:
+				targetPos.X(ROAD_RIGHT2_POSX);
+				break;
+			}
+			// 移動方向を設定
+			mIsLeftMove = isLeft;
+			// 目標座標を返す
+			return targetPos;
+		}
+		// 移動方向が同じなら
+		else
+		{
+			// 現在の目的地を基準に考える
+			mRoadType = mTargetRoadType;
+		}
+	}
+	// 左右どちらへ移動するかを設定
+	mIsLeftMove = isLeft;
 	// 自分が今いる道と左右どちらかの移動なのか
 	// から目的地を決定
 	switch (mRoadType)

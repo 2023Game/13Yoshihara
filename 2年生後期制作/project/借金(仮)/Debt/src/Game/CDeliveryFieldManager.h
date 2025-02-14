@@ -36,8 +36,20 @@ private:
 	void CreateHome();
 	// 障害物を生成するか判定する
 	void CreateObstruction();
+	/// <summary>
+	/// 障害物の座標をランダムで設定
+	/// </summary>
+	/// <param name="obstruction">障害物のポインタ</param>
+	/// <param name="isPopSuccess～">
+	/// その道に生成が成功したかの参照</param>
+	void ObstructionRandomPos(CDeliveryObstruction* obstruction,
+		bool& isPopSuccessL1, bool& isPopSuccessL2,
+		bool& isPopSuccessR1, bool& isPopSuccessR2);
+
 	// アイテムを生成するか判定する
 	void CreateFieldItem();
+	// アイテムの座標をランダムで設定
+	void ItemRandomPos(CDeliveryFieldItem* fieldItem);
 
 	// フィールド管理クラスのインスタンス
 	static CDeliveryFieldManager* spInstance;

@@ -44,6 +44,12 @@ public:
 	// 現在の車道を取得
 	ERoadType GetRoadType() const;
 
+	// 死んでいるかどうか
+	bool IsDeath() const override;
+
+	// 道が危険かを設定
+	void SetRoadDanger(ERoadType roadType, bool danger);
+
 private:
 	// 状態
 	enum class EState
@@ -59,6 +65,9 @@ private:
 	float mElapsedTime;			// 経過時間計測用
 	float mInvincibleTime;		// 無敵時間計測用
 	float mHitFlashTime;		// 点滅間隔計測用
+	float mLeftShootTime;		// 左に撃てる間隔計測用
+	float mRightShootTime;		// 右に撃てる間隔計測用
+	float mBackShootTime;		// 後に撃てる間隔計測用
 
 #if _DEBUG
 	// 状態の文字列を取得
@@ -75,19 +84,65 @@ private:
 
 	// コライダ―を生成
 	void CreateCol();
-	// 指定した位置まで移動する
+
+	/// <summary>
+	/// 指定した位置まで移動する 
+	/// </summary>
+	/// <param name="targetPos">目的地</param>
+	/// <param name="speed">移動速度</param>
+	/// <param name="rotateSpeed">回転速度</param>
+	/// <returns>着いたか</returns>
 	bool MoveTo(const CVector& targetPos, float speed, float rotateSpeed);
+	
 	// ダメージの点滅と無敵時間の処理
 	void HitFlash();
+	
+	// 条件を満たしたときに射撃する
+	void Shoot();
 
 	// 3dモデル
 	CModel* mpModel;
+
+	// 探知コライダ―
+	CCollider* mpSearchCol;
 
 	// 車線変更の目的地
 	CVector mTargetPos;
 	// 目的地の車道の種類
 	ERoadType mTargetRoadType;
+	// 左移動か
+	bool mIsLeftMove;
 
 	// 現在の車道
 	ERoadType mRoadType;
+
+	/// <summary>
+	/// 車線変更先の座標を求める
+	/// </summary>
+	/// <param name="isLeft">左か</param>
+	/// <returns></returns>
+	CVector GetTargetPos(bool isLeft);
+
+	// 道ごとにそのままだと危険か
+	bool mIsLeft1Danger;	// 左1
+	bool mIsLeft2Danger;	// 左2
+	bool mIsRight1Danger;	// 右1
+	bool mIsRight2Danger;	// 右2
+	// 道ごとにアイテムがあるか
+	bool mIsLeft1Item;	// 左1
+	bool mIsLeft2Item;	// 左2
+	bool mIsRight1Item;	// 右1
+	bool mIsRight2Item;	// 右2
+
+	// 今いる道が危険か
+	bool GetNowRoadDanger() const;
+	// 指定した道が危険か
+	bool GetRoadDanger(ERoadType roadType) const;
+
+	// 指定した道にアイテムがあるかを設定する
+	void SetRoadItem(ERoadType roadType, bool isItem);
+	// 指定した道にアイテムがあるか
+	bool GetRoadItem(ERoadType roadType) const;
+	// 左右にアイテムがある場合に車線を変更する
+	void ChangeRoadToItem();
 };

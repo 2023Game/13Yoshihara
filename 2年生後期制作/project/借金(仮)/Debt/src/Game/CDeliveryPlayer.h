@@ -79,6 +79,9 @@ private:
 	float mElapsedTime;			// 経過時間計測用
 	float mInvincibleTime;		// 無敵時間計測用
 	float mHitFlashTime;		// 点滅間隔計測用
+	float mLeftShootTime;		// 左に撃てる間隔計測用
+	float mRightShootTime;		// 右に撃てる間隔計測用
+	float mBackShootTime;		// 後に撃てる間隔計測用
 
 #if _DEBUG
 	// 状態の文字列を取得

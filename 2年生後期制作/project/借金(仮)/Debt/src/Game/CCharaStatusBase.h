@@ -14,7 +14,7 @@ public:
 	// €–S
 	virtual void Death();
 	// €‚ñ‚Å‚¢‚é‚©‚Ç‚¤‚©
-	bool IsDeath() const;
+	virtual bool IsDeath() const;
 
 	// Å‘åHP‚ğæ“¾
 	int GetMaxHp() const;

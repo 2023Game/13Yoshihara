@@ -5,7 +5,7 @@
 #define JUMP_SPEED 0.0f					// ジャンプ速度
 #define ATTACK_POWER 1					// 攻撃力
 #define SCORE 1000						// 得点
-#define THROW_SPEED						// 投げる速度
+#define THROW_SPEED	7.5f * 60.0f		// 投げる速度
 
 // Hp一つ当たりの移動速度の減少値
 #define SPEED_DOWN 7.5f

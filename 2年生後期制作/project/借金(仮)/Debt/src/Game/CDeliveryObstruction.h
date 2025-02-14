@@ -1,5 +1,6 @@
 #pragma once
 #include "CObjectBase.h"
+#include "RoadType.h"
 
 class CModel;
 
@@ -24,6 +25,12 @@ public:
 	/// <param name="other">衝突した相手のコライダー</param>
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
+	
+	// どの道にいるかを取得する
+	ERoadType GetRoadType() const;
+	// どの道にいるか設定する
+	void SetRoadType(ERoadType roadType);
+
 private:
 	// コライダ―を生成
 	void CreateCol();
@@ -31,4 +38,6 @@ private:
 	CModel* mpModel;
 	// 本体コライダ―
 	CCollider* mpBodyCol;
+	// どの道にあるか
+	ERoadType mRoadType;
 };
