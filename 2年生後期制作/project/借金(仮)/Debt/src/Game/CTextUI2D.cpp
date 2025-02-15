@@ -8,7 +8,7 @@
 CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, pauseType, false, addTaskList)
 {
-	// タイトルロゴのフォントデータを生成
+	// フォントデータを生成
 	mpFont = new CFont(fontPath);
 	mpFont->SetFontSize(DEFAULT_FONT_SIZE);
 	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_LEFT);

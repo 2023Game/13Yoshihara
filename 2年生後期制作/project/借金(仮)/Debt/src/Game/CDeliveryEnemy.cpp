@@ -6,6 +6,7 @@
 #include "CDeliveryObstruction.h"
 #include "CDeliveryItem.h"
 #include "CDeliveryFieldItem.h"
+#include "CDeliveryHpUI3D.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
@@ -41,7 +42,7 @@
 #define BULLET_ROT_LR	CVector(0.0f,90.0f,0.0f) // 左右
 
 // ダメージ後の無敵時間
-#define INVINCIBLE_TIME 1.0f
+#define INVINCIBLE_TIME 0.5f
 // 点滅間隔
 #define HIT_FLASH_INTERVAL 0.1f
 // 撃てる間隔
@@ -53,12 +54,13 @@
 // 移動の間隔の時間
 #define MOVE_INTERVAL_TIME 0.4f
 // プレイヤーが横にいるかの閾値
-#define SIDE_PLAYER_THRESHOLD 200.0f
-// 車線変更するかの閾値
-#define CHANGE_ROAD_PLAYER_THRESHOLD 50.0f
+#define SIDE_PLAYER_THRESHOLD 50.0f
 
 // 敵の定位置のZ座標
 #define ENEMY_POSZ -50.0f
+
+// Hpゲージのオフセット座標
+#define HP_UI_OFFSET_POS CVector(0.0f,30.0f*2.0f,0.0f)
 
 // コンストラクタ
 CDeliveryEnemy::CDeliveryEnemy()
@@ -94,6 +96,14 @@ CDeliveryEnemy::CDeliveryEnemy()
 	mIsGravity = false;
 	mpModel = CResourceManager::Get<CModel>("DeliveryEnemy");
 
+	// HpUIを生成
+	mpHpUI = new CDeliveryHpUI3D(this);
+	// 現在のHPを設定
+	mpHpUI->SetCurrPoint(GetHp());
+	// 無効
+	mpHpUI->SetEnable(false);
+	mpHpUI->SetShow(false);
+
 	// コライダ―を生成
 	CreateCol();
 }
@@ -102,6 +112,23 @@ CDeliveryEnemy::CDeliveryEnemy()
 CDeliveryEnemy::~CDeliveryEnemy()
 {
 	SAFE_DELETE(mpSearchCol);
+
+	// HpUIが存在したら、一緒に削除する
+	if (mpHpUI != nullptr)
+	{
+		mpHpUI->SetOwner(nullptr);
+		mpHpUI->Kill();
+	}
+}
+
+// オブジェクト削除処理
+void CDeliveryEnemy::DeleteObject(CObjectBase* obj)
+{
+	CEnemyBase::DeleteObject(obj);
+	if (obj == mpHpUI)
+	{
+		mpHpUI = nullptr;
+	}
 }
 
 // ダメージを受ける
@@ -166,6 +193,10 @@ void CDeliveryEnemy::Update()
 	// 基底クラスの更新
 	CEnemyBase::Update();
 
+	// HPUIを更新
+	mpHpUI->Position(Position() + HP_UI_OFFSET_POS);
+	mpHpUI->SetCurrPoint(GetHp());
+
 #if _DEBUG
 	CDebugPrint::Print("EnemyState：%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("EnemyHp：%d\n", GetHp());
@@ -226,6 +257,15 @@ void CDeliveryEnemy::SetOnOff(bool setOnOff)
 	// 有効無効を設定
 	SetEnable(setOnOff);
 	SetShow(setOnOff);
+	// 移動状態に戻す
+	ChangeState(EState::eMove);
+	// Hpをリセット
+	ResetHp();
+	// HpUIの位置を設定
+	mpHpUI->Position(Position() + HP_UI_OFFSET_POS);
+	// HpUIの有効無効を設定
+	mpHpUI->SetEnable(setOnOff);
+	mpHpUI->SetShow(setOnOff);
 }
 
 // 現在の車道を設定
@@ -586,7 +626,96 @@ void CDeliveryEnemy::Shoot()
 	CVector playerPos = player->Position();
 	// プレイヤーのいる道
 	ERoadType playerRoadType = player->GetRoadType();
+	// インターバルを経過させる
+	mLeftShootTime -= Times::DeltaTime();
+	mRightShootTime -= Times::DeltaTime();
 	mBackShootTime -= Times::DeltaTime();
+	// 閾値内で横にいる
+	if (Position().Z() + SIDE_PLAYER_THRESHOLD >= playerPos.Z()&&
+		Position().Z() - SIDE_PLAYER_THRESHOLD <= playerPos.Z())
+	{
+		// 左右どちらに撃つか
+		bool isLeftShoot = false;
+		// 自分の道によって処理
+		switch (mRoadType)
+		{
+		case ERoadType::eLeft1:
+			// 右に撃つ
+			isLeftShoot = false;
+			break;
+		case ERoadType::eLeft2:
+			// プレイヤーが左1にいるなら
+			if (playerRoadType == ERoadType::eLeft1)
+			{
+				// 左に撃つ
+				isLeftShoot = true;
+			}
+			// それ以外
+			else
+			{
+				// 右に撃つ
+				isLeftShoot = false;
+			}
+			break;
+		case ERoadType::eRight1:
+			// 左に撃つ
+			isLeftShoot = true;
+			break;
+		case ERoadType::eRight2:
+			// プレイヤーが右1にいるなら
+			if (playerRoadType == ERoadType::eRight1)
+			{
+				// 右に撃つ
+				isLeftShoot = false;
+			}
+			// それ以外
+			else
+			{
+				// 左に撃つ
+				isLeftShoot = true;
+			}
+			break;
+		}
+		// 左に撃つ時インターバルが終わっていたら
+		if (isLeftShoot && mLeftShootTime <= 0.0f)
+		{
+			// インターバルを設定
+			mLeftShootTime = SHOOT_INTERVAL;
+			// 配達物を生成
+			CDeliveryItem* item = new CDeliveryItem(this);
+			// 座標を設定
+			item->Position(Position() + BULLET_OFFSET_POS_L);
+			// 回転を設定
+			item->Rotation(BULLET_ROT_LR);
+			// 移動速度
+			float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
+			// 移動を設定
+			item->SetMoveSpeed(-VectorX() * moveSpeedZ);
+
+			// Hpを減らす
+			TakeDamage(1, nullptr, true);
+		}
+		// 右に撃つ時インターバルが終わっていたら
+		else if (!isLeftShoot && mRightShootTime <= 0.0f)
+		{
+			// インターバルを設定
+			mRightShootTime = SHOOT_INTERVAL;
+			// 配達物を生成
+			CDeliveryItem* item = new CDeliveryItem(this);
+			// 座標を設定
+			item->Position(Position() + BULLET_OFFSET_POS_R);
+			// 回転を設定
+			item->Rotation(BULLET_ROT_LR);
+			// 移動速度
+			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
+			// 移動を設定
+			item->SetMoveSpeed(VectorX() * moveSpeedX);
+
+			// Hpを減らす
+			TakeDamage(1, nullptr, true);
+		}
+	}
+
 	// 同じ道かつ、後ろにいるかつ、
 	// 撃つインターバルが終わっている場合
 	if (mRoadType == playerRoadType &&

@@ -32,7 +32,7 @@ CDeliveryFieldManager* CDeliveryFieldManager::spInstance = nullptr;
 // この値を超えたら次の家の生成判定をする
 #define HOME_JUDGE_POSZ -100.0f
 // 家の生成率
-#define HOME_POP_RATE 25.0f
+#define HOME_POP_RATE 50.0f
 
 // 障害物のオフセット座標
 #define OBSTRUCTION_OFFSET_POSZ -450.0f
@@ -86,6 +86,7 @@ void CDeliveryFieldManager::Update()
 		// 家を生成するか判定する
 		CreateHome();
 	}
+
 	// 最後に障害物の生成判定をしたZ座標を手前へ移動していく
 	mLastObstructionPopZ = mLastObstructionPopZ + moveSpeed;
 	// 最後に生成したZ座標が判定を超えたら
@@ -94,12 +95,13 @@ void CDeliveryFieldManager::Update()
 		// 障害物を生成するか判定する
 		CreateObstruction();
 	}
-	// 最後に障害物の生成判定をしたZ座標を手前へ移動していく
+
+	// 最後にフィールドアイテムの生成判定をしたZ座標を手前へ移動していく
 	mLastFieldItemPopZ = mLastFieldItemPopZ + moveSpeed;
 	// 最後に生成したZ座標が判定を超えたら
 	if (mLastFieldItemPopZ > ITEM_JUDGE_POSZ)
 	{
-		// アイテムを生成するか判定する
+		// フィールドアイテムを生成するか判定する
 		CreateFieldItem();
 	}
 
@@ -128,6 +130,7 @@ void CDeliveryFieldManager::Update()
 			mpFarField = field;
 		}
 	}
+
 	// 全ての家とプレイヤーの距離を計算する
 	for (CDeliveryHome* home: mHomes)
 	{
@@ -145,6 +148,7 @@ void CDeliveryFieldManager::Update()
 			home->SetShow(false);
 		}
 	}
+
 	// 全ての障害物とプレイヤーの距離を計算する
 	for (CDeliveryObstruction* obstruction : mObstructions)
 	{
@@ -160,6 +164,24 @@ void CDeliveryFieldManager::Update()
 			// 無効
 			obstruction->SetEnable(false);
 			obstruction->SetShow(false);
+		}
+	}
+
+	// 全てのフィールドアイテムとプレイヤーの距離を計算する
+	for (CDeliveryFieldItem* fieldItem : mFieldItems)
+	{
+		CVector fieldItemPos = fieldItem->Position();
+		// プレイヤーより奥にあるなら次へ
+		if (fieldItemPos.Z() < playerPos.Z()) continue;
+
+		// プレイヤーとの距離
+		float dist = fieldItemPos.Z() - playerPos.Z();
+		// プレイヤーとの距離が最高値以上なら
+		if (dist > PLAYER_DIST)
+		{
+			// 無効
+			fieldItem->SetEnable(false);
+			fieldItem->SetShow(false);
 		}
 	}
 }

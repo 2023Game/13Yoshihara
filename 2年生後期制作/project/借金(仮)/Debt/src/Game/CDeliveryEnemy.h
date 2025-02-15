@@ -3,6 +3,8 @@
 #include "CDeliveryEnemyStatus.h"
 #include "RoadType.h"
 
+class CDeliveryHpUI3D;
+
 /*
 配達ゲームの敵クラス
 敵基底クラスを継承
@@ -14,6 +16,9 @@ public:
 	CDeliveryEnemy();
 	// デストラクタ
 	~CDeliveryEnemy();
+
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
 
 	/// <summary>
 	/// ダメージを受ける
@@ -102,6 +107,8 @@ private:
 
 	// 3dモデル
 	CModel* mpModel;
+	// HpUI
+	CDeliveryHpUI3D* mpHpUI;
 
 	// 探知コライダ―
 	CCollider* mpSearchCol;

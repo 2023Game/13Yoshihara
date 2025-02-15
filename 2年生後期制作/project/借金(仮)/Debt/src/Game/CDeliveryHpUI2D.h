@@ -23,8 +23,6 @@ public:
 	void Update() override;
 	// 描画
 	void Render() override;
-	// サイズを設定
-	void Size(float rate);
 
 private:
 	CObjectBase* mpOwner;	// HPUIの持ち主
@@ -33,5 +31,4 @@ private:
 	CTextUI2D* mpNumText;			// 持っている配達物の数のテキスト
 
 	int mCurrPoint;	// 現在値
-	int mFontSize;	// 文字の大きさ
 };

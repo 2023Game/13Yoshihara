@@ -52,7 +52,26 @@ protected:
 	bool mIsEnd;		// タイトル画面終了フラグ
 	int mSelectIndex;	// 現在選択している項目
 
-	CTextUI2D* mpScoreText;			// スコアという文字のテキスト
-	CImage* mpResultBg;				// リザルト背景イメージ
-	CExpandButton* mpReturnButton;	// 拠点へ戻るボタン
+	// スコアという文字のテキスト
+	CTextUI2D* mpScoreText;
+	// 得点のテキスト
+	CTextUI2D* mpScorePointText;
+	// 数値のテキスト1
+	CTextUI2D* mpNumText1;
+	// 数値のテキスト2
+	CTextUI2D* mpNumText2;
+	// 計算結果のテキスト
+	CTextUI2D* mpTotalText;
+	// 単位のテキスト
+	CTextUI2D* mpUnitText;
+	// 記号のテキスト
+	CTextUI2D* mpSymbolText;
+	// 一番下の計算の説明テキスト
+	CTextUI2D* mpDescriptionText;
+	// ボーナスの説明テキスト
+	CTextUI2D* mpBonusDescriptionText;
+	// リザルト背景イメージ
+	CImage* mpResultBg;
+	// 拠点へ戻るボタン
+	CExpandButton* mpReturnButton;
 };

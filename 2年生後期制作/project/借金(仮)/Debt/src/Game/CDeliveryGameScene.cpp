@@ -15,7 +15,7 @@
 #include "CDeliveryFieldManager.h"
 #include "CTrashPlayer.h"
 #include "CDeliveryPlayer.h"
-#include "CDeliveryEnemy.h"
+#include "CDeliveryEnemyManager.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -89,13 +89,13 @@ void CDeliveryGameScene::Load()
 	// 配達のフィールド管理クラスを作成
 	mpFieldMgr = new CDeliveryFieldManager();
 
+	// プレイヤーの生成
 	CDeliveryPlayer* player = new CDeliveryPlayer();
-	player->Position(-30.0f, 0.0f, 0.0f);
+	player->Position(ROAD_LEFT2_POSX, 0.0f, 0.0f);
 	player->SetRoadType(ERoadType::eLeft2);
 
-	CDeliveryEnemy* enemy = new CDeliveryEnemy();
-	enemy->Position(30.0f, 0.0f, 0.0f);
-	enemy->SetRoadType(ERoadType::eRight2);
+	// 敵の管理クラスを作成
+	mpEnemyMgr = new CDeliveryEnemyManager();
 
 	// 時間表示UI生成
 	mpTimeUI = new CTimeUI(MAX_TIME);
@@ -154,6 +154,8 @@ void CDeliveryGameScene::Update()
 		}
 	}
 
+	// 敵管理クラスの更新
+	mpEnemyMgr->Update();
 	// フィールド管理クラスの更新
 	mpFieldMgr->Update();
 	// 時間表示UIクラスの更新

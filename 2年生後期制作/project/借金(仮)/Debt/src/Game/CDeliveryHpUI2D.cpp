@@ -4,8 +4,6 @@
 
 // 配達物の画像のパス
 #define DELIVERY_ITEM_PATH "UI/deliveryItem.png"
-// 配達物の画像のオフセット座標
-#define DELIVERY_ITEM_OFFSET_POS CVector2(0.0f,0.0f)
 // 配達物の画像のサイズの倍率
 #define DELIVERY_ITEM_SIZE 0.5f
 // テキストのフォントサイズ
@@ -28,7 +26,7 @@ CDeliveryHpUI2D::CDeliveryHpUI2D(CObjectBase* owner)
 		ETaskPauseType::eGame,
 		false,false
 	);
-	mpDeliveryItemImg->SetPos(DELIVERY_ITEM_OFFSET_POS);
+	// サイズ倍率を適用
 	CVector2 size = mpDeliveryItemImg->GetSize();
 	mpDeliveryItemImg->SetSize(size * DELIVERY_ITEM_SIZE);
 
@@ -38,10 +36,10 @@ CDeliveryHpUI2D::CDeliveryHpUI2D(CObjectBase* owner)
 		ETaskPauseType::eGame,
 		false
 	);
+	// テキストのフォントサイズを設定
 	mpNumText->SetFontSize(TEXT_FONT_SIZE);
+	// 座標を設定
 	mpNumText->Position(TEXT_OFFSET_POS);
-
-	mFontSize = TEXT_FONT_SIZE;
 }
 
 // デストラクタ
@@ -85,13 +83,4 @@ void CDeliveryHpUI2D::Render()
 {
 	mpDeliveryItemImg->Render();
 	mpNumText->Render();
-}
-
-// サイズを設定
-void CDeliveryHpUI2D::Size(float rate)
-{
-	CVector2 size = mpDeliveryItemImg->GetSize() * rate;
-	mpDeliveryItemImg->SetSize(size);
-	int fontSize = mFontSize * rate;
-	mpNumText->SetFontSize(fontSize);
 }

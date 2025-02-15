@@ -1,6 +1,7 @@
 #pragma once
 #include "CSceneBase.h"
 class CGameMenuBase;
+class CDeliveryEnemyManager;
 class CDeliveryFieldManager;
 class CTimeUI;
 class CDeliveryScoreUI;
@@ -21,6 +22,8 @@ public:
 private:
 	// ゲームメニュー
 	CGameMenuBase* mpGameMenu;
+	// 敵管理クラス
+	CDeliveryEnemyManager* mpEnemyMgr;
 
 	// フィールド管理クラス
 	CDeliveryFieldManager* mpFieldMgr;

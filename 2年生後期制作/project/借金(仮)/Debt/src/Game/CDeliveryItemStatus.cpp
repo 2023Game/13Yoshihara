@@ -1,7 +1,7 @@
 #include "CDeliveryItemStatus.h"
 
 #define SCORE 100	// 一つ当たりの得点
-#define DAMAGE 1	// 与えるダメージ
+#define DAMAGE 2	// 与えるダメージ
 
 // コンストラクタ
 CDeliveryItemStatus::CDeliveryItemStatus()

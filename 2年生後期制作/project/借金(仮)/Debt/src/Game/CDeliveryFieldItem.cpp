@@ -96,6 +96,8 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 		{
 			// プレイヤー取得
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
+			// 死んでいたら処理しない
+			if (player->IsDeath()) return;
 			// HPを増やす
 			player->SetHp(NUM);
 			// 無効
@@ -107,6 +109,8 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 		{
 			// プレイヤー取得
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
+			// 死んでいたら処理しない
+			if (enemy->IsDeath()) return;
 			// HPを増やす
 			enemy->SetHp(NUM);
 			// 無効

@@ -34,7 +34,7 @@
 #define BULLET_ROT_LR	CVector(0.0f,90.0f,0.0f) // 左右
 
 // ダメージ後の無敵時間
-#define INVINCIBLE_TIME 1.0f
+#define INVINCIBLE_TIME 0.5f
 // 点滅間隔
 #define HIT_FLASH_INTERVAL 0.1f
 // 撃てる間隔
@@ -505,14 +505,14 @@ void CDeliveryPlayer::ActionInput()
 		{
 			// インターバルを設定
 			mBackShootTime = SHOOT_INTERVAL;
-			// 配達物1を生成
-			CDeliveryItem* item1 = new CDeliveryItem(this);
+			// 配達物を生成
+			CDeliveryItem* item = new CDeliveryItem(this);
 			// 座標を設定
-			item1->Position(Position() + BULLET_OFFSET_POS_B);
+			item->Position(Position() + BULLET_OFFSET_POS_B);
 			// 移動速度
 			float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
-			item1->SetMoveSpeed(-VectorZ() * moveSpeedZ);
+			item->SetMoveSpeed(-VectorZ() * moveSpeedZ);
 
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);
