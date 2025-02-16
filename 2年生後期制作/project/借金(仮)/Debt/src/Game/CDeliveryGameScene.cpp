@@ -140,15 +140,17 @@ void CDeliveryGameScene::Load()
 //シーンの更新処理
 void CDeliveryGameScene::Update()
 {
+#if _DEBUG
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
 	}
+#endif
 
-	// ゲームメニューを開いてなければ、[Ｍ]キーでメニューを開く
+	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
 	if (!mpGameMenu->IsOpened())
 	{
-		if (CInput::PushKey('M'))
+		if (CInput::PushKey(VK_TAB))
 		{
 			mpGameMenu->Open();
 		}

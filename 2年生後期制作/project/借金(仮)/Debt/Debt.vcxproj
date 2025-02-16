@@ -76,6 +76,7 @@
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CCollector.cpp" />
     <ClCompile Include="src\Game\CCollectorStatus.cpp" />
+    <ClCompile Include="src\Game\CDebtMoneyUI.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CDeliveryEnemy.cpp" />
     <ClCompile Include="src\Game\CDeliveryEnemyManager.cpp" />
@@ -102,6 +103,8 @@
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
     <ClCompile Include="src\Game\CCactus.cpp" />
     <ClCompile Include="src\Game\CCactusNeedle.cpp" />
+    <ClCompile Include="src\Game\CMoneyManager.cpp" />
+    <ClCompile Include="src\Game\CMoneyUI.cpp" />
     <ClCompile Include="src\Game\CTextUI3D.cpp" />
     <ClCompile Include="src\Game\CTrashCar.cpp" />
     <ClCompile Include="src\Game\CCharaStatusBase.cpp" />
@@ -260,6 +263,7 @@
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CCollector.h" />
     <ClInclude Include="src\Game\CCollectorStatus.h" />
+    <ClInclude Include="src\Game\CDebtMoneyUI.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CDeliveryEnemy.h" />
     <ClInclude Include="src\Game\CDeliveryEnemyManager.h" />
@@ -286,6 +290,8 @@
     <ClInclude Include="src\Game\CBuyMenu.h" />
     <ClInclude Include="src\Game\CCactus.h" />
     <ClInclude Include="src\Game\CCactusNeedle.h" />
+    <ClInclude Include="src\Game\CMoneyManager.h" />
+    <ClInclude Include="src\Game\CMoneyUI.h" />
     <ClInclude Include="src\Game\CTextUI3D.h" />
     <ClInclude Include="src\Game\CTrashCar.h" />
     <ClInclude Include="src\Game\CCharaStatusBase.h" />

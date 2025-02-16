@@ -158,21 +158,17 @@ void CTrashGameScene::Load()
 //シーンの更新処理
 void CTrashGameScene::Update()
 {
-	// BGM再生中でなければ、BGMを再生
-	//if (!mpGameBGM->IsPlaying())
-	//{
-	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
-	//}
-
+#if _DEBUG
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
 	}
+#endif
 
-	// ゲームメニューを開いてなければ、[Ｍ]キーでメニューを開く
+	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
 	if (!mpGameMenu->IsOpened())
 	{
-		if (CInput::PushKey('M'))
+		if (CInput::PushKey(VK_TAB))
 		{
 			mpGameMenu->Open();
 		}

@@ -9,11 +9,15 @@ public:
 	/// </summary>
 	/// <param name="prevMenu">一つ前のメニュー</param>
 	CJobUnlockMenu(CGameMenuBase* prevMenu);
+	// デストラクタ
 	~CJobUnlockMenu();
-
-	// 決定処理
-	void Decide(int select) override;
 
 	// 更新
 	void Update();
+	
+private:
+	// [TRASH]クリック時のコールバック関数
+	void OnClickTrash();
+	// [DELIVERY]クリック時のコールバック関数
+	void OnClickDelivery();
 };

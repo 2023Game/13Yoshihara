@@ -736,6 +736,15 @@
     <ClCompile Include="src\Game\CTextUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CMoneyManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDebtMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1286,6 +1295,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTextUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoneyManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDebtMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

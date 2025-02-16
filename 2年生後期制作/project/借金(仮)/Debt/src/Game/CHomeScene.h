@@ -4,6 +4,7 @@ class CGameMenu;
 class CSound;
 class CToDoUI;
 class CSelectJobUI;
+class CMoneyUI;
 
 //タイトルシーン
 class CHomeScene :public CSceneBase
@@ -25,4 +26,6 @@ private:
 	CToDoUI* mpToDoUI;
 	// 選択中の仕事名表示UI
 	CSelectJobUI* mpSelectJobUI;
+	// 所持金の表示UI
+	CMoneyUI* mpMoneyUI;
 };

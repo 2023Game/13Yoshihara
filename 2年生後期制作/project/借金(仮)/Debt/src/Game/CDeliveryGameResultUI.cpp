@@ -59,6 +59,9 @@ CDeliveryGameResultUI::CDeliveryGameResultUI()
 	// 合計スコアに加算する
 	totalScore += bonusScore;
 
+	// スコアを設定
+	SetScore(totalScore);
+
 	// 得点のテキストを設定
 	mpScorePointText->ChangeToStr("%d円\n", totalScore);
 	

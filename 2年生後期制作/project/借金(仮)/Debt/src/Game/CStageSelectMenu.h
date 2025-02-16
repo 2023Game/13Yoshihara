@@ -12,9 +12,12 @@ public:
 	// デストラクタ
 	~CStageSelectMenu();
 
-	// 決定処理
-	void Decide(int select) override;
-
 	// 更新
 	void Update();
+
+private:
+	// [TRASH]クリック時のコールバック関数
+	void OnClickTrash();
+	// [DELIVERY]クリック時のコールバック関数
+	void OnClickDelivery();
 };

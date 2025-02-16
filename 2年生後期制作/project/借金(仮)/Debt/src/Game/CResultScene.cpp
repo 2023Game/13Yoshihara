@@ -10,6 +10,7 @@
 #include "CScoreManager.h"
 #include "SceneType.h"
 #include "CTaskManager.h"
+#include "CMoneyManager.h"
 #if _DEBUG
 #include "CInput.h"
 #endif
@@ -59,6 +60,12 @@ void CResultScene::Load()
 		// 配達のリザルトUIを生成
 		mpResultUI = new CDeliveryGameResultUI();
 	}
+	// スコアを取得
+	int score = mpResultUI->GetScore();
+	// お金の管理クラスを取得
+	CMoneyManager* moneyMgr = CMoneyManager::Instance();
+	// 所持金にスコアを加算
+	moneyMgr->SetMoney(score);
 	AddTask(mpResultUI);
 }
 

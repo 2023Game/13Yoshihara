@@ -12,6 +12,8 @@
 #include "CSelectJobUI.h"
 #include "CJobStatusManager.h"
 #include "JobType.h"
+#include "CMoneyUI.h"
+#include "CDebtMoneyUI.h"
 
 // やることのテキスト
 #define TODO_TEXT0 "PCから仕事を選択する"
@@ -76,6 +78,12 @@ void CHomeScene::Load()
 	// 選択中の仕事名表示UIを生成
 	mpSelectJobUI = new CSelectJobUI();
 
+	// 所持金UI
+	mpMoneyUI = new CMoneyUI();
+
+	// 返済額UI
+	CDebtMoneyUI* debtMoneyUI = new CDebtMoneyUI();
+
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
 	//(
@@ -105,21 +113,17 @@ void CHomeScene::Load()
 //シーンの更新処理
 void CHomeScene::Update()
 {
-	// BGM再生中でなければ、BGMを再生
-	//if (!mpGameBGM->IsPlaying())
-	//{
-	//	mpGameBGM->PlayLoop(-1, 1.0f, false, 1.0f);
-	//}
-
+#if _DEBUG
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
 	}
+#endif
 
-	// ゲームメニューを開いてなければ、[Ｍ]キーでメニューを開く
+	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
 	if (!mpGameMenu->IsOpened())
 	{
-		if (CInput::PushKey('M'))
+		if (CInput::PushKey(VK_TAB))
 		{
 			mpGameMenu->Open();
 		}
@@ -139,4 +143,6 @@ void CHomeScene::Update()
 	mpToDoUI->Update();
 	// 選択中の仕事名表示UIの更新
 	mpSelectJobUI->Update();
+	// 所持金UIの更新
+	mpMoneyUI->Update();
 }

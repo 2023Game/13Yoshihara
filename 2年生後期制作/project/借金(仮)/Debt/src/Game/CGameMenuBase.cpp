@@ -3,25 +3,37 @@
 #include "CTaskManager.h"
 #include "CBGMManager.h"
 #include "CTextUI2D.h"
+#include "Easing.h"
 
 #define MENU_ALPHA 0.75f
-// 大きさの倍率
-#define SIZE_RATIO 1.5f
 
 // 効果音の音量
-#define SE_VOLUME 1.0f
+#define SE_VOLUME 0.5f
 
-// 誤プッシュ回避用の待機時間
-#define WAIT_TIME 0.1f
+// サイズの倍率
+#define SIZE_RATIO 1.5f
+// ボタンのサイズ
+#define BUTTON_SIZE CVector2(340.0f, 96.0f)*1.5f
+// ボタンのオフセット座標
+#define BUTTON_OFFSET_POSX 200.0f
+
+// メニューのアニメーション時間
+#define OPEN_ANIM_TIME 0.25f
+// メニューのアニメーション後の待ち時間
+#define OPENED_WAIT_TIME 0.1f
+
+// テキストのオフセット座標
+#define TEXT_OFFSET_POSY 50.0f
 
 // コンストラクタ
-CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::string menuSelectPath)
+CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)
 	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
-	, mSelectIndex(0)
 	, mIsOpened(false)
 	, mpPrevMenu(nullptr)
 	, mElapsedTime(0.0f)
 {
+	// 待機状態
+	ChangeState(EState::eIdle);
 	// 効果音
 	mpSelectSE = CResourceManager::Get<CSound>("SelectSE");
 	mpPushSE = CResourceManager::Get<CSound>("PushSE");
@@ -45,35 +57,36 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList, std::str
 	float spaceY = (float)WINDOW_HEIGHT / (menuItemCount + 1);
 	for (int i = 0; i < menuItemCount; i++)
 	{
-		CImage* item = new CImage
+		// ボタンを生成
+		CExpandButton* btn = new CExpandButton
 		(
-			menuItemPathList[i].c_str(),
+			CVector2(0.0f, 0.0f),
+			BUTTON_SIZE,
 			ETaskPriority::eUI, 0, ETaskPauseType::eMenu,
 			false, false
 		);
-		item->SetSize(item->GetSize() * SIZE_RATIO);
-		item->SetCenter(item->GetSize() * 0.5f);
-		float posX = (1280.0f - 1024.0f + item->GetSize().X()) * 0.5f + 100.0f;
-		item->SetPos(posX, spaceY * (i + 1));
-		item->SetColor(1.0f, 1.0f, 1.0f, MENU_ALPHA);
-		mMenuItems.push_back(item);
+		// 座標を設定
+		float posX = (1280.0f - 1024.0f + btn->GetSize().X()) * 0.5f + BUTTON_OFFSET_POSX;
+		btn->SetPos(posX, spaceY * (i + 1));
+		// ボタンの画像を読み込み
+		btn->LoadButtonImage(menuItemPathList[i], menuItemPathList[i]);
+		// ボタンは最初は無効化して、スケール値を0にしておく
+		btn->SetEnable(false);
+		btn->SetScale(0.0f);
+		// 最後の要素なら
+		if (i == menuItemCount - 1)
+		{
+			btn->SetOnClickFunc(std::bind(&CGameMenuBase::OnClickClose, this));
+		}
+		// ボタンリストに追加
+		mButtons.push_back(btn);
 		mMenuOnOff.push_back(true);
 
+		// テキストを生成
 		CTextUI2D* text = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
-		text->Position(WINDOW_WIDTH * 0.5f, spaceY * (i + 1) - 75.0f, 0.0f);
+		text->Position(WINDOW_WIDTH * 0.5f, spaceY * (i + 1) - TEXT_OFFSET_POSY, 0.0f);
 		mMenuTexts.push_back(text);
 	}
-
-	mpSelectFrame = new CImage
-	(
-		menuSelectPath.c_str(),
-		ETaskPriority::eUI, 0, ETaskPauseType::eMenu,
-		false, false
-	);
-	mpSelectFrame->SetSize(mpSelectFrame->GetSize() * SIZE_RATIO);
-	mpSelectFrame->SetCenter(mpSelectFrame->GetSize() * 0.5f);
-	mpSelectFrame->SetColor(1.0f, 0.5f, 0.0f, MENU_ALPHA);
-
 
 	SetEnable(false);
 	SetShow(false);
@@ -89,10 +102,19 @@ void CGameMenuBase::Open()
 {
 	SetEnable(true);
 	SetShow(true);
-	mSelectIndex = 0;
 	mElapsedTime = 0.0f;
 	CBGMManager::Instance()->Play(EBGMType::eMenu, false);
 	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
+	// メニューはカーソル表示
+	CInput::ShowCursor(true);
+	// メニューを開く状態
+	ChangeState(EState::eOpen);
+	for (CButton* btn : mButtons)
+	{	
+		// ボタンは無効化して、スケール値を0にしておく
+		btn->SetEnable(false);
+		btn->SetScale(0.0f);
+	}
 }
 
 // メニューを閉じる
@@ -102,6 +124,10 @@ void CGameMenuBase::Close()
 	SetShow(false);
 	CBGMManager::Instance()->Play(EBGMType::eHome, false);
 	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
+	// メニューはカーソル非表示
+	CInput::ShowCursor(false);
+	// 待機状態
+	ChangeState(EState::eIdle);
 }
 
 // メニューが開いているかどうか
@@ -110,52 +136,33 @@ bool CGameMenuBase::IsOpened() const
 	return mIsOpened;
 }
 
-//　決定したボタンの処理
-void CGameMenuBase::Decide(int select)
-{
-}
-
 // 更新
 void CGameMenuBase::Update()
 {
-	// 待機時間が経過しているなら操作可能
-	if (mElapsedTime >= WAIT_TIME)
+	switch (mState)
 	{
-		int itemCount = mMenuItems.size();
-		if (CInput::PushKey('W'))
-		{
-			mSelectIndex = (mSelectIndex + itemCount - 1) % itemCount;
-			// セレクト音を再生
-			mpSelectSE->Play(SE_VOLUME, true);
-		}
-		else if (CInput::PushKey('S'))
-		{
-			mSelectIndex = (mSelectIndex + 1) % itemCount;
-			// セレクト音を再生
-			mpSelectSE->Play(SE_VOLUME, true);
-		}
-		else if (CInput::PushKey(VK_SPACE))
-		{
-			Decide(mSelectIndex);
-			// 決定音を再生
-			mpPushSE->Play(SE_VOLUME, true);
-		}
-	}
-	// 経過していないなら
-	else
-	{
-		mElapsedTime += Times::DeltaTime();
+		// 待機
+	case EState::eIdle:
+		UpdateIdle();
+		break;
+		// メニューを開く
+	case EState::eOpen:
+		UpdateOpen();
+		break;
+		// メニュー選択
+	case EState::eSelect:
+		UpdateSelect();
+		break;
 	}
 
 	mpBackground->Update();
 	// アイテムとテキストのサイズは一緒
-	int size = mMenuItems.size();
+	int size = mButtons.size();
 	for (int i = 0; i < size; i++)
 	{
-		mMenuItems[i]->Update();
+		mButtons[i]->Update();
 		mMenuTexts[i]->Update();
 	}
-	mpSelectFrame->Update();
 }
 
 // 描画
@@ -163,29 +170,23 @@ void CGameMenuBase::Render()
 {
 	mpBackground->Render();
 	// アイテムとテキストのサイズは一緒
-	int size = mMenuItems.size();
+	int size = mButtons.size();
 	for (int i = 0; i < size; i++)
 	{
-		CImage* item = mMenuItems[i];
+		CExpandButton* btn = mButtons[i];
 		CTextUI2D* text = mMenuTexts[i];
 		// オフの場合暗くする
 		if (!mMenuOnOff[i])
 		{
-			item->SetColor(0.1f, 0.1f, 0.1f);
+			btn->SetColor(0.1f, 0.1f, 0.1f);
 		}
 		// オンの場合明るくする
 		else
 		{
-			item->SetColor(1.0f, 1.0f, 1.0f);
+			btn->SetColor(1.0f, 1.0f, 1.0f);
 		}
-		item->Render();
+		btn->Render();
 		text->Render();
-
-		if (i == mSelectIndex)
-		{
-			mpSelectFrame->SetPos(item->GetPos());
-			mpSelectFrame->Render();
-		}
 	}
 }
 
@@ -193,4 +194,82 @@ void CGameMenuBase::Render()
 void CGameMenuBase::SetMenuOnOff(int num, bool isOnOff)
 {
 	mMenuOnOff[num] = isOnOff;
+}
+
+// 待機
+void CGameMenuBase::UpdateIdle()
+{
+}
+
+// メニューを開く
+void CGameMenuBase::UpdateOpen()
+{
+	switch (mStateStep)
+	{
+		// ステップ0：メニューの入場アニメーション
+	case 0:
+		if (mElapsedTime < OPEN_ANIM_TIME)
+		{
+			// スケール値を一旦1.0より大きくして、1.0へ戻るイージングアニメーション
+			float scale = Easing::BackOut(mElapsedTime, OPEN_ANIM_TIME, 0.0f, 1.0f, 2.0f);
+			for (CExpandButton* btn : mButtons)
+			{
+				btn->SetScale(scale);
+			}
+			mElapsedTime += Times::DeltaTime();
+		}
+		else
+		{
+			for (CExpandButton* btn : mButtons)
+			{
+				btn->SetScale(1.0f);
+			}
+			mStateStep++;
+			mElapsedTime = 0.0f;
+		}
+		break;
+		// ステップ1：メニュー入場後の待ち
+	case 1:
+		if (mElapsedTime < OPENED_WAIT_TIME)
+		{
+			mElapsedTime += Times::DeltaTime();
+		}
+		else
+		{
+			// 一定時間待ったら、ボタンをオンにしてタッチできるようにする
+			// （誤タッチを防ぐための待ち時間）
+			for (CExpandButton* btn : mButtons)
+			{
+				btn->SetEnable(true);
+			}
+			ChangeState(EState::eSelect);
+		}
+		break;
+	}
+}
+
+// メニュー選択
+void CGameMenuBase::UpdateSelect()
+{
+}
+
+// 状態切り替え
+void CGameMenuBase::ChangeState(EState state)
+{
+	if (state == mState) return;
+	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
+}
+
+// [CLOSE]クリック時のコールバック関数
+void CGameMenuBase::OnClickClose()
+{
+	// プッシュ音
+	mpPushSE->Play(SE_VOLUME, true);
+	Close();
+	if (mpPrevMenu != nullptr)
+	{
+		mpPrevMenu->Open();
+	}
 }

@@ -222,3 +222,57 @@ void CButton::Render()
 		mpText->Render();
 	}
 }
+
+//表示カラーを設定（CColor版）
+void CButton::SetColor(const CColor& color)
+{
+	CUIBase::SetColor(color);
+	if (mpSelectImage != nullptr)
+	{
+		mpSelectImage->SetColor(color);
+	}
+	if (mpNormalImage != nullptr)
+	{
+		mpNormalImage->SetColor(color);
+	}
+	/*if (mpText != nullptr)
+	{
+		mpText->SetColor(color);
+	}*/
+}
+
+//表示カラーを設定（アルファ値有り版）
+void CButton::SetColor(const float& r, const float& g, const float& b, const float& a)
+{
+	CUIBase::SetColor(r, g, b, a);
+	if (mpSelectImage != nullptr)
+	{
+		mpSelectImage->SetColor(r, g, b, a);
+	}
+	if (mpNormalImage != nullptr)
+	{
+		mpNormalImage->SetColor(r, g, b, a);
+	}
+	//if (mpText != nullptr)
+	//{
+	//	mpText->SetColor(r, g, b, a);
+	//}
+}
+
+//表示カラーを設定
+void CButton::SetColor(const float& r, const float& g, const float& b)
+{
+	CUIBase::SetColor(r, g, b);
+	if (mpSelectImage != nullptr)
+	{
+		mpSelectImage->SetColor(r, g, b);
+	}
+	if (mpNormalImage != nullptr)
+	{
+		mpNormalImage->SetColor(r, g, b);
+	}
+	//if (mpText != nullptr)
+	//{
+	//	mpText->SetColor(r, g, b);
+	//}
+}

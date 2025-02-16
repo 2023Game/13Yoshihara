@@ -24,6 +24,11 @@ public:
 	// 描画
 	void Render() override;
 
+	// スコアを取得
+	int GetScore() const;
+	// スコアを設定
+	void SetScore(int score);
+
 protected:
 	// メニューを開く
 	void UpdateOpen();
@@ -74,4 +79,7 @@ protected:
 	CImage* mpResultBg;
 	// 拠点へ戻るボタン
 	CExpandButton* mpReturnButton;
+
+	// 得点
+	int mScore;
 };

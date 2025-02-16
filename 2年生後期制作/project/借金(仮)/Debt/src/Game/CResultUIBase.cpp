@@ -46,6 +46,7 @@ CResultUIBase::CResultUIBase(std::string backGroundPath)
 	, mElapsedTime(0.0f)
 	, mIsEnd(false)
 	, mSelectIndex(-1)
+	, mScore(0)
 {
 	// スコアというテキストを生成
 	mpScoreText = new CTextUI2D(ETaskPauseType::eGame, false);
@@ -229,6 +230,18 @@ void CResultUIBase::Render()
 	mpBonusDescriptionText->Render();
 	// ボタン描画
 	mpReturnButton->Render();
+}
+
+// スコアを取得
+int CResultUIBase::GetScore() const
+{
+	return mScore;
+}
+
+// スコアを設定
+void CResultUIBase::SetScore(int score)
+{
+	mScore = score;
 }
 
 // メニューを開く

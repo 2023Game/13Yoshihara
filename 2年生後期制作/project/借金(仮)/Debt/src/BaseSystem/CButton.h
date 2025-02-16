@@ -29,6 +29,14 @@ public:
 	void Update() override;
 	void Render() override;
 
+	//表示カラーを設定（CColor版）
+	void SetColor(const CColor& color) override;
+	//表示カラーを設定（アルファ値有り版）
+	void SetColor(const float& r, const float& g, const float& b, const float& a) override;
+	//表示カラーを設定
+	void SetColor(const float& r, const float& g, const float& b) override;
+
+
 protected:
 	void OnPointerEnter(const CVector2& pos) override;
 	void OnPointerExit(const CVector2& pos) override;

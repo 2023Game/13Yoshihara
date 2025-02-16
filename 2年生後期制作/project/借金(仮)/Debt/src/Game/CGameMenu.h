@@ -9,9 +9,12 @@ public:
 	// デストラクタ
 	~CGameMenu();
 
-	// 決定処理
-	void Decide(int select) override;
-
 	// 更新
 	void Update();
+
+private:
+	// [TITLE}クリック時のコールバック関数
+	void OnClickTitle();
+	// [SETTING}クリック時のコールバック関数
+	void OnClickSetting();
 };

@@ -4,8 +4,9 @@
 #include "CTextUI2D.h"
 #include <vector>
 #include "CSound.h"
+#include "CExpandButton.h"
 
-// TODO:種類別のゲームメニューに対応させる
+// ゲームメニューの基底クラス
 class CGameMenuBase : public CTask
 {
 public:
@@ -13,8 +14,7 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	/// <param name="menuItemPathList">メニューのアイテム画像のパスリスト</param>
-	/// <param name="menuSelectPath">メニューのセレクト画像のパス</param>
-	CGameMenuBase(std::vector<std::string> menuItemPathList, std::string menuSelectPath);
+	CGameMenuBase(std::vector<std::string> menuItemPathList);
 	// デストラクタ
 	~CGameMenuBase();
 
@@ -25,9 +25,6 @@ public:
 	// 開いているかどうか
 	bool IsOpened() const;
 
-	// 決定したボタンの処理
-	virtual void Decide(int select);
-
 	// 更新
 	void Update() override;
 	// デストラクタ
@@ -37,15 +34,36 @@ public:
 	void SetMenuOnOff(int num, bool isOnOff);
 
 protected:
-	CImage* mpBackground;				// 背景画像
-	std::vector<CImage*> mMenuItems;	// メニューの要素
-	std::vector<bool> mMenuOnOff;		// メニューの要素が有効無効
-	std::vector<CTextUI2D*> mMenuTexts;	// メニューの説明用テキスト
-	CImage* mpSelectFrame;				// 選択中の画像
-	int mSelectIndex;					// 選択中の番号
+	// 待機
+	void UpdateIdle();
+	// メニューを開く
+	void UpdateOpen();
+	// メニュー選択
+	void UpdateSelect();
+
+	// タイトルの状態
+	enum class EState
+	{
+		eIdle,		// 待機状態
+		eOpen,		// メニューを開く
+		eSelect,	// メニュー選択
+		eFadeOut,	// フェードアウト
+	};
+	// 状態切り替え
+	void ChangeState(EState state);
+	EState mState;		// 現在の状態
+	int mStateStep;		// 状態内でのステップ管理用
+	float mElapsedTime;	// 経過時間計測用
+
+	// [CLOSE]クリック時のコールバック関数
+	void OnClickClose();
+
+	CImage* mpBackground;					// 背景画像
+	std::vector<CExpandButton*> mButtons;	// メニューの要素
+	std::vector<bool> mMenuOnOff;			// メニューの要素が有効無効
+	std::vector<CTextUI2D*> mMenuTexts;		// メニューの説明用テキスト
 	bool mIsOpened;						// 開いているか
 	CGameMenuBase* mpPrevMenu;			// 一つ前のメニューの格納用
-	float mElapsedTime;					// 経過時間
 	// 効果音
 	CSound* mpSelectSE;
 	CSound* mpPushSE;

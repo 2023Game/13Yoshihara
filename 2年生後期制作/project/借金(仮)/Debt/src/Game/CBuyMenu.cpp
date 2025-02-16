@@ -9,10 +9,9 @@
 #define MENU_JOB_UPGRADE "UI/menu_job_upgrade.png"
 #define MENU_JOB_SELECT "UI/menu_job_select.png"
 #define MENU_CLOSE "UI/menu_close.png"
-#define MENU_SELECT "UI/menu_select.png"
 
 // 効果音の音量
-#define SE_VOLUME 1.0f
+#define SE_VOLUME 0.5f
 
 // 説明テキストの座標
 #define UNLOCK_TEXT_POS		CVector(WINDOW_WIDTH * 0.5f, WINDOW_HEIGHT * 0.15f, 0.0f)
@@ -25,8 +24,7 @@
 
 // コンストラクタ
 CBuyMenu::CBuyMenu()
-	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_UPGRADE, MENU_JOB_SELECT, MENU_CLOSE},
-		MENU_SELECT)
+	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_UPGRADE, MENU_JOB_SELECT, MENU_CLOSE})
 {
 	// 仕事アンロックメニューを作成
 	mpJobUnlockMenu = new CJobUnlockMenu(this);
@@ -40,6 +38,10 @@ CBuyMenu::CBuyMenu()
 	mpStageSelectMenu = new CStageSelectMenu(this);
 
 
+	// 最後の要素以外のクリック時のコールバック関数を設定
+	mButtons[0]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickUnlock, this));
+	mButtons[1]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickUpgrade, this));
+	mButtons[2]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickSelect, this));
 	// 説明テキストを設定
 	mMenuTexts[0]->SetStr(UNLOCK_TEXT);
 	mMenuTexts[1]->SetStr(UPGRADE_TEXT);
@@ -51,61 +53,62 @@ CBuyMenu::~CBuyMenu()
 {
 }
 
-// 決定処理
-void CBuyMenu::Decide(int select)
-{
-	switch (select)
-	{
-	case 0:		// 仕事アンロックメニューを表示
-		// 有効なら開く
-		if (mMenuOnOff[select])
-		{
-			Close();
-			mpJobUnlockMenu->Open();
-		}
-		// 無効ならブザー音
-		else
-		{
-			mpBuzzerSE->Play(SE_VOLUME, true);
-		}
-		break;
-
-	case 1:		// 強化購入メニューを表示
-		// 有効なら開く
-		if (mMenuOnOff[select])
-		{
-			Close();
-			mpJobUpgradeMenu->Open();
-		}
-		// 無効ならブザー音
-		else
-		{
-			mpBuzzerSE->Play(SE_VOLUME, true);
-		}
-		break;
-
-	case 2:		// 仕事選択メニューを表示
-		// 有効なら開く
-		if (mMenuOnOff[select])
-		{
-			Close();
-			mpStageSelectMenu->Open();
-		}
-		// 無効ならブザー音
-		else
-		{
-			mpBuzzerSE->Play(SE_VOLUME, true);
-		}
-		break;
-
-	default:	// 一番下はメニューを閉じる
-		Close();
-		break;
-	}
-}
-
 // 更新
 void CBuyMenu::Update()
 {
 	CGameMenuBase::Update();
+}
+
+// [UNLOCK]クリック時のコールバック関数
+void CBuyMenu::OnClickUnlock()
+{
+	// 有効なら開く
+	if (mMenuOnOff[0])
+	{
+		// プッシュ音
+		mpPushSE->Play(SE_VOLUME, true);
+		Close();
+		mpJobUnlockMenu->Open();
+	}
+	// 無効ならブザー音
+	else
+	{
+		mpBuzzerSE->Play(SE_VOLUME, true);
+	}
+}
+
+// [UPGRADE]クリック時のコールバック関数
+void CBuyMenu::OnClickUpgrade()
+{
+	// 有効なら開く
+	if (mMenuOnOff[1])
+	{
+		// プッシュ音
+		mpPushSE->Play(SE_VOLUME, true);
+		Close();
+		mpJobUpgradeMenu->Open();
+	}
+	// 無効ならブザー音
+	else
+	{
+		mpBuzzerSE->Play(SE_VOLUME, true);
+	}
+}
+
+// [SELECT]クリック時のコールバック関数
+void CBuyMenu::OnClickSelect()
+{
+	// 有効なら開く
+	if (mMenuOnOff[2])
+	{
+		// プッシュ音
+		mpPushSE->Play(SE_VOLUME, true);
+		Close();
+		mpStageSelectMenu->Open();
+	}
+	// 無効ならブザー音
+	else
+	{
+		mpBuzzerSE->Play(SE_VOLUME, true);
+	}
 }
