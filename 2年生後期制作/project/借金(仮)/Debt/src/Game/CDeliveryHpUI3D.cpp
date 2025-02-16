@@ -15,7 +15,7 @@
 // テキストのフォントサイズ
 #define TEXT_FONT_SIZE 32
 // テキストのオフセット座標
-#define TEXT_OFFSET_POS CVector2(10.0f, -50.0f)
+#define TEXT_OFFSET_POS CVector2(50.0f, -1500.0f)
 
 
 // コンストラクタ
@@ -35,8 +35,9 @@ CDeliveryHpUI3D::CDeliveryHpUI3D(CObjectBase* owner)
 		ETaskPauseType::eGame,
 		false, false
 	);
+	// 縮尺設定
 	mpDeliveryItemImg->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
-	mpDeliveryItemImg->SetDepthMask(true);
+	// サイズ倍率を適用
 	CVector2 size = mpDeliveryItemImg->GetSize();
 	mpDeliveryItemImg->SetSize(size * DELIVERY_ITEM_SIZE);
 
@@ -46,6 +47,8 @@ CDeliveryHpUI3D::CDeliveryHpUI3D(CObjectBase* owner)
 		ETaskPauseType::eGame,
 		false
 	);
+	// 縮尺設定
+	mpNumText->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
 	// テキストのフォントサイズを設定
 	mpNumText->SetFontSize(TEXT_FONT_SIZE);
 	// テキストのオフセット座標を設定
