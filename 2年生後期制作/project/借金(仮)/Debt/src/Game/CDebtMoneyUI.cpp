@@ -3,6 +3,8 @@
 #include "CImage.h"
 #include "CMoneyManager.h"
 #include "CInput.h"
+#include "CBGMManager.h"
+#include "CTaskManager.h"
 
 // 背景画像のパス
 #define BG_PATH "UI/white.png"
@@ -18,62 +20,119 @@
 // 所持金のオフセット座標
 #define MONEY_OFFSET_POS CVector2(0.0f, WINDOW_HEIGHT * 0.8f)
 
+// 次へのオフセット座標
+#define NEXT_OFFSET_POS CVector2(0.0f, WINDOW_HEIGHT * 0.9f)
+// 次へのフォントサイズ
+#define NEXT_FONT_SIZE 32
+// 次へのテキスト
+#define NEXT_TEXT1 "クリックで返済"
+#define NEXT_TEXT2 "クリックでスキップ"
+#define NEXT_TEXT3 "クリックで閉じる"
+
 // 所持金の減少間隔
 #define DECREASE_MONEY_INTERVAL 0.01f
 // 減少する値
-#define DECREASE_AMOUNT 20
+#define DECREASE_AMOUNT1000 1000	// 1000の位
+#define DECREASE_AMOUNT100  100		// 100の位
+#define DECREASE_AMOUNT10    10		// 10の位
+#define DECREASE_AMOUNT1	  1		// 1の位
 
 // アルファの減少間隔
 #define DECREASE_ALPHA_INTERVAL 0.01f
 // 減少するアルファ値
-#define DECREASE_ALPHA 0.2f
+#define DECREASE_ALPHA 0.1f
 // 減少するサイズ
 #define DECREASE_SIZE 16
+
+// ゲームオーバーシーンに移行するまでの時間
+#define GAME_OVER_WAIT_TIME 1.0f
 
 // コンストラクタ
 CDebtMoneyUI::CDebtMoneyUI()
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
 	, mElapsedTime(0.0f)
-	, mDecreaseAmount(0)
+	, mResultAmount(0)
 	, mFontSize(DAY_FONT_SIZE)
+	, mpDayText(nullptr)
+	, mpDebtMoneyText(nullptr)
+	, mpMoneyText(nullptr)
+	, mpBackGround(nullptr)
 {
+	// お金の管理クラスを取得する
+	CMoneyManager* moneyMgr = CMoneyManager::Instance();
+	// 既に返済している
+	if (moneyMgr->GetDid())
+	{
+		// 無効にする
+		SetEnable(false);
+		SetShow(false);
+		// これ以下を処理しない
+		return;
+	}
+	// カーソルを出す
+	CInput::ShowCursor(true);
+	// BGMを設定
+	CBGMManager::Instance()->Play(EBGMType::eMenu, false);
+	// ポーズ
+	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
 	// 所持金の減少状態へ
 	ChangeState(EState::eDecrease);
-	// 借金額のテキストを生成
-	mpDay = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
+	// 所持金
+	mMoneyAmount = moneyMgr->GetMoney();
+	// 返済額
+	mDebtMoneyAmount = moneyMgr->GetDebtMoney();
+	// 日数
+	int day = moneyMgr->GetDay();
+	// 結果
+	mResultAmount = mMoneyAmount - mDebtMoneyAmount;
+
+	// 日数のテキストを生成
+	mpDayText = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
 	// テキストを設定
-	mpDay->ChangeToStr("%d日目\n", 0);
+	mpDayText->ChangeToStr("%d日目\n", day);
 	// 揃いを設定
-	mpDay->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpDayText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 	// オフセット座標を設定
-	mpDay->Position(DAY_OFFSET_POS);
+	mpDayText->Position(DAY_OFFSET_POS);
 	// フォントサイズを設定
-	mpDay->SetFontSize(mFontSize);
+	mpDayText->SetFontSize(mFontSize);
 
 	// 借金額のテキストを生成
-	mpDebtMoney = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
+	mpDebtMoneyText = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
 	// テキストを設定
-	mpDebtMoney->ChangeToStr("今日の返済額：%d円\n", 1000);
-	// 返済額を保存
-	mDebtMoneyAmount = 1000;
+	mpDebtMoneyText->ChangeToStr("今日の返済額：%d円\n", mDebtMoneyAmount);
 	// 揃いを設定
-	mpDebtMoney->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpDebtMoneyText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 	// オフセット座標を設定
-	mpDebtMoney->Position(DEBT_MONEY_OFFSET_POS);
+	mpDebtMoneyText->Position(DEBT_MONEY_OFFSET_POS);
 
-	// 所持金を取得する
-	CMoneyManager* moneyMgr = CMoneyManager::Instance();
-	int money = moneyMgr->GetMoney();
 	// 所持金のテキストを生成
-	mpMoney = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
+	mpMoneyText = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
 	// テキストを設定
-	mpMoney->ChangeToStr("所持金：%d円\n", money);
-	// 所持金を保存
-	mMoneyAmount = money;
+	mpMoneyText->ChangeToStr("所持金：%d円\n", mMoneyAmount);
 	// 揃いを設定
-	mpMoney->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+	mpMoneyText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
 	// オフセット座標を設定
-	mpMoney->Position(MONEY_OFFSET_POS);
+	mpMoneyText->Position(MONEY_OFFSET_POS);
+
+	// 所持金のテキストを生成
+	mpNextText = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
+	// テキストを設定
+	mpNextText->SetStr(NEXT_TEXT1);
+	// 揃いを設定
+	mpNextText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+	// オフセット座標を設定
+	mpNextText->Position(NEXT_OFFSET_POS);
+	// フォントサイズを設定
+	mpNextText->SetFontSize(NEXT_FONT_SIZE);
+	// フォントカラーを設定
+	mpNextText->SetFontColor(CColor(1.0f, 1.0f, 0.5f));
+	// 影を設定
+	mpNextText->SetShadow(true, CColor(0.25f, 0.125f, 0.0f));
+	// アウトラインカラーを設定
+	mpNextText->SetOutline(true, CColor(0.0f, 0.0f, 0.0f));
+	// 点滅する
+	mpNextText->SetBlink(true);
 
 	mpBackGround = new CImage
 	(
@@ -89,8 +148,9 @@ CDebtMoneyUI::CDebtMoneyUI()
 // デストラクタ
 CDebtMoneyUI::~CDebtMoneyUI()
 {
-	SAFE_DELETE(mpDebtMoney);
-	SAFE_DELETE(mpMoney);
+	SAFE_DELETE(mpDayText);
+	SAFE_DELETE(mpDebtMoneyText);
+	SAFE_DELETE(mpMoneyText);
 	SAFE_DELETE(mpBackGround);
 }
 
@@ -110,27 +170,23 @@ void CDebtMoneyUI::Update()
 		break;
 	}
 
-	mpDay->Update();
-	mpDebtMoney->Update();
-	mpMoney->Update();
+	mpDayText->Update();
+	mpDebtMoneyText->Update();
+	mpMoneyText->Update();
+	mpNextText->Update();
 }
 
 // 描画
 void CDebtMoneyUI::Render()
 {
 	mpBackGround->Render();
-	// 描画するなら
-	if (mpDay->IsShow())
+	mpDayText->Render();
+	mpDebtMoneyText->Render();
+	mpMoneyText->Render();
+	// 減少状態なら描画
+	if (mState == EState::eDecrease)
 	{
-		mpDay->Render();
-	}
-	if (mpDebtMoney->IsShow())
-	{
-		mpDebtMoney->Render();
-	}
-	if (mpMoney->IsShow())
-	{
-		mpMoney->Render();
+		mpNextText->Render();
 	}
 }
 
@@ -144,33 +200,78 @@ void CDebtMoneyUI::UpdateDecrease()
 {
 	switch (mStateStep)
 	{
+		// 左クリックで次へ
 	case 0:
+		// 左クリックをしたら
+		if (CInput::PushKey(VK_LBUTTON))
+		{
+			// 次へのテキストを設定
+			mpNextText->SetStr(NEXT_TEXT2);
+			// 次のステップへ
+			mStateStep++;
+		}
+		break;
+		// 所持金を減らす
+		// 左クリックで次の状態へ
+	case 1:
 		mElapsedTime += Times::DeltaTime();
 		// 減少間隔の時間が過ぎたら
 		if (mElapsedTime >= DECREASE_MONEY_INTERVAL)
 		{
-			// 減少する値分減らす
-			mMoneyAmount -= DECREASE_AMOUNT;
-			// 減少させたので減少した値を増やす
-			mDecreaseAmount += DECREASE_AMOUNT;
+			// 所持金を減らす
+			DecreaseMoney();
 			mElapsedTime -= DECREASE_MONEY_INTERVAL;
-			// 減少した値が返済額になれば
-			if (mDebtMoneyAmount == mDecreaseAmount)
+			// 返済額が0以下なら
+			// もしくは、左クリックでスキップ
+			if (mDebtMoneyAmount <= 0 ||
+				CInput::PushKey(VK_LBUTTON))
 			{
-				// 次のステップへ
+				// 返済額を0にする
+				mDebtMoneyAmount = 0;
+				// 所持金を結果にする
+				mMoneyAmount = mResultAmount;
+				// 所持金が0以上なら
+				if (mMoneyAmount >= 0)
+				{
+					// お金の管理クラスを取得
+					CMoneyManager* moneyMgr = CMoneyManager::Instance();
+					// 返済した
+					moneyMgr->SetDid(true);
+					// 所持金に結果を設定
+					moneyMgr->SetMoney(mMoneyAmount);
+				}
+				// 次へのテキストを設定
+				mpNextText->SetStr(NEXT_TEXT3);
+				// 次へ
 				mStateStep++;
 			}
+
 			// 所持金のテキストを設定
-			mpMoney->ChangeToStr("所持金：%d円\n", mMoneyAmount);
+			mpMoneyText->ChangeToStr("所持金：%d円\n", mMoneyAmount);
+			// 返済額のテキストを設定
+			mpDebtMoneyText->ChangeToStr("返済額：%d円\n", mDebtMoneyAmount);
 		}
 		break;
-
-	case 1:
+	case 2:
 		// 左クリックをしたら
 		if (CInput::PushKey(VK_LBUTTON))
 		{
-			// フェードアウト状態へ
-			ChangeState(EState::eFadeOut);
+			// 結果が0以上なら
+			if (mResultAmount >= 0)
+			{
+				// フェードアウト状態へ
+				ChangeState(EState::eFadeOut);
+				// BGMを設定
+				CBGMManager::Instance()->Play(EBGMType::eHome, false);
+				// ポーズ
+				CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
+			}
+			// 所持金が0より小さいなら
+			else
+			{
+				// ゲームオーバーへ
+				ChangeState(EState::eGameOver);
+			}
 		}
 		break;
 	}
@@ -192,21 +293,36 @@ void CDebtMoneyUI::UpdateFadeOut()
 			mFontSize -= DECREASE_SIZE;
 			// アルファを減少
 			mpBackGround->SetAlpha(mpBackGround->GetAlpha() - DECREASE_ALPHA);
-			mpDay->SetFontSize(mFontSize);
-			mpDebtMoney->SetFontSize(mFontSize / 2);
-			mpMoney->SetFontSize(mFontSize / 2);
+			mpDayText->SetFontSize(mFontSize);
+			mpDebtMoneyText->SetFontSize(mFontSize / 2);
+			mpMoneyText->SetFontSize(mFontSize / 2);
 			// アルファが0以下なら
 			if (mpBackGround->GetAlpha() <= 0.0f)
 			{
+				// カーソルを無効
+				CInput::ShowCursor(false);
 				// 非表示
-				mpDay->SetShow(false);
-				mpDebtMoney->SetShow(false);
-				mpMoney->SetShow(false);
+				SetEnable(false);
+				SetShow(false);
 				// 待機状態へ
 				ChangeState(EState::eIdle);
 			}
 		}
 		break;
+	}
+}
+
+// ゲームオーバー
+void CDebtMoneyUI::UpdateGameOver()
+{
+	// 待機時間が終わったら
+	if (mElapsedTime <= GAME_OVER_WAIT_TIME)
+	{
+		// TODO：ゲームオーバーシーンへ
+	}
+	else
+	{
+		mElapsedTime += Times::DeltaTime();
 	}
 }
 
@@ -218,4 +334,33 @@ void CDebtMoneyUI::ChangeState(EState state)
 	mState = state;
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
+}
+
+// 所持金を減らす
+void CDebtMoneyUI::DecreaseMoney()
+{			
+	// 10000以上あるなら
+	if (mDebtMoneyAmount >= DECREASE_AMOUNT1000 * 10)
+	{
+		// 1000減らす
+		mMoneyAmount -= DECREASE_AMOUNT1000;
+		mDebtMoneyAmount -= DECREASE_AMOUNT1000;
+	}
+	// 1000以上あるなら
+	if (mDebtMoneyAmount >= DECREASE_AMOUNT100 * 10)
+	{
+		// 100減らす
+		mMoneyAmount -= DECREASE_AMOUNT100;
+		mDebtMoneyAmount -= DECREASE_AMOUNT100;
+	}
+	// 100以上あるなら
+	if (mDebtMoneyAmount >= DECREASE_AMOUNT10 * 10)
+	{
+		// 10減らす
+		mMoneyAmount -= DECREASE_AMOUNT10;
+		mDebtMoneyAmount -= DECREASE_AMOUNT10;
+	}
+	// 1減らす
+	mMoneyAmount -= DECREASE_AMOUNT1;
+	mDebtMoneyAmount -= DECREASE_AMOUNT1;
 }

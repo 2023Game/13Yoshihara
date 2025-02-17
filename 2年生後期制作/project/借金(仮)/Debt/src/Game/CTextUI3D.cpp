@@ -20,7 +20,7 @@ CTextUI3D::CTextUI3D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 	, mIsLighting(false)
 {
 	// テクスチャ読み込み
-	mFontMaterial.LoadTexture(fontPath, fontPath, false);
+	//mFontMaterial.LoadTexture(fontPath, fontPath, false);
 	
 	// デフォルトサイズを設定
 	SetSize(DEFAULT_SIZE);
@@ -171,7 +171,45 @@ void CTextUI3D::Update()
 // 描画
 void CTextUI3D::Render()
 {
-	Render(&mFontMaterial);
+	// 行列の保存
+	glPushMatrix();
+
+	// 自身の行列を取得
+	CMatrix m = Matrix();
+
+	// ビルボードが有効ならば
+	if (mIsBillboard)
+	{
+		// 常にカメラの方向を向かせる
+		CCamera* cam = CCamera::CurrentCamera();
+		CMatrix camMtx = cam->GetViewMatrix().Inverse();
+		camMtx.Position(CVector::zero);
+		m = camMtx * m;
+	}
+
+	// 行列を反映
+	glMultMatrixf(m.M());
+
+	// オフセット座標を反映
+	CVector2 offset = mOffsetPos * (1.0f / mWolrdUnitPerPixel);
+	glTranslatef(offset.X(), offset.Y(), 0.0f);
+
+	// 各設定のフラグの状態に合わせて、オフにする
+	if (!mIsDepthTest) glDisable(GL_DEPTH_TEST);	// デプステスト
+	if (!mIsDepthMask) glDepthMask(false);		// デプス書き込み
+	if (!mIsLighting) glDisable(GL_LIGHTING);		// ライティング
+
+	CTextUI2D::Render();
+
+	// 各設定を元に戻す
+	glEnable(GL_DEPTH_TEST);	// デプステスト
+	glDepthMask(true);			// デプス書き込み
+	glEnable(GL_LIGHTING);		// ライティング
+
+
+	// 行列を戻す
+	glPopMatrix();
+	//Render(&mFontMaterial);
 }
 
 // 描画（マテリアル指定版）

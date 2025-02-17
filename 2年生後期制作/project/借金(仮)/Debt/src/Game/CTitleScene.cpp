@@ -5,6 +5,7 @@
 #include "CSound.h"
 #include "CBGMManager.h"
 #include "CTitleUI.h"
+#include "CTaskManager.h"
 
 //コンストラクタ
 CTitleScene::CTitleScene()
@@ -29,7 +30,7 @@ void CTitleScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	// タイトルBGMを再生
-	CBGMManager::Instance()->Play(EBGMType::eTitle);
+	CBGMManager::Instance()->Play(EBGMType::eTitle);	
 
 	//mBgImage = new CImage("white.png");
 	//mBgImage->SetColor(0.0f, 0.0f, 0.0f, 1.0f);

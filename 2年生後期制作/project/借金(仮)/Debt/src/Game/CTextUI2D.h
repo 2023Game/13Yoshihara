@@ -40,9 +40,26 @@ public:
 	// 文字の揃いの基準を設定
 	void SetFontAligment(FTGL::TextAlignment aligment);
 
+	// 影を設定
+	void SetShadow(bool enable, CColor color = CColor(0.0f, 0.0f, 0.0f));
+	// アウトラインを設定
+	void SetOutline(bool enable, CColor color = CColor(0.0f, 0.0f, 0.0f));
+
+	// 点滅するかを設定
+	void SetBlink(bool enable);
+
+	// 点滅する処理
+	void Blink();
+
 private:
 	CFont* mpFont;	// フォント
 	CText* mpText;	// 文字列描画用
 
 	std::string mStr;	// 表示する文字列
+
+	// 点滅するか
+	bool mIsBlink;
+
+	int mStateStep;		// 状態内でのステップ管理用
+	float mElapsedTime;	// 経過時間計測用
 };

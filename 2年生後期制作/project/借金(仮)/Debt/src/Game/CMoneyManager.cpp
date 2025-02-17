@@ -5,6 +5,8 @@ CMoneyManager* CMoneyManager::spInstance = nullptr;
 
 // 初期の所持金
 #define DEFAULT_MONEY 3000
+// 初期の返済額
+#define DEFAULT_DEBT_MONEY 1000
 
 // インスタンスを取得
 CMoneyManager* CMoneyManager::Instance()
@@ -25,6 +27,9 @@ void CMoneyManager::ClearInstance()
 // コンストラクタ
 CMoneyManager::CMoneyManager()
 	: mMoney(DEFAULT_MONEY)
+	, mDebtMoney(DEFAULT_DEBT_MONEY)
+	, mDay(0)
+	, mDid(false)
 {
 }
 
@@ -41,13 +46,50 @@ int CMoneyManager::GetMoney() const
 	return mMoney;
 }
 
-// 所持金を加算する
+// 所持金を設定する
 void CMoneyManager::SetMoney(int money)
 {
-	mMoney += money;
-	// 0より小さくなったら0にする
-	if (mMoney < 0)
-	{
-		mMoney = 0;
-	}
+	mMoney = money;
+}
+
+// 返済額を取得する
+int CMoneyManager::GetDebtMoney() const
+{
+	return mDebtMoney;
+}
+
+// 指定した日数の返済額を設定する
+void CMoneyManager::SetDebtMoney(int day)
+{
+	mDebtMoney += mDebtMoney * (day + 1);
+}
+
+// 日数を取得する
+int CMoneyManager::GetDay() const
+{
+	return mDay;
+}
+
+// 日数を設定する
+void CMoneyManager::SetDay(int day)
+{
+	mDay = day;
+}
+
+// 日数を経過させる
+void CMoneyManager::DayPass()
+{
+	mDay++;
+}
+
+// 返済したか
+bool CMoneyManager::GetDid() const
+{
+	return mDid;
+}
+
+// 返済したかを設定する
+void CMoneyManager::SetDid(bool isDid)
+{
+	mDid = isDid;
 }

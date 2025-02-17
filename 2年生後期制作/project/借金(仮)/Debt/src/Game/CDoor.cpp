@@ -2,8 +2,12 @@
 #include "CColliderMesh.h"
 #include "CJobStatusManager.h"
 #include "CSceneManager.h"
+#include "CSound.h"
+#include "CMoneyManager.h"
 
 #define UI_OFFSET_Y 10.0f
+
+#define SE_VOLUME 0.5f
 
 // コンストラクタ
 CDoor::CDoor(CModel* model, const CVector& pos,
@@ -11,6 +15,8 @@ CDoor::CDoor(CModel* model, const CVector& pos,
 	: CInteractObject()
 	, mpModel(model)
 {
+	// 効果音を設定
+	mpBuzzerSE = CResourceManager::Get<CSound>("BuzzerSE");
 	// UIのオフセット位置を設定
 	mUIOffsetPos = CVector(0.0f, UI_OFFSET_Y, 0.0f);
 
@@ -41,14 +47,7 @@ void CDoor::Interact()
 	auto* jobStatusManager = CJobStatusManager::Instance();
 	EJobType jobType = jobStatusManager->GetSelectJob();
 
-	// 選択されている仕事が解放されていなければ
-	if (!jobStatusManager->GetUnlock(jobType))
-	{
-		// TODO：ブザー音を再生してこれ以下を処理しない
-
-		return;
-	}
-
+	bool isLoad = false;
 	auto* sceneManager = CSceneManager::Instance();
 	// 選択されている仕事が解放されているなら仕事シーンへ遷移
 	switch (jobType)
@@ -56,17 +55,33 @@ void CDoor::Interact()
 	case EJobType::eTrash:
 		
 		sceneManager->LoadScene(EScene::eTrashGame);
+		isLoad = true;
 
 		break;
 	case EJobType::eDelivery:
 		
 		sceneManager->LoadScene(EScene::eDeliveryGame);
+		isLoad = true;
 
 		break;
 	// それ以外
 	default:
-		// TODO: ブザー音再生
+		// ブザー音再生
+		mpBuzzerSE->Play(SE_VOLUME, true);
 		break;
+	}
+
+	// 仕事シーンをロードしているなら
+	if (isLoad)
+	{
+		// お金の管理クラスを取得
+		auto* moneyMgr = CMoneyManager::Instance();
+		// 日数を経過
+		moneyMgr->DayPass();
+		// 京の返済額を設定
+		moneyMgr->SetDebtMoney(moneyMgr->GetDay());
+		// 返済していない
+		moneyMgr->SetDid(false);
 	}
 }
 

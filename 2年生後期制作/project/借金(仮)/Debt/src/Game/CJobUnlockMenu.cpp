@@ -12,7 +12,7 @@
 #define SE_VOLUME 0.5f
 
 // 説明テキストの内容
-#define UNLOCK_TRUE_TEXT		"（解放済）\n"
+#define UNLOCK_TRUE_TEXT			"（解放済）\n"
 #define TRASH_UNLOCK_FALSE_TEXT		"ゴミ拾いを解放する\n2000円\n"
 #define DELIVERY_UNLOCK_FALSE_TEXT	"配達を解放する\n2000円\n"
 

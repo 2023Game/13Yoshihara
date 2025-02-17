@@ -11,7 +11,7 @@
 // 「CLICK TO START」の点滅時間
 #define START_TEXT_BLINK_TIME 1.0f
 // 「CLICK TO START」の点滅間隔
-#define START_TEXT_INTERVAL_TIME 3.0f
+#define START_TEXT_INTERVAL_TIME 1.0f
 // タイトルメニューのアニメーション時間
 #define OPEN_ANIM_TIME 0.25f
 // タイトルメニューのアニメーション後の待ち時間

@@ -44,7 +44,7 @@
 // ダメージ後の無敵時間
 #define INVINCIBLE_TIME 0.5f
 // 点滅間隔
-#define HIT_FLASH_INTERVAL 0.1f
+#define HIT_BLINK_INTERVAL 0.1f
 // 撃てる間隔
 #define SHOOT_INTERVAL 0.5f
 
@@ -72,7 +72,7 @@ CDeliveryEnemy::CDeliveryEnemy()
 	)
 	, CDeliveryEnemyStatus()
 	, mInvincibleTime(0.0f)
-	, mHitFlashTime(0.0f)
+	, mHitBlinkTime(0.0f)
 	, mLeftShootTime(0.0f)
 	, mRightShootTime(0.0f)
 	, mBackShootTime(0.0f)
@@ -169,7 +169,7 @@ void CDeliveryEnemy::Update()
 	}
 
 	// ダメージを受けていたら点滅する
-	HitFlash();
+	HitBlink();
 
 	// 移動か車線変更状態なら
 	if (mState == EState::eMove ||
@@ -585,14 +585,14 @@ bool CDeliveryEnemy::MoveTo(const CVector& targetPos, float speed, float rotateS
 }
 
 // ダメージの点滅と無敵時間の処理
-void CDeliveryEnemy::HitFlash()
+void CDeliveryEnemy::HitBlink()
 {
 	if (IsDamaging())
 	{
 		// 点滅間隔が経過したら
-		if (mHitFlashTime > HIT_FLASH_INTERVAL)
+		if (mHitBlinkTime > HIT_BLINK_INTERVAL)
 		{
-			mHitFlashTime -= HIT_FLASH_INTERVAL;
+			mHitBlinkTime -= HIT_BLINK_INTERVAL;
 			// 描画するかを反転
 			SetShow(!IsShow());
 		}
@@ -606,10 +606,10 @@ void CDeliveryEnemy::HitFlash()
 			// ダメージを受けていない
 			mIsDamage = false;
 			// 計測用の変数をリセット
-			mHitFlashTime = 0.0f;
+			mHitBlinkTime = 0.0f;
 			mInvincibleTime = 0.0f;
 		}
-		mHitFlashTime += Times::DeltaTime();
+		mHitBlinkTime += Times::DeltaTime();
 		mInvincibleTime += Times::DeltaTime();
 	}
 }

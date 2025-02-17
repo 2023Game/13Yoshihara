@@ -2,6 +2,8 @@
 #include "CInteractObject.h"
 #include "CModel.h"
 
+class CSound;
+
 class CDoor : public CInteractObject
 {
 public:
@@ -22,4 +24,7 @@ public:
 private:
 	CModel* mpModel;
 	CCollider* mpCollider;
+
+	// Œø‰Ê‰¹
+	CSound* mpBuzzerSE;
 };

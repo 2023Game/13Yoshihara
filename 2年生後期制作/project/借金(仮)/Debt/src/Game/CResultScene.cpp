@@ -65,7 +65,8 @@ void CResultScene::Load()
 	// お金の管理クラスを取得
 	CMoneyManager* moneyMgr = CMoneyManager::Instance();
 	// 所持金にスコアを加算
-	moneyMgr->SetMoney(score);
+	int money = moneyMgr->GetMoney();
+	moneyMgr->SetMoney(money + score);
 	AddTask(mpResultUI);
 }
 

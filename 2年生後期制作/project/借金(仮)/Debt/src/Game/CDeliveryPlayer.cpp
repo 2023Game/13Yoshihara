@@ -36,7 +36,7 @@
 // ダメージ後の無敵時間
 #define INVINCIBLE_TIME 0.5f
 // 点滅間隔
-#define HIT_FLASH_INTERVAL 0.1f
+#define HIT_BLINK_INTERVAL 0.1f
 // 撃てる間隔
 #define SHOOT_INTERVAL 0.1f
 
@@ -45,7 +45,7 @@ CDeliveryPlayer::CDeliveryPlayer()
 	: CPlayerBase()
 	, CDeliveryPlayerStatus()
 	, mInvincibleTime(0.0f)
-	, mHitFlashTime(0.0f)
+	, mHitBlinkTime(0.0f)
 	, mLeftShootTime(0.0f)
 	, mRightShootTime(0.0f)
 	, mBackShootTime(0.0f)
@@ -115,7 +115,7 @@ void CDeliveryPlayer::Update()
 	}
 
 	// 被弾の点滅
-	HitFlash();
+	HitBlink();
 	
 	// 基底クラスの更新
 	CPlayerBase::Update();
@@ -175,9 +175,12 @@ void CDeliveryPlayer::Collision(CCollider* self, CCollider* other, const CHitInf
 					mTargetRoadType = mRoadType;
 				}
 			}
-			// 移動状態かつ、敵が死んでいる場合
+			// 移動状態かつ、
+			// 敵が死んでいるかつ、
+			// 敵の方が奥にいる場合
 			else if (mState==EState::eMove &&
-				enemy->IsDeath())
+				enemy->IsDeath()&&
+				enemy->Position().Z() < Position().Z())
 			{
 				switch (mRoadType)
 				{
@@ -366,8 +369,6 @@ void CDeliveryPlayer::UpdateDeath()
 	// 移動をゼロ
 	mMoveSpeedY = 0.0f;
 	mMoveSpeed = CVector::zero;
-	// 衝突無効
-	SetEnableCol(false);
 	// ゲームシーンでプレイヤーが死亡したことによる
 	// ゲーム終了を取得するための変数設定
 	SetGameEnd(true);
@@ -521,14 +522,14 @@ void CDeliveryPlayer::ActionInput()
 }
 
 // ダメージの点滅と無敵時間の処理
-void CDeliveryPlayer::HitFlash()
+void CDeliveryPlayer::HitBlink()
 {
 	if (IsDamaging())
 	{
 		// 点滅間隔が経過したら
-		if (mHitFlashTime > HIT_FLASH_INTERVAL)
+		if (mHitBlinkTime > HIT_BLINK_INTERVAL)
 		{
-			mHitFlashTime -= HIT_FLASH_INTERVAL;
+			mHitBlinkTime -= HIT_BLINK_INTERVAL;
 			// 描画するかを反転
 			SetShow(!IsShow());
 		}
@@ -542,10 +543,10 @@ void CDeliveryPlayer::HitFlash()
 			// ダメージを受けていない
 			mIsDamage = false;
 			// 計測用の変数をリセット
-			mHitFlashTime = 0.0f;
+			mHitBlinkTime = 0.0f;
 			mInvincibleTime = 0.0f;
 		}
-		mHitFlashTime += Times::DeltaTime();
+		mHitBlinkTime += Times::DeltaTime();
 		mInvincibleTime += Times::DeltaTime();
 	}
 }

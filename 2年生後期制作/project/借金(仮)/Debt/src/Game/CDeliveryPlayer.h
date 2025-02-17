@@ -78,7 +78,7 @@ private:
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用
 	float mInvincibleTime;		// 無敵時間計測用
-	float mHitFlashTime;		// 点滅間隔計測用
+	float mHitBlinkTime;		// 点滅間隔計測用
 	float mLeftShootTime;		// 左に撃てる間隔計測用
 	float mRightShootTime;		// 右に撃てる間隔計測用
 	float mBackShootTime;		// 後に撃てる間隔計測用
@@ -103,7 +103,7 @@ private:
 	// アクションのキー入力
 	void ActionInput();
 	// ダメージの点滅と無敵時間の処理
-	void HitFlash();
+	void HitBlink();
 
 	// 3dモデル
 	CModel* mpModel;

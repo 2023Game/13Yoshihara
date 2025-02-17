@@ -25,6 +25,8 @@ private:
 	void UpdateDecrease();
 	// フェードアウト
 	void UpdateFadeOut();
+	// ゲームオーバー
+	void UpdateGameOver();
 
 	// 状態
 	enum class EState
@@ -32,6 +34,7 @@ private:
 		eIdle,			// 待機
 		eDecrease,		// 所持金の減少
 		eFadeOut,		// フェードアウト
+		eGameOver,		// ゲームオーバー
 	};
 	// 状態切り替え
 	void ChangeState(EState state);
@@ -44,11 +47,16 @@ private:
 	CImage* mpBackGround;
 
 	// 日数
-	CTextUI2D* mpDay;
+	CTextUI2D* mpDayText;
 	// 返済額
-	CTextUI2D* mpDebtMoney;
+	CTextUI2D* mpDebtMoneyText;
 	// 所持金
-	CTextUI2D* mpMoney;
+	CTextUI2D* mpMoneyText;
+	// 「クリックで次へ」のテキスト
+	CTextUI2D* mpNextText;
+
+	// 所持金を減らす
+	void DecreaseMoney();
 
 	// 返済額の値
 	int mDebtMoneyAmount;
@@ -57,6 +65,6 @@ private:
 	// フォントのサイズ
 	int mFontSize;
 
-	// 減少した値
-	int mDecreaseAmount;
+	// 結果
+	int mResultAmount;
 };
