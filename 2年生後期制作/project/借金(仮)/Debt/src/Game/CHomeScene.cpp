@@ -139,8 +139,6 @@ void CHomeScene::Update()
 	{
 		mpToDoUI->SetText(1);
 	}
-	// やること表示UIの更新
-	mpToDoUI->Update();
 	// 選択中の仕事名表示UIの更新
 	mpSelectJobUI->Update();
 	// 所持金UIの更新

@@ -34,7 +34,7 @@ void CJobUpgradeMenu::Update()
 void CJobUpgradeMenu::OnClickTrash()
 {
 	// ƒSƒ~E‚¢‚ğ‹­‰»
-	CJobStatusManager::Instance()->SetUpgrade(EJobType::eTrash, UPGRADE_FLOAT);
+	CJobStatusManager::Instance()->SetBonus(EJobType::eTrash, UPGRADE_FLOAT);
 	// TODO : ‹­‰»‰¹º‚ğÄ¶
 }
 
@@ -42,6 +42,6 @@ void CJobUpgradeMenu::OnClickTrash()
 void CJobUpgradeMenu::OnClickDelivery()
 {
 	// ”z’B‚ğ‹­‰»
-	CJobStatusManager::Instance()->SetUpgrade(EJobType::eDelivery, UPGRADE_FLOAT);
+	CJobStatusManager::Instance()->SetBonus(EJobType::eDelivery, UPGRADE_FLOAT);
 	// TODO : ‹­‰»‰¹º‚ğÄ¶
 }

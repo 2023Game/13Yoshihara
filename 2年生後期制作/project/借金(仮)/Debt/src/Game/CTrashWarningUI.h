@@ -21,6 +21,4 @@ public:
 private:
 	// 警告表示用
 	CImage* mpWarningImg;
-	// 警告テキスト
-	CTextUI2D* mpWarningText;
 };

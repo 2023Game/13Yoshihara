@@ -49,7 +49,7 @@
 
 // コンストラクタ
 CDebtMoneyUI::CDebtMoneyUI()
-	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eMenu)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 1, ETaskPauseType::eMenu)
 	, mElapsedTime(0.0f)
 	, mResultAmount(0)
 	, mFontSize(DAY_FONT_SIZE)

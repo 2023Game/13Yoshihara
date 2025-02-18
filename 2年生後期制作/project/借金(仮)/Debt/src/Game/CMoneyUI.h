@@ -1,9 +1,11 @@
 #pragma once
+#include "CHomeUIBase.h"
 
 class CTextUI2D;
+class CImage;
 
-// 所持金表示UI
-class CMoneyUI
+// お金表示UI
+class CMoneyUI : CHomeUIBase
 {
 public:
 	// コンストラクタ
@@ -12,8 +14,10 @@ public:
 	~CMoneyUI();
 
 	// 更新
-	void Update();
+	void Update() override;
+	// 描画
+	void Render() override;
 private:
-	// テキストUI
-	CTextUI2D* mpMoneyUI;
+	// 次の返済額
+	int mNextDebtMoney;
 };

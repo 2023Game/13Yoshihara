@@ -215,6 +215,9 @@
     <Filter Include="ソース ファイル\Game\UI\Result\DeliveryGame">
       <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D\Home">
+      <UniqueIdentifier>{16b8829d-6f8c-4e1b-83ab-86031a85de5c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -628,12 +631,6 @@
     <ClCompile Include="src\Game\CScoreManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CToDoUI.cpp">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CSelectJobUI.cpp">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CPunisherTruck.cpp">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
     </ClCompile>
@@ -739,11 +736,20 @@
     <ClCompile Include="src\Game\CMoneyManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CMoneyUI.cpp">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CDebtMoneyUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CToDoUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSelectJobUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1185,12 +1191,6 @@
     <ClInclude Include="src\Game\CScoreManager.h">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CToDoUI.h">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CSelectJobUI.h">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CPunisherTruck.h">
       <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
     </ClInclude>
@@ -1299,11 +1299,20 @@
     <ClInclude Include="src\Game\CMoneyManager.h">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CMoneyUI.h">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CDebtMoneyUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CToDoUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSelectJobUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeUIBase.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

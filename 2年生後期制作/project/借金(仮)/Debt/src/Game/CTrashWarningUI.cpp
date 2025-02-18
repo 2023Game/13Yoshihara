@@ -7,8 +7,6 @@
 
 // 警告画像のパス
 #define WARNING_PATH "UI/trash_game_warning.png"
-// 警告テキストの座標
-#define TEXT_POS CVector(0.0f, WINDOW_HEIGHT * 0.4f, 0.0f)
 
 // コンストラクタ
 CTrashWarningUI::CTrashWarningUI()

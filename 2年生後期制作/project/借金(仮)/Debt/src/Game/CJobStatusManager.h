@@ -29,13 +29,13 @@ public:
 	void SetUnlock(EJobType jobType, bool unlock);
 
 	// 各仕事の強化倍率を取得する
-	float GetUpgrade(EJobType jobType) const;
+	float GetBonus(EJobType jobType) const;
 	/// <summary>
 	/// 各仕事の強化倍率を設定する
 	/// </summary>
 	/// <param name="jobType">仕事の種類</param>
 	/// <param name="upgrade">強化倍率の増加量</param>
-	void SetUpgrade(EJobType jobType, float upgrade);
+	void SetBonus(EJobType jobType, float upgrade);
 
 	// 各ジョブのポインタを取得
 	CTrashJobStatus* GetTrashStatus();

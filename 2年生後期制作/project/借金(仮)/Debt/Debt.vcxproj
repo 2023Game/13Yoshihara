@@ -98,6 +98,7 @@
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
+    <ClCompile Include="src\Game\CHomeUIBase.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
+    <ClInclude Include="src\Game\CHomeUIBase.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />

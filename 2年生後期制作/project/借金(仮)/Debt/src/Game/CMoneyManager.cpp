@@ -4,7 +4,7 @@
 CMoneyManager* CMoneyManager::spInstance = nullptr;
 
 // ‰Šú‚ÌŠ‹à
-#define DEFAULT_MONEY 3000
+#define DEFAULT_MONEY 3000000
 // ‰Šú‚Ì•ÔÏŠz
 #define DEFAULT_DEBT_MONEY 1000
 
@@ -28,9 +28,12 @@ void CMoneyManager::ClearInstance()
 CMoneyManager::CMoneyManager()
 	: mMoney(DEFAULT_MONEY)
 	, mDebtMoney(DEFAULT_DEBT_MONEY)
+	, mNextDebtMoney(DEFAULT_DEBT_MONEY)
 	, mDay(0)
 	, mDid(false)
 {
+	// Ÿ‚Ì•ÔÏŠz‚ğ1“ú–Ú‚Éİ’è
+	SetNextDebtMoney(1);
 }
 
 // ƒfƒXƒgƒ‰ƒNƒ^
@@ -62,6 +65,20 @@ int CMoneyManager::GetDebtMoney() const
 void CMoneyManager::SetDebtMoney(int day)
 {
 	mDebtMoney += mDebtMoney * (day + 1);
+	mNextDebtMoney = mDebtMoney;
+	SetNextDebtMoney(day + 1);
+}
+
+// Ÿ‚Ì•ÔÏŠz‚ğæ“¾‚·‚é
+int CMoneyManager::GetNextDebtMoney() const
+{
+	return mNextDebtMoney;
+}
+
+// w’è‚µ‚½“ú”‚Ì—‚“ú‚Ì•ÔÏŠz‚ğŸ‚Ì•ÔÏŠz‚Éİ’è‚·‚é
+void CMoneyManager::SetNextDebtMoney(int day)
+{
+	mNextDebtMoney += mNextDebtMoney * (day + 1);
 }
 
 // “ú”‚ğæ“¾‚·‚é

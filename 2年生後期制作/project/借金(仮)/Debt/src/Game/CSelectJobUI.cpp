@@ -2,6 +2,7 @@
 #include "CTextUI2D.h"
 #include "CJobStatusManager.h"
 #include "JobType.h"
+#include "CImage.h"
 
 // 選択中の仕事の文字列
 #define TRASH		"選択中：ゴミ拾い"
@@ -9,14 +10,17 @@
 #define NONE		"選択中：未選択"
 
 // テキストUIのオフセット座標
-#define TEXT_OFFSET_POS CVector(WINDOW_WIDTH * 0.725f,0.0f,0.0f)
+#define TEXT_OFFSET_POS CVector2(WINDOW_WIDTH * 0.7f, 50.0f)
 
 // コンストラクタ
 CSelectJobUI::CSelectJobUI()
+	: CHomeUIBase()
 {
-	// UIを生成
-	mpSelectJobUI = new CTextUI2D(ETaskPauseType::eMenu, true, nullptr);
-	mpSelectJobUI->Position(TEXT_OFFSET_POS);
+	// テキストの座標を設定
+	mpTextUI->Position(TEXT_OFFSET_POS);
+
+	// 背景削除
+	SAFE_DELETE(mpBackground);
 }
 
 // デストラクタ
@@ -33,18 +37,26 @@ void CSelectJobUI::Update()
 	if (selectJob == EJobType::eTrash)
 	{
 		// 描画する文字列を設定
-		mpSelectJobUI->SetStr(TRASH);
+		mpTextUI->SetStr(TRASH);
 	}
 	// 選択中の仕事が配達なら
 	else if (selectJob == EJobType::eDelivery)
 	{
 		// 描画する文字列を設定
-		mpSelectJobUI->SetStr(DELIVERY);
+		mpTextUI->SetStr(DELIVERY);
 	}
 	// 選択されていないなら
 	else
 	{
 		// 描画する文字列を設定
-		mpSelectJobUI->SetStr(NONE);
+		mpTextUI->SetStr(NONE);
 	}
+
+	CHomeUIBase::Update();
+}
+
+// 描画
+void CSelectJobUI::Render()
+{
+	CHomeUIBase::Render();
 }

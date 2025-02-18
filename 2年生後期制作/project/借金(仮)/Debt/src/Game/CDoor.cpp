@@ -78,7 +78,7 @@ void CDoor::Interact()
 		auto* moneyMgr = CMoneyManager::Instance();
 		// “ú”‚ðŒo‰ß
 		moneyMgr->DayPass();
-		// ‹ž‚Ì•ÔÏŠz‚ðÝ’è
+		// ¡“ú‚Ì•ÔÏŠz‚ðÝ’è
 		moneyMgr->SetDebtMoney(moneyMgr->GetDay());
 		// •ÔÏ‚µ‚Ä‚¢‚È‚¢
 		moneyMgr->SetDid(false);

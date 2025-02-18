@@ -91,20 +91,20 @@ void CJobStatusManager::SetUnlock(EJobType jobType, bool unlock)
 }
 
 // 各仕事の強化値を取得
-float CJobStatusManager::GetUpgrade(EJobType jobType) const
+float CJobStatusManager::GetBonus(EJobType jobType) const
 {
 	switch (jobType)
 	{
 	// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetUpgrade();
+		return mTrashStatus->GetBonus();
 
 		break;
 	// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetUpgrade();
+		return mDeliveryStatus->GetBonus();
 
 		break;
 
@@ -117,21 +117,21 @@ float CJobStatusManager::GetUpgrade(EJobType jobType) const
 }
 
 // 各仕事の強化値を設定
-void CJobStatusManager::SetUpgrade(EJobType jobType, float upgrade)
+void CJobStatusManager::SetBonus(EJobType jobType, float upgrade)
 {
 	switch (jobType)
 	{
 	// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetUpgrade(upgrade);
+		mTrashStatus->SetBonus(upgrade);
 
 		break;
 
 	// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetUpgrade(upgrade);
+		mDeliveryStatus->SetBonus(upgrade);
 
 		break;
 

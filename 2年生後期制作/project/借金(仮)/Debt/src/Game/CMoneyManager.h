@@ -1,5 +1,9 @@
 #pragma once
 
+// ©•ª‚Ì•n•x‚ÌŠ‹à‚Ì—Ê
+#define POOR_MONEY 5000		// •n–R
+#define RICH_MONEY 50000	// —T•Ÿ
+
 /*
 ‚¨‹à‚ÌŠÇ—ƒNƒ‰ƒX
 */
@@ -26,6 +30,11 @@ public:
 	// w’è‚µ‚½“ú”‚Ì•ÔÏŠz‚ğİ’è‚·‚é
 	void SetDebtMoney(int day);
 
+	// Ÿ‚Ì•ÔÏŠz‚ğæ“¾‚·‚é
+	int GetNextDebtMoney() const;
+	// w’è‚µ‚½“ú”‚Ì—‚“ú‚Ì•ÔÏŠz‚ğŸ‚Ì•ÔÏŠz‚Éİ’è‚·‚é
+	void SetNextDebtMoney(int day);
+
 	// “ú”‚ğæ“¾‚·‚é
 	int GetDay() const;
 	// “ú”‚ğİ’è‚·‚é
@@ -46,6 +55,8 @@ private:
 	int mMoney;
 	// •ÔÏŠz
 	int mDebtMoney;
+	// Ÿ‚Ì•ÔÏŠz
+	int mNextDebtMoney;
 	// “ú”
 	int mDay;
 	// •ÔÏ‚ğ‚µ‚½‚©
