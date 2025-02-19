@@ -20,7 +20,7 @@
 
 // コンストラクタ
 CDeliveryHpUI3D::CDeliveryHpUI3D(CObjectBase* owner)
-	:CObjectBase(ETag::eUI, ETaskPriority::eUI3D, 0, ETaskPauseType::eGame)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI3D, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 	, mpDeliveryItemImg(nullptr)
 	, mpNumText(nullptr)

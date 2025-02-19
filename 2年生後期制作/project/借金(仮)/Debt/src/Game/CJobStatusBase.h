@@ -12,9 +12,6 @@ public:
 	// デストラクタ
 	~CJobStatusBase();
 
-	// 更新
-	void Update();
-
 	// アンロック状態を取得
 	bool GetUnlock() const;
 	// アンロック状態を設定
@@ -45,13 +42,7 @@ public:
 	// 攻撃力の強化値を設定
 	void SetPower(int power);
 
-	// 仕事の種類を取得
-	EJobType GetJobType();
-
 private:
-	// 仕事の種類
-	EJobType mJobType;
-	
 	// アンロック状態（初期値falseで未解除）
 	bool mUnlock;
 	// アンロック金額

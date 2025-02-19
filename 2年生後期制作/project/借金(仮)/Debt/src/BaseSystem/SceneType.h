@@ -7,6 +7,7 @@ enum class EScene
 
 	eTitle,			// タイトルシーン
 	eResult,		// リザルトシーン
+	eGameOver,		// ゲームオーバーシーン
 
 	eHome,			// 拠点シーン
 

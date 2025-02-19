@@ -8,9 +8,9 @@
 #include "CExpandButton.h"
 #include "Easing.h"
 
-// タイトルメニューのアニメーション時間
+// メニューのアニメーション時間
 #define OPEN_ANIM_TIME 0.25f
-// タイトルメニューのアニメーション後の待ち時間
+// メニューのアニメーション後の待ち時間
 #define OPENED_WAIT_TIME 0.5f
 
 // ボタンのオフセット座標

@@ -2,8 +2,8 @@
 
 // コンストラクタ
 CJobStatusBase::CJobStatusBase(EJobType jobType)
-	: mJobType(jobType)
-	, mUnlock(false)
+	: mUnlock(false)
+	, mUnlockMoney(0)
 	, mBonusUpgrade(0.0f)
 	, mHpUpgrade(0)
 	, mSpeedUpgrade(0.0f)
@@ -14,11 +14,6 @@ CJobStatusBase::CJobStatusBase(EJobType jobType)
 
 // デストラクタ
 CJobStatusBase::~CJobStatusBase()
-{
-}
-
-// 更新
-void CJobStatusBase::Update()
 {
 }
 
@@ -92,10 +87,4 @@ int CJobStatusBase::GetPower() const
 void CJobStatusBase::SetPower(int power)
 {
 	mPowerUpgrade = power;
-}
-
-// 仕事の種類の取得
-EJobType CJobStatusBase::GetJobType()
-{
-	return mJobType;
 }

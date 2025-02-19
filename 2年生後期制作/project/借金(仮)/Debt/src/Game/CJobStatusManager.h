@@ -1,7 +1,7 @@
 #pragma once
 #include "CJobStatusBase.h"
 class CTrashJobStatus;
-class CDeliveryStatus;
+class CDeliveryJobStatus;
 
 class CJobStatusManager
 {
@@ -14,32 +14,44 @@ public:
 	// インスタンスを破棄
 	void ClearInstance();
 
+	// コンストラクタ
 	CJobStatusManager();
+	// デストラクタ
 	~CJobStatusManager();
-
-	void Update();
 
 	// 各仕事のアンロック状態を取得する
 	bool GetUnlock(EJobType jobType) const;
-	/// <summary>
-	/// 各仕事のアンロック状態を設定する
-	/// </summary>
-	/// <param name="jobType">仕事の種類</param>
-	/// <param name="unlock">アンロック状態(trueでアンロック)</param>
+	// 各仕事のアンロック状態を設定する
 	void SetUnlock(EJobType jobType, bool unlock);
 
-	// 各仕事の強化倍率を取得する
-	float GetBonus(EJobType jobType) const;
-	/// <summary>
-	/// 各仕事の強化倍率を設定する
-	/// </summary>
-	/// <param name="jobType">仕事の種類</param>
-	/// <param name="upgrade">強化倍率の増加量</param>
-	void SetBonus(EJobType jobType, float upgrade);
+	// 各仕事のアンロック金額を取得
+	int GetUnlockMoney(EJobType jobType) const;
+	// 各仕事のアンロック金額を設定
+	void SetUnlockMoney(EJobType jobType, int unlockMoney);
 
-	// 各ジョブのポインタを取得
-	CTrashJobStatus* GetTrashStatus();
-	CDeliveryStatus* GetDeliveryStatus();
+	// 各仕事のボーナスの強化値を取得する
+	float GetBonus(EJobType jobType) const;
+	// 各仕事のボーナスの強化値を設定する
+	void SetBonus(EJobType jobType, float bonus);
+
+	// 各仕事のHPの強化値を取得
+	int GetHp(EJobType jobType) const;
+	// 各仕事のHPの強化値を設定
+	void SetHp(EJobType jobType, int hp);
+
+	// 各仕事の移動速度の強化値を取得
+	float GetSpeed(EJobType jobType) const;
+	// 各仕事の移動速度の強化値を設定
+	void SetSpeed(EJobType jobType, float speed);
+
+	// 各仕事の攻撃力の強化値を取得
+	int GetPower(EJobType jobType) const;
+	// 各仕事の攻撃力の強化値を設定
+	void SetPower(EJobType jobType, int power);
+
+	//// 各ジョブのポインタを取得
+	//CTrashJobStatus* GetTrashStatus();
+	//CDeliveryJobStatus* GetDeliveryStatus();
 
 	// 選択されている仕事を取得
 	EJobType GetSelectJob() const;
@@ -52,5 +64,5 @@ private:
 	static CJobStatusManager* mpInstance;
 	// 各ジョブのステータス
 	CTrashJobStatus* mTrashStatus;
-	CDeliveryStatus* mDeliveryStatus;
+	CDeliveryJobStatus* mDeliveryStatus;
 };

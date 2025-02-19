@@ -32,11 +32,6 @@ void CTitleScene::Load()
 	// ƒ^ƒCƒgƒ‹BGM‚ðÄ¶
 	CBGMManager::Instance()->Play(EBGMType::eTitle);	
 
-	//mBgImage = new CImage("white.png");
-	//mBgImage->SetColor(0.0f, 0.0f, 0.0f, 1.0f);
-	//mBgImage->SetPos(0.0f, 0.0f);
-	//mBgImage->SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-
 	CCamera* mainCamera = new CCamera
 	(
 		CVector(0.0f, 50.0f, 75.0f),

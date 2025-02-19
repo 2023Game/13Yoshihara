@@ -6,7 +6,7 @@ class CSound;
 class CTitleUI;
 
 //タイトルシーン
-class CTitleScene :public CSceneBase
+class CTitleScene : public CSceneBase
 {
 public:
 	//コンストラクタ

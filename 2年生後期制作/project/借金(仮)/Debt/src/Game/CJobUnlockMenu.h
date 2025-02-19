@@ -1,5 +1,6 @@
 #pragma once
 #include "CGameMenuBase.h"
+#include "JobType.h"
 
 class CJobUnlockMenu : public CGameMenuBase
 {
@@ -20,4 +21,7 @@ private:
 	void OnClickTrash();
 	// [DELIVERY]クリック時のコールバック関数
 	void OnClickDelivery();
+
+	// アンロック金額を減らせたか
+	bool IncreaseMoney(EJobType jobType);
 };

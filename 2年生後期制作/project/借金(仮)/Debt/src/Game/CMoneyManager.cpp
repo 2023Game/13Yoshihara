@@ -4,7 +4,7 @@
 CMoneyManager* CMoneyManager::spInstance = nullptr;
 
 // ‰Šú‚ÌŠ‹à
-#define DEFAULT_MONEY 3000000
+#define DEFAULT_MONEY 3000
 // ‰Šú‚Ì•ÔÏŠz
 #define DEFAULT_DEBT_MONEY 1000
 

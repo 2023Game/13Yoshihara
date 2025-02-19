@@ -97,6 +97,8 @@
     <ClCompile Include="src\Game\CDeliveryScoreUI.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
+    <ClCompile Include="src\Game\CGameOverScene.cpp" />
+    <ClCompile Include="src\Game\CGameOverUI.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CHomeUIBase.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
@@ -138,7 +140,7 @@
     <ClCompile Include="src\Game\CTrashVehicleManager.cpp" />
     <ClCompile Include="src\Game\CVehicleStatus.cpp" />
     <ClCompile Include="src\Game\CComputer.cpp" />
-    <ClCompile Include="src\Game\CDeliveryStatus.cpp" />
+    <ClCompile Include="src\Game\CDeliveryJobStatus.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
     <ClCompile Include="src\Game\CGarbageTruck.cpp" />
     <ClCompile Include="src\Game\CGarbageTruckStatus.cpp" />
@@ -285,6 +287,8 @@
     <ClInclude Include="src\Game\CDeliveryScoreUI.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
+    <ClInclude Include="src\Game\CGameOverScene.h" />
+    <ClInclude Include="src\Game\CGameOverUI.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CHomeUIBase.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
@@ -326,7 +330,7 @@
     <ClInclude Include="src\Game\CTrashVehicleManager.h" />
     <ClInclude Include="src\Game\CVehicleStatus.h" />
     <ClInclude Include="src\Game\CComputer.h" />
-    <ClInclude Include="src\Game\CDeliveryStatus.h" />
+    <ClInclude Include="src\Game\CDeliveryJobStatus.h" />
     <ClInclude Include="src\Game\CDoor.h" />
     <ClInclude Include="src\Game\CGarbageTruck.h" />
     <ClInclude Include="src\Game\CGarbageTruckStatus.h" />

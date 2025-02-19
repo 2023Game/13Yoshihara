@@ -218,6 +218,9 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D\Home">
       <UniqueIdentifier>{16b8829d-6f8c-4e1b-83ab-86031a85de5c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\UI\GameOver">
+      <UniqueIdentifier>{c28b7811-fd34-4ce3-a5cf-dc530f2e8f72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -502,7 +505,7 @@
     <ClCompile Include="src\Game\CTrashJobStatus.cpp">
       <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDeliveryStatus.cpp">
+    <ClCompile Include="src\Game\CDeliveryJobStatus.cpp">
       <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CPlayerBase.cpp">
@@ -750,6 +753,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CHomeUIBase.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameOverUI.cpp">
+      <Filter>ソース ファイル\Game\UI\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameOverScene.cpp">
+      <Filter>ソース ファイル\Game\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1062,7 +1071,7 @@
     <ClInclude Include="src\Game\CTrashJobStatus.h">
       <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDeliveryStatus.h">
+    <ClInclude Include="src\Game\CDeliveryJobStatus.h">
       <Filter>ソース ファイル\Game\JobStatus</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CPlayerBase.h">
@@ -1313,6 +1322,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CHomeUIBase.h">
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameOverUI.h">
+      <Filter>ソース ファイル\Game\UI\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameOverScene.h">
+      <Filter>ソース ファイル\Game\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

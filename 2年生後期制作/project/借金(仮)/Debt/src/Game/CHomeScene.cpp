@@ -41,7 +41,7 @@ void CHomeScene::Load()
 
 	//ここでゲーム中に必要な
 	//リソースの読み込みやクラスの生成を行う
-	CResourceManager::Load<CModelX>("Player", "Character\\Player\\player.x");
+	CResourceManager::Load<CModelX>(	"Player",	"Character\\Player\\player.x");
 
 	// 拠点
 	CResourceManager::Load<CModel>(		"HomeBase",								"Field\\HomeBase\\HomeBase.obj");
