@@ -5,7 +5,7 @@ class CTextUI2D;
 class CImage;
 
 // 所持金表示UI
-class CHomeUIBase : CTask
+class CHomeUIBase : public CTask
 {
 public:
 	// コンストラクタ

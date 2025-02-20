@@ -3,22 +3,22 @@
 #include "CInput.h"
 
 class CSound;
-class CGameOverUI;
+class CGameClearUI;
 
-// ゲームオーバーシーン
-class CGameOverScene : public CSceneBase
+// ゲームクリアシーン
+class CGameClearScene : public CSceneBase
 {
 public:
 	// コンストラクタ
-	CGameOverScene();
+	CGameClearScene();
 	// デストラクタ
-	~CGameOverScene();
+	~CGameClearScene();
 	// シーン読み込み
 	void Load();
 	// シーンの更新処理
 	void Update();
 
 private:
-	// ゲームオーバーUI
-	CGameOverUI* mpGameOverUI;
+	// ゲームクリアUI
+	CGameClearUI* mpGameClearUI;
 };

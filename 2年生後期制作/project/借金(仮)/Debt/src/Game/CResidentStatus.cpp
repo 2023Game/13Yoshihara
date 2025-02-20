@@ -2,7 +2,7 @@
 #include "Maths.h"
 
 #define MAX_HP 0						// 最大HP
-#define BASE_MOVE_SPEED 0.375f * 20.0f	// 移動速度
+#define BASE_MOVE_SPEED 0.75f * 10.0f	// 移動速度
 #define JUMP_SPEED 0.0f					// ジャンプ速度
 #define ATTACK_POWER 0					// 攻撃力
 #define THROW_SPEED 2.2f				// 投げる速度

@@ -67,6 +67,7 @@ void CResultScene::Load()
 	// ŠŽ‹à‚ÉƒXƒRƒA‚ð‰ÁŽZ
 	int money = moneyMgr->GetMoney();
 	moneyMgr->SetMoney(money + score);
+
 	AddTask(mpResultUI);
 }
 

@@ -9,9 +9,6 @@ public:
 	// デストラクタ
 	~CPunisherTrashEnemy();
 
-	// 有効無効を切り替える
-	void SetOnOff(bool isOnOff);
-
 private:
 	// コライダーを作成する
 	void CreateCol() override;

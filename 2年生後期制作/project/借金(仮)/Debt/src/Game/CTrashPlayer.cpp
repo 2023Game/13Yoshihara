@@ -562,7 +562,7 @@ void CTrashPlayer::UpdateMove()
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * GetBaseMoveSpeed();
+		mMoveSpeed += move * GetBaseMoveSpeed() * Times::DeltaTime();
 
 		// ジャンプ中か攻撃開始終了、
 		// クリティカル開始終了の状態でなければ、
@@ -622,9 +622,9 @@ void CTrashPlayer::UpdateDamageStart()
 	case 1:
 		// ノックバック時の飛び上がりの速度を
 		// 受けるノックバック速度の半分に設定
-		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f;
+		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f * Times::DeltaTime();
 		// 受けるノックバック速度を移動に設定
-		mMoveSpeed = GetKnockbackReceived();
+		mMoveSpeed = GetKnockbackReceived() * Times::DeltaTime();
 		mIsGrounded = false;
 
 		// 被弾状態へ

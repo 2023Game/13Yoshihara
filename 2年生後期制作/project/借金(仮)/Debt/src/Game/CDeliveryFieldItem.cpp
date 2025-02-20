@@ -96,8 +96,6 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 		{
 			// ƒvƒŒƒCƒ„[æ“¾
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
-			// €‚ñ‚Å‚¢‚½‚çˆ—‚µ‚È‚¢
-			if (player->IsDeath()) return;
 			// HP‚ğ‘‚â‚·
 			player->SetHp(NUM);
 			// –³Œø

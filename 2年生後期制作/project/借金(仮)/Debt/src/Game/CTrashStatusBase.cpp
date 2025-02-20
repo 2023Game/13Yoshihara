@@ -111,51 +111,41 @@ void CTrashStatusBase::DropTrashBag(int power,
 		if (GetTrashBag() <= 0) random = 1;
 		if (GetGoldTrashBag() <= 0) random = 0;
 
+		CTrashBag* trashBag;
 		switch (random)
 		{
 		case 0:
 			// ゴミ袋を一つでも所持していたら落とす
 			if (GetTrashBag() > 0)
 			{
-				// Xのオフセット座標は範囲内でランダムに決める
-				float randomX = Math::Rand(-offsetPos.X(), offsetPos.X());
-				Math::Clamp(randomX, -offsetPos.X(), offsetPos.X());
 				// 持っているゴミ袋の数を1減らす
 				SetTrashBag(-1);
 				// ゴミ袋を生成
-				CTrashBag* trashBag = new CTrashBag(false);
-				// （オフセット座標×落とす力）分ずらした位置に生成
-				CVector offset = CVector(0.0f, offsetPos.Y(), 0.0f);
-				offset += side * randomX;
-				offset += front * offsetPos.Z();
-				trashBag->Position(pos + offset * dropPower);
-				// 飛んでいく速度を設定
-				trashBag->SetThrowSpeed(front * GetKnockbackDealt(), GetKnockbackDealt());
-				// 落とす力を1減らす
-				dropPower--;
+				trashBag = new CTrashBag(false);
+
 			}
 			break;
 		case 1:
 			// ゴールドゴミ袋を一つでも所持していたら落とす
 			if (GetGoldTrashBag() > 0)
 			{
-				// Xのオフセット座標は範囲内でランダムに決める
-				float randomX = Math::Rand(-offsetPos.X(), offsetPos.X());
 				// 持っているゴールドゴミ袋の数を1減らす
 				SetGoldTrashBag(-1);
 				// ゴミ袋を生成
-				CTrashBag* trashBag = new CTrashBag(true);
-				// （オフセット座標×落とす力）分ずらした位置に生成
-				CVector offset = CVector(0.0f, offsetPos.Y(), 0.0f);
-				offset += side * randomX;
-				offset += front * offsetPos.Z();
-				trashBag->Position(pos + offset * dropPower);
-				// 飛んでいく速度を設定
-				trashBag->SetThrowSpeed(front * GetKnockbackDealt(), GetKnockbackDealt());
-				// 落とす力を1減らす
-				dropPower--;
+				trashBag = new CTrashBag(true);
 			}
 			break;
-		}
+		}				
+		// Xのオフセット座標は範囲内でランダムに決める
+		float randomX = Math::Rand(-offsetPos.X(), offsetPos.X());
+		// （オフセット座標×落とす力）分ずらした位置に生成
+		CVector offset = CVector(0.0f, offsetPos.Y(), 0.0f);
+		offset += side * randomX;
+		offset += front * offsetPos.Z();
+		trashBag->Position(pos + offset * dropPower);
+		// 飛んでいく速度を設定
+		trashBag->SetThrowSpeed(CVector::zero, GetKnockbackDealt() / 60);
+		// 落とす力を1減らす
+		dropPower--;
 	}
 }

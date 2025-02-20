@@ -12,6 +12,7 @@
 CGameMenu::CGameMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_ITEM1, MENU_ITEM2, MENU_CLOSE})
 {
+	SetSortOrder(3);
 	// 最後の要素以外のクリック時のコールバック関数を設定
 	mButtons[0]->SetOnClickFunc(std::bind(&CGameMenu::OnClickTitle, this));
 	mButtons[1]->SetOnClickFunc(std::bind(&CGameMenu::OnClickSetting, this));

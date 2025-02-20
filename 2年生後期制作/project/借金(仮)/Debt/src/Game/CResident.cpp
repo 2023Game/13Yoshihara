@@ -310,7 +310,7 @@ void CResident::UpdateThrowBag()
 	);
 	Rotation(CQuaternion::LookRotation(forward));
 
-	// TODO：移動停止、ゴミ袋を手に生成、ランダムな方向に投げる
+	// 移動停止、ゴミ袋を手に生成、ランダムな方向に投げる
 	switch (mStateStep)
 	{
 		// ステップ0：ゴミ袋を投げるアニメーション再生

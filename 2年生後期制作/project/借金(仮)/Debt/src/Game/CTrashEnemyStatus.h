@@ -24,6 +24,9 @@ public:
 	// ゴールドゴミ袋の数の初期値を取得する
 	int GetDefaultGoldBagNum() const;
 
+	// ゴミ袋の数をリセット
+	void ResetBag();
+
 private:
 	int mCriticalChance;	// クリティカル確率
 	bool mIsPunisher;		// お仕置き用かどうか

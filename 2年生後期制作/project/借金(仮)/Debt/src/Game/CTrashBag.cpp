@@ -87,10 +87,10 @@ void CTrashBag::Update()
 		mMoveSpeedY -= GRAVITY;
 	}
 
-		CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
+	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 
-		// ˆÚ“®
-		Position(Position() + moveSpeed);
+	// ˆÚ“®
+	Position(Position() + moveSpeed);
 
 	// ’n–Ê‚É‚Â‚¢‚Ä‚¢‚é‚È‚ç
 	if (mIsGrounded)

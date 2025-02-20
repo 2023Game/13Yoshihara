@@ -19,6 +19,7 @@
 CMoneyUI::CMoneyUI()
 	: CHomeUIBase()
 {
+	SetSortOrder(2);
 	// テキストの座標を設定
 	mpTextUI->Position(MONEY_UI_OFFSET_POS);
 

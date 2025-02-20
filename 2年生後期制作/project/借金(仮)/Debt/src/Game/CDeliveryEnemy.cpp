@@ -145,13 +145,11 @@ void CDeliveryEnemy::TakeDamage(int damage, CObjectBase* causer, bool isShot)
 	{
 		// ダメージを受けている
 		mIsDamage = true;
-	}
-
-	// Hpが0の時攻撃を受けたら死亡
-	if (GetHp() == 0)
-	{
-		Death();
-		return;
+		// Hpより大きいダメージを受けたら死亡
+		if (GetHp() < damage)
+		{
+			Death();
+		}
 	}
 
 	// Hpをダメージ分減らす

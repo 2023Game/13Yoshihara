@@ -20,6 +20,9 @@ public:
 	// デストラクタ
 	~CMoneyManager();
 
+	// 前の日の所持金を設定する
+	void SetPreMoney(int money);
+
 	// 所持金を取得する
 	int GetMoney() const;
 	// 所持金を設定する
@@ -47,9 +50,18 @@ public:
 	// 返済したかを設定する
 	void SetDid(bool isDid);
 
+	// 1日分ロールバックする
+	void Rollback();
+
+	// ゲームクリアかどうか
+	bool IsClear();
+
 private:
 	// お金の管理クラスのインスタンス
 	static CMoneyManager* spInstance;
+
+	// 前の日の所持金
+	int mPreMoney;
 
 	// 所持金
 	int mMoney;

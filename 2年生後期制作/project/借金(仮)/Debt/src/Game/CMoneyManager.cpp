@@ -4,9 +4,12 @@
 CMoneyManager* CMoneyManager::spInstance = nullptr;
 
 // 初期の所持金
-#define DEFAULT_MONEY 3000
+#define DEFAULT_MONEY 5000
 // 初期の返済額
-#define DEFAULT_DEBT_MONEY 1000
+#define DEFAULT_DEBT_MONEY 3000
+
+// ゲームクリアの日数
+#define CLEAR_DAY 2
 
 // インスタンスを取得
 CMoneyManager* CMoneyManager::Instance()
@@ -26,7 +29,8 @@ void CMoneyManager::ClearInstance()
 
 // コンストラクタ
 CMoneyManager::CMoneyManager()
-	: mMoney(DEFAULT_MONEY)
+	: mPreMoney(DEFAULT_MONEY)
+	, mMoney(DEFAULT_MONEY)
 	, mDebtMoney(DEFAULT_DEBT_MONEY)
 	, mNextDebtMoney(DEFAULT_DEBT_MONEY)
 	, mDay(0)
@@ -41,6 +45,12 @@ CMoneyManager::~CMoneyManager()
 {
 	// インスタンスを削除
 	spInstance = nullptr;
+}
+
+// 前の日の所持金を設定する
+void CMoneyManager::SetPreMoney(int money)
+{
+	mPreMoney = money;
 }
 
 // 所持金を取得する
@@ -64,7 +74,7 @@ int CMoneyManager::GetDebtMoney() const
 // 指定した日数の返済額を設定する
 void CMoneyManager::SetDebtMoney(int day)
 {
-	mDebtMoney += mDebtMoney * (day + 1);
+	mDebtMoney = DEFAULT_DEBT_MONEY * (day * day + 1);
 	mNextDebtMoney = mDebtMoney;
 	SetNextDebtMoney(day + 1);
 }
@@ -78,7 +88,7 @@ int CMoneyManager::GetNextDebtMoney() const
 // 指定した日数の翌日の返済額を次の返済額に設定する
 void CMoneyManager::SetNextDebtMoney(int day)
 {
-	mNextDebtMoney += mNextDebtMoney * (day + 1);
+	mNextDebtMoney = DEFAULT_DEBT_MONEY * (day * day + 1);
 }
 
 // 日数を取得する
@@ -109,4 +119,30 @@ bool CMoneyManager::GetDid() const
 void CMoneyManager::SetDid(bool isDid)
 {
 	mDid = isDid;
+}
+
+// 1日分ロールバックする
+void CMoneyManager::Rollback()
+{
+	// 前の日の所持金に設定
+	mMoney = mPreMoney;
+	// 日数を1日戻す
+	SetDay(GetDay() - 1);
+	// 1日戻した日数の借金額を設定
+	SetDebtMoney(GetDay());
+	// 返済していない
+	SetDid(false);
+}
+
+// ゲームクリアかどうか
+bool CMoneyManager::IsClear()
+{
+	// クリアの日数以降なら
+	if (mDay >= CLEAR_DAY)
+	{
+		// クリア
+		return true;
+	}
+	// そうでない場合クリアしていない
+	return false;
 }

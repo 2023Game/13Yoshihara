@@ -106,7 +106,7 @@ const std::vector<CEnemyBase::AnimData> ANIM_DATA =
 #define HP_GAUGE_PATH "UI\\trashbox_enemy_hp_gauge.png"
 
 // ゴミ袋を落とすオフセット座標
-#define TRASH_BAG_OFFSET_POS CVector(0.0f,5.0f,0.0f)
+#define TRASH_BAG_OFFSET_POS CVector(5.0f,5.0f,5.0f)
 
 // 探知範囲
 #define SEARCH_RADIUS	50.0f
@@ -485,6 +485,40 @@ void CTrashEnemy::Render()
 bool CTrashEnemy::GetOpen() const
 {
 	return mIsOpen;
+}
+
+// 有効無効を切り替える
+void CTrashEnemy::SetOnOff(bool isOnOff)
+{
+	// HPをリセット
+	ResetHp();
+	// 有効無効を切り替える
+	SetEnable(isOnOff);
+	SetShow(isOnOff);
+	// 待機状態
+	ChangeState(EState::eIdle);
+	// 当たり判定をオン
+	SetEnableCol(true);
+	// ゴミ袋の数をリセット
+	ResetBag();
+	// 蓋を閉じる
+	mIsOpen = false;
+	// 重力をオン
+	mIsGravity = true;
+	// HPゲージがあるなら
+	if (mpHpGauge != nullptr)
+	{
+		mpHpGauge->SetEnable(isOnOff);
+		mpHpGauge->SetShow(isOnOff);
+	}
+#if _DEBUG
+	// 視野範囲内表示があるなら
+	if (mpDebugFov != nullptr)
+	{
+		mpDebugFov->SetEnable(isOnOff);
+		mpDebugFov->SetShow(isOnOff);
+	}
+#endif
 }
 
 // ターゲットのゴミ袋との距離を取得
@@ -994,9 +1028,9 @@ void CTrashEnemy::UpdateDamageStart()
 	case 1:
 		// ノックバック時の飛び上がりの速度を
 		// 受けるノックバック速度の半分に設定
-		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f;
+		mMoveSpeedY = GetKnockbackReceived().Length() * 0.5f * Times::DeltaTime();
 		// 受けるノックバック速度を移動に設定
-		mMoveSpeed = GetKnockbackReceived();
+		mMoveSpeed = GetKnockbackReceived() * Times::DeltaTime();
 		mIsGrounded = false;
 
 		// 被弾状態へ
@@ -1496,22 +1530,11 @@ void CTrashEnemy::UpdateDeath()
 			mStateStep++;
 		}
 		break;
-		// ステップ4：自身と視野範囲とHPゲージは無効になる
+		// ステップ4：無効になる
 	case 4:
-		SetEnable(false);
-		SetShow(false);
-		if (mpHpGauge != nullptr)
-		{
-			mpHpGauge->SetEnable(false);
-			mpHpGauge->SetShow(false);
-		}
-#if _DEBUG
-		if (mpDebugFov != nullptr)
-		{
-			mpDebugFov->SetEnable(false);
-			mpDebugFov->SetShow(false);
-		}
-#endif
+		
+		SetOnOff(false);
+
 		break;
 	}
 }

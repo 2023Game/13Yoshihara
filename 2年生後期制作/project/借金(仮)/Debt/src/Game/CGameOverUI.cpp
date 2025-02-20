@@ -1,12 +1,13 @@
 #include "CGameOverUI.h"
-#include "CFont.h"
-#include "CText.h"
+#include "CTextUI2D.h"
 #include "CImage.h"
 #include "Maths.h"
 #include "CInput.h"
 #include "CFade.h"
 #include "CExpandButton.h"
 #include "Easing.h"
+#include "CMoneyManager.h"
+#include "CJobStatusManager.h"
 
 // メニューのアニメーション時間
 #define OPEN_ANIM_TIME 0.25f
@@ -19,48 +20,15 @@
 // ボタンのサイズ
 #define BUTTON_SIZE CVector2(340.0f, 96.0f)
 
+// 背景画像のパス
+#define BG_PATH "UI/game_over_bg.png"
+
 // コンストラクタ
 CGameOverUI::CGameOverUI()
-	: CTask(ETaskPriority::eUI, 0, ETaskPauseType::eDefault)
-	, mState(EState::eOpen)
-	, mStateStep(0)
-	, mElapsedTime(0.0f)
-	, mIsEnd(false)
+	: CEndUIBase(BG_PATH)
 {
-	// フォントデータを生成
-	mpFont = new CFont("res\\Font\\toroman.ttf");
-	mpFont->SetFontSize(128);
-	mpFont->SetAlignment(FTGL::TextAlignment::ALIGN_CENTER);
-	mpFont->SetLineLength(WINDOW_WIDTH);
-
-	// ゲームオーバーのテキストを生成
-	mpGameOverText = new CText
-	(
-		mpFont, 128,
-		CVector2(0.0f, 20.0f),
-		CVector2(WINDOW_WIDTH, WINDOW_HEIGHT),
-		CColor(0.1f,0.1f,0.1f),
-		ETaskPriority::eUI,
-		0,
-		ETaskPauseType::eDefault,
-		false,
-		false
-	);
-	mpGameOverText->SetText("ゲームオーバー");
-	mpGameOverText->SetEnableOutline(true);
-	mpGameOverText->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
-
-	// ゲームオーバー画面の背景イメージを生成
-	mpGameOverBg = new CImage
-	(
-		"UI/game_over_bg.png",
-		ETaskPriority::eUI,
-		0,
-		ETaskPauseType::eDefault,
-		false,
-		false
-	);
-	mpGameOverBg->SetSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+	// テキストを設定
+	mpText->SetStr("ゲームオーバー");
 
 	// [前日へ]ボタンを生成
 	CExpandButton* btn1 = new CExpandButton
@@ -98,24 +66,6 @@ CGameOverUI::CGameOverUI()
 // デストラクタ
 CGameOverUI::~CGameOverUI()
 {
-	SAFE_DELETE(mpFont);
-	SAFE_DELETE(mpGameOverText);
-	SAFE_DELETE(mpGameOverBg);
-
-	int size = mButtons.size();
-	for (int i = 0; i < size; i++)
-	{
-		CButton* btn = mButtons[i];
-		mButtons[i] = nullptr;
-		SAFE_DELETE(btn);
-	}
-	mButtons.clear();
-}
-
-// ゲームオーバー画面終了か
-bool CGameOverUI::IsEnd() const
-{
-	return mIsEnd;
 }
 
 // 前日へ戻るか
@@ -135,115 +85,29 @@ bool CGameOverUI::IsExitGame() const
 // 更新
 void CGameOverUI::Update()
 {
-	switch (mState)
-	{
-		// メニューを開く
-	case EState::eOpen:
-		UpdateOpen();
-		break;
-		// メニュー選択
-	case EState::eSelect:
-		UpdateSelect();
-		break;
-		// フェードアウト
-	case EState::eFadeOut:
-		UpdateFadeOut();
-		break;
-	}
-
-	mpGameOverText->Update();
-	mpGameOverBg->Update();
-	for (CButton* btn : mButtons)
-	{
-		btn->Update();
-	}
+	CEndUIBase::Update();
 }
 
 // 描画
 void CGameOverUI::Render()
 {
-	// 背景描画
-	mpGameOverBg->Render();
-	// ゲームオーバーテキスト描画
-	mpGameOverText->Render();
-
-	// メニューボタンを表示
-	for (CButton* btn : mButtons)
-	{
-		btn->Render();
-	}
-}
-
-// メニューを開く
-void CGameOverUI::UpdateOpen()
-{
-	switch (mStateStep)
-	{
-		// ステップ0：メニューの入場アニメーション
-	case 0:
-		if (mElapsedTime < OPEN_ANIM_TIME)
-		{
-			// スケール値を一旦1.0より大きくして、1.0へ戻るイージングアニメーション
-			float scale = Easing::BackOut(mElapsedTime, OPEN_ANIM_TIME, 0.0f, 1.0f, 2.0f);
-			for (CExpandButton* btn : mButtons)
-			{
-				btn->SetScale(scale);
-			}
-			mElapsedTime += Times::DeltaTime();
-		}
-		else
-		{
-			for (CExpandButton* btn : mButtons)
-			{
-				btn->SetScale(1.0f);
-			}
-			mStateStep++;
-			mElapsedTime = 0.0f;
-		}
-		break;
-		// ステップ1：メニュー入場後の待ち
-	case 1:
-		if (mElapsedTime < OPENED_WAIT_TIME)
-		{
-			mElapsedTime += Times::DeltaTime();
-		}
-		else
-		{
-			// 一定時間待ったら、ボタンをオンにしてタッチできるようにする
-			// （誤タッチを防ぐための待ち時間）
-			for (CExpandButton* btn : mButtons)
-			{
-				btn->SetEnable(true);
-			}
-			ChangeState(EState::eSelect);
-		}
-		break;
-	}
-}
-
-// メニュー選択
-void CGameOverUI::UpdateSelect()
-{
-}
-
-// フェードアウト
-void CGameOverUI::UpdateFadeOut()
-{
-}
-
-// 状態切り替え
-void CGameOverUI::ChangeState(EState state)
-{
-	if (state == mState) return;
-	mState = state;
-	mStateStep = 0;
-	mElapsedTime = 0.0f;
+	CEndUIBase::Render();
 }
 
 // [前日へ]クリック時のコールバック関数
 void CGameOverUI::OnClickPreDay()
 {
 	if (mIsEnd) return;
+
+	// お金の管理クラスを取得
+	auto* moneyMgr = CMoneyManager::Instance();
+	// ロールバックする
+	moneyMgr->Rollback();
+
+	// 仕事のステータス管理クラスを取得
+	auto* jobStatusMgr = CJobStatusManager::Instance();
+	// ロールバックする
+	jobStatusMgr->Rollback();
 
 	mSelectIndex = 0;
 	mIsEnd = true;

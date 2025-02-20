@@ -1,9 +1,31 @@
 #pragma once
 #include "JobType.h"
 
+// 仕事のステータスの基底クラス
 class CJobStatusBase
 {
 public:
+	// ベースの仕事のステータス
+	struct BaseJobStatus
+	{
+		// アンロック状態（初期値falseで未解除）
+		bool mUnlock;
+		// アンロック金額
+		int mUnlockMoney;
+
+		// ボーナスの強化値（初期値0.0f）
+		float mBonusUpgrade;
+		// HPの強化値（初期値0）
+		int mHpUpgrade;
+		// 移動速度の強化値（初期値0.0f）
+		float mSpeedUpgrade;
+		// 攻撃力の強化値（初期値0）
+		int mPowerUpgrade;
+		BaseJobStatus() : mUnlock(false), mUnlockMoney(0.0f),
+			mBonusUpgrade(0.0f), mHpUpgrade(0), mSpeedUpgrade(0.0f),
+			mPowerUpgrade(0) {}
+	};
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -42,18 +64,14 @@ public:
 	// 攻撃力の強化値を設定
 	void SetPower(int power);
 
-private:
-	// アンロック状態（初期値falseで未解除）
-	bool mUnlock;
-	// アンロック金額
-	int mUnlockMoney;
+	// 前の日の仕事のステータスを今のステータスに設定
+	void SetPreBaseJobStatus();
+	// ステータスを前日にロールバックする
+	void Rollback();
 
-	// ボーナスの強化値（初期値0.0f）
-	float mBonusUpgrade;
-	// HPの強化値（初期値0）
-	int mHpUpgrade;
-	// 移動速度の強化値（初期値0.0f）
-	float mSpeedUpgrade;
-	// 攻撃力の強化値（初期値0）
-	int mPowerUpgrade;
+private:
+	// ベースの仕事のステータス
+	BaseJobStatus mBaseJobStatus;
+	// 前の日の仕事のステータス
+	BaseJobStatus mPreBaseJobStatus;
 };

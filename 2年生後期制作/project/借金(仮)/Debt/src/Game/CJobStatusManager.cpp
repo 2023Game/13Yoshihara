@@ -26,9 +26,10 @@ void CJobStatusManager::ClearInstance()
 // コンストラクタ
 CJobStatusManager::CJobStatusManager()
 	: mSelectJob(EJobType::eNone)
+	, mPreSelectJob(EJobType::eNone)
 {
-	mTrashStatus = new CTrashJobStatus();
-	mDeliveryStatus = new CDeliveryJobStatus();
+	mpTrashStatus = new CTrashJobStatus();
+	mpDeliveryStatus = new CDeliveryJobStatus();
 }
 
 // デストラクタ
@@ -44,14 +45,14 @@ bool CJobStatusManager::GetUnlock(EJobType jobType) const
 	// ゴミ拾いの場合
 	case EJobType::eTrash:
 		
-		return mTrashStatus->GetUnlock();
+		return mpTrashStatus->GetUnlock();
 		
 		break;
 
 	// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetUnlock();
+		return mpDeliveryStatus->GetUnlock();
 		
 		break;
 	// それ以外
@@ -69,14 +70,14 @@ void CJobStatusManager::SetUnlock(EJobType jobType, bool unlock)
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetUnlock(unlock);
+		mpTrashStatus->SetUnlock(unlock);
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetUnlock(unlock);
+		mpDeliveryStatus->SetUnlock(unlock);
 
 		break;
 
@@ -96,14 +97,14 @@ int CJobStatusManager::GetUnlockMoney(EJobType jobType) const
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetUnlockMoney();
+		return mpTrashStatus->GetUnlockMoney();
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetUnlockMoney();
+		return mpDeliveryStatus->GetUnlockMoney();
 
 		break;
 		// それ以外
@@ -121,14 +122,14 @@ void CJobStatusManager::SetUnlockMoney(EJobType jobType, int unlockMoney)
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetUnlockMoney(unlockMoney);
+		mpTrashStatus->SetUnlockMoney(unlockMoney);
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetUnlockMoney(unlockMoney);
+		mpDeliveryStatus->SetUnlockMoney(unlockMoney);
 
 		break;
 
@@ -148,13 +149,13 @@ float CJobStatusManager::GetBonus(EJobType jobType) const
 	// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetBonus();
+		return mpTrashStatus->GetBonus();
 
 		break;
 	// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetBonus();
+		return mpDeliveryStatus->GetBonus();
 
 		break;
 
@@ -174,14 +175,14 @@ void CJobStatusManager::SetBonus(EJobType jobType, float bonus)
 	// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetBonus(bonus);
+		mpTrashStatus->SetBonus(bonus);
 
 		break;
 
 	// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetBonus(bonus);
+		mpDeliveryStatus->SetBonus(bonus);
 
 		break;
 
@@ -201,14 +202,14 @@ int CJobStatusManager::GetHp(EJobType jobType) const
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetHp();
+		return mpTrashStatus->GetHp();
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetHp();
+		return mpDeliveryStatus->GetHp();
 
 		break;
 		// それ以外
@@ -226,14 +227,14 @@ void CJobStatusManager::SetHp(EJobType jobType, int hp)
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetHp(hp);
+		mpTrashStatus->SetHp(hp);
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetHp(hp);
+		mpDeliveryStatus->SetHp(hp);
 
 		break;
 
@@ -253,14 +254,14 @@ float CJobStatusManager::GetSpeed(EJobType jobType) const
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetSpeed();
+		return mpTrashStatus->GetSpeed();
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetSpeed();
+		return mpDeliveryStatus->GetSpeed();
 
 		break;
 		// それ以外
@@ -278,14 +279,14 @@ void CJobStatusManager::SetSpeed(EJobType jobType, float speed)
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetSpeed(speed);
+		mpTrashStatus->SetSpeed(speed);
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetSpeed(speed);
+		mpDeliveryStatus->SetSpeed(speed);
 
 		break;
 
@@ -305,14 +306,14 @@ int CJobStatusManager::GetPower(EJobType jobType) const
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		return mTrashStatus->GetPower();
+		return mpTrashStatus->GetPower();
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		return mDeliveryStatus->GetPower();
+		return mpDeliveryStatus->GetPower();
 
 		break;
 		// それ以外
@@ -330,14 +331,14 @@ void CJobStatusManager::SetPower(EJobType jobType, int power)
 		// ゴミ拾いの場合
 	case EJobType::eTrash:
 
-		mTrashStatus->SetPower(power);
+		mpTrashStatus->SetPower(power);
 
 		break;
 
 		// 配達の場合
 	case EJobType::eDelivery:
 
-		mDeliveryStatus->SetPower(power);
+		mpDeliveryStatus->SetPower(power);
 
 		break;
 
@@ -371,4 +372,24 @@ EJobType CJobStatusManager::GetSelectJob() const
 void CJobStatusManager::SetSelectJob(EJobType jobType)
 {
 	mSelectJob = jobType;
+}
+
+// 全ての前の日のステータスを今のステータスに設定
+void CJobStatusManager::SetPreJobStatus()
+{
+	// 全ての前の日のステータスを今のステータスに設定
+	mpTrashStatus->SetPreBaseJobStatus();
+	mpDeliveryStatus->SetPreBaseJobStatus();
+	// 前の日に選択されていた仕事を設定
+	mPreSelectJob = mSelectJob;
+}
+
+// 前日にロールバックする
+void CJobStatusManager::Rollback()
+{
+	// 全てのステータスをロールバックする
+	mpTrashStatus->Rollback();
+	mpDeliveryStatus->Rollback();
+	// 選択されている仕事を前日のものに設定
+	mSelectJob = mPreSelectJob;
 }

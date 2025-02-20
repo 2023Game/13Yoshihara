@@ -63,6 +63,9 @@ public:
 	// ŠJ‚¢‚Ä‚¢‚é‚©‚ğæ“¾
 	bool GetOpen() const;
 
+	// —LŒø–³Œø‚ğØ‚è‘Ö‚¦‚é
+	void SetOnOff(bool isOnOff);
+
 protected:
 	// ˆê”Ô‹ß‚¢ƒSƒ~‘Ü‚Æ‚Ì‹——£‚ğæ“¾
 	float GetTargetTrashBagDistance();

@@ -2,9 +2,9 @@
 
 // 使わないベースステータスは値が0
 #define MAX_HP 1								// 最大HP
-#define BASE_MOVE_SPEED 0.375f * 10.0f * 60.0f	// 移動速度
+#define BASE_MOVE_SPEED 0.75f * 60.0f * 5.0f	// 移動速度
 #define JUMP_SPEED 0.0f							// ジャンプ速度
-#define KNOCKBACK_SPEED 0.375f * 5.0f			// ノックバック速度
+#define KNOCKBACK_SPEED 0.75f * 60.0f * 2.5f	// ノックバック速度
 #define ATTACK_POWER 1							// 攻撃力
 #define POWER 1									// ゴミを落とすパワー
 

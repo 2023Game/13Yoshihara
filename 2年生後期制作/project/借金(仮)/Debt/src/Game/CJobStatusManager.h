@@ -57,12 +57,20 @@ public:
 	EJobType GetSelectJob() const;
 	// 選択されている仕事を設定
 	void SetSelectJob(EJobType jobType);
+
+	// 全ての前の日のステータスを今のステータスに設定
+	void SetPreJobStatus();
+	// 前日にロールバックする
+	void Rollback();
+
 private:
 	// 選択されている仕事
 	EJobType mSelectJob;
+	// 前の日に選択されていた仕事
+	EJobType mPreSelectJob;
 	// 仕事ステータスマネージャのインスタンス
 	static CJobStatusManager* mpInstance;
 	// 各ジョブのステータス
-	CTrashJobStatus* mTrashStatus;
-	CDeliveryJobStatus* mDeliveryStatus;
+	CTrashJobStatus* mpTrashStatus;
+	CDeliveryJobStatus* mpDeliveryStatus;
 };

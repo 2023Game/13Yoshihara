@@ -2,9 +2,11 @@
 #include "CTextUI2D.h"
 #include "CImage.h"
 #include "CMoneyManager.h"
+#include "CJobStatusManager.h"
 #include "CInput.h"
 #include "CBGMManager.h"
 #include "CTaskManager.h"
+#include "CSceneManager.h"
 
 // 背景画像のパス
 #define BG_PATH "UI/white.png"
@@ -33,9 +35,9 @@
 #define DECREASE_MONEY_INTERVAL 0.01f
 // 減少する値
 #define DECREASE_AMOUNT1000 1000	// 1000の位
-#define DECREASE_AMOUNT100  100		// 100の位
-#define DECREASE_AMOUNT10    10		// 10の位
-#define DECREASE_AMOUNT1	  1		// 1の位
+#define DECREASE_AMOUNT100   100	// 100の位
+#define DECREASE_AMOUNT10     10	// 10の位
+#define DECREASE_AMOUNT1	   1	// 1の位
 
 // アルファの減少間隔
 #define DECREASE_ALPHA_INTERVAL 0.01f
@@ -44,12 +46,9 @@
 // 減少するサイズ
 #define DECREASE_SIZE 16
 
-// ゲームオーバーシーンに移行するまでの時間
-#define GAME_OVER_WAIT_TIME 1.0f
-
 // コンストラクタ
 CDebtMoneyUI::CDebtMoneyUI()
-	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 1, ETaskPauseType::eMenu)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 3, ETaskPauseType::eMenu)
 	, mElapsedTime(0.0f)
 	, mResultAmount(0)
 	, mFontSize(DAY_FONT_SIZE)
@@ -168,6 +167,9 @@ void CDebtMoneyUI::Update()
 	case EState::eFadeOut:
 		UpdateFadeOut();
 		break;
+	case EState::eGameOver:
+		UpdateGameOver();
+		break;
 	}
 
 	mpDayText->Update();
@@ -234,7 +236,15 @@ void CDebtMoneyUI::UpdateDecrease()
 				if (mMoneyAmount >= 0)
 				{
 					// お金の管理クラスを取得
-					CMoneyManager* moneyMgr = CMoneyManager::Instance();
+					auto* moneyMgr = CMoneyManager::Instance();
+					// 前の日の所持金を設定
+					moneyMgr->SetPreMoney(moneyMgr->GetMoney());
+
+					// 仕事のステータス管理クラスを取得
+					auto* jobStatusMgr = CJobStatusManager::Instance();
+					// 前の日のステータスを設定
+					jobStatusMgr->SetPreJobStatus();
+
 					// 返済した
 					moneyMgr->SetDid(true);
 					// 所持金に結果を設定
@@ -256,15 +266,28 @@ void CDebtMoneyUI::UpdateDecrease()
 		// 左クリックをしたら
 		if (CInput::PushKey(VK_LBUTTON))
 		{
+			// ポーズ解除
+			CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 			// 結果が0以上なら
 			if (mResultAmount >= 0)
 			{
-				// フェードアウト状態へ
-				ChangeState(EState::eFadeOut);
-				// BGMを設定
-				CBGMManager::Instance()->Play(EBGMType::eHome, false);
-				// ポーズ
-				CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
+				// お金の管理クラスを取得
+				auto* moneyMgr = CMoneyManager::Instance();
+				// クリアの日数なら
+				if (moneyMgr->IsClear())
+				{
+					// シーン管理クラスを取得
+					auto* sceneMgr = CSceneManager::Instance();
+					// ゲームクリアシーンへ
+					sceneMgr->LoadScene(EScene::eGameClear);
+				}
+				else
+				{
+					// フェードアウト状態へ
+					ChangeState(EState::eFadeOut);
+					// BGMを設定
+					CBGMManager::Instance()->Play(EBGMType::eHome, false);
+				}
 			}
 			// 所持金が0より小さいなら
 			else
@@ -315,15 +338,8 @@ void CDebtMoneyUI::UpdateFadeOut()
 // ゲームオーバー
 void CDebtMoneyUI::UpdateGameOver()
 {
-	// 待機時間が終わったら
-	if (mElapsedTime <= GAME_OVER_WAIT_TIME)
-	{
-		// TODO：ゲームオーバーシーンへ
-	}
-	else
-	{
-		mElapsedTime += Times::DeltaTime();
-	}
+	// ゲームオーバーシーンへ
+	CSceneManager::Instance()->LoadScene(EScene::eGameOver);
 }
 
 // 状態切り替え

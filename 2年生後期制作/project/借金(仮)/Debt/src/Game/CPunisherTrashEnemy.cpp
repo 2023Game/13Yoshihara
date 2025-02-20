@@ -57,30 +57,6 @@ CPunisherTrashEnemy::~CPunisherTrashEnemy()
 {
 }
 
-// 有効無効を切り替える
-void CPunisherTrashEnemy::SetOnOff(bool isOnOff)
-{
-	// HPをリセット
-	ResetHp();
-	// 有効無効を切り替える
-	SetEnable(isOnOff);
-	SetShow(isOnOff);
-	// HPゲージがあるなら
-	if (mpHpGauge != nullptr)
-	{
-		mpHpGauge->SetEnable(isOnOff);
-		mpHpGauge->SetShow(isOnOff);
-	}
-#if _DEBUG
-	// 視野範囲内表示があるなら
-	if (mpDebugFov != nullptr)
-	{
-		mpDebugFov->SetEnable(isOnOff);
-		mpDebugFov->SetShow(isOnOff);
-	}
-#endif
-}
-
 // コライダーを作成する
 void CPunisherTrashEnemy::CreateCol()
 {

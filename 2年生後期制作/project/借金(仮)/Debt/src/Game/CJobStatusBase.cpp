@@ -2,13 +2,6 @@
 
 // コンストラクタ
 CJobStatusBase::CJobStatusBase(EJobType jobType)
-	: mUnlock(false)
-	, mUnlockMoney(0)
-	, mBonusUpgrade(0.0f)
-	, mHpUpgrade(0)
-	, mSpeedUpgrade(0.0f)
-	, mPowerUpgrade(0)
-
 {
 }
 
@@ -20,71 +13,83 @@ CJobStatusBase::~CJobStatusBase()
 // アンロック状態を取得
 bool CJobStatusBase::GetUnlock() const
 {
-	return mUnlock;
+	return mBaseJobStatus.mUnlock;
 }
 
 // アンロック状態を設定
 void CJobStatusBase::SetUnlock(bool unlock)
 {
-	mUnlock = unlock;
+	mBaseJobStatus.mUnlock = unlock;
 }
 
 // アンロックの金額を取得
 int CJobStatusBase::GetUnlockMoney() const
 {
-	return mUnlockMoney;
+	return mBaseJobStatus.mUnlockMoney;
 }
 
 // アンロックの金額を設定
 void CJobStatusBase::SetUnlockMoney(int unlockMoney)
 {
-	mUnlockMoney = unlockMoney;
+	mBaseJobStatus.mUnlockMoney = unlockMoney;
 }
 
 // ボーナスの強化値を取得
 float CJobStatusBase::GetBonus() const
 {
-	return mBonusUpgrade;
+	return mBaseJobStatus.mBonusUpgrade;
 }
 
 // ボーナスの強化値を設定
 void CJobStatusBase::SetBonus(float bonus)
 {
-	mBonusUpgrade = bonus;
+	mBaseJobStatus.mBonusUpgrade = bonus;
 }
 
 // HPの強化値を取得
 int CJobStatusBase::GetHp() const
 {
-	return mHpUpgrade;
+	return mBaseJobStatus.mHpUpgrade;
 }
 
 // HPの強化値を設定
 void CJobStatusBase::SetHp(int hp)
 {
-	mHpUpgrade = hp;
+	mBaseJobStatus.mHpUpgrade = hp;
 }
 
 // 移動速度の強化値を取得
 float CJobStatusBase::GetSpeed() const
 {
-	return mSpeedUpgrade;
+	return mBaseJobStatus.mSpeedUpgrade;
 }
 
 // 移動速度の強化値を設定
 void CJobStatusBase::SetSpeed(float speed)
 {
-	mSpeedUpgrade = speed;
+	mBaseJobStatus.mSpeedUpgrade = speed;
 }
 
 // 攻撃力の強化値を取得
 int CJobStatusBase::GetPower() const
 {
-	return mPowerUpgrade;
+	return mBaseJobStatus.mPowerUpgrade;
 }
 
 // 攻撃力の強化値を設定
 void CJobStatusBase::SetPower(int power)
 {
-	mPowerUpgrade = power;
+	mBaseJobStatus.mPowerUpgrade = power;
+}
+
+// 前の日の仕事のステータスを今のステータスに設定
+void CJobStatusBase::SetPreBaseJobStatus()
+{
+	mPreBaseJobStatus = mBaseJobStatus;
+}
+
+// ステータスを前日にロールバックする
+void CJobStatusBase::Rollback()
+{
+	mBaseJobStatus = mPreBaseJobStatus;
 }

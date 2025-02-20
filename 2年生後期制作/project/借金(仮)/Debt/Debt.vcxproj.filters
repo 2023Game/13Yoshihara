@@ -149,12 +149,6 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D">
       <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\UI\Result">
-      <UniqueIdentifier>{35a77b06-1f9a-4ad9-8141-e4f09176ff7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Game\UI\Result\TrashGame">
-      <UniqueIdentifier>{55356f0b-8e3d-4978-9e87-4e230cf3916f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
       <UniqueIdentifier>{eb78e0f1-2470-470d-8213-3d41f983ce07}</UniqueIdentifier>
     </Filter>
@@ -212,14 +206,32 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D\DeliveryGame">
       <UniqueIdentifier>{5b1f8b25-9f65-4fd3-b866-82bbc5925766}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\UI\Result\DeliveryGame">
-      <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\UI\UI2D\Home">
       <UniqueIdentifier>{16b8829d-6f8c-4e1b-83ab-86031a85de5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\UI\GameOver">
+    <Filter Include="ソース ファイル\Game\UI\EndUI">
+      <UniqueIdentifier>{b3f74eef-2f5b-4ed1-ac80-724a8385f870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\GameOver">
       <UniqueIdentifier>{c28b7811-fd34-4ce3-a5cf-dc530f2e8f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\GameClear">
+      <UniqueIdentifier>{578880c8-e877-451d-95ed-cb644e90aa81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Scene\GameScene">
+      <UniqueIdentifier>{6a269c3a-e3ee-4abf-aaca-5fe63b9a0556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Scene\UIScene">
+      <UniqueIdentifier>{9f1391d8-4bfe-418b-a4ab-4eec45261736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result">
+      <UniqueIdentifier>{35a77b06-1f9a-4ad9-8141-e4f09176ff7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result\TrashGame">
+      <UniqueIdentifier>{55356f0b-8e3d-4978-9e87-4e230cf3916f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result\DeliveryGame">
+      <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -333,9 +345,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CXCharacter.cpp">
       <Filter>ソース ファイル\Game\Character</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTitleScene.cpp">
-      <Filter>ソース ファイル\Game\Scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CHomeScene.cpp">
       <Filter>ソース ファイル\Game\Scene</Filter>
@@ -478,9 +487,6 @@
     <ClCompile Include="src\BaseSystem\Blend.cpp">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTrashGameScene.cpp">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CBuyMenu.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
@@ -622,14 +628,11 @@
     <ClCompile Include="src\Game\CTimeUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CResultScene.cpp">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CResultUIBase.cpp">
-      <Filter>ソース ファイル\Game\UI\Result</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTrashGameResultUI.cpp">
-      <Filter>ソース ファイル\Game\UI\Result\TrashGame</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\TrashGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CScoreManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
@@ -673,9 +676,6 @@
     <ClCompile Include="src\Game\CVehicleStatus.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDeliveryGameScene.cpp">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CDeliveryEnemy.cpp">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
     </ClCompile>
@@ -716,7 +716,7 @@
       <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp">
-      <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryHpUI2D.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
@@ -739,9 +739,6 @@
     <ClCompile Include="src\Game\CMoneyManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDebtMoneyUI.cpp">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CToDoUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClCompile>
@@ -755,10 +752,34 @@
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGameOverUI.cpp">
-      <Filter>ソース ファイル\Game\UI\GameOver</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDebtMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameClearUI.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameClear</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEndUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryGameScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashGameScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGameOverScene.cpp">
-      <Filter>ソース ファイル\Game\Scene</Filter>
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResultScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTitleScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameClearScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -893,9 +914,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CXCharacter.h">
       <Filter>ソース ファイル\Game\Character</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTitleScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CHomeScene.h">
       <Filter>ソース ファイル\Game\Scene</Filter>
@@ -1041,9 +1059,6 @@
     <ClInclude Include="src\BaseSystem\Blend.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTrashGameScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CBuyMenu.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
@@ -1188,14 +1203,11 @@
     <ClInclude Include="src\Game\CTimeUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CResultScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CResultUIBase.h">
-      <Filter>ソース ファイル\Game\UI\Result</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CTrashGameResultUI.h">
-      <Filter>ソース ファイル\Game\UI\Result\TrashGame</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\TrashGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CScoreManager.h">
       <Filter>ソース ファイル\Game\System</Filter>
@@ -1239,9 +1251,6 @@
     <ClInclude Include="src\Game\CVehicleStatus.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDeliveryGameScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CDeliveryEnemy.h">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
     </ClInclude>
@@ -1282,7 +1291,7 @@
       <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryGameResultUI.h">
-      <Filter>ソース ファイル\Game\UI\Result\DeliveryGame</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryHpUI2D.h">
       <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
@@ -1308,9 +1317,6 @@
     <ClInclude Include="src\Game\CMoneyManager.h">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDebtMoneyUI.h">
-      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CToDoUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClInclude>
@@ -1324,10 +1330,34 @@
       <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGameOverUI.h">
-      <Filter>ソース ファイル\Game\UI\GameOver</Filter>
+      <Filter>ソース ファイル\Game\UI\EndUI\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDebtMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameClearUI.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameClear</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEndUIBase.h">
+      <Filter>ソース ファイル\Game\UI\EndUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryGameScene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashGameScene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGameOverScene.h">
-      <Filter>ソース ファイル\Game\Scene</Filter>
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResultScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTitleScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameClearScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

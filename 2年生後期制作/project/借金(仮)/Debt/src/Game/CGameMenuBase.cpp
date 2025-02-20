@@ -27,7 +27,7 @@
 
 // コンストラクタ
 CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)
-	: CTask(ETaskPriority::eUI, 2, ETaskPauseType::eMenu)
+	: CTask(ETaskPriority::eUI, 1, ETaskPauseType::eMenu)
 	, mIsOpened(false)
 	, mpPrevMenu(nullptr)
 	, mElapsedTime(0.0f)

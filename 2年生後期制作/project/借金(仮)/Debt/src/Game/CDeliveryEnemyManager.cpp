@@ -7,7 +7,7 @@
 #define ENEMY_POP_POSZ 300.0f
 
 // 敵の生成間隔
-#define ENEMY_POP_TIME 0.0f
+#define ENEMY_POP_TIME 20.0f
 
 // コンストラクタ
 CDeliveryEnemyManager::CDeliveryEnemyManager()
