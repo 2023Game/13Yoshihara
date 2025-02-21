@@ -69,9 +69,17 @@ public:
 	// ステータスを前日にロールバックする
 	void Rollback();
 
+	// 初めてのプレイかを取得
+	bool GetFirstPlay() const;
+	// 初めてのプレイかを設定
+	void SetFirstPlay(bool isFirst);
+
 private:
 	// ベースの仕事のステータス
 	BaseJobStatus mBaseJobStatus;
 	// 前の日の仕事のステータス
 	BaseJobStatus mPreBaseJobStatus;
+
+	// 初めてのプレイか
+	bool mIsFirstPlay;
 };

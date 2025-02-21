@@ -37,7 +37,7 @@ protected:
 	// 待機
 	void UpdateIdle();
 	// メニューを開く
-	void UpdateOpen();
+	virtual void UpdateOpen();
 	// メニュー選択
 	void UpdateSelect();
 

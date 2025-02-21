@@ -16,6 +16,8 @@
 #include "CTrashPlayer.h"
 #include "CDeliveryPlayer.h"
 #include "CDeliveryEnemyManager.h"
+#include "CManualMenu.h"
+#include "CJobStatusManager.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -24,6 +26,9 @@
 
 // プレイヤーの初期座標
 #define PLAYER_POS CVector(0.0f,10.0f,50.0f)
+
+// 操作説明の画像のパス
+#define MANUAL_PATH "UI/delivery_game_manual.png"
 
 //コンストラクタ
 CDeliveryGameScene::CDeliveryGameScene()
@@ -102,6 +107,17 @@ void CDeliveryGameScene::Load()
 	// スコア表示UI生成
 	mpDeliveryScoreUI = new CDeliveryScoreUI();
 
+	// 操作説明
+	mpManual = new CManualMenu(MANUAL_PATH);
+	// 初めてのプレイなら操作説明を出す
+	auto* jobStatusMgr = CJobStatusManager::Instance();
+	if (jobStatusMgr->GetFirstPlay(EJobType::eDelivery))
+	{
+		mpManual->Open();
+		// 次回以降、初めてではなくなる
+		jobStatusMgr->SetFirstPlay(EJobType::eDelivery, false);
+	}
+
 	// Cameraのテスト
 	CVector atPos = CVector(0.0f, 8.0f, 0.0f);
 	CCamera* mainCamera = new CCamera
@@ -156,14 +172,18 @@ void CDeliveryGameScene::Update()
 		}
 	}
 
-	// 敵管理クラスの更新
-	mpEnemyMgr->Update();
-	// フィールド管理クラスの更新
-	mpFieldMgr->Update();
-	// 時間表示UIクラスの更新
-	mpTimeUI->Update();
-	// スコア表示UIクラスの更新
-	mpDeliveryScoreUI->Update();
+	// メニューポーズ中じゃなければ
+	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
+	{
+		// 敵管理クラスの更新
+		mpEnemyMgr->Update();
+		// フィールド管理クラスの更新
+		mpFieldMgr->Update();
+		// 時間表示UIクラスの更新
+		mpTimeUI->Update();
+		// スコア表示UIクラスの更新
+		mpDeliveryScoreUI->Update();
+	}
 
 	// プレイヤークラスを取得
 	CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(CDeliveryPlayer::Instance());

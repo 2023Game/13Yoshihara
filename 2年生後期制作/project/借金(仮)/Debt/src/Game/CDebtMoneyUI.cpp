@@ -114,7 +114,7 @@ CDebtMoneyUI::CDebtMoneyUI()
 	// オフセット座標を設定
 	mpMoneyText->Position(MONEY_OFFSET_POS);
 
-	// 所持金のテキストを生成
+	// クリックで次へのテキストを生成
 	mpNextText = new CTextUI2D(ETaskPauseType::eMenu, false, nullptr);
 	// テキストを設定
 	mpNextText->SetStr(NEXT_TEXT1);

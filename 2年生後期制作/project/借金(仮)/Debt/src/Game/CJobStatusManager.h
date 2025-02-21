@@ -63,6 +63,11 @@ public:
 	// 前日にロールバックする
 	void Rollback();
 
+	// 初めてのプレイかを取得
+	bool GetFirstPlay(EJobType jobType);
+	// 初めてのプレイか設定
+	void SetFirstPlay(EJobType jobType, bool isFirst);
+
 private:
 	// 選択されている仕事
 	EJobType mSelectJob;

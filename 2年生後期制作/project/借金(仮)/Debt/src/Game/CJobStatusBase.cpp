@@ -2,6 +2,7 @@
 
 // コンストラクタ
 CJobStatusBase::CJobStatusBase(EJobType jobType)
+	: mIsFirstPlay(true)
 {
 }
 
@@ -92,4 +93,16 @@ void CJobStatusBase::SetPreBaseJobStatus()
 void CJobStatusBase::Rollback()
 {
 	mBaseJobStatus = mPreBaseJobStatus;
+}
+
+// 初めてのプレイかを取得
+bool CJobStatusBase::GetFirstPlay() const
+{
+	return mIsFirstPlay;
+}
+
+// 初めてのプレイかを設定
+void CJobStatusBase::SetFirstPlay(bool isFirst)
+{
+	mIsFirstPlay = isFirst;
 }

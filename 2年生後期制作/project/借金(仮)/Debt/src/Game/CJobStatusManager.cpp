@@ -393,3 +393,55 @@ void CJobStatusManager::Rollback()
 	// 選択されている仕事を前日のものに設定
 	mSelectJob = mPreSelectJob;
 }
+
+// 初めてのプレイかを取得
+bool CJobStatusManager::GetFirstPlay(EJobType jobType)
+{
+	switch (jobType)
+	{
+		// ゴミ拾いの場合
+	case EJobType::eTrash:
+
+		return mpTrashStatus->GetFirstPlay();
+
+		break;
+
+		// 配達の場合
+	case EJobType::eDelivery:
+
+		return mpDeliveryStatus->GetFirstPlay();
+
+		break;
+		// それ以外
+	default:
+
+		return false;
+	}
+}
+
+// 初めてのプレイか設定
+void CJobStatusManager::SetFirstPlay(EJobType jobType, bool isFirst)
+{
+	switch (jobType)
+	{
+		// ゴミ拾いの場合
+	case EJobType::eTrash:
+
+		mpTrashStatus->SetFirstPlay(isFirst);
+
+		break;
+
+		// 配達の場合
+	case EJobType::eDelivery:
+
+		mpDeliveryStatus->SetFirstPlay(isFirst);
+
+		break;
+
+	default:
+
+		return;
+
+		break;
+	}
+}

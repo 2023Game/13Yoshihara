@@ -5,6 +5,7 @@ class CDeliveryEnemyManager;
 class CDeliveryFieldManager;
 class CTimeUI;
 class CDeliveryScoreUI;
+class CManualMenu;
 
 //タイトルシーン
 class CDeliveryGameScene :public CSceneBase
@@ -33,4 +34,6 @@ private:
 	CDeliveryScoreUI* mpDeliveryScoreUI;
 	// 経過時間を計る
 	float mElapsedTime;
+
+	CManualMenu* mpManual;
 };

@@ -18,6 +18,8 @@
 #include "CTrashEnemyManager.h"
 #include "CTrashWarningUI.h"
 #include "Maths.h"
+#include "CManualMenu.h"
+#include "CJobStatusManager.h"
 
 // 制限時間
 #define MAX_TIME 100
@@ -30,6 +32,9 @@
 #define ENEMY_POS CVector(0.0f,0.0f,-50.0f)
 // 敵の初期方向
 #define ENEMY_ROT CVector(0.0f,180.0f,0.0f)
+
+// 操作説明の画像のパス
+#define MANUAL_PATH "UI/trash_game_manual.png"
 
 //コンストラクタ
 CTrashGameScene::CTrashGameScene()
@@ -129,6 +134,17 @@ void CTrashGameScene::Load()
 	// 警告表示用UI生成
 	CTrashWarningUI* warningUI = new CTrashWarningUI();
 
+	// 操作説明
+	mpManual = new CManualMenu(MANUAL_PATH);
+	// 初めてのプレイなら操作説明を出す
+	auto* jobStatusMgr = CJobStatusManager::Instance();
+	if (jobStatusMgr->GetFirstPlay(EJobType::eTrash))
+	{
+		mpManual->Open();
+		// 次回以降、初めてではなくなる
+		jobStatusMgr->SetFirstPlay(EJobType::eDelivery, false);
+	}
+
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
 	//(
@@ -174,14 +190,19 @@ void CTrashGameScene::Update()
 		}
 	}
 
-	// 車両管理クラスの更新
-	mpVehicleMgr->Update();
-	// 敵管理クラスの更新
-	mpTrashEnemyMgr->Update();
-	// 時間表示UIクラスの更新
-	mpTimeUI->Update();
-	// スコア表示UIクラスの更新
-	mpTrashScoreUI->Update();
+	// メニューポーズ中じゃなければ
+	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
+	{
+		// 車両管理クラスの更新
+		mpVehicleMgr->Update();
+		// 敵管理クラスの更新
+		mpTrashEnemyMgr->Update();
+		// 時間表示UIクラスの更新
+		mpTimeUI->Update();
+		// スコア表示UIクラスの更新
+		mpTrashScoreUI->Update();
+	}
+
 	// プレイヤークラスを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
 	// 制限時間が0になったか、
