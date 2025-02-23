@@ -4,6 +4,7 @@
 #include "RoadType.h"
 
 class CDeliveryHpUI2D;
+class CSound;
 
 /*
 配達ゲームのプレイヤークラス
@@ -135,4 +136,7 @@ private:
 	int mShotNum;
 	// 当たった数
 	int mHitNum;
+
+	// 車同士の衝突音
+	CSound* mpClashSE;
 };

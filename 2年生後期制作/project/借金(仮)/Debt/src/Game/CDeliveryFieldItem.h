@@ -3,6 +3,7 @@
 #include "RoadType.h"
 
 class CModel;
+class CSound;
 
 // 配達のフィールドに落ちているアイテムクラス
 class CDeliveryFieldItem : public CObjectBase
@@ -42,4 +43,7 @@ private:
 	bool mIsBig;
 	// どの道にあるか
 	ERoadType mRoadType;
+
+	// ゲット音
+	CSound* mpGetSE;
 };

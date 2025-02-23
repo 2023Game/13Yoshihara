@@ -50,6 +50,9 @@ public:
 	/// <returns>衝突していたら、trueを返す</returns>
 	bool NavCollisionRay(const CVector& start, const CVector& end,
 		CHitInfo* hit, bool alreadyHit);
+
+	// カメラと衝突する車両のコライダ―を設定する
+	void SetCameraCollision(CCamera* camera);
 	
 	// 更新
 	void Update();

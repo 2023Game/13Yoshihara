@@ -24,15 +24,15 @@
 
 // コンストラクタ
 CBuyMenu::CBuyMenu()
-	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_UPGRADE, MENU_JOB_SELECT, MENU_CLOSE})
+	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_SELECT, MENU_CLOSE})
 {
 	// 仕事アンロックメニューを作成
 	mpJobUnlockMenu = new CJobUnlockMenu(this);
 
 	// 仕事強化メニューを作成
-	mpJobUpgradeMenu = new CJobUpgradeMenu(this);
+	//mpJobUpgradeMenu = new CJobUpgradeMenu(this);
 	// 無効
-	SetMenuOnOff(1, false);
+	//SetMenuOnOff(1, false);
 	
 	// 仕事選択メニューを作成
 	mpStageSelectMenu = new CStageSelectMenu(this);
@@ -40,12 +40,12 @@ CBuyMenu::CBuyMenu()
 
 	// 最後の要素以外のクリック時のコールバック関数を設定
 	mButtons[0]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickUnlock, this));
-	mButtons[1]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickUpgrade, this));
-	mButtons[2]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickSelect, this));
+	//mButtons[1]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickUpgrade, this));
+	mButtons[1]->SetOnClickFunc(std::bind(&CBuyMenu::OnClickSelect, this));
 	// 説明テキストを設定
 	mMenuTexts[0]->SetStr(UNLOCK_TEXT);
-	mMenuTexts[1]->SetStr(UPGRADE_TEXT);
-	mMenuTexts[2]->SetStr(SELECT_TEXT);
+	//mMenuTexts[1]->SetStr(UPGRADE_TEXT);
+	mMenuTexts[1]->SetStr(SELECT_TEXT);
 }
 
 // デストラクタ
@@ -77,23 +77,23 @@ void CBuyMenu::OnClickUnlock()
 	}
 }
 
-// [UPGRADE]クリック時のコールバック関数
-void CBuyMenu::OnClickUpgrade()
-{
-	// 有効なら開く
-	if (mMenuOnOff[1])
-	{
-		// プッシュ音
-		mpPushSE->Play(SE_VOLUME, true);
-		Close();
-		mpJobUpgradeMenu->Open();
-	}
-	// 無効ならブザー音
-	else
-	{
-		mpBuzzerSE->Play(SE_VOLUME, true);
-	}
-}
+//// [UPGRADE]クリック時のコールバック関数
+//void CBuyMenu::OnClickUpgrade()
+//{
+//	// 有効なら開く
+//	if (mMenuOnOff[1])
+//	{
+//		// プッシュ音
+//		mpPushSE->Play(SE_VOLUME, true);
+//		Close();
+//		mpJobUpgradeMenu->Open();
+//	}
+//	// 無効ならブザー音
+//	else
+//	{
+//		mpBuzzerSE->Play(SE_VOLUME, true);
+//	}
+//}
 
 // [SELECT]クリック時のコールバック関数
 void CBuyMenu::OnClickSelect()

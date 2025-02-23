@@ -5,7 +5,7 @@
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
 #include "CInput.h"
-#include "CGameMenu.h"
+#include "CMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
 #include "CToDoUI.h"
@@ -108,7 +108,7 @@ void CHomeScene::Load()
 	mainCamera->SetFollowTargetTf(player);
 
 	// ゲームメニューを作成
-	mpGameMenu = new CGameMenu();
+	mpGameMenu = new CMenu();
 }
 
 //シーンの更新処理

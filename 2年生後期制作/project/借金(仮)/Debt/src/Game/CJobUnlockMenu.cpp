@@ -21,7 +21,7 @@
 CJobUnlockMenu::CJobUnlockMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_UNLOCK_TRASH, MENU_UNLOCK_DELIVERY, MENU_CLOSE})
 {
-	mpPrevMenu = prevMenu;
+	mpPreMenu = prevMenu;
 
 	// 最後の要素以外のクリック時のコールバック関数を設定
 	mButtons[0]->SetOnClickFunc(std::bind(&CJobUnlockMenu::OnClickTrash, this));

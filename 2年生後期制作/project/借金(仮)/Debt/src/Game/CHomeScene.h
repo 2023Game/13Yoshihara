@@ -1,6 +1,6 @@
 #pragma once
 #include "CSceneBase.h"
-class CGameMenu;
+class CMenu;
 class CSound;
 class CToDoUI;
 class CSelectJobUI;
@@ -21,7 +21,7 @@ public:
 
 private:
 	// ゲームメニュー
-	CGameMenu* mpGameMenu;
+	CMenu* mpGameMenu;
 	// やること表示UI
 	CToDoUI* mpToDoUI;
 	// 選択中の仕事名表示UI

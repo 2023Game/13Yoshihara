@@ -22,7 +22,7 @@
 CStageSelectMenu::CStageSelectMenu(CGameMenuBase* prevMenu)
 	: CGameMenuBase(std::vector<std::string> {MENU_STAGE_TRASH, MENU_STAGE_DELIVERY, MENU_CLOSE})
 {
-	mpPrevMenu = prevMenu;
+	mpPreMenu = prevMenu;
 	// ƒQ[ƒ€‚Í‚·‚×‚Ä–³Œø
 	SetMenuOnOff(0, false);
 	SetMenuOnOff(1, false);

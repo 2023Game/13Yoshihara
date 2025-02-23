@@ -97,6 +97,8 @@ void CTrashGameScene::Load()
 	CResourceManager::Load<CSound>(		"CollectorDamageSE1",			"Sound\\SE\\collectorDamage.wav");
 	// ゴミを拾った音
 	CResourceManager::Load<CSound>(		"GetSE",						"Sound\\SE\\get.wav");
+	// 警告音
+	CResourceManager::Load<CSound>(		"AlarmSE",						"Sound\\SE\\alarm.wav");
 	// メニュー音声
 	CResourceManager::Load<CSound>(		"SelectSE",						"Sound\\SE\\MenuSound\\select.wav");
 	CResourceManager::Load<CSound>(		"PushSE",						"Sound\\SE\\MenuSound\\push.wav");
@@ -142,7 +144,7 @@ void CTrashGameScene::Load()
 	{
 		mpManual->Open();
 		// 次回以降、初めてではなくなる
-		jobStatusMgr->SetFirstPlay(EJobType::eDelivery, false);
+		jobStatusMgr->SetFirstPlay(EJobType::eTrash, false);
 	}
 
 	// CGameCameraのテスト
@@ -164,11 +166,14 @@ void CTrashGameScene::Load()
 	mainCamera->AddCollider(field->GetGroundCol());
 	mainCamera->AddCollider(field->GetWallCol());
 	mainCamera->AddCollider(field->GetObjCol());
+	mpVehicleMgr->SetCameraCollision(mainCamera);
 
 	mainCamera->SetFollowTargetTf(player);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
+	// 操作説明を設定
+	mpGameMenu->SetManual(mpManual);
 }
 
 //シーンの更新処理

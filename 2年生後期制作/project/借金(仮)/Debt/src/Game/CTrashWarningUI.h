@@ -3,6 +3,7 @@
 
 class CImage;
 class CTextUI2D;
+class CSound;
 
 // ƒSƒ~E‚¢ƒQ[ƒ€‚ÌŒx•\¦—pUI
 class CTrashWarningUI : public CTask
@@ -21,4 +22,10 @@ public:
 private:
 	// Œx•\¦—p
 	CImage* mpWarningImg;
+
+	int mStateStep;
+	float mElapsedTime; // Œo‰ßŠÔ
+
+	CSound* mpAlarmSE;	// Œx‰¹
+	float mIntervalTime;	// Ä¶ŠÔŠu‚ÌŠÔ
 };

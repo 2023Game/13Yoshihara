@@ -68,6 +68,11 @@ void CManualMenu::UpdateOpen()
 		if (CInput::PushKey(VK_LBUTTON))
 		{
 			Close();
+			// ˆê‚Â‘O‚Ìƒƒjƒ…[‚ª‚ ‚é‚È‚ç
+			if (mpPreMenu != nullptr)
+			{
+				mpPreMenu->Open();
+			}
 		}
 	}
 }

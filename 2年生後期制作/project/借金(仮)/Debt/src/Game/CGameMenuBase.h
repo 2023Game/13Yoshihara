@@ -33,6 +33,9 @@ public:
 	// メニューの要素の有効無効を設定
 	void SetMenuOnOff(int num, bool isOnOff);
 
+	// 一つ前のメニューを設定
+	void SetPreMenu(CGameMenuBase* preMenu);
+
 protected:
 	// 待機
 	void UpdateIdle();
@@ -63,7 +66,7 @@ protected:
 	std::vector<bool> mMenuOnOff;			// メニューの要素が有効無効
 	std::vector<CTextUI2D*> mMenuTexts;		// メニューの説明用テキスト
 	bool mIsOpened;						// 開いているか
-	CGameMenuBase* mpPrevMenu;			// 一つ前のメニューの格納用
+	CGameMenuBase* mpPreMenu;			// 一つ前のメニューの格納用
 	// 効果音
 	CSound* mpSelectSE;
 	CSound* mpPushSE;

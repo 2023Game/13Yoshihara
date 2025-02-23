@@ -47,6 +47,8 @@ private:
 	CVector mOwnerPos;
 	// ƒS[ƒ‹‰¹º
 	CSound* mpGoalSE;
+	// ƒqƒbƒg‰¹
+	CSound* mpHitSE;
 
 	// ˆÚ“®
 	CVector mMoveSpeed;

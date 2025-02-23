@@ -1,6 +1,6 @@
 #pragma once
 #include "CSceneBase.h"
-class CGameMenuBase;
+class CGameMenu;
 class CTrashVehicleManager;
 class CResidentManager;
 class CTrashEnemyManager;
@@ -23,7 +23,7 @@ public:
 
 private:
 	// ゲームメニュー
-	CGameMenuBase* mpGameMenu;
+	CGameMenu* mpGameMenu;
 	// 車両管理クラス
 	CTrashVehicleManager* mpVehicleMgr;
 	// 住人管理クラス
@@ -37,5 +37,6 @@ private:
 	// 経過時間を計る
 	float mElapsedTime;
 
+	// 操作説明
 	CManualMenu* mpManual;
 };

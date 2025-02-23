@@ -3,6 +3,7 @@
 #include "RoadType.h"
 
 class CModel;
+class CSound;
 
 // ”z’B‚ÌáŠQ•¨
 class CDeliveryObstruction : public CObjectBase
@@ -40,4 +41,7 @@ private:
 	CCollider* mpBodyCol;
 	// ‚Ç‚Ì“¹‚É‚ ‚é‚©
 	ERoadType mRoadType;
+
+	// Õ“Ë‰¹
+	CSound* mpHitSE;
 };

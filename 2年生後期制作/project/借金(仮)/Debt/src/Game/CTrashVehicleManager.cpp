@@ -302,6 +302,19 @@ bool CTrashVehicleManager::NavCollisionRay(const CVector& start, const CVector& 
 	return isHit;
 }
 
+// カメラと衝突する車両のコライダ―を設定する
+void CTrashVehicleManager::SetCameraCollision(CCamera* camera)
+{
+	// 全ての車両との衝突を追加
+	for (CTrashCar* car : mpCars)
+	{
+		// リストに追加
+		camera->AddCollider(car->GetBodyCol());
+	}
+	camera->AddCollider(mpGarbageTruck->GetBodyCol());
+	camera->AddCollider(mpPunishTruck->GetBodyCol());
+}
+
 // 更新
 void CTrashVehicleManager::Update()
 {

@@ -9,6 +9,7 @@ CCamera* CCamera::spCurrentCamera = nullptr;
 
 // カメラが衝突したときの調整値
 #define Camera_HIT_POSY 1.0f
+#define Camera_HIT_POSXZ 5.0f
 
 // コンストラクタ
 CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)
@@ -341,7 +342,8 @@ void CCamera::ApplyCollision()
 	// 視点を衝突地点より手前に押し戻す
 	if (isHit)
 	{
-		mEye = rayStart + (rayEnd - rayStart).Normalized() * nearDist * mHitColRatio;
+		mEye = rayStart + (rayEnd - rayStart).Normalized() * 
+			(nearDist+ Camera_HIT_POSXZ) * mHitColRatio;
 		// 少し上に上げる
 		mEye += CVector(0.0f, Camera_HIT_POSY, 0.0f);
 	}

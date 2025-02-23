@@ -29,7 +29,7 @@
 CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)
 	: CTask(ETaskPriority::eUI, 1, ETaskPauseType::eMenu)
 	, mIsOpened(false)
-	, mpPrevMenu(nullptr)
+	, mpPreMenu(nullptr)
 	, mElapsedTime(0.0f)
 {
 	// 待機状態
@@ -196,6 +196,12 @@ void CGameMenuBase::SetMenuOnOff(int num, bool isOnOff)
 	mMenuOnOff[num] = isOnOff;
 }
 
+// 一つ前のメニューを設定
+void CGameMenuBase::SetPreMenu(CGameMenuBase* preMenu)
+{
+	mpPreMenu = preMenu;
+}
+
 // 待機
 void CGameMenuBase::UpdateIdle()
 {
@@ -268,8 +274,8 @@ void CGameMenuBase::OnClickClose()
 	// プッシュ音
 	mpPushSE->Play(SE_VOLUME, true);
 	Close();
-	if (mpPrevMenu != nullptr)
+	if (mpPreMenu != nullptr)
 	{
-		mpPrevMenu->Open();
+		mpPreMenu->Open();
 	}
 }

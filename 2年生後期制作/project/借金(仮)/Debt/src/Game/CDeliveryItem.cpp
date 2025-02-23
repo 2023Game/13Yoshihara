@@ -14,7 +14,7 @@
 // 消滅までの時間
 #define DELETE_TIME 3.0f
 
-#define SE_VOLUME 0.5f
+#define SE_VOLUME 0.25f
 
 // スケールの倍率
 #define SCALE_RATIO 5.0f
@@ -42,7 +42,9 @@ CDeliveryItem::CDeliveryItem(CObjectBase* owner)
 	}
 	Scale(Scale() * SCALE_RATIO);
 	// ゴール音を取得
-	mpGoalSE = CResourceManager::Get<CSound>("GetSE");
+	mpGoalSE = CResourceManager::Get<CSound>("GoalSE");
+	// ヒット音を取得
+	mpHitSE = CResourceManager::Get<CSound>("HitSE");
 	// モデル取得
 	mpModel = CResourceManager::Get<CModel>("DeliveryItem");
 	
@@ -111,6 +113,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// プレイヤー取得
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			player->TakeDamage(GetDamage(), this);
+			// ヒット音を再生
+			mpHitSE->Play(SE_VOLUME, true);
 			// 消滅
 			Kill();
 		}
@@ -129,6 +133,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(mpOwner);
 				player->IncreaseHitNum();
 			}
+			// ヒット音を再生
+			mpHitSE->Play(SE_VOLUME, true);
 			// 消滅
 			Kill();
 		}
@@ -166,6 +172,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			mpOwner = other->Owner();
 			// フィールドの座標を取得
 			mOwnerPos = mpOwner->Position();
+			// ヒット音を再生
+			mpHitSE->Play(SE_VOLUME, true);
 		}
 		// 発射物の場合
 		else if (other->Layer() == ELayer::eAttackCol)
@@ -176,8 +184,16 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// 持ち主が同じなら処理しない
 			if (mpOwner == item->GetOwner()) return;
 
+			// ヒット音を再生
+			mpHitSE->Play(SE_VOLUME, true);
 			// 消滅
 			Kill();
+		}
+		// 障害物の場合
+		else if (other->Layer() == ELayer::eObstruction)
+		{
+			// ヒット音を再生
+			mpHitSE->Play(SE_VOLUME, true);
 		}
 	}
 }

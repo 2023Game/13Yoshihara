@@ -6,6 +6,7 @@
 #include "CDeliveryField.h"
 #include "CDeliveryHpUI2D.h"
 #include "CDeliveryEnemy.h"
+#include "CSound.h"
 
 #define TRUCK_HEIGHT	13.0f	// トラックの高さ
 #define TRUCK_WIDTH		32.5f	// トラックの幅
@@ -40,6 +41,8 @@
 // 撃てる間隔
 #define SHOOT_INTERVAL 0.1f
 
+#define SE_VOLUME 0.5f
+
 // コンストラクタ
 CDeliveryPlayer::CDeliveryPlayer()
 	: CPlayerBase()
@@ -56,6 +59,8 @@ CDeliveryPlayer::CDeliveryPlayer()
 	, mHitNum(0)
 	, mIsLeftMove(false)
 {
+	// 車両と衝突した音
+	mpClashSE = CResourceManager::Get<CSound>("CriticalSE");
 	// 移動状態
 	ChangeState(EState::eMove);
 	// 方向を設定
@@ -152,6 +157,13 @@ void CDeliveryPlayer::Collision(CCollider* self, CCollider* other, const CHitInf
 			// 敵にダメージを与える
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
 			enemy->TakeDamage(GetAttackPower(), this);
+
+			// ダメージを受けていなければ
+			if (!IsDamaging())
+			{
+				// 衝突音
+				mpClashSE->Play(SE_VOLUME, true);
+			}
 
 			// 車線変更状態の場合
 			if (mState == EState::eChangeRoad)

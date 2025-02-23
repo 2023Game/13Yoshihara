@@ -70,19 +70,23 @@ void CDeliveryGameScene::Load()
 	効果音
 	*/
 	// プレイヤーと敵の攻撃、車両がプレイヤー、敵、車両にダメージを与えた時の音
-	CResourceManager::Load<CSound>("DamageSE", "Sound\\SE\\damage.wav");
+	CResourceManager::Load<CSound>(		"DamageSE",				"Sound\\SE\\damage.wav");
 	// プレイヤーと敵のクリティカル攻撃がプレイヤー、敵、車両にダメージを与えたときの音
-	CResourceManager::Load<CSound>("CriticalSE", "Sound\\SE\\critical.wav");
+	CResourceManager::Load<CSound>(		"CriticalSE",			"Sound\\SE\\critical.wav");
 	// プレイヤーと敵の蓋が閉じている時に攻撃を食らった音
-	CResourceManager::Load<CSound>("GuardSE", "Sound\\SE\\guard.wav");
+	CResourceManager::Load<CSound>(		"GuardSE",				"Sound\\SE\\guard.wav");
 	// プレイヤーの攻撃が回収員に当たった音
-	CResourceManager::Load<CSound>("CollectorDamageSE1", "Sound\\SE\\collectorDamage.wav");
-	// ゴミを拾った音
-	CResourceManager::Load<CSound>("GetSE", "Sound\\SE\\get.wav");
+	CResourceManager::Load<CSound>(		"CollectorDamageSE1",	"Sound\\SE\\collectorDamage.wav");
+	// アイテムを拾った音
+	CResourceManager::Load<CSound>(		"GetSE",				"Sound\\SE\\get.wav");
+	// ゴール音
+	CResourceManager::Load<CSound>(		"GoalSE",				"Sound\\SE\\goal.wav");
+	// 配達物のヒット音
+	CResourceManager::Load<CSound>(		"HitSE",				"Sound\\SE\\hit.wav");
 	// メニュー音声
-	CResourceManager::Load<CSound>("SelectSE", "Sound\\SE\\MenuSound\\select.wav");
-	CResourceManager::Load<CSound>("PushSE", "Sound\\SE\\MenuSound\\push.wav");
-	CResourceManager::Load<CSound>("BuzzerSE", "Sound\\SE\\MenuSound\\buzzer.wav");
+	CResourceManager::Load<CSound>(		"SelectSE",				"Sound\\SE\\MenuSound\\select.wav");
+	CResourceManager::Load<CSound>(		"PushSE",				"Sound\\SE\\MenuSound\\push.wav");
+	CResourceManager::Load<CSound>(		"BuzzerSE",				"Sound\\SE\\MenuSound\\buzzer.wav");
 
 
 	// ゲームBGMを読み込み
@@ -151,6 +155,8 @@ void CDeliveryGameScene::Load()
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
+	// 操作説明を設定
+	mpGameMenu->SetManual(mpManual);
 }
 
 //シーンの更新処理

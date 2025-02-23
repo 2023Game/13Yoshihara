@@ -1,5 +1,6 @@
 #pragma once
 #include "CGameMenuBase.h"
+#include "CManualMenu.h"
 
 class CGameMenu : public CGameMenuBase
 {
@@ -12,9 +13,15 @@ public:
 	// 更新
 	void Update();
 
+	// 操作説明を設定
+	void SetManual(CManualMenu* menu);
+
 private:
-	// [TITLE}クリック時のコールバック関数
+	// [タイトルへ}クリック時のコールバック関数
 	void OnClickTitle();
-	// [SETTING}クリック時のコールバック関数
-	void OnClickSetting();
+	// [操作説明}クリック時のコールバック関数
+	void OnClickManual();
+
+	// 操作説明
+	CManualMenu* mpManual;
 };

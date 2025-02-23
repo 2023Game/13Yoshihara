@@ -4,6 +4,7 @@
 #include "CColliderSphere.h"
 #include "CDeliveryPlayer.h"
 #include "CDeliveryEnemy.h"
+#include "CSound.h"
 
 // スケール倍率
 #define SCALE 2.0f
@@ -16,11 +17,14 @@
 // ダメージ
 #define DAMAGE 1
 
+#define SE_VOLUME 0.5f
+
 // コンストラクタ
 CDeliveryObstruction::CDeliveryObstruction()
 	: CObjectBase(ETag::eObstruction, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
 	, mRoadType(ERoadType::eLeft1)
 {
+	mpHitSE = CResourceManager::Get<CSound>("DamageSE");
 	// スケールを設定
 	Scale(Scale() * 2.0f);
 	// モデル取得
@@ -62,6 +66,8 @@ void CDeliveryObstruction::Collision(CCollider* self, CCollider* other, const CH
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			// ダメージを与える
 			player->TakeDamage(DAMAGE, this);
+			// 衝突音声再生
+			mpHitSE->Play(SE_VOLUME, true);
 			// 無効
 			SetEnable(false);
 			SetShow(false);
@@ -73,6 +79,8 @@ void CDeliveryObstruction::Collision(CCollider* self, CCollider* other, const CH
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
 			// ダメージを与える
 			enemy->TakeDamage(DAMAGE, this);
+			// 衝突音声再生
+			mpHitSE->Play(SE_VOLUME, true);
 			// 無効
 			SetEnable(false);
 			SetShow(false);

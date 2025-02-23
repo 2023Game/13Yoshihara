@@ -3,6 +3,7 @@
 #include "CDeliveryPlayer.h"
 #include "CDeliveryEnemy.h"
 #include "CColliderSphere.h"
+#include "CSound.h"
 
 // 本体コライダ―の半径
 #define BODY_RADIUS 5.0f
@@ -22,12 +23,15 @@
 // 拾って得られる個数
 #define NUM 1
 
+#define SE_VOLUME 0.5f
+
 // コンストラクタ
 CDeliveryFieldItem::CDeliveryFieldItem()
 	: CObjectBase(ETag::eItem, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
 	, mIsBig(false)
 	, mRoadType(ERoadType::eLeft1)
 {
+	mpGetSE = CResourceManager::Get<CSound>("GetSE");
 	// スケールを設定
 	Scale(Scale() * SCALE_MIN);
 	// モデル取得
@@ -98,6 +102,8 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			// HPを増やす
 			player->SetHp(NUM);
+			// 獲得音声再生
+			mpGetSE->Play(SE_VOLUME, true);
 			// 無効
 			SetEnable(false);
 			SetShow(false);
@@ -111,6 +117,8 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 			if (enemy->IsDeath()) return;
 			// HPを増やす
 			enemy->SetHp(NUM);
+			// 獲得音声再生
+			mpGetSE->Play(SE_VOLUME, true);
 			// 無効
 			SetEnable(false);
 			SetShow(false);

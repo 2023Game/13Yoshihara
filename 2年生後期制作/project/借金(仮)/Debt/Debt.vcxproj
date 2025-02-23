@@ -107,9 +107,8 @@
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CBuyMenu.cpp" />
-    <ClCompile Include="src\Game\CCactus.cpp" />
-    <ClCompile Include="src\Game\CCactusNeedle.cpp" />
     <ClCompile Include="src\Game\CManualMenu.cpp" />
+    <ClCompile Include="src\Game\CMenu.cpp" />
     <ClCompile Include="src\Game\CMoneyManager.cpp" />
     <ClCompile Include="src\Game\CMoneyUI.cpp" />
     <ClCompile Include="src\Game\CTextUI3D.cpp" />
@@ -301,9 +300,8 @@
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CBuyMenu.h" />
-    <ClInclude Include="src\Game\CCactus.h" />
-    <ClInclude Include="src\Game\CCactusNeedle.h" />
     <ClInclude Include="src\Game\CManualMenu.h" />
+    <ClInclude Include="src\Game\CMenu.h" />
     <ClInclude Include="src\Game\CMoneyManager.h" />
     <ClInclude Include="src\Game\CMoneyUI.h" />
     <ClInclude Include="src\Game\CTextUI3D.h" />
