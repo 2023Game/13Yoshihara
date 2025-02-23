@@ -4,6 +4,7 @@
 #include "CBGMManager.h"
 #include "CTextUI2D.h"
 #include "Easing.h"
+#include "CSceneManager.h"
 
 #define MENU_ALPHA 0.75f
 
@@ -122,7 +123,19 @@ void CGameMenuBase::Close()
 {
 	SetEnable(false);
 	SetShow(false);
-	CBGMManager::Instance()->Play(EBGMType::eHome, false);
+	EScene currScene = CSceneManager::Instance()->GetCurrentScene();
+
+	// ホームならホームのBGM
+	if (currScene == EScene::eHome)
+	{
+		CBGMManager::Instance()->Play(EBGMType::eHome, false);
+	}
+	// ゲームならゲームBGM
+	else if (currScene == EScene::eTrashGame ||
+		currScene == EScene::eDeliveryGame)
+	{
+		CBGMManager::Instance()->Play(EBGMType::eTrashGame, false);
+	}
 	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 	// メニューはカーソル非表示
 	CInput::ShowCursor(false);

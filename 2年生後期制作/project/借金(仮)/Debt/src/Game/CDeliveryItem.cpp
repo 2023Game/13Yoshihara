@@ -45,6 +45,8 @@ CDeliveryItem::CDeliveryItem(CObjectBase* owner)
 	mpGoalSE = CResourceManager::Get<CSound>("GoalSE");
 	// ヒット音を取得
 	mpHitSE = CResourceManager::Get<CSound>("HitSE");
+	// ダメージ音を取得
+	mpDamageSE = CResourceManager::Get<CSound>("DamageSE");
 	// モデル取得
 	mpModel = CResourceManager::Get<CModel>("DeliveryItem");
 	
@@ -113,8 +115,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// プレイヤー取得
 			CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(other->Owner());
 			player->TakeDamage(GetDamage(), this);
-			// ヒット音を再生
-			mpHitSE->Play(SE_VOLUME, true);
+			// ダメージ音を再生
+			mpDamageSE->Play(SE_VOLUME, true);
 			// 消滅
 			Kill();
 		}
@@ -133,8 +135,8 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 				CDeliveryPlayer* player = dynamic_cast<CDeliveryPlayer*>(mpOwner);
 				player->IncreaseHitNum();
 			}
-			// ヒット音を再生
-			mpHitSE->Play(SE_VOLUME, true);
+			// ダメージ音を再生
+			mpDamageSE->Play(SE_VOLUME, true);
 			// 消滅
 			Kill();
 		}
@@ -189,12 +191,6 @@ void CDeliveryItem::Collision(CCollider* self, CCollider* other, const CHitInfo&
 			// 消滅
 			Kill();
 		}
-		// 障害物の場合
-		else if (other->Layer() == ELayer::eObstruction)
-		{
-			// ヒット音を再生
-			mpHitSE->Play(SE_VOLUME, true);
-		}
 	}
 }
 
@@ -220,10 +216,10 @@ void CDeliveryItem::CreateCol()
 		CVector(0.0f, ITEM_HEIGHT, -ITEM_WIDTH + ITEM_RADIUS),
 		ITEM_RADIUS * Scale().X()
 	);
-	// プレイヤー、敵、ゴール、発射物、壁、障害物
+	// プレイヤー、敵、ゴール、発射物、壁、
 	// と衝突判定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
-		ETag::eField,ETag::eBullet,ETag::eObstruction });
+		ETag::eField,ETag::eBullet });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eGoal,ELayer::eAttackCol,ELayer::eWall,ELayer::eObstruction });
+		ELayer::eGoal,ELayer::eAttackCol,ELayer::eWall });
 }

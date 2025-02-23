@@ -111,6 +111,9 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 		// 敵の場合
 		else if (other->Layer() == ELayer::eEnemy)
 		{
+			// 無効
+			SetEnable(false);
+			SetShow(false);
 			// プレイヤー取得
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
 			// 死んでいたら処理しない
@@ -119,16 +122,6 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 			enemy->SetHp(NUM);
 			// 獲得音声再生
 			mpGetSE->Play(SE_VOLUME, true);
-			// 無効
-			SetEnable(false);
-			SetShow(false);
-		}
-		// 攻撃判定の場合
-		else if (other->Layer() == ELayer::eAttackCol)
-		{
-			// 無効
-			SetEnable(false);
-			SetShow(false);
 		}
 		// 障害物の場合
 		else if (other->Layer() == ELayer::eObstruction)
@@ -140,7 +133,6 @@ void CDeliveryFieldItem::Collision(CCollider* self, CCollider* other, const CHit
 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
-
 		}
 	}
 }
@@ -165,12 +157,12 @@ void CDeliveryFieldItem::CreateCol()
 		this,ELayer::eItem,
 		BODY_RADIUS
 	);
-	// プレイヤー、敵、発射物、障害物、探知
+	// プレイヤー、敵、障害物、探知
 	// と衝突判定
 	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
-		ETag::eBullet,ETag::eObstruction });
+		ETag::eObstruction });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eAttackCol,ELayer::eObstruction,ELayer::eSearch });
+		ELayer::eObstruction,ELayer::eSearch });
 	// 座標を設定
 	mpBodyCol->Position(BODY_OFFSET_POS);
 }

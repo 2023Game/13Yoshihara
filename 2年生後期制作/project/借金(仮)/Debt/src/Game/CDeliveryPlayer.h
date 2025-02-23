@@ -139,4 +139,8 @@ private:
 
 	// Ô“¯m‚ÌÕ“Ë‰¹
 	CSound* mpClashSE;
+
+	// AD‚ğ‰Ÿ‚µ‚Ä‚¢‚éŠÔ
+	float mPushElapsedTimeA;
+	float mPushElapsedTimeD;
 };
