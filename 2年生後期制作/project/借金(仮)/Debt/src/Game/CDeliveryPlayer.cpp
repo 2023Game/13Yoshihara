@@ -489,6 +489,7 @@ void CDeliveryPlayer::ActionInput()
 			mPushElapsedTimeD = 0.0f;
 		}
 	}
+
 	// Hpが一つもない場合撃てない
 	if (GetHp() <= 0) return;
 	// インターバルを経過させる
@@ -517,7 +518,9 @@ void CDeliveryPlayer::ActionInput()
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);
 		}
+
 	}
+
 	// 右クリックで、右方向へ射撃
 	if (CInput::PushKey(VK_RBUTTON))
 	{

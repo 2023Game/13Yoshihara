@@ -146,8 +146,7 @@ void CGameMenuBase::Close()
 		CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 		// カーソル非表示
 		CInput::ShowCursor(false);
-	}
-	// 待機状態
+	}	// 待機状態
 	ChangeState(EState::eIdle);
 }
 
