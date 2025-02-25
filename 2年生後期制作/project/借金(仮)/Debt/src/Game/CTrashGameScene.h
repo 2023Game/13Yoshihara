@@ -7,6 +7,7 @@ class CTrashEnemyManager;
 class CTimeUI;
 class CTrashScoreUI;
 class CManualMenu;
+class CTrashWarningUI;
 
 //タイトルシーン
 class CTrashGameScene :public CSceneBase
@@ -34,6 +35,8 @@ private:
 	CTimeUI* mpTimeUI;
 	// スコア表示UI
 	CTrashScoreUI* mpTrashScoreUI;
+	// 警告UI
+	CTrashWarningUI* mpWarningUI;
 	// 経過時間を計る
 	float mElapsedTime;
 

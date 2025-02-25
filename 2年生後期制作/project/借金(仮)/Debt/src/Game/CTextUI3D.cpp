@@ -29,6 +29,9 @@ CTextUI3D::CTextUI3D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 
 	// UV設定
 	SetUV(CRect(0.0f, 0.0f, 1.0f, 1.0f));
+	
+	// アウトラインを調整
+	mpText->SetOutlineWidth(0.5f);
 }
 
 // デストラクタ

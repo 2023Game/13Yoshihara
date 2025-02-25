@@ -51,7 +51,7 @@ public:
 	// 点滅する処理
 	void Blink();
 
-private:
+protected:
 	CFont* mpFont;	// フォント
 	CText* mpText;	// 文字列描画用
 

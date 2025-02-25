@@ -107,10 +107,10 @@ void CText::SetEnableOutline(bool enable)
 	mIsEnableOutline = enable;
 }
 
-//void CText::SetOutlineWidth(float width)
-//{
-//	mOutlineWidth = width;
-//}
+void CText::SetOutlineWidth(float width)
+{
+	mOutlineWidth = width;
+}
 
 void CText::SetOutlineColor(const CColor& color)
 {

@@ -35,6 +35,9 @@ public:
 
 	// 一つ前のメニューを設定
 	void SetPreMenu(CGameMenuBase* preMenu);
+	
+	// 有効無効の切り替え
+	void SetOnOff(bool isOnOff);
 
 protected:
 	// 待機
@@ -67,6 +70,7 @@ protected:
 	std::vector<CTextUI2D*> mMenuTexts;		// メニューの説明用テキスト
 	bool mIsOpened;						// 開いているか
 	CGameMenuBase* mpPreMenu;			// 一つ前のメニューの格納用
+	bool mIsNextMenu;	// 次のメニューがあるか
 	// 効果音
 	CSound* mpSelectSE;
 	CSound* mpPushSE;

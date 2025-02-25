@@ -122,3 +122,13 @@ void CSoundManager::Update()
 	// BGMマネージャーの更新
 	CBGMManager::Instance()->Update();
 }
+
+// 全ての音を停止
+void CSoundManager::Stop()
+{	
+	// リストに登録されているサウンドを停止
+	for (CSound* sound : mSounds)
+	{
+		sound->Stop();
+	}
+}

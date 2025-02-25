@@ -5,6 +5,7 @@
 #include "CTrashEnemyManager.h"
 #include "CTrashVehicleManager.h"
 #include "CSound.h"
+#include "CTaskManager.h"
 
 // アルファの変化間隔
 #define CHANGE_ALPHA_INTERVAL 0.01f
@@ -30,6 +31,7 @@ CTrashWarningUI::CTrashWarningUI()
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
 	, mIntervalTime(0.0f)
+	, mIsPlay(false)
 {
 	// 警告音を設定
 	mpAlarmSE = CResourceManager::Get<CSound>("AlarmSE");
@@ -55,6 +57,27 @@ CTrashWarningUI::~CTrashWarningUI()
 void CTrashWarningUI::Update()
 {
 	mElapsedTime += Times::DeltaTime();
+	mIntervalTime += Times::DeltaTime();
+
+	// 警告音を再生するか
+	if (mIsPlay)
+	{
+		// 再生間隔が経過したか
+		// 再生されていない場合
+		if (mIntervalTime >= SE_INTERVAL)
+		{
+			mIntervalTime = 0.0f;
+			mpAlarmSE->Play(SE_VOLUME, true);
+		}
+	}
+	else
+	{
+		// 次範囲外に出たときすぐ再生できるように設定
+		mIntervalTime = SE_INTERVAL;
+		// 警告音を停止
+		mpAlarmSE->Stop();
+	}
+
 	switch (mStateStep)
 	{
 		// 待機
@@ -108,7 +131,6 @@ void CTrashWarningUI::Update()
 // 描画
 void CTrashWarningUI::Render()
 {
-	mIntervalTime += Times::DeltaTime();
 	// プレイヤーを取得
 	CTrashPlayer* player = dynamic_cast<CTrashPlayer*>(CTrashPlayer::Instance());
 
@@ -121,35 +143,33 @@ void CTrashWarningUI::Render()
 	if (player->AreaOutZ() &&
 		!enemyMgr->GetPopPunisherEnemy())
 	{
-		// 警告音再生
-			// 再生間隔が経過したら
-		if (mIntervalTime >= SE_INTERVAL)
-		{
-			mIntervalTime = 0.0f;
-			mpAlarmSE->Play(SE_VOLUME, true);
-		}
-		mpWarningImg->Render();
+		mpWarningImg->Render();		// 再生する
+		mIsPlay = true;
 	}	
 	// プレイヤーがXのエリア外かつ
 	// お仕置き用のトラックが出現していない場合描画
 	else if (player->AreaOutX() &&
 		!vehicleMgr->GetPopPunisherTruck())
 	{
-		// 警告音再生
-		// 再生間隔が経過したら
-		if (mIntervalTime >= SE_INTERVAL)
-		{
-			mIntervalTime = 0.0f;
-			mpAlarmSE->Play(SE_VOLUME, true);
-		}
+		// お仕置き用の敵が出現しているなら処理しない
+		if (enemyMgr->GetPopPunisherEnemy()) return;
+
 		mpWarningImg->Render();
+		// 再生する
+		mIsPlay = true;
 	}
 	// 警告が出ていないなら
 	else
 	{
-		// 次範囲外に出たときすぐ再生できるように設定
-		mIntervalTime = SE_INTERVAL;
-		// 警告音を停止
-		mpAlarmSE->Stop();
+		// 再生しない
+		mIsPlay = false;
 	}
+}
+
+// 再生している音の停止
+void CTrashWarningUI::StopSE()
+{
+	// 次範囲外に出たときすぐ再生できるように設定
+	mIntervalTime = SE_INTERVAL;
+	mpAlarmSE->Stop();
 }

@@ -49,6 +49,8 @@ private:
 	CSound* mpGoalSE;
 	// ヒット音
 	CSound* mpHitSE;
+	// ダメージ音
+	CSound* mpDamageSE;
 
 	// 移動
 	CVector mMoveSpeed;

@@ -45,7 +45,7 @@ public:
 	void SetShadowColor(const CColor& color);
 
 	void SetEnableOutline(bool enable);
-	//void SetOutlineWidth(float width);
+	void SetOutlineWidth(float width);
 	void SetOutlineColor(const CColor& color);
 
 	void SetText(const char* format, ...);

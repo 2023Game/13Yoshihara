@@ -9,10 +9,19 @@
 // 敵の生成間隔
 #define ENEMY_POP_TIME 20.0f
 
+CDeliveryEnemyManager* CDeliveryEnemyManager::spInstance = nullptr;
+
+// インスタンスを取得
+CDeliveryEnemyManager* CDeliveryEnemyManager::Instance()
+{
+	return spInstance;
+}
+
 // コンストラクタ
 CDeliveryEnemyManager::CDeliveryEnemyManager()
 	: mElapsedTime(0.0f)
 {
+	spInstance = this;
 	// 敵の生成
 	mpEnemy = new CDeliveryEnemy();
 	// 最初は無効
@@ -22,6 +31,7 @@ CDeliveryEnemyManager::CDeliveryEnemyManager()
 // デストラクタ
 CDeliveryEnemyManager::~CDeliveryEnemyManager()
 {
+	SAFE_DELETE(spInstance);
 }
 
 // 更新
@@ -40,6 +50,12 @@ void CDeliveryEnemyManager::Update()
 			PopEnemyRandomRoad();
 		}
 	}
+}
+
+// 敵が出現しているか
+bool CDeliveryEnemyManager::GetEnamyEnable()
+{
+	return mpEnemy->IsEnable();
 }
 
 // ランダムな道に敵を生成

@@ -13,6 +13,8 @@
 #define ROAD_LEFT2_POSX		-30.0f
 #define ROAD_RIGHT1_POSX	 90.0f
 #define ROAD_RIGHT2_POSX	 30.0f
+// é‘ìπÇÃä‘äu
+#define ROAD_DISTANCE 60.0f
 
 // ã≠êßà⁄ìÆë¨ìx
 #define FORCE_MOVE_SPEED 7.5f * 60.0f	

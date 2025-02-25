@@ -2,8 +2,10 @@
 #include "CInput.h"
 #include "CTaskManager.h"
 #include "CBGMManager.h"
+#include "CSoundManager.h"
 #include "CTextUI2D.h"
 #include "Easing.h"
+#include "CSceneManager.h"
 
 #define MENU_ALPHA 0.75f
 
@@ -30,6 +32,7 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)
 	: CTask(ETaskPriority::eUI, 1, ETaskPauseType::eMenu)
 	, mIsOpened(false)
 	, mpPreMenu(nullptr)
+	, mIsNextMenu(false)
 	, mElapsedTime(0.0f)
 {
 	// 待機状態
@@ -103,10 +106,13 @@ void CGameMenuBase::Open()
 	SetEnable(true);
 	SetShow(true);
 	mElapsedTime = 0.0f;
-	CBGMManager::Instance()->Play(EBGMType::eMenu, false);
-	CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
-	// メニューはカーソル表示
-	CInput::ShowCursor(true);
+	if (mpPreMenu == nullptr)
+	{
+		CBGMManager::Instance()->Play(EBGMType::eMenu, false);
+		CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
+		// メニューはカーソル表示
+		CInput::ShowCursor(true);
+	}
 	// メニューを開く状態
 	ChangeState(EState::eOpen);
 	for (CButton* btn : mButtons)
@@ -122,10 +128,25 @@ void CGameMenuBase::Close()
 {
 	SetEnable(false);
 	SetShow(false);
-	CBGMManager::Instance()->Play(EBGMType::eHome, false);
-	CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
-	// メニューはカーソル非表示
-	CInput::ShowCursor(false);
+
+	if (mpPreMenu == nullptr)
+	{
+		EScene currScene = CSceneManager::Instance()->GetCurrentScene();
+		// ホームならホームのBGM
+		if (currScene == EScene::eHome)
+		{
+			CBGMManager::Instance()->Play(EBGMType::eHome, false);
+		}
+		// ゲームならゲームBGM
+		else if (currScene == EScene::eTrashGame ||
+			currScene == EScene::eDeliveryGame)
+		{
+			CBGMManager::Instance()->Play(EBGMType::eTrashGame, false);
+		}
+		CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
+		// カーソル非表示
+		CInput::ShowCursor(false);
+	}
 	// 待機状態
 	ChangeState(EState::eIdle);
 }
@@ -202,6 +223,13 @@ void CGameMenuBase::SetPreMenu(CGameMenuBase* preMenu)
 	mpPreMenu = preMenu;
 }
 
+// 有効無効の切り替え
+void CGameMenuBase::SetOnOff(bool isOnOff)
+{
+	SetEnable(isOnOff);
+	SetShow(isOnOff);
+}
+
 // 待機
 void CGameMenuBase::UpdateIdle()
 {
@@ -273,9 +301,11 @@ void CGameMenuBase::OnClickClose()
 {
 	// プッシュ音
 	mpPushSE->Play(SE_VOLUME, true);
-	Close();
+	
+	// 前のメニューがあるならそれを有効
 	if (mpPreMenu != nullptr)
 	{
-		mpPreMenu->Open();
+		mpPreMenu->SetOnOff(true);
 	}
+	Close();
 }

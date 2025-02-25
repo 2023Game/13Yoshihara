@@ -19,6 +19,9 @@ public:
 	// •`‰æ
 	void Render();
 
+	// Ä¶‚µ‚Ä‚¢‚é‰¹‚Ì’â~
+	void StopSE();
+
 private:
 	// Œx•\¦—p
 	CImage* mpWarningImg;
@@ -28,4 +31,5 @@ private:
 
 	CSound* mpAlarmSE;	// Œx‰¹
 	float mIntervalTime;	// Ä¶ŠÔŠu‚ÌŠÔ
+	bool mIsPlay;	// Ä¶‚·‚é‚©
 };

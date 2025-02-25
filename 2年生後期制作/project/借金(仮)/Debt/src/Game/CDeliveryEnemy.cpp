@@ -688,7 +688,7 @@ void CDeliveryEnemy::Shoot()
 			// ˆÚ“®‘¬“x
 			float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
 			// ˆÚ“®‚ðÝ’è
-			item->SetMoveSpeed(-VectorX() * moveSpeedZ);
+			item->SetMoveSpeed(CVector::right * moveSpeedZ);
 
 			// Hp‚ðŒ¸‚ç‚·
 			TakeDamage(1, nullptr, true);
@@ -707,7 +707,7 @@ void CDeliveryEnemy::Shoot()
 			// ˆÚ“®‘¬“x
 			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
 			// ˆÚ“®‚ðÝ’è
-			item->SetMoveSpeed(VectorX() * moveSpeedX);
+			item->SetMoveSpeed(CVector::left * moveSpeedX);
 
 			// Hp‚ðŒ¸‚ç‚·
 			TakeDamage(1, nullptr, true);
@@ -729,7 +729,7 @@ void CDeliveryEnemy::Shoot()
 		// ˆÚ“®‘¬“x
 		float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
 		// ˆÚ“®‚ðÝ’è
-		item1->SetMoveSpeed(-VectorZ() * moveSpeedZ);
+		item1->SetMoveSpeed(CVector::forward * moveSpeedZ);
 
 		// Hp‚ðŒ¸‚ç‚·
 		TakeDamage(1, nullptr, true);

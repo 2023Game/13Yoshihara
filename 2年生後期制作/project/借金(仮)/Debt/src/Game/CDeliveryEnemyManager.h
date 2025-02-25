@@ -6,6 +6,8 @@ class CDeliveryEnemy;
 class CDeliveryEnemyManager
 {
 public:
+	// インスタンスを取得
+	static CDeliveryEnemyManager* Instance();
 	// コンストラクタ
 	CDeliveryEnemyManager();
 	// デストラクタ
@@ -14,7 +16,12 @@ public:
 	// 更新
 	void Update();
 
+	// 敵が出現しているか
+	bool GetEnamyEnable();
+
 private:
+	// インスタンス
+	static CDeliveryEnemyManager* spInstance;
 	// ランダムな道に敵を生成
 	void PopEnemyRandomRoad();
 	// 敵

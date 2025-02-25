@@ -13,6 +13,9 @@ CGameMenu::CGameMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_ITEM1, MENU_ITEM2, MENU_CLOSE})
 	, mpManual(nullptr)
 {
+	// 次のメニューがある
+	mIsNextMenu = true;
+
 	SetSortOrder(3);
 	// 最後の要素以外のクリック時のコールバック関数を設定
 	mButtons[0]->SetOnClickFunc(std::bind(&CGameMenu::OnClickTitle, this));
@@ -56,8 +59,8 @@ void CGameMenu::OnClickManual()
 	{
 		// 一つ前のメニューを設定
 		mpManual->SetPreMenu(this);
-		// これを閉じる
-		Close();
+		// これを無効
+		SetOnOff(false);
 		// 開く
 		mpManual->Open();
 	}

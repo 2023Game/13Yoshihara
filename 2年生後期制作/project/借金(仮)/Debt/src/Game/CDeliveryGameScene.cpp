@@ -169,12 +169,16 @@ void CDeliveryGameScene::Update()
 	}
 #endif
 
-	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
-	if (!mpGameMenu->IsOpened())
+	// メニューポーズでなければ
+	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
 	{
-		if (CInput::PushKey(VK_TAB))
+		// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
+		if (!mpGameMenu->IsOpened())
 		{
-			mpGameMenu->Open();
+			if (CInput::PushKey(VK_TAB))
+			{
+				mpGameMenu->Open();
+			}
 		}
 	}
 

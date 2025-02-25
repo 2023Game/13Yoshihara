@@ -1,4 +1,5 @@
 #pragma once
+#include "RoadType.h"
 
 class CDeliveryField;
 class CDeliveryHome;
@@ -36,15 +37,8 @@ private:
 	void CreateHome();
 	// 障害物を生成するか判定する
 	void CreateObstruction();
-	/// <summary>
-	/// 障害物の座標をランダムで設定
-	/// </summary>
-	/// <param name="obstruction">障害物のポインタ</param>
-	/// <param name="isPopSuccess～">
-	/// その道に生成が成功したかの参照</param>
-	void ObstructionRandomPos(CDeliveryObstruction* obstruction,
-		bool& isPopSuccessL1, bool& isPopSuccessL2,
-		bool& isPopSuccessR1, bool& isPopSuccessR2);
+	// 障害物の座標をランダムで設定
+	void ObstructionRandomPos(CDeliveryObstruction* obstruction);
 
 	// アイテムを生成するか判定する
 	void CreateFieldItem();
@@ -70,7 +64,10 @@ private:
 	float mLastHomePopZ;
 	// 最後に障害物の生成判定をしたZ座標
 	float mLastObstructionPopZ;
+	// 最後に障害物の生成をした道
+	ERoadType mLastObstructionRoad;
 	// 最後にアイテムの生成判定をしたZ座標
 	float mLastFieldItemPopZ;
-
+	// 最後にアイテムの生成をした道
+	ERoadType mLastItemRoad;
 };

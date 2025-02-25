@@ -43,6 +43,9 @@
 
 #define SE_VOLUME 0.5f
 
+// 押している時の処理の間隔
+#define PUSH_INTERVAL 0.15f
+
 // コンストラクタ
 CDeliveryPlayer::CDeliveryPlayer()
 	: CPlayerBase()
@@ -58,6 +61,8 @@ CDeliveryPlayer::CDeliveryPlayer()
 	, mShotNum(0)
 	, mHitNum(0)
 	, mIsLeftMove(false)
+	, mPushElapsedTimeA(0.0f)
+	, mPushElapsedTimeD(0.0f)
 {
 	// 車両と衝突した音
 	mpClashSE = CResourceManager::Get<CSound>("CriticalSE");
@@ -106,7 +111,7 @@ void CDeliveryPlayer::Update()
 {
 	switch (mState)
 	{
-	case EState::eMove:			UpdateMove();			break;
+	case EState::eMove:			break;
 	case EState::eChangeRoad:	UpdateChangeRoad();		break;
 	case EState::eDeath:		UpdateDeath();			break;
 	}
@@ -117,6 +122,7 @@ void CDeliveryPlayer::Update()
 	{
 		// キー入力可能
 		ActionInput();
+		UpdateMove();
 	}
 
 	// 被弾の点滅
@@ -274,31 +280,35 @@ std::string CDeliveryPlayer::GetStateStr(EState state) const
 // 移動の更新処理
 void CDeliveryPlayer::UpdateMove()
 {
-	// 今いる道のX座標
-	float targetPosX = 0.0f;
-	switch (mRoadType)
+	// 車線変更じゃないなら
+	if (mState != EState::eChangeRoad)
 	{
-	case ERoadType::eLeft1:
-		targetPosX = ROAD_LEFT1_POSX;
-		break;
-	case ERoadType::eLeft2:
-		targetPosX = ROAD_LEFT2_POSX;
-		break;
-	case ERoadType::eRight1:
-		targetPosX = ROAD_RIGHT1_POSX;
-		break;
-	case ERoadType::eRight2:
-		targetPosX = ROAD_RIGHT2_POSX;
-		break;
-	}
-	// 使用しないので
-	// 目的地を自分に設定しておく
-	mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
-	Position(mTargetPos);
+		// 今いる道のX座標
+		float targetPosX = 0.0f;
+		switch (mRoadType)
+		{
+		case ERoadType::eLeft1:
+			targetPosX = ROAD_LEFT1_POSX;
+			break;
+		case ERoadType::eLeft2:
+			targetPosX = ROAD_LEFT2_POSX;
+			break;
+		case ERoadType::eRight1:
+			targetPosX = ROAD_RIGHT1_POSX;
+			break;
+		case ERoadType::eRight2:
+			targetPosX = ROAD_RIGHT2_POSX;
+			break;
+		}
+		// 使用しないので
+		// 目的地を自分に設定しておく
+		mTargetPos = CVector(targetPosX, Position().Y(), Position().Z());
+		Position(mTargetPos);
 
-	mMoveSpeed = CVector::zero;
-	CVector forward = CVector::Slerp(VectorZ(), CVector::back, 0.125f);
-	Rotation(CQuaternion::LookRotation(forward));
+		mMoveSpeed = CVector::zero;
+		CVector forward = CVector::Slerp(VectorZ(), CVector::back, 0.125f);
+		Rotation(CQuaternion::LookRotation(forward));
+	}
 
 	// プレイヤーの移動ベクトルを求める
 	CVector move = CalcMoveVec();
@@ -436,27 +446,48 @@ bool CDeliveryPlayer::MoveTo(const CVector& targetPos, float speed, float rotate
 // アクションのキー入力
 void CDeliveryPlayer::ActionInput()
 {
-	// Aキーで、左へ移動
+	// Aキーを押した瞬間
 	if (CInput::PushKey('A'))
 	{
+		mPushElapsedTimeA = PUSH_INTERVAL;
+	}
+	// Dキーを押した瞬間
+	if (CInput::PushKey('D'))
+	{
+		mPushElapsedTimeD = PUSH_INTERVAL;
+	}
+
+	// Aキーで、左へ移動
+	if (CInput::Key('A'))
+	{
+		mPushElapsedTimeA += Times::DeltaTime();
 		// 一番左の車道なら処理しない
-		if (mTargetPos.X() <= ROAD_LEFT1_POSX + 30.0f) return;
-		// 目的地を設定
-		mTargetPos = GetTargetPos(true);
-		// 車線変更状態へ
-		ChangeState(EState::eChangeRoad);
-		return;
+		// 処理の間隔時間が経過していないなら処理しない
+		if (!(mTargetPos.X() <= ROAD_LEFT1_POSX + ROAD_DISTANCE / 2) &&
+			!(mPushElapsedTimeA < PUSH_INTERVAL))
+		{
+			// 目的地を設定
+			mTargetPos = GetTargetPos(true);
+			// 車線変更状態へ
+			ChangeState(EState::eChangeRoad);
+			mPushElapsedTimeA = 0.0f;
+		}
 	}
 	// Dキーで、右へ移動
-	else if (CInput::PushKey('D'))
+	else if (CInput::Key('D'))
 	{
+		mPushElapsedTimeD += Times::DeltaTime();
 		// 一番右の車道なら処理しない
-		if (mTargetPos.X() >= ROAD_RIGHT1_POSX - 30.0f) return;
-		// 目的地を設定
-		mTargetPos = GetTargetPos(false);
-		// 車線変更状態へ
-		ChangeState(EState::eChangeRoad);
-		return;
+		// 処理の間隔時間が経過していないなら処理しない
+		if (!(mTargetPos.X() >= ROAD_RIGHT1_POSX - ROAD_DISTANCE / 2) &&
+			!(mPushElapsedTimeD < PUSH_INTERVAL))
+		{
+			// 目的地を設定
+			mTargetPos = GetTargetPos(false);
+			// 車線変更状態へ
+			ChangeState(EState::eChangeRoad);
+			mPushElapsedTimeD = 0.0f;
+		}
 	}
 	// Hpが一つもない場合撃てない
 	if (GetHp() <= 0) return;
@@ -481,7 +512,7 @@ void CDeliveryPlayer::ActionInput()
 			// 移動速度
 			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
-			item->SetMoveSpeed(-VectorX() * moveSpeedX);
+			item->SetMoveSpeed(CVector::right * moveSpeedX);
 
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);
@@ -504,7 +535,7 @@ void CDeliveryPlayer::ActionInput()
 			// 移動速度
 			float moveSpeedX = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
-			item->SetMoveSpeed(VectorX() * moveSpeedX);
+			item->SetMoveSpeed(CVector::left * moveSpeedX);
 
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);
@@ -525,7 +556,7 @@ void CDeliveryPlayer::ActionInput()
 			// 移動速度
 			float moveSpeedZ = GetThrowSpeed() * Times::DeltaTime();
 			// 移動を設定
-			item->SetMoveSpeed(-VectorZ() * moveSpeedZ);
+			item->SetMoveSpeed(CVector::forward * moveSpeedZ);
 
 			// Hpを減らす
 			TakeDamage(1, nullptr, true);

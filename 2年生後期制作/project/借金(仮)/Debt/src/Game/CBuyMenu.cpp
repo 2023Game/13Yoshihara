@@ -26,6 +26,8 @@
 CBuyMenu::CBuyMenu()
 	: CGameMenuBase(std::vector<std::string> {MENU_JOB_UNLOCK, MENU_JOB_SELECT, MENU_CLOSE})
 {
+	// 次のメニューがある
+	mIsNextMenu = true;
 	// 仕事アンロックメニューを作成
 	mpJobUnlockMenu = new CJobUnlockMenu(this);
 
@@ -67,7 +69,7 @@ void CBuyMenu::OnClickUnlock()
 	{
 		// プッシュ音
 		mpPushSE->Play(SE_VOLUME, true);
-		Close();
+		SetOnOff(false);
 		mpJobUnlockMenu->Open();
 	}
 	// 無効ならブザー音
@@ -99,11 +101,11 @@ void CBuyMenu::OnClickUnlock()
 void CBuyMenu::OnClickSelect()
 {
 	// 有効なら開く
-	if (mMenuOnOff[2])
+	if (mMenuOnOff[1])
 	{
 		// プッシュ音
 		mpPushSE->Play(SE_VOLUME, true);
-		Close();
+		SetOnOff(false);
 		mpStageSelectMenu->Open();
 	}
 	// 無効ならブザー音

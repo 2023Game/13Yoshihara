@@ -34,6 +34,9 @@ public:
 	// 更新
 	void Update();
 
+	// 全ての音を停止
+	void Stop();
+
 private:
 	// コンストラクタ
 	CSoundManager();

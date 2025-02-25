@@ -75,22 +75,17 @@ void CDeliveryObstruction::Collision(CCollider* self, CCollider* other, const CH
 		// 敵の場合
 		else if (other->Layer() == ELayer::eEnemy)
 		{
+			// 無効
+			SetEnable(false);
+			SetShow(false);
 			// 敵取得
 			CDeliveryEnemy* enemy = dynamic_cast<CDeliveryEnemy*>(other->Owner());
+			// 死んでいたら処理しない
+			if (enemy->IsDeath()) return;
 			// ダメージを与える
 			enemy->TakeDamage(DAMAGE, this);
 			// 衝突音声再生
 			mpHitSE->Play(SE_VOLUME, true);
-			// 無効
-			SetEnable(false);
-			SetShow(false);
-		}
-		// 攻撃判定の場合
-		else if (other->Layer() == ELayer::eAttackCol)
-		{
-			// 無効
-			SetEnable(false);
-			SetShow(false);
 		}
 	}
 }
@@ -117,11 +112,10 @@ void CDeliveryObstruction::CreateCol()
 		BODY_RADIUS,
 		true
 	);
-	// プレイヤー、敵、発射物、アイテム、探知
+	// プレイヤー、敵、アイテム、探知
 	// と衝突判定
-	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,
-		ETag::eBullet,ETag::eItem });
+	mpBodyCol->SetCollisionTags({ ETag::ePlayer,ETag::eEnemy,ETag::eItem });
 	mpBodyCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eAttackCol,ELayer::eItem,ELayer::eSearch });
+			ELayer::eItem,ELayer::eSearch });
 	mpBodyCol->Position(BODY_OFFSET_POS);
 }
