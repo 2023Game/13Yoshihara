@@ -1,0 +1,1366 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem">
+      <UniqueIdentifier>{85f7f144-4dc3-4734-bdfc-756a9e704971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Math">
+      <UniqueIdentifier>{e3e4a3ec-c611-4226-abac-9a41b3859468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Model">
+      <UniqueIdentifier>{a9e7af69-90a7-440c-b3ea-28d6313d2c27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Task">
+      <UniqueIdentifier>{453161b1-eb5b-40dc-a61f-fb4c9e91356b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\UI">
+      <UniqueIdentifier>{93383a33-a196-413e-a7c6-2dfe09ecd721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Collider">
+      <UniqueIdentifier>{87aa1e71-3b0d-4bbb-a1bf-7c214a8ac584}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\System">
+      <UniqueIdentifier>{88b3af3d-95a5-4b6c-b691-57f42b478603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Effect">
+      <UniqueIdentifier>{25224d48-fbee-4330-9c49-651acfb6e52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Object">
+      <UniqueIdentifier>{8459ca36-5981-4aeb-9308-c456d0366b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Object\Character">
+      <UniqueIdentifier>{2f1bc137-2900-4b8e-850a-cde32072c819}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Scene">
+      <UniqueIdentifier>{af5b623e-17c3-4308-b3ba-410f9a5b9c72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Debug">
+      <UniqueIdentifier>{03c92fc0-53b3-405c-a2df-311b825d8127}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{05e59e8f-acd7-4d0a-bd9a-a5c6bd690bd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character">
+      <UniqueIdentifier>{72debf50-9646-4186-80a0-951072c29999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Scene">
+      <UniqueIdentifier>{7ddeeb75-320d-4391-819c-2a0c8f8f0538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field">
+      <UniqueIdentifier>{acbeca61-006d-429d-8391-45dc7983885d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object">
+      <UniqueIdentifier>{944b0643-4c32-4f86-9d33-49cba7329b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Test">
+      <UniqueIdentifier>{ab8bd641-7ca6-42f9-8f59-214f855f6a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Test\CollisionTest">
+      <UniqueIdentifier>{2f8e40da-ce3e-4c93-a0ad-c58115e9f104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Test\BootMenu">
+      <UniqueIdentifier>{2aa74f13-8e56-41e9-ac27-7436c535f69b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Resource">
+      <UniqueIdentifier>{ea8fc4f6-9c92-47ec-beb2-565bdc0b8827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\System">
+      <UniqueIdentifier>{58552d5f-f0e8-45c4-accd-bb75766151c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Weapon">
+      <UniqueIdentifier>{e9dd7340-e009-4436-9205-0da40d433b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI">
+      <UniqueIdentifier>{06415872-7a7a-4762-bcee-be700e41df19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Menu">
+      <UniqueIdentifier>{840bad1b-c529-4d3c-99b0-dc44602ad15a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Sound">
+      <UniqueIdentifier>{669523f2-6f26-481f-b88a-02d59c66a795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Effect">
+      <UniqueIdentifier>{836068fe-0d42-4c0a-9576-b3fec66db29c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\Title">
+      <UniqueIdentifier>{a594cb69-7b77-4a90-8304-3ec10f740063}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame">
+      <UniqueIdentifier>{c5f8f9c5-a203-4a10-bcb3-8e290765b8de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\Home">
+      <UniqueIdentifier>{2af11e70-c038-4f02-ae6a-9245bd218207}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Player">
+      <UniqueIdentifier>{a635d348-54fd-4f75-ac38-8b97b331ad88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Enemy">
+      <UniqueIdentifier>{f78c9a88-6212-4aa7-b471-c65c541b9c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Collector">
+      <UniqueIdentifier>{aecc9e95-ed66-4eea-8907-8a97e61315a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Collector\Punisher">
+      <UniqueIdentifier>{69485343-d85e-4b73-b7e3-1aafb511b8c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\JobStatus">
+      <UniqueIdentifier>{e97b776e-ddb4-4ed1-ae54-96cb2d8d7876}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus">
+      <UniqueIdentifier>{19b03ac9-47f7-411f-9958-0ae719b5dd75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame">
+      <UniqueIdentifier>{9f17e39c-c19b-46c1-9a5a-8e8b31e03488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\InteractObject">
+      <UniqueIdentifier>{c334abdd-1f88-484d-9d55-0ab121f15f9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI3D">
+      <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle">
+      <UniqueIdentifier>{4e582f70-e040-45bd-a463-2683d82cbac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Car">
+      <UniqueIdentifier>{a8d9dca1-6726-43c6-904d-ffda03edf6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck">
+      <UniqueIdentifier>{0e571c8e-843d-4f94-8393-7f12148a2f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Debug">
+      <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Navigation">
+      <UniqueIdentifier>{bdfd0c47-7480-4b01-b8e4-e2a8b8c71ad8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Resident">
+      <UniqueIdentifier>{043dcb97-bc12-40fb-a3d0-e12779bb5b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\TrashBag">
+      <UniqueIdentifier>{da274fed-4583-46e4-a0a3-df32966d1d0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D">
+      <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher">
+      <UniqueIdentifier>{eb78e0f1-2470-470d-8213-3d41f983ce07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\TrashGame\Enemy\Punisher">
+      <UniqueIdentifier>{12d4278a-4815-4f4e-a928-22cdc2dbe518}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D\TrashGame">
+      <UniqueIdentifier>{1f6b1e9f-bbfa-4574-aa05-aaf89155409a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector">
+      <UniqueIdentifier>{d061500b-a1f2-42ad-99ab-5b7e62d8eda1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck">
+      <UniqueIdentifier>{19415ff8-5275-405c-9743-15e1952ff111}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident">
+      <UniqueIdentifier>{418a8300-1c23-4724-b55c-5216e6ba2e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag">
+      <UniqueIdentifier>{8ad931ec-46aa-4d0c-9cc0-680bc1fcbde7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy">
+      <UniqueIdentifier>{4ee0154e-1408-468c-a0d0-50d3d7790a99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer">
+      <UniqueIdentifier>{cf11da80-18cf-4f4a-9e1b-553536cc6fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle">
+      <UniqueIdentifier>{4fb37653-7168-4455-872f-6d701b4263b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame">
+      <UniqueIdentifier>{cfb1de2b-91ed-4beb-81d7-9f3e55edb84c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\Player">
+      <UniqueIdentifier>{ede81e4f-d00a-46ab-872b-f62928f56340}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\Enemy">
+      <UniqueIdentifier>{4310a4a6-e10e-4738-b4a1-ae67a7470fb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\TrashGame">
+      <UniqueIdentifier>{4181491e-706f-41dd-a81e-ede8d3e0de61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\DeliveryGame">
+      <UniqueIdentifier>{093ec83d-3185-4968-8f05-d1a326506e4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Home">
+      <UniqueIdentifier>{1de60eba-12e9-4155-a669-28582493e32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\DeliveryGame\DeliveryItem">
+      <UniqueIdentifier>{2c11333d-2d41-4435-9643-0d16d0ae1a55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\DeliveryGame">
+      <UniqueIdentifier>{1152218b-e086-4634-9627-785fefed7429}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D\DeliveryGame">
+      <UniqueIdentifier>{5b1f8b25-9f65-4fd3-b866-82bbc5925766}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D\Home">
+      <UniqueIdentifier>{16b8829d-6f8c-4e1b-83ab-86031a85de5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI">
+      <UniqueIdentifier>{b3f74eef-2f5b-4ed1-ac80-724a8385f870}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\GameOver">
+      <UniqueIdentifier>{c28b7811-fd34-4ce3-a5cf-dc530f2e8f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\GameClear">
+      <UniqueIdentifier>{578880c8-e877-451d-95ed-cb644e90aa81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Scene\GameScene">
+      <UniqueIdentifier>{6a269c3a-e3ee-4abf-aaca-5fe63b9a0556}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Scene\UIScene">
+      <UniqueIdentifier>{9f1391d8-4bfe-418b-a4ab-4eec45261736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result">
+      <UniqueIdentifier>{35a77b06-1f9a-4ad9-8141-e4f09176ff7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result\TrashGame">
+      <UniqueIdentifier>{55356f0b-8e3d-4978-9e87-4e230cf3916f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\EndUI\Result\DeliveryGame">
+      <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Test\TestScene">
+      <UniqueIdentifier>{4e3d8025-c270-4420-8ce8-ed27466637ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\Player">
+      <UniqueIdentifier>{eaae7974-2825-4b30-b13b-c499a4c89c6e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CCollider.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderLine.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderMesh.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderTriangle.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CCollisionManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CMatrix.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CMyShader.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CShader.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CVector.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CMaterial.cpp">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CModel.cpp">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CModelX.cpp">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTriangle.cpp">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CCamera.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CInput.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTexture.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTransform.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTaskManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CFont.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CApplication.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CEffect.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CBillBoard.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTask.cpp">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CObjectBase.cpp">
+      <Filter>ソース ファイル\BaseSystem\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CCharaBase.cpp">
+      <Filter>ソース ファイル\BaseSystem\Object\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderSphere.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CSceneBase.cpp">
+      <Filter>ソース ファイル\BaseSystem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CSceneManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColor.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTextureFont.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CText.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CUIBase.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\Maths.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CQuaternion.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CDebugPrint.cpp">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CXCharacter.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CImage.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMoveFloor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CRideabeObject.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CRotateFloor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CDebugProfiler.cpp">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CDebugTimer.cpp">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\Primitive.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CCollisionTestScene.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CBootMenuScene.cpp">
+      <Filter>ソース ファイル\Test\BootMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\System.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColTriangle.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColQuad.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CMeasure.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColBase.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColLine.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColSphere.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CDebugCamera.cpp">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CDebugInput.cpp">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CGamePause.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CBillBoardImage.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CRect.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CResource.cpp">
+      <Filter>ソース ファイル\BaseSystem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CResourceManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameCamera.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CLineEffect.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CTrailEffect.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBullet.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameMenuBase.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameCamera2.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CSoundManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CSound.cpp">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CFade.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CBGMManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\BGMData.cpp">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderCapsule.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColCapsule.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\Easing.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFlame.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFlamethrower.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CBounds.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSlash.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTitleUI.cpp">
+      <Filter>ソース ファイル\Game\UI\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CButton.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CUIManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CExpandButton.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\Blend.cpp">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBuyMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CStageSelectMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobUpgradeMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobUnlockMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobStatusBase.cpp">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CJobStatusManager.cpp">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashJobStatus.cpp">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryJobStatus.cpp">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPlayerBase.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomePlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashCar.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGarbageTruck.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CInteractUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderBox.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CColliderRectangle.cpp">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColRectangle.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSword.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CWeapon.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCharaStatusBase.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColMesh.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CColBox.cpp">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CImage3D.cpp">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CComputer.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDoor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CInteractObject.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashVehicleBase.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyBase.cpp">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDebugFieldOfView.cpp">
+      <Filter>ソース ファイル\Game\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashStatusBase.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFieldBase.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CNavNode.cpp">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CNavManager.cpp">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSky.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashVehicleManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCollector.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResident.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResidentManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashBag.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGaugeUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTextUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTimeUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResultUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashGameResultUI.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CScoreManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPunisherTruck.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPunisherCollector.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPunisherTrashEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy\Punisher</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyManager.cpp">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashWarningUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashScoreUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCollectorStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGarbageTruckStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResidentStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashBagStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CVehicleStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemy.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTrashField.cpp">
+      <Filter>ソース ファイル\Game\Field\TrashGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeField.cpp">
+      <Filter>ソース ファイル\Game\Field\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryField.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryFieldManager.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryItem.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHome.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryScoreUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CScoreUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryItemStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHpUI2D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryObstruction.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryFieldItem.cpp">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemyManager.cpp">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryHpUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTextUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMoneyManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CToDoUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSelectJobUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CHomeUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameOverUI.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameOver</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDebtMoneyUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameClearUI.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameClear</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEndUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\EndUI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameOverScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CResultScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTitleScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGameClearScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CManualMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CFontData.cpp">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Test\CTestScene.cpp">
+      <Filter>ソース ファイル\Test\TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPlayer.cpp">
+      <Filter>ソース ファイル\Game\Character\Player</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BaseSystem\CCollider.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderLine.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderMesh.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderTriangle.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CCollisionManager.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CMatrix.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CMyShader.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CShader.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CVector.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CMaterial.h">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CModel.h">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CModelX.h">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CVertex.h">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTriangle.h">
+      <Filter>ソース ファイル\BaseSystem\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CCamera.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CInput.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTexture.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTransform.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTask.h">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTaskManager.h">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CFont.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CApplication.h">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CEffect.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CBillBoard.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\TaskPriority.h">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\TaskPauseType.h">
+      <Filter>ソース ファイル\BaseSystem\Task</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\ColliderType.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CObjectBase.h">
+      <Filter>ソース ファイル\BaseSystem\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CCharaBase.h">
+      <Filter>ソース ファイル\BaseSystem\Object\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\ObjectTag.h">
+      <Filter>ソース ファイル\BaseSystem\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CollisionLayer.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderSphere.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CSceneBase.h">
+      <Filter>ソース ファイル\BaseSystem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CSceneManager.h">
+      <Filter>ソース ファイル\BaseSystem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\SceneType.h">
+      <Filter>ソース ファイル\BaseSystem\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColor.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTextureFont.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Define.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CText.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CUIBase.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\Maths.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CQuaternion.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CDebugPrint.h">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CXCharacter.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CImage.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoveFloor.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRideableObject.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRotateFloor.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CDebugProfiler.h">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CDebugTimer.h">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\Primitive.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CCollisionTestScene.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CBootMenuScene.h">
+      <Filter>ソース ファイル\Test\BootMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\System.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColTriangle.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColQuad.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CMeasure.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColBase.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColLine.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColSphere.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CDebugCamera.h">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CDebugInput.h">
+      <Filter>ソース ファイル\BaseSystem\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CGamePause.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CBillBoardImage.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CRect.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CResource.h">
+      <Filter>ソース ファイル\BaseSystem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CResourceManager.h">
+      <Filter>ソース ファイル\BaseSystem\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameCamera.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CLineEffect.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CTrailEffect.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBullet.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameMenuBase.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameCamera2.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CSoundManager.h">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CSound.h">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CFade.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CBGMManager.h">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\BGMData.h">
+      <Filter>ソース ファイル\BaseSystem\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderCapsule.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColCapsule.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\Easing.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFlame.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFlamethrower.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CBounds.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSlash.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTitleUI.h">
+      <Filter>ソース ファイル\Game\UI\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CButton.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CUIManager.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CExpandButton.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\Times.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\Blend.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBuyMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CStageSelectMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobUpgradeMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobUnlockMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobStatusBase.h">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CJobStatusManager.h">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\JobType.h">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashJobStatus.h">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryJobStatus.h">
+      <Filter>ソース ファイル\Game\JobStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPlayerBase.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomePlayer.h">
+      <Filter>ソース ファイル\Game\Character\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashPlayer.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashCar.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Car</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGarbageTruck.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CInteractUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderBox.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CColliderRectangle.h">
+      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColRectangle.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CWeapon.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSword.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCharaStatusBase.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColMesh.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CColBox.h">
+      <Filter>ソース ファイル\Test\CollisionTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CImage3D.h">
+      <Filter>ソース ファイル\BaseSystem\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDoor.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CComputer.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CInteractObject.h">
+      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashVehicleBase.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyBase.h">
+      <Filter>ソース ファイル\Game\Character</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemy.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDebugFieldOfView.h">
+      <Filter>ソース ファイル\Game\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashStatusBase.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFieldBase.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CNavNode.h">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CNavManager.h">
+      <Filter>ソース ファイル\Game\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSky.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashVehicleManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCollector.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResident.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResidentManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashBag.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\TrashBag</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGaugeUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTextUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTimeUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResultUIBase.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashGameResultUI.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CScoreManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPunisherTruck.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Vehicle\Truck\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPunisherCollector.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Collector\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPunisherTrashEnemy.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy\Punisher</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyManager.h">
+      <Filter>ソース ファイル\Game\Character\TrashGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashWarningUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashScoreUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCollectorStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Collector</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGarbageTruckStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\GarbageTruck</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResidentStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Resident</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashBagStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashBag</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\TrashPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CVehicleStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\TrashGame\Vehicle</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemy.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryPlayer.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTrashField.h">
+      <Filter>ソース ファイル\Game\Field\TrashGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeField.h">
+      <Filter>ソース ファイル\Game\Field\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryField.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryFieldManager.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryItem.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHome.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryScoreUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CScoreUIBase.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryItemStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryGameResultUI.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHpUI2D.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\RoadType.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryObstruction.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryFieldItem.h">
+      <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemyManager.h">
+      <Filter>ソース ファイル\Game\Character\DeliveryGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryHpUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTextUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoneyManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CToDoUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSelectJobUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CHomeUIBase.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameOverUI.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameOver</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDebtMoneyUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D\Home</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameClearUI.h">
+      <Filter>ソース ファイル\Game\UI\EndUI\GameClear</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEndUIBase.h">
+      <Filter>ソース ファイル\Game\UI\EndUI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameOverScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CResultScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTitleScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGameClearScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CManualMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CFontData.h">
+      <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Test\CTestScene.h">
+      <Filter>ソース ファイル\Test\TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPlayer.h">
+      <Filter>ソース ファイル\Game\Character\Player</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

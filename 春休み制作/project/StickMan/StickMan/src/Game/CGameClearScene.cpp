@@ -1,0 +1,50 @@
+#include "CGameClearScene.h"
+#include "CBGMManager.h"
+#include "CGameClearUI.h"
+#include "CSceneManager.h"
+
+// コンストラクタ
+CGameClearScene::CGameClearScene()
+	: CSceneBase(EScene::eGameOver)
+{
+}
+
+// デストラクタ
+CGameClearScene::~CGameClearScene()
+{
+}
+
+// シーン読み込み
+void CGameClearScene::Load()
+{
+	// タイトル画面はカーソル表示
+	CInput::ShowCursor(true);
+	// 背景色設定
+	System::SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// TODO：ゲームクリアBGMを再生
+	CBGMManager::Instance()->Play(EBGMType::eTitle);
+
+	CCamera* mainCamera = new CCamera
+	(
+		CVector(0.0f, 50.0f, 75.0f),
+		CVector::zero
+	);
+
+	mpGameClearUI = new CGameClearUI();
+	AddTask(mpGameClearUI);
+}
+
+// シーンの更新処理
+void CGameClearScene::Update()
+{
+	// ゲームクリア画面が
+	if (mpGameClearUI->IsEnd())
+	{
+		// ゲーム終了ならば、アプリを閉じる
+		if (mpGameClearUI->IsExitGame())
+		{
+			System::ExitGame();
+		}
+	}
+}
