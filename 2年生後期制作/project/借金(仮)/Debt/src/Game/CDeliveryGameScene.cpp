@@ -180,11 +180,6 @@ void CDeliveryGameScene::Update()
 				mpGameMenu->Open();
 			}
 		}
-	}
-
-	// メニューポーズ中じゃなければ
-	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
-	{
 		// 敵管理クラスの更新
 		mpEnemyMgr->Update();
 		// フィールド管理クラスの更新

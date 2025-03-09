@@ -22,8 +22,8 @@ void CGameClearScene::Load()
 	// ”wŒiFÝ’è
 	System::SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// TODOFƒQ[ƒ€ƒNƒŠƒABGM‚ðÄ¶
-	CBGMManager::Instance()->Play(EBGMType::eTitle);
+	// ƒQ[ƒ€ƒNƒŠƒABGM‚ðÄ¶
+	CBGMManager::Instance()->Play(EBGMType::eClear);
 
 	CCamera* mainCamera = new CCamera
 	(

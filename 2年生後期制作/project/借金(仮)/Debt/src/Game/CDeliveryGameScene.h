@@ -7,7 +7,7 @@ class CTimeUI;
 class CDeliveryScoreUI;
 class CManualMenu;
 
-//タイトルシーン
+// 配達ゲームシーン
 class CDeliveryGameScene :public CSceneBase
 {
 public:

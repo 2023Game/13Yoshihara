@@ -6,8 +6,12 @@ enum class EBGMType
 	eNone = -1,
 
 	eTitle,		// タイトル画面のBGM
+	eClear,		// クリア画面のBGM
+	eGameOver,	// ゲームオーバー画面のBGM
+	eResultSuccess,	// リザルト画面（結果良いとき）のBGM
+	eResultFailed,	// リザルト画面（結果が悪いとき）のBGM
 	eHome,		// ホーム画面のBGM
-	eTrashGame,	//ゴミ収集ゲーム画面のBGM
+	eTrashGame,	// ゴミ収集ゲーム画面のBGM
 	eMenu,		// メニューを開いている時のBGM
 
 	Num

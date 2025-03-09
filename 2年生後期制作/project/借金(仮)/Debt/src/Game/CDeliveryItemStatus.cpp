@@ -1,6 +1,6 @@
 #include "CDeliveryItemStatus.h"
 
-#define SCORE 200	// 一つ当たりの得点
+#define SCORE 100	// 一つ当たりの得点
 #define DAMAGE 2	// 与えるダメージ
 
 // コンストラクタ

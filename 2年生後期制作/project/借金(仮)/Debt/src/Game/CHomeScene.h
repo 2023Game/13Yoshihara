@@ -6,7 +6,7 @@ class CToDoUI;
 class CSelectJobUI;
 class CMoneyUI;
 
-//タイトルシーン
+// 拠点シーン
 class CHomeScene :public CSceneBase
 {
 public:

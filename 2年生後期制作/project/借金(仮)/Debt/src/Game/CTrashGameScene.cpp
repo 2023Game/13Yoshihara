@@ -198,11 +198,6 @@ void CTrashGameScene::Update()
 				mpWarningUI->StopSE();
 			}
 		}
-	}
-
-	// メニューポーズ中じゃなければ
-	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
-	{
 		// 車両管理クラスの更新
 		mpVehicleMgr->Update();
 		// 敵管理クラスの更新

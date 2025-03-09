@@ -668,7 +668,6 @@ bool CCollider::CollisionSphereCapsule(
 bool CCollider::CollisionLine(const CVector& ls0, const CVector& le0,
 	const CVector& ls1, const CVector& le1, CHitInfo* hit)
 {
-	//TODO:’²®’l‚Ì‘Î‰ž
 	hit->adjust = CVector(0.0f, 0.0f, 0.0f);
 
 	CVector V0 = le0 - ls0;

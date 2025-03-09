@@ -15,6 +15,9 @@
 #include "CInput.h"
 #endif
 
+// この値以上なら結果が良い
+#define SUCCESS_MONEY 5000
+
 // コンストラクタ
 CResultScene::CResultScene()
 	: CSceneBase(EScene::eResult)
@@ -38,9 +41,6 @@ void CResultScene::Load()
 
 	//ここでリザルト画面に必要な
 	//リソースの読み込みやクラスの生成を行う
-
-	// TODO：リザルトBGMを再生
-	CBGMManager::Instance()->Play(EBGMType::eTitle);
 
 	CCamera* mainCamera = new CCamera
 	(
@@ -67,6 +67,18 @@ void CResultScene::Load()
 	// 所持金にスコアを加算
 	int money = moneyMgr->GetMoney();
 	moneyMgr->SetMoney(money + score);
+
+	// いい結果か悪い結果か
+	if (score > SUCCESS_MONEY)
+	{
+		// リザルトBGM（いい結果）を再生
+		CBGMManager::Instance()->Play(EBGMType::eResultSuccess);
+	}
+	else
+	{
+		// リザルトBGM（悪い結果）を再生
+		CBGMManager::Instance()->Play(EBGMType::eResultFailed);
+	}
 
 	AddTask(mpResultUI);
 }

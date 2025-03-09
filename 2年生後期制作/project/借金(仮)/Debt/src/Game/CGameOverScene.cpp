@@ -22,8 +22,8 @@ void CGameOverScene::Load()
 	// 背景色設定
 	System::SetClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// TODO：ゲームオーバーBGMを再生
-	CBGMManager::Instance()->Play(EBGMType::eTitle);
+	// ゲームオーバーBGMを再生
+	CBGMManager::Instance()->Play(EBGMType::eGameOver);
 
 	CCamera* mainCamera = new CCamera
 	(

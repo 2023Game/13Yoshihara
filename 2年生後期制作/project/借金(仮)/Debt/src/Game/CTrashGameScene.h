@@ -9,7 +9,7 @@ class CTrashScoreUI;
 class CManualMenu;
 class CTrashWarningUI;
 
-//タイトルシーン
+// ゴミ拾いゲームシーン
 class CTrashGameScene :public CSceneBase
 {
 public:
