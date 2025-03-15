@@ -12,10 +12,9 @@
 
 // コンストラクタ
 CDeliveryEnemyStatus::CDeliveryEnemyStatus()
-	: CCharaStatusBase(MAX_HP, BASE_MOVE_SPEED,
-		JUMP_SPEED, ATTACK_POWER)
+	: CDeliveryStatusBase(MAX_HP, BASE_MOVE_SPEED,
+		JUMP_SPEED, ATTACK_POWER, THROW_SPEED)
 	, mScore(SCORE)
-	, mThrowSpeed(THROW_SPEED)
 {
 }
 
@@ -28,22 +27,4 @@ CDeliveryEnemyStatus::~CDeliveryEnemyStatus()
 int CDeliveryEnemyStatus::GetScore() const
 {
 	return mScore;
-}
-
-// 基礎移動速度を取得
-float CDeliveryEnemyStatus::GetBaseMoveSpeed() const
-{
-	// 基礎移動速度を取得
-	float baseMoveSpeed = CCharaStatusBase::GetBaseMoveSpeed();
-	// 一つ当たりの減少値×HP、を引いて移動速度を計算
-	float moveSpeed = baseMoveSpeed - SPEED_DOWN * GetHp();
-	// 0以下なら0にする
-	if (moveSpeed <= 0.0f) moveSpeed = 0.0f;
-	return moveSpeed;
-}
-
-// 投げる速度を取得
-float CDeliveryEnemyStatus::GetThrowSpeed() const
-{
-	return mThrowSpeed;
 }

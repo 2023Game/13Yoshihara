@@ -4,7 +4,6 @@
 #include "CCamera.h"
 #include "CBullet.h"
 #include "CFlamethrower.h"
-#include "CSlash.h"
 #include "Maths.h"
 #include "CInteractObject.h"
 #include "CSceneManager.h"

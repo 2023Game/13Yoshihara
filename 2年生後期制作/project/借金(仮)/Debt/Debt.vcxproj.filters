@@ -230,6 +230,15 @@
     <Filter Include="ソース ファイル\Game\UI\EndUI\Result\DeliveryGame">
       <UniqueIdentifier>{48b3a41b-29c6-4cbe-9758-e5b968e0c39a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Player">
+      <UniqueIdentifier>{2e0afdb7-6f4d-4d2c-80e3-231e275d68e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Enemy">
+      <UniqueIdentifier>{e378e668-b3dd-4003-b6c9-dfbb160218bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Item">
+      <UniqueIdentifier>{e345427e-a309-4ccb-ab5f-e72a7df4e7c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -466,9 +475,6 @@
     <ClCompile Include="src\BaseSystem\CBounds.cpp">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CSlash.cpp">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CTitleUI.cpp">
       <Filter>ソース ファイル\Game\UI\Title</Filter>
     </ClCompile>
@@ -537,12 +543,6 @@
     </ClCompile>
     <ClCompile Include="src\Test\CColRectangle.cpp">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CSword.cpp">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CWeapon.cpp">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CCharaStatusBase.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
@@ -688,12 +688,6 @@
     <ClCompile Include="src\Game\CDeliveryItem.cpp">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CDeliveryEnemyStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CDeliveryHome.cpp">
       <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
     </ClCompile>
@@ -702,9 +696,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CScoreUIBase.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CDeliveryItemStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CDeliveryGameResultUI.cpp">
       <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
@@ -780,6 +771,18 @@
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CFontData.cpp">
       <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryStatusBase.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDeliveryItemStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1038,9 +1041,6 @@
     <ClInclude Include="src\BaseSystem\CBounds.h">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CSlash.h">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CTitleUI.h">
       <Filter>ソース ファイル\Game\UI\Title</Filter>
     </ClInclude>
@@ -1115,12 +1115,6 @@
     </ClInclude>
     <ClInclude Include="src\Test\CColRectangle.h">
       <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CWeapon.h">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CSword.h">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CCharaStatusBase.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
@@ -1266,12 +1260,6 @@
     <ClInclude Include="src\Game\CDeliveryItem.h">
       <Filter>ソース ファイル\Game\Character\DeliveryGame\DeliveryItem</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDeliveryPlayerStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CDeliveryEnemyStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CDeliveryHome.h">
       <Filter>ソース ファイル\Game\Field\DeliveryGame</Filter>
     </ClInclude>
@@ -1280,9 +1268,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CScoreUIBase.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CDeliveryItemStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CDeliveryGameResultUI.h">
       <Filter>ソース ファイル\Game\UI\EndUI\Result\DeliveryGame</Filter>
@@ -1361,6 +1346,18 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CFontData.h">
       <Filter>ソース ファイル\BaseSystem\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryStatusBase.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDeliveryItemStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus\DeliveryGame\Item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

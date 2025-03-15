@@ -6,6 +6,7 @@
 #include "CInput.h"
 #include "CCamera.h"
 #include "CGamePause.h"
+#include <iostream>
 
 // 1秒間に実行するフレーム数
 int gFPS = 60;
@@ -158,6 +159,19 @@ int main(void)
 
 	//初期処理
 	gApplication.Start();
+
+	// OpenGLのバージョンを表示
+	const char* version = (const char*)glGetString(GL_VERSION);
+	std::cout << "OpenGL Version:" << version << std::endl;
+
+	// GLEWのバージョンを表示
+	std::cout << "GLEW Version:" << glewGetString(GLEW_VERSION) << std::endl;
+
+	// GLFWのバージョンを表示
+	int major, minor, rev;
+	glfwGetVersion(&major, &minor, &rev);
+	std::cout << "GLFW Version:" << major << "." << minor << "." << rev << std::endl;
+	
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))

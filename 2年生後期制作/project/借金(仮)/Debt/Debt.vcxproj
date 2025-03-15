@@ -96,6 +96,7 @@
     <ClCompile Include="src\Game\CDeliveryPlayer.cpp" />
     <ClCompile Include="src\Game\CDeliveryPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CDeliveryScoreUI.cpp" />
+    <ClCompile Include="src\Game\CDeliveryStatusBase.cpp" />
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
@@ -134,7 +135,6 @@
     <ClCompile Include="src\Game\CTrashGameResultUI.cpp" />
     <ClCompile Include="src\Game\CTrashScoreUI.cpp" />
     <ClCompile Include="src\Game\CSky.cpp" />
-    <ClCompile Include="src\Game\CSword.cpp" />
     <ClCompile Include="src\Game\CTextUI2D.cpp" />
     <ClCompile Include="src\Game\CTimeUI.cpp" />
     <ClCompile Include="src\Game\CTrashBag.cpp" />
@@ -170,7 +170,6 @@
     <ClCompile Include="src\Game\CPlayerBase.cpp" />
     <ClCompile Include="src\Game\CRideabeObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
-    <ClCompile Include="src\Game\CSlash.cpp" />
     <ClCompile Include="src\Game\CStageSelectMenu.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
@@ -179,7 +178,6 @@
     <ClCompile Include="src\Game\CTrashJobStatus.cpp" />
     <ClCompile Include="src\Game\CTrashStatusBase.cpp" />
     <ClCompile Include="src\Game\CTrashWarningUI.cpp" />
-    <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
@@ -290,6 +288,7 @@
     <ClInclude Include="src\Game\CDeliveryPlayer.h" />
     <ClInclude Include="src\Game\CDeliveryPlayerStatus.h" />
     <ClInclude Include="src\Game\CDeliveryScoreUI.h" />
+    <ClInclude Include="src\Game\CDeliveryStatusBase.h" />
     <ClInclude Include="src\Game\CEndUIBase.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
@@ -328,7 +327,6 @@
     <ClInclude Include="src\Game\CTrashGameResultUI.h" />
     <ClInclude Include="src\Game\CTrashScoreUI.h" />
     <ClInclude Include="src\Game\CSky.h" />
-    <ClInclude Include="src\Game\CSword.h" />
     <ClInclude Include="src\Game\CTextUI2D.h" />
     <ClInclude Include="src\Game\CTimeUI.h" />
     <ClInclude Include="src\Game\CTrashBag.h" />
@@ -364,7 +362,6 @@
     <ClInclude Include="src\Game\CPlayerBase.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />
-    <ClInclude Include="src\Game\CSlash.h" />
     <ClInclude Include="src\Game\CStageSelectMenu.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
@@ -373,7 +370,6 @@
     <ClInclude Include="src\Game\CTrashJobStatus.h" />
     <ClInclude Include="src\Game\CTrashStatusBase.h" />
     <ClInclude Include="src\Game\CTrashWarningUI.h" />
-    <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\JobType.h" />
     <ClInclude Include="src\Game\RoadType.h" />
