@@ -5,7 +5,6 @@
 #include "CFieldBase.h"
 #include "CNavNode.h"
 #include "CNavManager.h"
-#include "CTrashVehicleManager.h"
 #include "CGaugeUI3D.h"
 
 // 基本の重力
@@ -305,12 +304,10 @@ bool CEnemyBase::IsLookPlayer() const
 	// プレイヤーが存在しない場合は、見えない
 	CPlayerBase* player = CPlayerBase::Instance();
 	if (player == nullptr) return false;
-	// フィールドが存在しない場合は、遮蔽物がないので見える
-	CFieldBase* field = CFieldBase::Instance();
-	if (field == nullptr) return true;
-	// 車両管理クラスが存在しない場合は、車両がないので見える
-	CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
-	if (vehicleMgr == nullptr) return true;
+	// TODO：フィールド管理クラスから取得する
+	//// フィールドが存在しない場合は、遮蔽物がないので見える
+	//CFieldBase* field = CFieldBase::Instance();
+	//if (field == nullptr) return true;
 
 	CVector offsetPos = CVector(0.0f, mEyeHeight, 0.0f);
 	// プレイヤーの座標を取得
@@ -320,10 +317,9 @@ bool CEnemyBase::IsLookPlayer() const
 
 	CHitInfo hit;
 	bool isHit = false;
-	// フィールドと車両とのレイ判定を行い、
-	// 遮蔽物が存在した場合は、プレイヤーが見えない
-	if (isHit = field->CollisionRay(selfPos, playerPos, &hit) ||
-		vehicleMgr->CollisionRay(selfPos, playerPos, &hit, isHit)) return false;
+	//// フィールドとのレイ判定を行い、
+	//// 遮蔽物が存在した場合は、プレイヤーが見えない
+	//if (isHit = field->CollisionRay(selfPos, playerPos, &hit)) return false;
 
 	// プレイヤーとの間に遮蔽物がないので、プレイヤーが見えている
 	return true;

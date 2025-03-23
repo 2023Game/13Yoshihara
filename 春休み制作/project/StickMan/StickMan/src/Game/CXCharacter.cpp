@@ -77,6 +77,14 @@ framesize:最後まで再生するのに使用されるフレーム数
 void CXCharacter::ChangeAnimation(int index, bool loop,
 	float framesize, bool restart)
 {
+	// ブレンドの進行度を0にする
+	mElapsedBlend = 0.0f;
+	if (mBlendIndex != -1)
+	{
+		// ブレンドのアニメーションの重みを0.0(0%)にする
+		mpModel->AnimationSet()[mBlendIndex]->Weight(0.0f);
+		mBlendIndex = -1;
+	}
 	//最初から開始しない場合かつ、同じアニメーションの場合は切り替えない
 	if (!restart && mAnimationIndex == index) return;
 	//今のアニメーションの重みを0.0(0%)にする
@@ -110,9 +118,16 @@ bool CXCharacter::ChangeAnimationBlend(int index, bool loop,
 	// ブレンドするアニメーション番号と違うなら処理する
 	if (mBlendIndex != index);
 	{
+		if (mBlendIndex != -1)
+		{
+			// 現在のブレンドするアニメーションのフレームを最初にする
+			mpModel->AnimationSet()[mBlendIndex]->Time(0.0f);
+			// 現在のブレンドするアニメーションの重みを0にする
+			mpModel->AnimationSet()[mBlendIndex]->Weight(0.0f);
+		}
 		// ブレンドするアニメーション番号を設定
 		mBlendIndex = index % mpModel->AnimationSet().size();
-		// ブレンドするアニメーションのフレームを最初にする
+		// 次のブレンドするアニメーションのフレームを最初にする
 		mpModel->AnimationSet()[mBlendIndex]->Time(0.0f);
 	}
 	// ブレンド進行度を進める
@@ -134,11 +149,6 @@ bool CXCharacter::ChangeAnimationBlend(int index, bool loop,
 	{
 		// アニメーションを変更
 		ChangeAnimation(index, loop, framesize, restart);
-
-		// 進行度を0にする
-		mElapsedBlend = 0.0f;
-		// ブレンドするアニメーション番号を-1にする
-		mBlendIndex = -1;
 
 		// ブレンド終了
 		return true;
@@ -233,6 +243,9 @@ void CXCharacter::Update()
 {
 	//アニメーションを更新する
 	Update(Matrix());
+	CDebugPrint::Print("AnimationIndex:%d\n", mAnimationIndex);
+	CDebugPrint::Print("BlendIndex:%d\n", mBlendIndex);
+	CDebugPrint::Print("ElapsedBlend:%f\n", mElapsedBlend);
 }
 
 /*

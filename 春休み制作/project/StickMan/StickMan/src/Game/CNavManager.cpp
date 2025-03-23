@@ -3,7 +3,6 @@
 #include "CInput.h"
 #include <assert.h>
 #include "CFieldBase.h"
-#include "CTrashVehicleManager.h"
 #include "Primitive.h"
 
 CNavManager* CNavManager::spInstance = nullptr;
@@ -71,31 +70,23 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 			float dist = (findNode->GetPos() - node->GetPos()).Length();
 			if (dist > distance) continue;
 		}
-		// フィールドと車両とのレイ判定で遮蔽物チェックを行う
+		// フィールドとのレイ判定で遮蔽物チェックを行う
 		CVector start = node->GetOffsetPos();
 		CVector end = findNode->GetOffsetPos();
 		CHitInfo hit;
 		bool isHit = false;
 
-		CFieldBase* fieldBase = CFieldBase::Instance();
-		CTrashVehicleManager* vehicleMgr = CTrashVehicleManager::Instance();
+		// TODO：管理クラスから呼んで衝突判定
+		//CFieldBase* fieldBase = CFieldBase::Instance();
 
-		// フィールドがあるなら衝突判定をする
-		if (fieldBase != nullptr)
-		{
-			if (fieldBase->CollisionRay(start, end, &hit))
-			{
-				isHit = true;
-			}
-		}
-		// 車両管理クラスがあるなら衝突判定をする
-		if (vehicleMgr != nullptr)
-		{
-			if (vehicleMgr->NavCollisionRay(start, end, &hit, isHit))
-			{
-				isHit = true;
-			}
-		}
+		//// フィールドがあるなら衝突判定をする
+		//if (fieldBase != nullptr)
+		//{
+		//	if (fieldBase->CollisionRay(start, end, &hit))
+		//	{
+		//		isHit = true;
+		//	}
+		//}
 
 		// 何かにヒットした場合は、遮蔽物があるので接続できない
 		if (isHit)

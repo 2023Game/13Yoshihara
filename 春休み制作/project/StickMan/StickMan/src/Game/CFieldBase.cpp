@@ -2,15 +2,6 @@
 #include "CSceneManager.h"
 #include <assert.h>
 
-// フィールドのインスタンス
-CFieldBase* CFieldBase::spInstance = nullptr;
-
-// フィールドのインスタンスを返す
-CFieldBase* CFieldBase::Instance()
-{
-	return spInstance;
-}
-
 // コンストラクタ
 CFieldBase::CFieldBase()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
@@ -19,9 +10,11 @@ CFieldBase::CFieldBase()
 	, mpGroundColliderMesh(nullptr)
 	, mpWallColliderMesh(nullptr)
 	, mpObjectColliderMesh(nullptr)
+	, mIsConnectUp(true)
+	, mIsConnectDown(true)
+	, mIsConnectL(true)
+	, mIsConnectR(true)
 {
-	//assert(spInstance == nullptr);
-	spInstance = this;
 }
 
 // デストラクタ
@@ -30,12 +23,6 @@ CFieldBase::~CFieldBase()
 	SAFE_DELETE(mpGroundColliderMesh);
 	SAFE_DELETE(mpWallColliderMesh);
 	SAFE_DELETE(mpObjectColliderMesh);
-
-	// インスタンスと削除しているフィールドが同一なら削除
-	if (spInstance == this)
-	{
-		spInstance = nullptr;
-	}
 }
 
 //レイとフィールドオブジェクトの衝突判定

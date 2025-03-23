@@ -5,8 +5,6 @@
 class CFieldBase : public CObjectBase
 {
 public:
-	// フィールドのインスタンスを返す
-	static CFieldBase* Instance();
 	// コンストラクタ
 	CFieldBase();
 	// デストラクタ
@@ -40,8 +38,6 @@ protected:
 	// 経路探索用のノードを作成
 	virtual void CreateNavNodes();
 
-	// フィールドのインスタンス
-	static CFieldBase* spInstance;
 	// フィールドのモデル
 	CModel* mpModel;
 	// 空のモデル
@@ -52,4 +48,10 @@ protected:
 	CColliderMesh* mpWallColliderMesh;
 	// フィールドのオブジェクトの衝突判定
 	CColliderMesh* mpObjectColliderMesh;
+
+	// 道がつなげれるかどうか
+	bool mIsConnectUp;
+	bool mIsConnectDown;
+	bool mIsConnectL;
+	bool mIsConnectR;
 };

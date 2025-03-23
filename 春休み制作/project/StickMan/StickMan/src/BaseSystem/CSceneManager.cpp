@@ -1,15 +1,10 @@
 #include "CSceneManager.h"
 #include "CFade.h"
 #include "CTitleScene.h"
-#include "CResultScene.h"
-#include "CGameOverScene.h"
-#include "CGameClearScene.h"
-#include "CHomeScene.h"
-#include "CTestScene.h"
-#include "CDeliveryGameScene.h"
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"
+#include "Test/CTestScene.h"
 
 // シーンマネージャのインスタンス
 CSceneManager* CSceneManager::mpInstance = nullptr;
@@ -110,23 +105,13 @@ void CSceneManager::ChangeNextScene()
 	switch (mNextScene)
 	{
 		//タイトルシーン
-		case EScene::eTitle:		mpScene = new CTitleScene();		break;
-		// ゲームの結果シーン
-		case EScene::eResult:		mpScene = new CResultScene();		break;
-		// ゲームオーバーシーン
-		case EScene::eGameOver:		mpScene = new CGameOverScene();		break;
-		// ゲームクリアシーン
-		case EScene::eGameClear:	mpScene = new CGameClearScene();	break;
-		//ホームシーン
-		case EScene::eHome:			mpScene = new CHomeScene();			break;
-		//ゴミ拾いゲームシーン
-		case EScene::eTrashGame:	mpScene = new CTestScene();	break;
-		//配達ゲームシーン
-		case EScene::eDeliveryGame:	mpScene = new CDeliveryGameScene(); break;
+		case EScene::eTitle:		mpScene = new CTitleScene();			break;
 		//起動時メニュー
-		case EScene::eBootMenu:		mpScene = new CBootMenuScene();		break;
+		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト
-		case EScene::eColTest:		mpScene = new CCollisionTestScene(); break;
+		case EScene::eColTest:		mpScene = new CCollisionTestScene();	break;
+		//ゲームテストシーン
+		case EScene::eGameTest:		mpScene = new CTestScene();				break;
 	}
 
 	//シーンを新しく生成できたら、

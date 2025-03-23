@@ -6,8 +6,6 @@
 #include "CFade.h"
 #include "CExpandButton.h"
 #include "Easing.h"
-#include "CMoneyManager.h"
-#include "CJobStatusManager.h"
 
 // メニューのアニメーション時間
 #define OPEN_ANIM_TIME 0.25f

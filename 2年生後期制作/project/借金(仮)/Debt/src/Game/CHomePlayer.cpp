@@ -39,7 +39,7 @@ CHomePlayer::CHomePlayer()
 		CVector(0.0f, BODY_HEIGHT - BODY_RADIUS, 0.0f),
 		BODY_RADIUS
 	);
-	//フィールド、壁、オブジェクトとだけ衝突
+	// フィールド、壁、オブジェクトとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
 		ELayer::eWall, ELayer::eObject });
 

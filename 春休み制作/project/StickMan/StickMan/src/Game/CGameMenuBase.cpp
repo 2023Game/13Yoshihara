@@ -38,9 +38,9 @@ CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)
 	// 待機状態
 	ChangeState(EState::eIdle);
 	// 効果音
-	mpSelectSE = CResourceManager::Get<CSound>("SelectSE");
+	/*mpSelectSE = CResourceManager::Get<CSound>("SelectSE");
 	mpPushSE = CResourceManager::Get<CSound>("PushSE");
-	mpBuzzerSE = CResourceManager::Get<CSound>("BuzzerSE");
+	mpBuzzerSE = CResourceManager::Get<CSound>("BuzzerSE");*/
 
 	int menuItemMax = menuItemPathList.size();
 
@@ -105,10 +105,11 @@ void CGameMenuBase::Open()
 {
 	SetEnable(true);
 	SetShow(true);
+	mIsOpened = true;
 	mElapsedTime = 0.0f;
 	if (mpPreMenu == nullptr)
 	{
-		CBGMManager::Instance()->Play(EBGMType::eMenu, false);
+		CBGMManager::Instance()->Play(EBGMType::eMenu, false, 0.25f);
 		CTaskManager::Instance()->Pause(PAUSE_MENU_OPEN);
 		// メニューはカーソル表示
 		CInput::ShowCursor(true);
@@ -128,21 +129,11 @@ void CGameMenuBase::Close()
 {
 	SetEnable(false);
 	SetShow(false);
+	mIsOpened = false;
 
 	if (mpPreMenu == nullptr)
 	{
-		EScene currScene = CSceneManager::Instance()->GetCurrentScene();
-		// ホームならホームのBGM
-		if (currScene == EScene::eHome)
-		{
-			CBGMManager::Instance()->Play(EBGMType::eHome, false);
-		}
-		// ゲームならゲームBGM
-		else if (currScene == EScene::eTrashGame ||
-			currScene == EScene::eDeliveryGame)
-		{
-			CBGMManager::Instance()->Play(EBGMType::eTrashGame, false);
-		}
+		CBGMManager::Instance()->Play(EBGMType::eGame, false, 0.25f);
 		CTaskManager::Instance()->UnPause(PAUSE_MENU_OPEN);
 		// カーソル非表示
 		CInput::ShowCursor(false);
@@ -299,7 +290,7 @@ void CGameMenuBase::ChangeState(EState state)
 void CGameMenuBase::OnClickClose()
 {
 	// プッシュ音
-	mpPushSE->Play(SE_VOLUME, true);
+	//mpPushSE->Play(SE_VOLUME, true);
 	
 	// 前のメニューがあるならそれを有効
 	if (mpPreMenu != nullptr)

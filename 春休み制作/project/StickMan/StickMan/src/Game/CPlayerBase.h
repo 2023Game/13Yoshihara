@@ -48,6 +48,8 @@ public:
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
+	// アニメーションブレンド切り替え
+	bool ChangeAnimationBlend(int type, float blendSpeed, bool restart = false);
 
 	// キーの入力情報から移動ベクトルを求める
 	CVector CalcMoveVec();

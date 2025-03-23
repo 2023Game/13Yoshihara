@@ -9,17 +9,13 @@
 #include "CNavManager.h"
 #include "CTaskManager.h"
 #include "Maths.h"
-
-// プレイヤーの初期座標
-#define PLAYER_POS CVector(0.0f,0.0f,50.0f)
-// 敵の初期座標
-#define ENEMY_POS CVector(0.0f,0.0f,-50.0f)
-// 敵の初期方向
-#define ENEMY_ROT CVector(0.0f,180.0f,0.0f)
+#include "CResourceManager.h"
+#include "CPlayer.h"
+#include "CTestField.h"
 
 //コンストラクタ
 CTestScene::CTestScene()
-	: CSceneBase(EScene::eTrashGame)
+	: CSceneBase(EScene::eGameTest)
 	, mpGameMenu(nullptr)
 {
 }
@@ -41,52 +37,31 @@ void CTestScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	// CModelX
-	CResourceManager::Load<CModelX>("TrashPlayer", "Character\\TrashBox\\TrashBoxPlayer.x");
-	CResourceManager::Load<CModelX>("TrashEnemy", "Character\\TrashBox\\TrashBoxEnemy.x");
-	CResourceManager::Load<CModelX>("Collector", "Character\\Collector\\Fox.x");
-	CResourceManager::Load<CModelX>("PunisherCollector", "Character\\PunisherCollector\\PunisherFox.x");
-	CResourceManager::Load<CModelX>("Resident", "Character\\Resident\\Monkey.x");
+	CResourceManager::Load<CModelX>("Player", "Character\\Player\\Player.x");
 	// CModel
-	CResourceManager::Load<CModel>("TrashStage", "Field\\TrashStage\\TrashStage.obj");
-	CResourceManager::Load<CModel>("Sky", "Field\\Sky\\Sky.obj");
-	CResourceManager::Load<CModel>("TrashBox", "Field\\Object\\TrashBox.obj");
-	CResourceManager::Load<CModel>("Car", "Character\\Car\\Car.obj");
-	CResourceManager::Load<CModel>("GarbageTruck", "Character\\GarbageTruck\\GarbageTruck.obj");
-	CResourceManager::Load<CModel>("BlackTruck", "Character\\BlackTruck\\BlackTruck.obj");
-	CResourceManager::Load<CModel>("TrashBag", "Field\\Object\\TrashBag.obj");
-	CResourceManager::Load<CModel>("TrashBagGold", "Field\\Object\\TrashBagGold.obj");
+	CResourceManager::Load<CModel>("TestField", "Field\\Field.obj");
+	CResourceManager::Load<CModel>("Map_1", "Field\\Map1.obj");
+	CResourceManager::Load<CModel>("Map_2", "Field\\Map2.obj");
+	CResourceManager::Load<CModel>("Map_3", "Field\\Map3.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TrashStage_Ground_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Ground_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Wall_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Wall_Collision.obj");
-	CResourceManager::Load<CModel>("TrashStage_Object_Collision", "Field\\TrashStage\\CollisionModel\\TrashStage_Object_Collision.obj");
+
 	/*
 	効果音
 	*/
-	// プレイヤーと敵の攻撃、車両がプレイヤー、敵、車両にダメージを与えた時の音
-	CResourceManager::Load<CSound>("DamageSE", "Sound\\SE\\damage.wav");
-	// プレイヤーと敵のクリティカル攻撃がプレイヤー、敵、車両にダメージを与えたときの音
-	CResourceManager::Load<CSound>("CriticalSE", "Sound\\SE\\critical.wav");
-	// プレイヤーと敵の蓋が閉じている時に攻撃を食らった音
-	CResourceManager::Load<CSound>("GuardSE", "Sound\\SE\\guard.wav");
-	// プレイヤーの攻撃が回収員に当たった音
-	CResourceManager::Load<CSound>("CollectorDamageSE1", "Sound\\SE\\collectorDamage.wav");
-	// ゴミを拾った音
-	CResourceManager::Load<CSound>("GetSE", "Sound\\SE\\get.wav");
-	// 警告音
-	CResourceManager::Load<CSound>("AlarmSE", "Sound\\SE\\alarm.wav");
-	// メニュー音声
-	CResourceManager::Load<CSound>("SelectSE", "Sound\\SE\\MenuSound\\select.wav");
-	CResourceManager::Load<CSound>("PushSE", "Sound\\SE\\MenuSound\\push.wav");
-	CResourceManager::Load<CSound>("BuzzerSE", "Sound\\SE\\MenuSound\\buzzer.wav");
+	
 
 
 	// ゲームBGMを読み込み
-	CBGMManager::Instance()->Play(EBGMType::eTrashGame);
+	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	// 経路探索管理クラスを作成
 	new CNavManager();
 
+	// プレイヤー生成
+	CPlayer* player = new CPlayer();
 
+	// フィールド生成
+	CTestField* field = new CTestField();
 
 
 	// CGameCameraのテスト
@@ -113,8 +88,6 @@ void CTestScene::Load()
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
-	// 操作説明を設定
-	mpGameMenu->SetManual(mpManual);
 }
 
 //シーンの更新処理
@@ -127,16 +100,20 @@ void CTestScene::Update()
 	}
 #endif
 
-	// メニューポーズでなければ
-	if (!CTaskManager::Instance()->IsPaused(PAUSE_MENU_OPEN))
+	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
+	if (!mpGameMenu->IsOpened())
 	{
-		// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
-		if (!mpGameMenu->IsOpened())
+		if (CInput::PushKey(VK_TAB))
 		{
-			if (CInput::PushKey(VK_TAB))
-			{
-				mpGameMenu->Open();
-			}
+			mpGameMenu->Open();
+		}
+	}
+	// ゲームメニューを開いていれば、[TAB]キーでメニューを閉じる
+	else
+	{
+		if (CInput::PushKey(VK_TAB))
+		{
+			mpGameMenu->Close();
 		}
 	}
 }

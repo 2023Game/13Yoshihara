@@ -8,8 +8,6 @@
 #include "CSceneManager.h"
 #include "CGamePause.h"
 #include "CFade.h"
-#include "CScoreManager.h"
-#include "CMoneyManager.h"
 
 CApplication::~CApplication()
 {
@@ -30,10 +28,6 @@ void CApplication::Start()
 	CSoundManager::Instance();
 	// BGM管理クラスを作成
 	CBGMManager::Instance();
-	// 得点管理クラスを作成
-	CScoreManager::Instance();
-	// お金の管理クラスを作成
-	CMoneyManager::Instance();
 
 #if _DEBUG
 	// デバッグモードでは、ブートメニューを最初に開く
@@ -52,8 +46,6 @@ void CApplication::End()
 	CResourceManager::ClearInstance();
 	CBGMManager::ClearInstance();
 	CSoundManager::ClearInstance();
-	CScoreManager::ClearInstance();
-	CMoneyManager::ClearInstance();
 }
 
 void CApplication::Update()

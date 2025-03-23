@@ -2,16 +2,16 @@
 //プレイヤー基底クラスのインクルード
 #include "CPlayerBase.h"
 // プレイヤーのステータスクラスのインクルード
-//#include "CPlayerStatus.h"
+#include "CPlayerStatus.h"
 
 class CSound;
 
 /*
-ゴミ拾いゲームのプレイヤークラス
+ゲームのプレイヤークラス
 プレイヤー基底クラスと
 プレイヤーのステータスクラスを継承
 */
-class CPlayer : public CPlayerBase , // public CPlayerStatus
+class CPlayer : public CPlayerBase ,  public CPlayerStatus
 {
 public:
 	// コンストラクタ
@@ -45,6 +45,8 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
+	// コライダ―を生成
+	void CreateCol() override;
 	/*
 	アクションのキー入力
 	回収員がついていないときのみ入力可能
@@ -107,6 +109,12 @@ private:
 		eAttackStart,	// 攻撃開始
 		eAttack,		// 攻撃
 		eAttackEnd,		// 攻撃終了
+		eDodgeStart,	// 回避開始
+		eDodge,			// 回避中
+		eDodgeEnd,		// 回避終了
+		eParryStart,	// パリィ開始
+		eParry,			// パリィ中
+		eParryEnd,		// パリィ終了
 		eDeath,			// 死亡
 	};
 
@@ -132,6 +140,18 @@ private:
 	void UpdateAttack();
 	// 攻撃終了
 	void UpdateAttackEnd();
+	// 回避開始
+	void UpdateDodgeStart();
+	// 回避中
+	void UpdateDodge();
+	// 回避終了
+	void UpdateDodgeEnd();
+	// パリィ開始
+	void UpdateParryStart();
+	// パリィ中
+	void UpdateParry();
+	// パリィ終了
+	void UpdateParryEnd();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡
@@ -148,15 +168,6 @@ private:
 	std::string GetStateStr(EState state) const;
 #endif
 
-	// クリティカル攻撃コライダ―
-	CCollider* mpCriticalCol;
-
 	// ジャンプしているか
 	bool mIsJump;
-
-	// 効果音
-	CSound* mpDamageSE;
-	CSound* mpCriticalSE;
-	CSound* mpGuardSE;
-	CSound* mpCollectorDamageSE;
 };

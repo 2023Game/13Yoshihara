@@ -11,17 +11,12 @@ CBootMenuScene::CBootMenuScene()
 	// メニュー情報リストを作成
 	mMenuInfoList =
 	{
-		{ "■メイン", EScene::eNone },
-		{ "タイトル画面", EScene::eTitle},
-		{ "ゲームの結果画面", EScene::eResult},
-		{ "ゲームオーバー画面", EScene::eGameOver},
-		{ "ゲームクリア画面", EScene::eGameClear},
-		{ "拠点画面", EScene::eHome },
-		{ "ゴミ拾いゲーム画面", EScene::eTrashGame},
-		{ "配達ゲーム画面", EScene::eDeliveryGame},
-		{ "", EScene::eNone },
-		{ "■デバッグ", EScene::eNone },
+		{ "■メイン",		EScene::eNone },
+		{ "タイトル画面",	EScene::eTitle},
+		{ "",				EScene::eNone },
+		{ "■デバッグ",		EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest},
+		{ "ゲームテスト",	EScene::eGameTest},
 	};
 
 	// 一番先頭の項目が選択できない項目であれば、次の項目を初期選択に変更

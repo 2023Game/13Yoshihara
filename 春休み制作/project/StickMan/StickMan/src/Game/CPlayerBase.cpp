@@ -4,7 +4,6 @@
 #include "CCamera.h"
 #include "CBullet.h"
 #include "CFlamethrower.h"
-#include "CSlash.h"
 #include "Maths.h"
 #include "CInteractObject.h"
 #include "CSceneManager.h"
@@ -96,6 +95,25 @@ void CPlayerBase::ChangeAnimation(int type, bool restart)
 		restart
 	);
 	CXCharacter::SetAnimationSpeed(data.speed);
+}
+
+// アニメーションブレンド切り替え
+bool CPlayerBase::ChangeAnimationBlend(int type, float blendSpeed, bool restart)
+{
+	bool end = false;
+	if (mpAnimData == nullptr) return end;
+	if (!(0 <= type && type < mpAnimData->size())) return end;
+	AnimData data = (*mpAnimData)[type];
+	end = CXCharacter::ChangeAnimationBlend
+	(
+		type,
+		data.loop,
+		data.frameLength,
+		restart,
+		blendSpeed
+	);
+	CXCharacter::SetAnimationSpeed(data.speed);
+	return end;
 }
 
 // キーの入力情報から移動ベクトルを求める
