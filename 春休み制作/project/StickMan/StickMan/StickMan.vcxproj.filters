@@ -475,6 +475,24 @@
     <ClCompile Include="src\Game\CMap_1.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CMapBase.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBlockWall.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap_2.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap_3.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CClassRoom.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTable.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -847,6 +865,24 @@
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CMap_1.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMapBase.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBlockWall.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap_2.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap_3.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CClassRoom.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTable.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
   </ItemGroup>

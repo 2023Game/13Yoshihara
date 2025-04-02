@@ -75,6 +75,8 @@
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
+    <ClCompile Include="src\Game\CBlockWall.cpp" />
+    <ClCompile Include="src\Game\CClassRoom.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
@@ -83,9 +85,13 @@
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
+    <ClCompile Include="src\Game\CMapBase.cpp" />
     <ClCompile Include="src\Game\CMap_1.cpp" />
+    <ClCompile Include="src\Game\CMap_2.cpp" />
+    <ClCompile Include="src\Game\CMap_3.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
+    <ClCompile Include="src\Game\CTable.cpp" />
     <ClCompile Include="src\Game\CTextUI3D.cpp" />
     <ClCompile Include="src\Game\CCharaStatusBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
@@ -202,6 +208,8 @@
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
+    <ClInclude Include="src\Game\CBlockWall.h" />
+    <ClInclude Include="src\Game\CClassRoom.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEndUIBase.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
@@ -210,9 +218,13 @@
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
+    <ClInclude Include="src\Game\CMapBase.h" />
     <ClInclude Include="src\Game\CMap_1.h" />
+    <ClInclude Include="src\Game\CMap_2.h" />
+    <ClInclude Include="src\Game\CMap_3.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CPlayerStatus.h" />
+    <ClInclude Include="src\Game\CTable.h" />
     <ClInclude Include="src\Game\CTextUI3D.h" />
     <ClInclude Include="src\Game\CCharaStatusBase.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />

@@ -1,25 +1,18 @@
 #include "CMap_1.h"
 
 // コンストラクタ
-CMap_1::CMap_1()
+CMap_1::CMap_1(bool isUp, bool isDown, bool isLeft, bool isRight)
+	: CMapBase(isUp, isDown, isLeft, isRight)
 {
 	mpModel = CResourceManager::Get<CModel>("Map_1");
+
+	// コライダーを生成
+	CreateCol("Map_GroundCol", "Map_1_WallCol", "");
 }
 
 // デストラクタ
 CMap_1::~CMap_1()
 {
-}
-
-// 更新
-void CMap_1::Update()
-{
-}
-
-// 描画
-void CMap_1::Render()
-{
-	CFieldBase::Render();
 }
 
 // フィールドオブジェクトを生成

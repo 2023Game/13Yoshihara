@@ -10,10 +10,6 @@ CFieldBase::CFieldBase()
 	, mpGroundColliderMesh(nullptr)
 	, mpWallColliderMesh(nullptr)
 	, mpObjectColliderMesh(nullptr)
-	, mIsConnectUp(true)
-	, mIsConnectDown(true)
-	, mIsConnectL(true)
-	, mIsConnectR(true)
 {
 }
 
@@ -98,4 +94,36 @@ CCollider* CFieldBase::GetObjCol()
 // 経路探索用のノードを作成
 void CFieldBase::CreateNavNodes()
 {
+}
+
+// コライダ―を生成する
+void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::string objCol)
+{
+	if (groundCol != "")
+	{
+		mpGroundColliderMesh = new CColliderMesh
+		{
+			this,ELayer::eGround,
+			CResourceManager::Get<CModel>(groundCol),
+			true
+		};
+	}
+	if (wallCol != "")
+	{
+		mpWallColliderMesh = new CColliderMesh
+		{
+			this,ELayer::eWall,
+			CResourceManager::Get<CModel>(wallCol),
+			true
+		};
+	}
+	if (objCol != "")
+	{
+		mpObjectColliderMesh = new CColliderMesh
+		{
+			this,ELayer::eWall,
+			CResourceManager::Get<CModel>(objCol),
+			true
+		};
+	}
 }

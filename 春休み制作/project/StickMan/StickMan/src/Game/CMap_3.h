@@ -1,13 +1,13 @@
 #pragma once
 #include "CMapBase.h"
 
-class CMap_1 : public CMapBase
+class CMap_3 : public CMapBase
 {
 public:
 	// コンストラクタ
-	CMap_1(bool isUp, bool isDown, bool isLeft, bool isRight);
+	CMap_3(bool isUp, bool isDown, bool isLeft, bool isRight);
 	// デストラクタ
-	~CMap_1();
+	~CMap_3();
 
 private:
 	// フィールドオブジェクトを生成

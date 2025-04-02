@@ -37,6 +37,11 @@ protected:
 	virtual void CreateFieldObjects() = 0;
 	// 経路探索用のノードを作成
 	virtual void CreateNavNodes();
+	// コライダ―を生成する
+	void CreateCol(
+		std::string groundCol,
+		std::string wallCol,
+		std::string objCol);
 
 	// フィールドのモデル
 	CModel* mpModel;
@@ -48,10 +53,4 @@ protected:
 	CColliderMesh* mpWallColliderMesh;
 	// フィールドのオブジェクトの衝突判定
 	CColliderMesh* mpObjectColliderMesh;
-
-	// 道がつなげれるかどうか
-	bool mIsConnectUp;
-	bool mIsConnectDown;
-	bool mIsConnectL;
-	bool mIsConnectR;
 };

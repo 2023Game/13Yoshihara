@@ -11,7 +11,12 @@
 #include "Maths.h"
 #include "CResourceManager.h"
 #include "CPlayer.h"
-#include "CTestField.h"
+#include "CFieldManager.h"
+#include "CClassRoom.h"
+#include "CTable.h"
+
+#include "CMap_1.h"
+#include "CMap_2.h"
 
 //コンストラクタ
 CTestScene::CTestScene()
@@ -40,11 +45,11 @@ void CTestScene::Load()
 	CResourceManager::Load<CModelX>("Player", "Character\\Player\\Player.x");
 	// CModel
 	CResourceManager::Load<CModel>("TestField", "Field\\Field.obj");
-	CResourceManager::Load<CModel>("Map_1", "Field\\Map1.obj");
-	CResourceManager::Load<CModel>("Map_2", "Field\\Map2.obj");
-	CResourceManager::Load<CModel>("Map_3", "Field\\Map3.obj");
+	CResourceManager::Load<CModel>("ClassRoom", "Field\\Map\\ClassRoom.obj");
+	CResourceManager::Load<CModel>("BlockWall", "Field\\Map\\BlockWall.obj");
+	CResourceManager::Load<CModel>("Table",		"Field\\Map\\SchoolTable.obj");
 	// 当たり判定用のコリジョンモデル
-
+	CResourceManager::Load<CModel>("TableCol",	"Field\\Map\\Col\\SchoolTableCol.obj");
 	/*
 	効果音
 	*/
@@ -60,8 +65,18 @@ void CTestScene::Load()
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
 
-	// フィールド生成
-	CTestField* field = new CTestField();
+	// 教室の生成
+	CClassRoom* classRoom = new CClassRoom();
+	// 机の生成
+	CTable* table = new CTable();
+	// 教室の位置を調整
+	classRoom->Position(0.0f, -110.0f * table->Scale().Y(), 0.0f);
+
+
+	// フィールド管理クラス生成
+	/*CFieldManager* fieldMgr = new CFieldManager();*/
+
+
 
 
 	// CGameCameraのテスト
@@ -79,10 +94,10 @@ void CTestScene::Load()
 		atPos + CVector(0.0f, 10.0f, 50.0f),
 		atPos
 	);
-	// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
-	mainCamera->AddCollider(field->GetObjCol());
+	//// 衝突判定するコライダ―を追加
+	//mainCamera->AddCollider(fieldMgr->GetGroundCol());
+	//mainCamera->AddCollider(fieldMgr->GetWallCol());
+	//mainCamera->AddCollider(fieldMgr->GetObjCol());
 
 	mainCamera->SetFollowTargetTf(player);
 

@@ -115,7 +115,7 @@ void CPlayer::Update()
 	CPlayerBase::Update();
 
 #if _DEBUG
-	CDebugPrint::Print("PlayerState:%d\n", GetStateStr(mState));
+	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 #endif
 }
 
