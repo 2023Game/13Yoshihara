@@ -1,23 +1,23 @@
 #include "CMapBase.h"
-#include "CBlockWall.h"
+#include "CConnectWall.h"
 
-#define SCALE 10.0f
-// 塞ぐ壁のオフセット座標
-#define OFFSET_POS_SHORT 50.0f	// 長い方
-#define OFFSET_POS_LONG 95.0f	// 短い方
+// 繋ぐ壁のオフセット座標
+#define OFFSET_POS_TB CVector(0.0f,0.0f,95.0f)		// 上下
+#define OFFSET_POS_LR CVector(65.0f,0.0f,0.0f)		// 左右
 
-// 上下の塞ぐ壁のオフセット回転
-#define OFFSET_ROT_UpDown CVector(0.0f,90.0f,0.0f)
+// 繋ぐ壁のオフセット回転
+#define OFFSET_ROT_BOTTOM	CVector(0.0f,180.0f,0.0f)	// 下
+#define OFFSET_ROT_LEFT		CVector(0.0f,-90.0f,0.0f)	// 左
+#define OFFSET_ROT_RIGHT	CVector(0.0f,90.0f,0.0f)	// 右
 
 // コンストラクタ
 CMapBase::CMapBase(bool isUp, bool isDown, bool isLeft, bool isRight)
 	: CFieldBase()
-	, mIsConnectUp(isUp)
-	, mIsConnectDown(isDown)
+	, mIsConnectT(isUp)
+	, mIsConnectB(isDown)
 	, mIsConnectL(isLeft)
 	, mIsConnectR(isRight)
 {
-	Scale(Scale() * SCALE);
 }
 
 // デストラクタ
@@ -25,51 +25,34 @@ CMapBase::~CMapBase()
 {
 }
 
-// 塞ぐ壁を生成
-void CMapBase::CreateBlockWall()
+// 繋ぐ壁を生成
+void CMapBase::CreateConnectWall()
 {
 	// 上に繋げれない場合
-	if (!mIsConnectUp)
+	if (mIsConnectT)
 	{
-		CBlockWall* wallL = new CBlockWall();
-		CBlockWall* wallR = new CBlockWall();
-		wallL->Position(Position() + CVector(-OFFSET_POS_SHORT, 0.0f, -OFFSET_POS_LONG));
-		wallR->Position(Position() + CVector( OFFSET_POS_SHORT, 0.0f, -OFFSET_POS_LONG));
-		wallL->Scale(Scale());
-		wallR->Scale(Scale());
-		wallL->Rotation(OFFSET_ROT_UpDown);
-		wallR->Rotation(OFFSET_ROT_UpDown);
+		CConnectWall* wallT = new CConnectWall();
+		wallT->Position(Position() - OFFSET_POS_TB);
 	}
 	// 下に繋げれない場合
-	if (!mIsConnectDown)
+	if (mIsConnectB)
 	{
-		CBlockWall* wallL = new CBlockWall();
-		CBlockWall* wallR = new CBlockWall();
-		wallL->Position(Position() + CVector(-OFFSET_POS_SHORT, 0.0f, OFFSET_POS_LONG));
-		wallR->Position(Position() + CVector( OFFSET_POS_SHORT, 0.0f, OFFSET_POS_LONG));
-		wallL->Scale(Scale());
-		wallR->Scale(Scale());
-		wallL->Rotation(OFFSET_ROT_UpDown);
-		wallR->Rotation(OFFSET_ROT_UpDown);
+		CConnectWall* wallB = new CConnectWall();
+		wallB->Position(Position() + OFFSET_POS_TB);
+		wallB->SetDefaultRot(OFFSET_ROT_BOTTOM);
 	}
 	// 左に繋げれない場合
-	if (!mIsConnectL)
+	if (mIsConnectL)
 	{
-		CBlockWall* wallU = new CBlockWall();
-		CBlockWall* wallD = new CBlockWall();
-		wallU->Position(Position() + CVector(-OFFSET_POS_LONG, 0.0f, -OFFSET_POS_SHORT));
-		wallD->Position(Position() + CVector(-OFFSET_POS_LONG, 0.0f, OFFSET_POS_SHORT));
-		wallU->Scale(Scale());
-		wallD->Scale(Scale());
+		CConnectWall* wallL = new CConnectWall();
+		wallL->Position(Position() - OFFSET_POS_LR);
+		wallL->SetDefaultRot(OFFSET_ROT_LEFT);
 	}
 	// 右に繋げれない場合
-	if (!mIsConnectR)
+	if (mIsConnectR)
 	{
-		CBlockWall* wallU = new CBlockWall();
-		CBlockWall* wallD = new CBlockWall();
-		wallU->Position(Position() + CVector(OFFSET_POS_LONG, 0.0f, -OFFSET_POS_SHORT));
-		wallD->Position(Position() + CVector(OFFSET_POS_LONG, 0.0f,  OFFSET_POS_SHORT));
-		wallU->Scale(Scale());
-		wallD->Scale(Scale());
+		CConnectWall* wallR = new CConnectWall();
+		wallR->Position(Position() + OFFSET_POS_LR);
+		wallR->SetDefaultRot(OFFSET_ROT_RIGHT);
 	}
 }

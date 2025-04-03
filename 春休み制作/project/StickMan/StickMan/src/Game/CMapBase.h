@@ -1,7 +1,7 @@
 #pragma once
 #include "CFieldBase.h"
 
-class CBlockWall;
+class CConnectWall;
 
 class CMapBase : public CFieldBase
 {
@@ -17,19 +17,16 @@ public:
 	// デストラクタ
 	~CMapBase();
 
-	// 塞ぐ壁を生成
-	void CreateBlockWall();
+	// 繋ぐ壁を生成
+	void CreateConnectWall();
 
 private:
 	// 道が繋げれるかどうか
-	bool mIsConnectUp;
-	bool mIsConnectDown;
+	bool mIsConnectT;
+	bool mIsConnectB;
 	bool mIsConnectL;
 	bool mIsConnectR;
 
-	// 塞ぐ壁のリスト
-	std::vector<CBlockWall*> mpBlockWalls;
-
-	// テーブル
-
+	// 繋ぐ壁のリスト
+	std::vector<CConnectWall*> mpConnectWalls;
 };

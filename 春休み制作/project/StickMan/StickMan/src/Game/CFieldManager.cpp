@@ -98,8 +98,8 @@ void CFieldManager::CreateMap()
 			mpMapList[i][j] = new CMap_1(isUp, isDown, isLeft, isRight);
 			// À•W‚ðÝ’è
 			mpMapList[i][j]->Position((j - 1) * MAP_DIST, 0.0f, (i - 1) * MAP_DIST);
-			// Ç‚®•Ç‚ð¶¬
-			mpMapList[i][j]->CreateBlockWall();
+			// Œq‚®•Ç‚ð¶¬
+			mpMapList[i][j]->CreateConnectWall();
 		}
 	}
 }

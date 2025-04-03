@@ -75,7 +75,7 @@
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
-    <ClCompile Include="src\Game\CBlockWall.cpp" />
+    <ClCompile Include="src\Game\CConnectWall.cpp" />
     <ClCompile Include="src\Game\CClassRoom.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
@@ -208,7 +208,7 @@
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
-    <ClInclude Include="src\Game\CBlockWall.h" />
+    <ClInclude Include="src\Game\CConnectWall.h" />
     <ClInclude Include="src\Game\CClassRoom.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEndUIBase.h" />

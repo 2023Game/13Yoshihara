@@ -46,8 +46,8 @@ void CTestScene::Load()
 	// CModel
 	CResourceManager::Load<CModel>("TestField", "Field\\Field.obj");
 	CResourceManager::Load<CModel>("ClassRoom", "Field\\Map\\ClassRoom.obj");
-	CResourceManager::Load<CModel>("BlockWall", "Field\\Map\\BlockWall.obj");
 	CResourceManager::Load<CModel>("Table",		"Field\\Map\\SchoolTable.obj");
+	CResourceManager::Load<CModel>("Book",		"Field\\Map\\Book.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TableCol",	"Field\\Map\\Col\\SchoolTableCol.obj");
 	/*
