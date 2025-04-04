@@ -1,5 +1,9 @@
-#include "CMapBase.h"
+#include "CDesk.h"
+#include "CMap_1.h"
 #include "CConnectWall.h"
+
+#define SCALE 1.5f
+#define ROT	CVector(0.0f,90.0f,0.0f)
 
 // 繋ぐ壁のオフセット座標
 #define OFFSET_POS_TB CVector(0.0f,0.0f,95.0f)		// 上下
@@ -11,33 +15,63 @@
 #define OFFSET_ROT_RIGHT	CVector(0.0f,90.0f,0.0f)	// 右
 
 // コンストラクタ
-CMapBase::CMapBase(bool isUp, bool isDown, bool isLeft, bool isRight)
-	: CFieldBase()
-	, mIsConnectT(isUp)
-	, mIsConnectB(isDown)
-	, mIsConnectL(isLeft)
-	, mIsConnectR(isRight)
+CDesk::CDesk()
+	: mIsConnectT(false)
+	, mIsConnectB(false)
+	, mIsConnectL(false)
+	, mIsConnectR(false)
 {
+	mpModel = CResourceManager::Get<CModel>("Desk");
+
+	Scale(Scale() * SCALE);
+	Rotation(ROT);
+
+	// コライダーを生成
+	CreateCol("DeskCol", "", "");
+
+	// フィールドオブジェクトを生成
+	CreateFieldObjects();
 }
 
 // デストラクタ
-CMapBase::~CMapBase()
+CDesk::~CDesk()
 {
 }
 
+// 繋がるかを設定
+void CDesk::SetIsConnect(bool isTop, bool isBottom, bool isLeft, bool isRight)
+{
+	mIsConnectT = isTop;
+	mIsConnectB = isBottom;
+	mIsConnectL = isLeft;
+	mIsConnectR = isRight;
+}
+
+// フィールドオブジェクトを生成
+void CDesk::CreateFieldObjects()
+{
+	mpMap = new CMap_1();
+	// 親に設定
+	mpMap->SetParent(this);
+}
+
 // 繋ぐ壁を生成
-void CMapBase::CreateConnectWall()
+void CDesk::CreateConnectWall()
 {
 	// 上に繋げれない場合
 	if (mIsConnectT)
 	{
 		CConnectWall* wallT = new CConnectWall();
+		// 親に設定
+		wallT->SetParent(this);
 		wallT->Position(Position() - OFFSET_POS_TB);
 	}
 	// 下に繋げれない場合
 	if (mIsConnectB)
 	{
 		CConnectWall* wallB = new CConnectWall();
+		// 親に設定
+		wallB->SetParent(this);
 		wallB->Position(Position() + OFFSET_POS_TB);
 		wallB->SetDefaultRot(OFFSET_ROT_BOTTOM);
 	}
@@ -45,6 +79,8 @@ void CMapBase::CreateConnectWall()
 	if (mIsConnectL)
 	{
 		CConnectWall* wallL = new CConnectWall();
+		// 親に設定
+		wallL->SetParent(this);
 		wallL->Position(Position() - OFFSET_POS_LR);
 		wallL->SetDefaultRot(OFFSET_ROT_LEFT);
 	}
@@ -52,6 +88,8 @@ void CMapBase::CreateConnectWall()
 	if (mIsConnectR)
 	{
 		CConnectWall* wallR = new CConnectWall();
+		// 親に設定
+		wallR->SetParent(this);
 		wallR->Position(Position() + OFFSET_POS_LR);
 		wallR->SetDefaultRot(OFFSET_ROT_RIGHT);
 	}

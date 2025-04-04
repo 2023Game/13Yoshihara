@@ -34,7 +34,7 @@ void CGameMenu::Update()
 void CGameMenu::OnClickTitle()
 {
 	// プッシュ音
-	mpPushSE->Play(SE_VOLUME, true);
+	//mpPushSE->Play(SE_VOLUME, true);
 	// タイトルへ
 	Close();
 	CSceneManager::Instance()->LoadScene(EScene::eTitle);

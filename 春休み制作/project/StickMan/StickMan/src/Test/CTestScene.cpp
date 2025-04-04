@@ -13,7 +13,7 @@
 #include "CPlayer.h"
 #include "CFieldManager.h"
 #include "CClassRoom.h"
-#include "CTable.h"
+#include "CDesk.h"
 
 #include "CMap_1.h"
 #include "CMap_2.h"
@@ -46,10 +46,10 @@ void CTestScene::Load()
 	// CModel
 	CResourceManager::Load<CModel>("TestField", "Field\\Field.obj");
 	CResourceManager::Load<CModel>("ClassRoom", "Field\\Map\\ClassRoom.obj");
-	CResourceManager::Load<CModel>("Table",		"Field\\Map\\SchoolTable.obj");
+	CResourceManager::Load<CModel>("Desk",		"Field\\Map\\SchoolDesk.obj");
 	CResourceManager::Load<CModel>("Book",		"Field\\Map\\Book.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TableCol",	"Field\\Map\\Col\\SchoolTableCol.obj");
+	CResourceManager::Load<CModel>("DeskCol",	"Field\\Map\\Col\\SchoolDeskCol.obj");
 	/*
 	効果音
 	*/
@@ -65,16 +65,8 @@ void CTestScene::Load()
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
 
-	// 教室の生成
-	CClassRoom* classRoom = new CClassRoom();
-	// 机の生成
-	CTable* table = new CTable();
-	// 教室の位置を調整
-	classRoom->Position(0.0f, -110.0f * table->Scale().Y(), 0.0f);
-
-
 	// フィールド管理クラス生成
-	/*CFieldManager* fieldMgr = new CFieldManager();*/
+	CFieldManager* fieldMgr = new CFieldManager();
 
 
 

@@ -1,11 +1,11 @@
 #pragma once
-#include "CMapBase.h"
+#include "CFieldBase.h"
 
-class CMap_3 : public CMapBase
+class CMap_3 : public CFieldBase
 {
 public:
 	// コンストラクタ
-	CMap_3(bool isUp, bool isDown, bool isLeft, bool isRight);
+	CMap_3();
 	// デストラクタ
 	~CMap_3();
 

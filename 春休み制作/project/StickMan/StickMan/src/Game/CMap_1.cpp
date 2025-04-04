@@ -1,8 +1,8 @@
 #include "CMap_1.h"
 
 // コンストラクタ
-CMap_1::CMap_1(bool isUp, bool isDown, bool isLeft, bool isRight)
-	: CMapBase(isUp, isDown, isLeft, isRight)
+CMap_1::CMap_1()
+	: CFieldBase()
 {
 	mpModel = CResourceManager::Get<CModel>("Book");
 

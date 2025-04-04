@@ -1,8 +1,8 @@
 #include "CMap_2.h"
 
 // コンストラクタ
-CMap_2::CMap_2(bool isUp, bool isDown, bool isLeft, bool isRight)
-	: CMapBase(isUp, isDown, isLeft, isRight)
+CMap_2::CMap_2()
+	: CFieldBase()
 {
 	mpModel = CResourceManager::Get<CModel>("Map_2");
 
