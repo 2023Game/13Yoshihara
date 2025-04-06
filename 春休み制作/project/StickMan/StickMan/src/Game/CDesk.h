@@ -12,8 +12,14 @@ public:
 	// デストラクタ
 	~CDesk();
 
-	// 繋がるかを設定
-	void SetIsConnect(bool isTop, bool isBottom, bool isLeft, bool isRight);
+	// 上に繋がるかを設定
+	void SetIsConnectTop(bool isTop);
+	// 下に繋がるかを設定
+	void SetIsConnectBottom(bool isBottom);
+	// 左に繋がるかを設定
+	void SetIsConnectLeft(bool isLeft);
+	// 右に繋がるかを設定
+	void SetIsConnectRight(bool isRight);
 
 	// 繋ぐ壁を生成
 	void CreateConnectWall();

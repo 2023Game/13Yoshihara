@@ -67,6 +67,8 @@ void CTestScene::Load()
 
 	// フィールド管理クラス生成
 	CFieldManager* fieldMgr = new CFieldManager();
+	// プレイヤーの位置をスポーン地点に設定
+	player->Position(fieldMgr->GetSpawnPos());
 
 
 

@@ -38,21 +38,36 @@ CDesk::~CDesk()
 {
 }
 
-// 繋がるかを設定
-void CDesk::SetIsConnect(bool isTop, bool isBottom, bool isLeft, bool isRight)
+// 上に繋がるかを設定
+void CDesk::SetIsConnectTop(bool isTop)
 {
 	mIsConnectT = isTop;
+}
+
+// 下に繋がるかを設定
+void CDesk::SetIsConnectBottom(bool isBottom)
+{
 	mIsConnectB = isBottom;
+}
+
+// 左に繋がるかを設定
+void CDesk::SetIsConnectLeft(bool isLeft)
+{
 	mIsConnectL = isLeft;
+}
+
+// 右に繋がるかを設定
+void CDesk::SetIsConnectRight(bool isRight)
+{
 	mIsConnectR = isRight;
 }
 
 // フィールドオブジェクトを生成
 void CDesk::CreateFieldObjects()
 {
-	mpMap = new CMap_1();
-	// 親に設定
-	mpMap->SetParent(this);
+	//mpMap = new CMap_1();
+	//// 親に設定
+	//mpMap->SetParent(this);
 }
 
 // 繋ぐ壁を生成

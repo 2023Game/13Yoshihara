@@ -13,7 +13,10 @@
 #define DESK_HEIGHT 110.0f
 
 // 机の最低数
-#define MIN_DESK_NUM 5
+#define MIN_DESK_NUM 9
+
+// 机の座標計算
+#define DESK_POS(row,col) (CVector((col - DESK_COL / 2) * MAP_DIST_X, 0.0f,(row - DESK_ROW / 2) * MAP_DIST_Z))
 
 // フィールド管理クラスのインスタンス
 CFieldManager* CFieldManager::spInstance = nullptr;
@@ -26,6 +29,8 @@ CFieldManager* CFieldManager::Instance()
 
 // コンストラクタ
 CFieldManager::CFieldManager()
+	: mSpawnColRow(0.0f,0.0f)
+	, mDeskNum(-1)
 {
 	spInstance = this;
 
@@ -57,13 +62,21 @@ CCollider* CFieldManager::GetObjCol()
 	return nullptr;
 }
 
+// リスポーン地点座標を取得
+CVector CFieldManager::GetSpawnPos()
+{
+	return DESK_POS(mSpawnColRow.Y(), mSpawnColRow.X());
+}
+
 // マップを生成
 void CFieldManager::CreateField()
 {
 	// 周りに拡張可能な、机を生成する行列のリスト
 	std::vector<CVector2> expandColRow;
+	// 最後に拡張した行列
+	CVector2 lastExpandColRow;
 
-	// 1番最初の行の中央列を1に設定
+	// 1番最初の行の中央列を生成予定に設定
 	int row = 0;
 	int col = (int)(DESK_COL / 2);
 	mMap[row][col] = 1;
@@ -87,7 +100,7 @@ void CFieldManager::CreateField()
 
 		// 4方向（上、下、左、右）
 		std::vector<CVector2> directions = { {0,-1},{0,1},{-1,0},{1,0} };
-		// 要素をランダムに並び替え
+		// 方向をランダムに並び替え
 		std::shuffle(directions.begin(), directions.end(), mt);
 
 		// 拡張が成功したか
@@ -96,8 +109,8 @@ void CFieldManager::CreateField()
 		for (const CVector2 dir : directions)
 		{
 			// 拡張先の行列
-			int nextCol = col - dir.X();
-			int nextRow = row - dir.Y();
+			int nextCol = col + dir.X();
+			int nextRow = row + dir.Y();
 
 			// リスト範囲内かつ、生成することになっていない
 			if (InList(nextRow, nextCol) && mMap[nextRow][nextCol] == 0)
@@ -105,9 +118,11 @@ void CFieldManager::CreateField()
 				// 机の配置の行列を設定
 				mMap[nextRow][nextCol] = 1;
 				// 生成する行列に追加
-				expandColRow.push_back(CVector2(nextRow, nextCol));
+				expandColRow.push_back(CVector2(nextCol, nextRow));
 				// 拡張成功
 				isSuccess = true;
+				// 最後に拡張した行列
+				lastExpandColRow = CVector2(nextCol, nextRow);
 				break;
 			}
 		}
@@ -120,85 +135,110 @@ void CFieldManager::CreateField()
 		}
 	}
 
-	// 机のスケール
-	float deskScale = 1.0f;
-	// マップ同士が繋がれるかどうか
-	bool isTop = true;
-	bool isBottom = true;
-	bool isLeft = true;
-	bool isRight = true;
-	// 机を生成
 	for (int i = 0; i < DESK_ROW; i++)
 	{
 		for (int j = 0; j < DESK_COL; j++)
 		{
-			// 生成しないなら次へ
-			if (mMap[i][j] == 0) continue;
-			// 机を生成
-			mpDeskList.push_back(new CDesk());
-			// 座標を設定
-			mpDeskList.back()->Position(
-				(j - DESK_COL / 2) * MAP_DIST_X,
-				0.0f,
-				(i - DESK_ROW / 2) * MAP_DIST_Z);
-			// 机のスケールを取得
-			deskScale = mpDeskList.back()->Scale().Y();
+			if (j == DESK_COL - 1)
+			{
+				printf("%i\n", mMap[i][j]);
+			}
+			else
+			{
+				printf("%i", mMap[i][j]);
+			}
 		}
 	}
 
-	//// 机同士のつながりを設定して壁を生成
-	//for (int i = 0; i < DESK_ROW; i++)
-	//{
-	//	// 一番上の行なら上へは繋がらない
-	//	if (i == 0)
-	//	{
-	//		isTop = false;
-	//		isBottom = true;
-	//	}
-	//	// 一番下の行なら下へは繋がらない
-	//	else if (i == DESK_ROW - 1)
-	//	{
-	//		isTop = true;
-	//		isBottom = false;
-	//	}
-	//	// それ以外は繋がる
-	//	else
-	//	{
-	//		isTop = true;
-	//		isBottom = true;
-	//	}
-	//	for (int j = 0; j < DESK_COL; j++)
-	//	{
-	//		// 一番左の列なら左へは繋がらない
-	//		if (j == 0)
-	//		{
-	//			isLeft = false;
-	//			isRight = true;
-	//		}
-	//		// 一番右の列なら右へは繋がらない
-	//		else if (j == DESK_COL - 1)
-	//		{
-	//			isLeft = true;
-	//			isRight = false;
-	//		}
-	//		// それ以外は繋がる
-	//		else
-	//		{
-	//			isLeft = true;
-	//			isRight = true;
-	//		}
-	//		// 生成されていない場所なら次へ
-	//		if (mMap[i][j] == 0) continue;
-	//		// つながりを設定
-	//		mpDeskList[i][j]->SetIsConnect(isTop, isBottom, isLeft, isRight);
-	//		// 繋ぐ壁を生成
-	//		mpDeskList[i][j]->CreateConnectWall();
-	//	}
-	//}
+	// 最後に拡張した行列の机をスポーン地点とする
+	mSpawnColRow.X(lastExpandColRow.X());
+	mSpawnColRow.Y(lastExpandColRow.Y());
+
+	// 机を生成
+	CreateDesk(mSpawnColRow.Y(), mSpawnColRow.X());
+	// 全ての繋げる壁を生成
+	for (auto* desk : mpDesks)
+	{
+		desk->CreateConnectWall();
+	}
+
 	// 教室を生成
 	mpClassRoom = new CClassRoom();
 	// 教室の位置を調整
-	mpClassRoom->Position(0.0f, -110.0f * deskScale, 0.0f);
+	mpClassRoom->Position(0.0f, -110.0f * mpDesks.back()->Scale().Y(), 0.0f);
+}
+
+// 机を生成
+void CFieldManager::CreateDesk(int row, int col)
+{
+	// 作業中の机の番号を進める
+	mDeskNum++;
+	// 作業番号が最後のインデックス以下なら
+	// 作業番号に要素数を設定する
+	if (mDeskNum <= mpDesks.size() - 1)
+		mDeskNum = mpDesks.size();
+	// 机を生成
+	mpDesks.push_back(new CDesk());
+	// 座標を設定
+	mpDesks[mDeskNum]->Position(DESK_POS(row, col));
+
+	CVector pos = DESK_POS(row, col);
+	printf("Desk%d:%f,%f,%f\n", mDeskNum, pos.X(),pos.Y(),pos.Z());
+
+	// 生成済みに変更
+	mMap[row][col] = 2;
+
+	// 乱数シード値用
+	std::random_device rnd;
+	// 擬似乱数列生成器
+	std::mt19937 mt(rnd());
+
+	// 4方向（上、下、左、右）
+	std::vector<CVector2> directions = { {0,-1},{0,1},{-1,0},{1,0} };
+	// 方向をランダムに並び替え
+	std::shuffle(directions.begin(), directions.end(), mt);
+
+	for (const CVector2 dir : directions)
+	{
+		// 繋げる先の行列
+		int connectCol = col + dir.X();
+		int connectRow = row + dir.Y();
+
+		// リスト内かつ生成予定なら繋げることが出来る。
+		if (InList(connectRow, connectCol) && mMap[connectRow][connectCol] == 1)
+		{
+			// 上なら
+			if (dir == CVector2(0, -1))
+			{
+				// 上につなげることができる
+				mpDesks[mDeskNum]->SetIsConnectTop(true);
+			}
+			// 下なら
+			else if (dir == CVector2(0, 1))
+			{
+				// 下につなげることができる
+				mpDesks[mDeskNum]->SetIsConnectBottom(true);
+			}
+			// 左なら
+			else if (dir == CVector2(-1, 0))
+			{
+				// 左につなげることができる
+				mpDesks[mDeskNum]->SetIsConnectLeft(true);
+			}
+			// 右なら
+			else
+			{
+				// 右につなげることができる
+				mpDesks[mDeskNum]->SetIsConnectRight(true);
+			}
+
+			// 繋げた先の机を生成
+			CreateDesk(connectRow, connectCol);
+		}
+	}
+
+	// 作業中の番号を戻す
+	mDeskNum--;
 }
 
 // リストの範囲内か
