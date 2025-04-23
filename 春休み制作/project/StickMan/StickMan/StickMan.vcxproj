@@ -75,6 +75,7 @@
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
+    <ClCompile Include="src\Game\CConnectPoint.cpp" />
     <ClCompile Include="src\Game\CConnectWall.cpp" />
     <ClCompile Include="src\Game\CClassRoom.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
@@ -83,6 +84,7 @@
     <ClCompile Include="src\Game\CFieldBase.cpp" />
     <ClCompile Include="src\Game\CFieldManager.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
+    <ClCompile Include="src\Game\CGearBaseStatus.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CMap_1.cpp" />
@@ -115,6 +117,7 @@
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
+    <ClCompile Include="src\Game\CWand.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -207,6 +210,7 @@
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CApplication.h" />
+    <ClInclude Include="src\Game\CConnectPoint.h" />
     <ClInclude Include="src\Game\CConnectWall.h" />
     <ClInclude Include="src\Game\CClassRoom.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
@@ -215,6 +219,7 @@
     <ClInclude Include="src\Game\CFieldBase.h" />
     <ClInclude Include="src\Game\CFieldManager.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
+    <ClInclude Include="src\Game\CGearBaseStatus.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CMap_1.h" />
@@ -247,6 +252,7 @@
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
+    <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />

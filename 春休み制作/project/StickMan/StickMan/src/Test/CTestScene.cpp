@@ -11,12 +11,8 @@
 #include "Maths.h"
 #include "CResourceManager.h"
 #include "CPlayer.h"
-#include "CFieldManager.h"
-#include "CClassRoom.h"
-#include "CDesk.h"
-
-#include "CMap_1.h"
-#include "CMap_2.h"
+#include "CWand.h"
+#include "CTestField.h"
 
 //コンストラクタ
 CTestScene::CTestScene()
@@ -42,12 +38,10 @@ void CTestScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	// CModelX
-	CResourceManager::Load<CModelX>("Player", "Character\\Player\\Player.x");
+	CResourceManager::Load<CModelX>("Player",	"Character\\Adventurer\\Adventurer.x");
 	// CModel
 	CResourceManager::Load<CModel>("TestField", "Field\\Field.obj");
-	CResourceManager::Load<CModel>("ClassRoom", "Field\\Map\\ClassRoom.obj");
-	CResourceManager::Load<CModel>("Desk",		"Field\\Map\\SchoolDesk.obj");
-	CResourceManager::Load<CModel>("Book",		"Field\\Map\\Book.obj");
+	CResourceManager::Load<CModel>("Wand",		"Wepon\\Wand\\Wand.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("DeskCol",	"Field\\Map\\Col\\SchoolDeskCol.obj");
 	/*
@@ -65,12 +59,10 @@ void CTestScene::Load()
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
 
-	// フィールド管理クラス生成
-	CFieldManager* fieldMgr = new CFieldManager();
-	// プレイヤーの位置をスポーン地点に設定
-	player->Position(fieldMgr->GetSpawnPos());
+	// フィールドクラス生成
+	CTestField* field = new CTestField();
 
-
+	player->GetWand()->AddCollider(field->GetGroundCol());
 
 
 	// CGameCameraのテスト

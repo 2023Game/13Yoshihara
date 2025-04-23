@@ -18,6 +18,9 @@
 // 机の座標計算
 #define DESK_POS(row,col) (CVector((col - DESK_COL / 2) * MAP_DIST_X, 0.0f,(row - DESK_ROW / 2) * MAP_DIST_Z))
 
+// 方向
+#define DIRECTIONS { {0,-1},{0,1},{-1,0},{1,0} }
+
 // フィールド管理クラスのインスタンス
 CFieldManager* CFieldManager::spInstance = nullptr;
 
@@ -30,7 +33,6 @@ CFieldManager* CFieldManager::Instance()
 // コンストラクタ
 CFieldManager::CFieldManager()
 	: mSpawnColRow(0.0f,0.0f)
-	, mDeskNum(-1)
 {
 	spInstance = this;
 
@@ -99,7 +101,7 @@ void CFieldManager::CreateField()
 		std::mt19937 mt(rnd());
 
 		// 4方向（上、下、左、右）
-		std::vector<CVector2> directions = { {0,-1},{0,1},{-1,0},{1,0} };
+		std::vector<CVector2> directions = DIRECTIONS;
 		// 方向をランダムに並び替え
 		std::shuffle(directions.begin(), directions.end(), mt);
 
@@ -135,6 +137,8 @@ void CFieldManager::CreateField()
 		}
 	}
 
+#if _DEBUG
+	// 行列を表示
 	for (int i = 0; i < DESK_ROW; i++)
 	{
 		for (int j = 0; j < DESK_COL; j++)
@@ -149,6 +153,7 @@ void CFieldManager::CreateField()
 			}
 		}
 	}
+#endif
 
 	// 最後に拡張した行列の机をスポーン地点とする
 	mSpawnColRow.X(lastExpandColRow.X());
@@ -171,19 +176,14 @@ void CFieldManager::CreateField()
 // 机を生成
 void CFieldManager::CreateDesk(int row, int col)
 {
-	// 作業中の机の番号を進める
-	mDeskNum++;
-	// 作業番号が最後のインデックス以下なら
-	// 作業番号に要素数を設定する
-	if (mDeskNum <= mpDesks.size() - 1)
-		mDeskNum = mpDesks.size();
 	// 机を生成
 	mpDesks.push_back(new CDesk());
+	// 作業番号に最後のインデックスを設定する
+	int deskNum = mpDesks.size() - 1;
 	// 座標を設定
-	mpDesks[mDeskNum]->Position(DESK_POS(row, col));
+	mpDesks[deskNum]->Position(DESK_POS(row, col));
 
 	CVector pos = DESK_POS(row, col);
-	printf("Desk%d:%f,%f,%f\n", mDeskNum, pos.X(),pos.Y(),pos.Z());
 
 	// 生成済みに変更
 	mMap[row][col] = 2;
@@ -194,7 +194,7 @@ void CFieldManager::CreateDesk(int row, int col)
 	std::mt19937 mt(rnd());
 
 	// 4方向（上、下、左、右）
-	std::vector<CVector2> directions = { {0,-1},{0,1},{-1,0},{1,0} };
+	std::vector<CVector2> directions = DIRECTIONS;
 	// 方向をランダムに並び替え
 	std::shuffle(directions.begin(), directions.end(), mt);
 
@@ -211,34 +211,31 @@ void CFieldManager::CreateDesk(int row, int col)
 			if (dir == CVector2(0, -1))
 			{
 				// 上につなげることができる
-				mpDesks[mDeskNum]->SetIsConnectTop(true);
+				mpDesks[deskNum]->SetIsConnectTop(true);
 			}
 			// 下なら
 			else if (dir == CVector2(0, 1))
 			{
 				// 下につなげることができる
-				mpDesks[mDeskNum]->SetIsConnectBottom(true);
+				mpDesks[deskNum]->SetIsConnectBottom(true);
 			}
 			// 左なら
 			else if (dir == CVector2(-1, 0))
 			{
 				// 左につなげることができる
-				mpDesks[mDeskNum]->SetIsConnectLeft(true);
+				mpDesks[deskNum]->SetIsConnectLeft(true);
 			}
 			// 右なら
 			else
 			{
 				// 右につなげることができる
-				mpDesks[mDeskNum]->SetIsConnectRight(true);
+				mpDesks[deskNum]->SetIsConnectRight(true);
 			}
 
 			// 繋げた先の机を生成
 			CreateDesk(connectRow, connectCol);
 		}
 	}
-
-	// 作業中の番号を戻す
-	mDeskNum--;
 }
 
 // リストの範囲内か

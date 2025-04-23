@@ -58,6 +58,11 @@ public:
 	/// <param name="updateTargetEye">視点の目標位置も更新するかどうか</param>
 	virtual void LookAt(const CVector& eye, const CVector& at, const CVector& up, bool updateTargetEye = true);
 
+	// 視点を取得
+	CVector GetEye();
+	// 視点から注視点への方向ベクトルを取得
+	CVector GetEyeVec();
+
 	/// <summary>
 	/// 画面サイズ変更時のコールバック関数
 	/// </summary>

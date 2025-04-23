@@ -260,14 +260,13 @@ void CPlayerBase::Update()
 	}
 
 
-	mIsGrounded = false;
-
 #if _DEBUG
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
 	CDebugPrint::Print("Pos:%f,%f,%f\n", Position().X(), Position().Y(), Position().Z());
 	CDebugPrint::ForcePrint("FPS:%f\n", Times::FPS());
 #endif
 
+	mIsGrounded = false;
 
 	// 調べるオブジェクトのリストをクリア
 	mNearInteractObjs.clear();

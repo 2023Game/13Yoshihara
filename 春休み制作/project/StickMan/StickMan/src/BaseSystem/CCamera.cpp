@@ -189,6 +189,18 @@ void CCamera::LookAt(const CVector& eye, const CVector& at, const CVector& up, b
 	}
 }
 
+// 視点を取得
+CVector CCamera::GetEye()
+{
+	return mTargetEye;
+}
+
+// 視点から注視点へのベクトルを取得
+CVector CCamera::GetEyeVec()
+{
+	return mEyeVec;
+}
+
 // 画面サイズ変更処理
 void CCamera::Reshape(int width, int height)
 {

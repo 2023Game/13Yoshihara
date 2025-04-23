@@ -125,6 +125,9 @@
     <Filter Include="ソース ファイル\Game\Field\Map">
       <UniqueIdentifier>{92d2901a-5a6e-485d-bbb9-a73f4d73e7bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Weapon\Status">
+      <UniqueIdentifier>{26d63da8-7a3b-42a5-be9b-2aa12b4363dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -489,6 +492,15 @@
     </ClCompile>
     <ClCompile Include="src\Game\CDesk.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGearBaseStatus.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Status</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CWand.cpp">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CConnectPoint.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -878,6 +890,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDesk.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGearBaseStatus.h">
+      <Filter>ソース ファイル\Game\Weapon\Status</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CWand.h">
+      <Filter>ソース ファイル\Game\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectPoint.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

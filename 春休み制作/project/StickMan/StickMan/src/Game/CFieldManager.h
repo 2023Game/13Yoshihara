@@ -38,8 +38,6 @@ private:
 
 	// 机のリスト
 	std::vector<CDesk*> mpDesks;
-	// 作業中の机の番号
-	int mDeskNum;
 
 	// 机の配置の行列
 	// 0＝生成しない
@@ -53,6 +51,12 @@ private:
 	// マップを生成
 	void CreateField();
 	// 机を生成
+
+	/// <summary>
+	/// 机を生成
+	/// </summary>
+	/// <param name="row">行</param>
+	/// <param name="col">列</param>
 	void CreateDesk(int row, int col);
 	// リストの範囲内か
 	bool InList(int row, int col);

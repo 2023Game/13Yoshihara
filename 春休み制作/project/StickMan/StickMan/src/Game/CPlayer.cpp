@@ -1,46 +1,30 @@
 #include "CPlayer.h"
 #include "CColliderCapsule.h"
 #include "CInput.h"
+#include "CWand.h"
 
+// 体の半径と高さ
 #define BODY_RADIUS 2.5f
-#define BODY_HEIGHT 12.5f
+#define BODY_HEIGHT 15.0f
+
+// 杖のオフセット座標と回転とスケール
+#define WAND_OFFSET_POS CVector(-90.0f,8.0f,4.0f)
+#define WAND_OFFSET_ROT CVector(0.0f,0.0f,90.0f)
+#define WAND_SCALE	3.0f
 
 // アニメーションのパス
-#define ANIM_PATH "Character\\Player\\anim\\"
+#define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
 
 // アニメーションデータのテーブル
 const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 {
-	{ "",						true,	0.0f,	1.0f},	// Tポーズ
-	{ ANIM_PATH"idle.x",		true,	153.0f,	1.0f	},	// 待機
-	{ ANIM_PATH"walk.x",		true,	66.0f,	1.0f	},	// 歩行
-	{ ANIM_PATH"attack.x",		false,	92.0f,	1.0f	},	// 斬り攻撃
-	{ ANIM_PATH"kick.x",		false,	74.0f,	1.0f	},	// 蹴り攻撃
-	{ ANIM_PATH"jump_start.x",	false,	25.0f,	1.0f	},	// ジャンプ開始
-	{ ANIM_PATH"jump.x",		true,	1.0f,	1.0f	},	// ジャンプ中
-	{ ANIM_PATH"jump_end.x",	false,	26.0f,	1.0f	},	// ジャンプ終了
-	{ ANIM_PATH"hit.x",			false,	44.0f,	1.0f	},	// 仰け反り
-	//{ ANIM_PATH"Jump.x",		true,	0.0f,	1.0f},	// ジャンプ
-	//// 攻撃
-	//{ ANIM_PATH"AttackW_1.x",	false,	0.0f,	1.0f},	// W
-	//{ ANIM_PATH"AttackA_1.x",	false,	0.0f,	1.0f},	// A
-	//{ ANIM_PATH"AttackS_1.x",	false,	0.0f,	1.0f},	// S
-	//{ ANIM_PATH"AttackD_1.x",	false,	0.0f,	1.0f},	// D
-	//// 被弾
-	//{ ANIM_PATH"DamageW_1.x",	false,	0.0f,	1.0f},	// W
-	//{ ANIM_PATH"DamageA_1.x",	false,	0.0f,	1.0f},	// A
-	//{ ANIM_PATH"DamageS_1.x",	false,	0.0f,	1.0f},	// S
-	//{ ANIM_PATH"DamageD_1.x",	false,	0.0f,	1.0f},	// D
-	//// 回避
-	//{ ANIM_PATH"DodgeW_1.x",	false,	0.0f,	1.0f},	// W
-	//{ ANIM_PATH"DodgeA_1.x",	false,	0.0f,	1.0f},	// A
-	//{ ANIM_PATH"DodgeS_1.x",	false,	0.0f,	1.0f},	// S
-	//{ ANIM_PATH"DodgeD_1.x",	false,	0.0f,	1.0f},	// D
-	//// パリィ
-	//{ ANIM_PATH"ParryW_1.x",	false,	0.0f,	1.0f},	// W
-	//{ ANIM_PATH"ParryA_1.x",	false,	0.0f,	1.0f},	// A
-	//{ ANIM_PATH"ParryS_1.x",	false,	0.0f,	1.0f},	// S
-	//{ ANIM_PATH"ParryD_1.x",	false,	0.0f,	1.0f},	// D
+	{ "",								true,	0.0f,	1.0f},	// Tポーズ
+	{ANIM_PATH"Idle.x",					true,	118.0f,	1.0f},	// 待機
+	{ANIM_PATH"Idle_Wand.x",			true,	221.0f,	1.0f},	// 杖持ち待機
+	{ANIM_PATH"Run.x",					true,	48.0f,	1.0f},	// 走り
+	{ANIM_PATH"Run_Wand.x",				true,	43.0f,	1.0f},	// 杖持ち走り
+	{ANIM_PATH"Jump.x",					false,	51.0f,	1.0f},	// ジャンプ
+	{ANIM_PATH"Attack_Wand.x",			false,	61.0f,	1.5f},	// 杖攻撃
 };
 
 // コンストラクタ
@@ -48,36 +32,66 @@ CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
 	, mState(EState::eIdle)
+	, mIsWand(false)
+	, mIsAttacking(false)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
-	
+
 	// コライダ―を生成
 	CreateCol();
 
 	// 最初は待機アニメーションを再生
 	ChangeAnimation((int)EAnimType::eIdle);
+
+	// 杖を作成
+	mpWand = new CWand
+	(
+		this,
+		ETag::eWand
+	);
+
+	// 右手のフレームを取得し、
+	// 杖にプレイヤーの右手の行列をアタッチ
+	CModelXFrame* frame = mpModel->FinedFrame("Armature_mixamorig_RightHand");
+	mpWand->SetAttachMtx(&frame->CombinedMatrix());
+	mpWand->Position(WAND_OFFSET_POS);
+	mpWand->Rotation(WAND_OFFSET_ROT);
+	mpWand->Scale(mpWand->Scale() * WAND_SCALE);
+
+	// 最初は非表示
+	mpWand->SetEnable(false);
+	mpWand->SetShow(false);
 }
 
 // デストラクタ
 CPlayer::~CPlayer()
 {
+	// 杖が存在したら
+	if (mpWand != nullptr)
+	{
+		// 持ち主を解除してから、削除
+		mpWand->SetOwner(nullptr);
+		mpWand->Kill();
+	}
 }
 
 // 攻撃中か
 bool CPlayer::IsAttacking() const
 {
-	return false;
+	return mIsAttacking;
 }
 
 // 攻撃開始
 void CPlayer::AttackStart()
 {
+	mIsAttacking = true;
 }
 
 // 攻撃終了
 void CPlayer::AttackEnd()
 {
+	mIsAttacking = false;
 }
 
 // ダメージを受ける
@@ -90,32 +104,37 @@ void CPlayer::Update()
 {
 	switch (mState)
 	{
-	case EState::eIdle:			UpdateIdle();			break;
-	case EState::eDamageStart:	UpdateDamageStart();	break;
-	case EState::eDamage:		UpdateDamage();			break;
-	case EState::eDamageEnd:	UpdateDamageEnd();		break;
-	case EState::eAttackStart:	UpdateAttackStart();	break;
-	case EState::eAttack:		UpdateAttack();			break;
-	case EState::eAttackEnd:	UpdateAttackEnd();		break;
-	case EState::eDodgeStart:	UpdateDodgeStart();		break;
-	case EState::eDodge:		UpdateDodge();			break;
-	case EState::eDodgeEnd:		UpdateDamageEnd();		break;
-	case EState::eParryStart:	UpdateParryStart();		break;
-	case EState::eParry:		UpdateParry();			break;
-	case EState::eParryEnd:		UpdateParryEnd();		break;
+	case EState::eIdle:			UpdateIdle();			break;	// 待機
+	case EState::eDamageStart:	UpdateDamageStart();	break;	// 被弾開始
+	case EState::eDamage:		UpdateDamage();			break;	// 被弾中
+	case EState::eDamageEnd:	UpdateDamageEnd();		break;	// 被弾終了
+	case EState::eJumpStart:	UpdateJumpStart();		break;	// ジャンプ開始
+	case EState::eJump:			UpdateJump();			break;	// ジャンプ中
+	case EState::eJumpEnd:		UpdateJumpEnd();		break;	// ジャンプ終了
+	case EState::eAttackStart:	UpdateAttackStart();	break;	// 攻撃開始
+	case EState::eAttack:		UpdateAttack();			break;	// 攻撃中
+	case EState::eAttackEnd:	UpdateAttackEnd();		break;	// 攻撃終了
 	case EState::eDeath:		UpdateDeath();			break;
 	}
 
-	// 待機中は、移動処理を行う
-	if (mState == EState::eIdle)
+	// 待機中とジャンプ中は、移動処理を行う
+	if (mState == EState::eIdle ||
+		mState == EState::eJumpStart ||
+		mState == EState::eJump ||
+		mState == EState::eJumpEnd)
 	{
 		UpdateMove();
 	}
 
+	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
+
+	// 杖の行列を更新
+	mpWand->UpdateMtx();
 
 #if _DEBUG
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
+	CDebugPrint::Print("IsWand:%s\n", mIsWand ? "持っている" : "持っていない");
 #endif
 }
 
@@ -125,6 +144,12 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	CPlayerBase::Collision(self, other, hit);
 }
 
+// 杖のポインタを取得
+CWand* CPlayer::GetWand()
+{
+	return mpWand;
+}
+
 // コライダ―を生成
 void CPlayer::CreateCol()
 {
@@ -132,8 +157,8 @@ void CPlayer::CreateCol()
 	mpBodyCol = new CColliderCapsule
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, BODY_RADIUS, 0.0f),
-		CVector(0.0f, BODY_HEIGHT, 0.0f),
+		CVector(0.0f, BODY_RADIUS / Scale().Y(), 0.0f),
+		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS
 	);
 	// フィールド,壁、オブジェクトとだけ衝突
@@ -147,10 +172,35 @@ void CPlayer::ActionInput()
 	// 接地していれば
 	if (mIsGrounded)
 	{
-		if (CInput::PushKey(VK_LBUTTON))
+		// 杖を持っているなら
+		if (mIsWand)
 		{
-
+			// 左クリックで攻撃へ
+			if (CInput::PushKey(VK_LBUTTON))
+			{
+				// 攻撃開始へ
+				ChangeState(EState::eAttackStart);
+			}
+			// Fで接続状態のキャンセル
+			if (mpWand->GetConnect() && CInput::PushKey('F'))
+			{
+				mpWand->SetConnect(false);
+			}
 		}
+
+		// スペースでジャンプ
+		if (CInput::PushKey(VK_SPACE))
+		{
+			// ジャンプ開始へ
+			ChangeState(EState::eJumpStart);
+		}
+	}
+
+	if (CInput::PushKey('L'))
+	{
+		mIsWand = !mIsWand;
+		mpWand->SetEnable(mIsWand);
+		mpWand->SetShow(mIsWand);
 	}
 }
 
@@ -175,8 +225,14 @@ void CPlayer::UpdateMove()
 		// 待機状態であれば、移動アニメーションに切り替え
 		if (mState == EState::eIdle)
 		{	
-			// ブレンドが終了していたら
-			if (ChangeAnimationBlend((int)EAnimType::eMove, 5.0f))
+			// 杖を持っている場合
+			if (mIsWand)
+			{
+				// 杖持ち移動アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eMove_Wand);
+			}
+			// 杖を持っていない場合
+			else
 			{
 				// 移動アニメーションに切り替え
 				ChangeAnimation((int)EAnimType::eMove);
@@ -189,8 +245,14 @@ void CPlayer::UpdateMove()
 		// 待機状態であれば、待機アニメーションに切り替え
 		if (mState == EState::eIdle)
 		{
-			// ブレンドが終了していたら
-			if (ChangeAnimationBlend((int)EAnimType::eIdle, 5.0f))
+			// 杖を持っている場合
+			if (mIsWand)
+			{
+				// 杖持ち待機アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eIdle_Wand);
+			}
+			// 杖を持っていない場合
+			else
 			{
 				// 待機アニメーションに切り替え
 				ChangeAnimation((int)EAnimType::eIdle);
@@ -217,61 +279,144 @@ void CPlayer::UpdateDamageEnd()
 // ジャンプ開始
 void CPlayer::UpdateJumpStart()
 {
+	switch (mStateStep)
+	{
+		// ジャンプ開始
+	case 0:
+		// ジャンプアニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eJump);
+		// ジャンプの速度を設定
+		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+		mStateStep++;
+		break;
+
+		// 次の状態へ
+	case 1:
+		// ジャンプ中状態へ
+		ChangeState(EState::eJump);
+		break;
+	}
 }
 
 // ジャンプ中
 void CPlayer::UpdateJump()
 {
+	switch (mStateStep)
+	{
+		// 地面に付いたら次の状態へ
+	case 0:
+		// 地面に付いたら
+		if (mIsGrounded)
+		{
+			// ジャンプ終了状態へ
+			ChangeState(EState::eJumpEnd);
+		}
+		break;
+	}
 }
 
 // ジャンプ終了
 void CPlayer::UpdateJumpEnd()
 {
+	switch (mStateStep)
+	{
+		// 待機状態へ
+	case 0:
+		ChangeState(EState::eIdle);
+		break;
+	}
 }
 
 // 攻撃開始
 void CPlayer::UpdateAttackStart()
 {
+	switch (mStateStep)
+	{
+		// アニメーション変更
+	case 0:
+		mMoveSpeed = CVector::zero;
+		// 攻撃開始アニメーション
+		ChangeAnimation((int)EAnimType::eAttack);
+		mStateStep++;
+		break;
+
+		// キャラを視点の方向へ向ける
+	case 1:
+	{
+		CCamera* camera = CCamera::CurrentCamera();
+		// 向く方向を求める
+		CVector vec = camera->GetEyeVec();
+		vec.Y(0.0f);
+		Rotation(CQuaternion::LookRotation(vec.Normalized()));
+
+		mStateStep++;
+		break;
+	}
+
+		// 次の状態へ
+	case 2:
+		// 攻撃中状態へ
+		ChangeState(EState::eAttack);
+		break;
+	}
 }
 
 // 攻撃中
 void CPlayer::UpdateAttack()
 {
+	switch (mStateStep)
+	{
+		// アニメーションが20フレーム以降なら次へ
+	case 0:
+		if (GetAnimationFrame() > 20.0f)
+		{
+			CVector hitPos = CVector::zero;
+			// レイが衝突するか判定
+			// 衝突したら衝突位置と接続
+			if (mpWand->Ray(hitPos))
+			{
+				mpWand->SetConnect(true);
+				printf("HitPos：%f,%f,%f\n", hitPos.X(), hitPos.Y(), hitPos.Z());
+			}
+			mStateStep++;
+		}
+		break;
+
+		// 次の状態へ
+	case 1:
+		// 攻撃終了へ
+		ChangeState(EState::eAttackEnd);
+		break;
+	}
 }
 
 // 攻撃終了
 void CPlayer::UpdateAttackEnd()
 {
-}
+	switch (mStateStep)
+	{
+		// アニメーションが40フレーム以降なら次へ
+	case 0:
+		if (GetAnimationFrame() > 40.0f)
+		{
+			mStateStep++;
+		}
+		break;
 
-// 回避開始
-void CPlayer::UpdateDodgeStart()
-{
-}
+		// アニメーションが終了したら次へ
+	case 1:
+		if (IsAnimationFinished())
+		{
+			mStateStep++;
+		}
+		break;
 
-// 回避中
-void CPlayer::UpdateDodge()
-{
-}
-
-// 回避終了
-void CPlayer::UpdateDodgeEnd()
-{
-}
-
-// パリィ開始
-void CPlayer::UpdateParryStart()
-{
-}
-
-// パリィ中
-void CPlayer::UpdateParry()
-{
-}
-
-// パリィ終了
-void CPlayer::UpdateParryEnd()
-{
+		// 次の状態へ
+	case 2:
+		// 待機状態へ
+		ChangeState(EState::eIdle);
+		break;
+	}
 }
 
 // 死亡の更新処理
@@ -290,6 +435,8 @@ void CPlayer::ChangeState(EState state)
 	if (mState == state) return;
 
 	mState = state;
+	mStateStep = 0;
+	mElapsedTime = 0.0f;
 }
 
 #if _DEBUG
@@ -310,12 +457,6 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eAttackStart:	return "攻撃開始";		break;
 	case EState::eAttack:		return "攻撃中";		break;
 	case EState::eAttackEnd:	return "攻撃終了";		break;
-	case EState::eDodgeStart:	return "回避開始";		break;
-	case EState::eDodge:		return "回避中";		break;
-	case EState::eDodgeEnd:		return "回避終了";		break;
-	case EState::eParryStart:	return "パリィ開始";	break;
-	case EState::eParry:		return "パリィ中";		break;
-	case EState::eParryEnd:		return "パリィ終了";	break;
 	case EState::eDeath:		return "死亡";			break;
 	}
 }

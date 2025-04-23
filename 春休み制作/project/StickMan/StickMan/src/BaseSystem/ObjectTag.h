@@ -14,13 +14,12 @@ enum class ETag
 
 	ePlayer,	// プレイヤー
 	eEnemy,		// エネミー
-	eVehicle,	// 車両
 
-
-	eTrashBag,		// ゴミ袋
 	eBullet,// 弾丸
 	eFlame,	// 炎
 	eSlash,	// 斬撃
+	eWand,	// 杖
+	eConnectPoint,	// 接続部
 
 	eUI,
 	eInteractUI, //インタラクトUI

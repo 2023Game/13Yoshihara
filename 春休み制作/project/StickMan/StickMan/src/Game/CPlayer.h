@@ -5,6 +5,7 @@
 #include "CPlayerStatus.h"
 
 class CSound;
+class CWand;
 
 /*
 ゲームのプレイヤークラス
@@ -44,6 +45,9 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	// 杖のポインタを取得
+	CWand* GetWand();
+
 private:
 	// コライダ―を生成
 	void CreateCol() override;
@@ -66,28 +70,11 @@ private:
 		eTPose,				// Tポーズ
 
 		eIdle,		// 待機
+		eIdle_Wand,	// 杖持ち待機
 		eMove,		// 移動
+		eMove_Wand,	// 杖持ち移動
 		eJump,		// ジャンプ
-
-		eAttackW_1,	// 攻撃W
-		eAttackA_1,	// 攻撃A
-		eAttackS_1,	// 攻撃S
-		eAttackD_1,	// 攻撃D
-
-		eDamageW_1,	// 被弾W
-		eDamageA_1,	// 被弾A
-		eDamageS_1,	// 被弾S
-		eDamageD_1,	// 被弾D
-
-		eDodgeW_1,	// 回避W
-		eDodgeA_1,	// 回避A
-		eDodgeS_1,	// 回避S
-		eDodgeD_1,	// 回避D
-
-		eParryW_1,	// パリィW
-		eParryA_1,	// パリィA
-		eParryS_1,	// パリィS
-		eParryD_1,	// パリィD
+		eAttack,	// 攻撃中
 
 		eDeath,		// 死亡
 
@@ -109,12 +96,6 @@ private:
 		eAttackStart,	// 攻撃開始
 		eAttack,		// 攻撃
 		eAttackEnd,		// 攻撃終了
-		eDodgeStart,	// 回避開始
-		eDodge,			// 回避中
-		eDodgeEnd,		// 回避終了
-		eParryStart,	// パリィ開始
-		eParry,			// パリィ中
-		eParryEnd,		// パリィ終了
 		eDeath,			// 死亡
 	};
 
@@ -140,18 +121,6 @@ private:
 	void UpdateAttack();
 	// 攻撃終了
 	void UpdateAttackEnd();
-	// 回避開始
-	void UpdateDodgeStart();
-	// 回避中
-	void UpdateDodge();
-	// 回避終了
-	void UpdateDodgeEnd();
-	// パリィ開始
-	void UpdateParryStart();
-	// パリィ中
-	void UpdateParry();
-	// パリィ終了
-	void UpdateParryEnd();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡
@@ -170,4 +139,10 @@ private:
 
 	// ジャンプしているか
 	bool mIsJump;
+	// 杖を持っているか
+	bool mIsWand;
+	// 攻撃中か
+	bool mIsAttacking;
+
+	CWand* mpWand;	// 杖
 };
