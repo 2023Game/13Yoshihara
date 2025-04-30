@@ -1,6 +1,9 @@
 #pragma once
 #include "CFieldBase.h"
 
+class CSwitch;
+class CDoor;
+
 // テスト用のフィールド
 class CTestField : public CFieldBase
 {
@@ -14,4 +17,7 @@ private:
 	void CreateFieldObjects() override;
 	// フィールドのコライダ―を生成
 	void CreateCol() override;
+
+	CSwitch* mpSwitch;	// スイッチ
+	CDoor* mpDoor;		// ドア
 };

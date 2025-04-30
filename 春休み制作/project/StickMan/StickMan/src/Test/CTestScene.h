@@ -2,6 +2,7 @@
 #include "CSceneBase.h"
 
 class CGameMenu;
+class CConnectPointManager;
 
 // テストシーン
 class CTestScene :public CSceneBase
@@ -19,4 +20,7 @@ public:
 private:
 	// ゲームメニュー
 	CGameMenu* mpGameMenu;
+
+	// 接続部の管理クラス
+	CConnectPointManager* mpConnectPointMgr;
 };

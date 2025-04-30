@@ -128,6 +128,15 @@
     <Filter Include="ソース ファイル\Game\Weapon\Status">
       <UniqueIdentifier>{26d63da8-7a3b-42a5-be9b-2aa12b4363dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\ConnectObject">
+      <UniqueIdentifier>{d2a3212a-df0f-4d15-940a-4b91fe0007b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\SwitchObject">
+      <UniqueIdentifier>{a047aa7a-1794-45b7-8ff7-a53f9a83568e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\SwitchObject\Switch">
+      <UniqueIdentifier>{3e2ed5db-0bf8-4b8e-9abd-e504b429eabb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -501,6 +510,30 @@
     </ClCompile>
     <ClCompile Include="src\Game\CConnectPoint.cpp">
       <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CConnectPointManager.cpp">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CConnectObject.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CConnectTarget.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitch.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchButton.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchFrame.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchObject.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDoor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -899,6 +932,30 @@
     </ClInclude>
     <ClInclude Include="src\Game\CConnectPoint.h">
       <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectPointManager.h">
+      <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectObject.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectTarget.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitch.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchButton.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchFrame.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchObject.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDoor.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 #include "CColliderCapsule.h"
 #include "CInput.h"
 #include "CWand.h"
+#include "CConnectPoint.h"
+#include "CConnectPointManager.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
@@ -34,6 +36,7 @@ CPlayer::CPlayer()
 	, mState(EState::eIdle)
 	, mIsWand(false)
 	, mIsAttacking(false)
+	, mpPoint(nullptr)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
@@ -161,33 +164,52 @@ void CPlayer::CreateCol()
 		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS
 	);
-	// フィールド,壁、オブジェクトとだけ衝突
+	// フィールド,壁、オブジェクト、スイッチとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
-		ELayer::eWall,ELayer::eObject });
+		ELayer::eWall,ELayer::eObject,ELayer::eSwitch });
 }
 
 // アクションのキー入力
 void CPlayer::ActionInput()
 {
-	// 接地していれば
-	if (mIsGrounded)
+	// 杖を持っているなら
+	if (mIsWand)
 	{
-		// 杖を持っているなら
-		if (mIsWand)
+		// 左クリックで攻撃へ
+		if (CInput::PushKey(VK_LBUTTON))
 		{
-			// 左クリックで攻撃へ
-			if (CInput::PushKey(VK_LBUTTON))
+			// 待機状態なら
+			if (mState == EState::eIdle)
 			{
 				// 攻撃開始へ
 				ChangeState(EState::eAttackStart);
 			}
-			// Fで接続状態のキャンセル
-			if (mpWand->GetConnect() && CInput::PushKey('F'))
+			// それ以外の場合はアニメーションを変更せずに繋げる
+			else
 			{
-				mpWand->SetConnect(false);
+				CVector hitPos = CVector::zero;
+				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+				// レイが衝突するか判定
+				// 衝突したら衝突位置と接続
+				if (connectPointMgr->Ray(hitPos))
+				{
+					// 接続部を生成
+					connectPointMgr->CreateConnectPoint(hitPos);
+				}
 			}
 		}
+		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+		// Fで接続状態のキャンセル
+		if (connectPointMgr->GetWandConnect() && CInput::PushKey('F'))
+		{
+			connectPointMgr->SetWandConnect(false);
+			connectPointMgr->DeleteLastConnectPoint();
+		}
+	}
 
+	// 接地していれば
+	if (mIsGrounded)
+	{
 		// スペースでジャンプ
 		if (CInput::PushKey(VK_SPACE))
 		{
@@ -371,12 +393,13 @@ void CPlayer::UpdateAttack()
 		if (GetAnimationFrame() > 20.0f)
 		{
 			CVector hitPos = CVector::zero;
+			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 			// レイが衝突するか判定
 			// 衝突したら衝突位置と接続
-			if (mpWand->Ray(hitPos))
+			if (connectPointMgr->Ray(hitPos))
 			{
-				mpWand->SetConnect(true);
-				printf("HitPos：%f,%f,%f\n", hitPos.X(), hitPos.Y(), hitPos.Z());
+				// 接続部を生成
+				connectPointMgr->CreateConnectPoint(hitPos);
 			}
 			mStateStep++;
 		}

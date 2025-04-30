@@ -6,6 +6,7 @@
 
 class CSound;
 class CWand;
+class CConnectPoint;
 
 /*
 ゲームのプレイヤークラス
@@ -144,5 +145,6 @@ private:
 	// 攻撃中か
 	bool mIsAttacking;
 
-	CWand* mpWand;	// 杖
+	CWand* mpWand;			// 杖
+	CConnectPoint* mpPoint;	// 接続部
 };

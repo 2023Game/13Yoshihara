@@ -9,8 +9,8 @@ class CInteractObject : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CInteractObject(ETaskPriority prio=ETaskPriority::eDefault,
-		int sortOrder=0,
+	CInteractObject(ETaskPriority prio = ETaskPriority::eDefault,
+		int sortOrder = 0,
 		ETaskPauseType pause = ETaskPauseType::eDefault);
 	// デストラクタ
 	virtual ~CInteractObject();
@@ -19,7 +19,7 @@ public:
 	void DeleteObject(CObjectBase* obj) override;
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// 調べる内容のテキストを返す
 	std::string GetInteractStr() const;
