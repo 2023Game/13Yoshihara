@@ -2,6 +2,7 @@
 #include "CObjectBase.h"
 
 class CConnectTarget;
+class CModel;
 
 // 繋げれるオブジェクトのベースクラス
 class CConnectObject : public CObjectBase
@@ -18,8 +19,8 @@ public:
 	// オブジェクト削除を伝える関数
 	void DeleteObject(CObjectBase* obj) override;
 
-	// 更新
-	void Update() override;
+	// 描画
+	void Render() override;
 
 	/// <summary>
 	/// 衝突処理
@@ -41,4 +42,10 @@ protected:
 
 	// 重さ
 	float mWeight;
+
+	CCollider* mpCol;	// コライダー
+
+	CModel* mpModel;	// モデル
+
+	float mMoveSpeedY;	// 上下方向の移動速度
 };

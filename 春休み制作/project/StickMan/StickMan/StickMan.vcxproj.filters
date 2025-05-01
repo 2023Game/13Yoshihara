@@ -535,6 +535,9 @@
     <ClCompile Include="src\Game\CDoor.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CBox.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -956,6 +959,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDoor.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBox.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

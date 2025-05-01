@@ -1,13 +1,18 @@
 #include "CPlayer.h"
 #include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "CInput.h"
 #include "CWand.h"
 #include "CConnectPoint.h"
 #include "CConnectPointManager.h"
+#include "CConnectObject.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
 #define BODY_HEIGHT 15.0f
+
+// 探知コライダの半径
+#define SEARCH_RADIUS 100.0f
 
 // 杖のオフセット座標と回転とスケール
 #define WAND_OFFSET_POS CVector(-90.0f,8.0f,4.0f)
@@ -132,6 +137,9 @@ void CPlayer::Update()
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
 
+	// コネクトオブジェクトのリストをクリア
+	mConnectObjs.clear();
+
 	// 杖の行列を更新
 	mpWand->UpdateMtx();
 
@@ -145,6 +153,19 @@ void CPlayer::Update()
 void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
+
+	// コネクトオブジェクト探知用コライダーなら
+	if (self == mpSearchConnectObjCol)
+	{
+		// コネクトオブジェクトの場合
+		if (other->Owner()->Tag() == ETag::eConnectObject)
+		{
+			// コネクトオブジェクトクラスを取得
+			CConnectObject* obj = dynamic_cast<CConnectObject*>(other->Owner());
+			// 射程内にあるコネクトオブジェクトに追加
+			mConnectObjs.push_back(obj);
+		}
+	}
 }
 
 // 杖のポインタを取得
@@ -167,6 +188,15 @@ void CPlayer::CreateCol()
 	// フィールド,壁、オブジェクト、スイッチとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
 		ELayer::eWall,ELayer::eObject,ELayer::eSwitch });
+
+	// コネクトオブジェクトの探知用コライダ
+	mpSearchConnectObjCol = new CColliderSphere
+	(
+		this, ELayer::eConnectSearch,
+		SEARCH_RADIUS
+	);
+	// コネクトオブジェクトだけ衝突
+	mpSearchConnectObjCol->SetCollisionLayers({ ELayer::eObject });
 }
 
 // アクションのキー入力
@@ -483,5 +513,19 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eDeath:		return "死亡";			break;
 	}
 }
-
 #endif
+
+// 視点の中心に一番近いオブジェクトを求める
+CConnectObject* CPlayer::CenterObject()
+{
+	// 画面の中心を求める
+	CVector2 screenCenter = CVector2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+
+	// リストの全てのオブジェクト
+	for (const auto& obj : mConnectObjs)
+	{
+		// スクリーン座標に変換
+		CVector2 screenPos = obj->Position();
+	}
+	return nullptr;
+}

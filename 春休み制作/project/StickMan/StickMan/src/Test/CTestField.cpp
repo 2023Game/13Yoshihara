@@ -1,9 +1,14 @@
 #include "CTestField.h"
 #include "CSwitch.h"
 #include "CDoor.h"
+#include "CBox.h"
 
+// スイッチの座標
 #define SWITCH_POS	CVector(25.0f,0.0f,25.0f)
+// ドアの座標
 #define DOOR_POS	CVector(8.5f,0.0f,-42.5f)
+// 箱の座標
+#define BOX_POS		CVector(-25.0f,0.0f,-25.0f)
 
 // コンストラクタ
 CTestField::CTestField()
@@ -34,6 +39,11 @@ void CTestField::CreateFieldObjects()
 	mpSwitch = new CSwitch(SWITCH_POS);
 	// ドアをスイッチの作用オブジェクトに設定
 	mpSwitch->SetActionObj(mpDoor);
+
+	// 箱を生成
+	mpBox = new CBox();
+	// 箱の位置調整
+	mpBox->Position(BOX_POS);
 }
 
 // フィールドのコライダ―を生成

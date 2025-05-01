@@ -20,7 +20,7 @@ void CConnectTarget::Render()
 {
 	// ターゲット部分のデバッグ表示
 #if _DEBUG
-	Primitive::DrawBox
+	Primitive::DrawWireBox
 	(
 		Position(),
 		Scale(),

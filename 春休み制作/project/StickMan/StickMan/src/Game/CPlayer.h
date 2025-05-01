@@ -7,6 +7,7 @@
 class CSound;
 class CWand;
 class CConnectPoint;
+class CConnectObject;
 
 /*
 ゲームのプレイヤークラス
@@ -147,4 +148,12 @@ private:
 
 	CWand* mpWand;			// 杖
 	CConnectPoint* mpPoint;	// 接続部
+
+	// 射程内にあるコネクトオブジェクトのリスト
+	std::list<CConnectObject*> mConnectObjs;
+	// コネクトオブジェクトの探知用
+	CCollider* mpSearchConnectObjCol;
+
+	// 視点の中心に一番近いオブジェクトを求める
+	CConnectObject* CenterObject();
 };

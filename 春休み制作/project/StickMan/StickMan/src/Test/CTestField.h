@@ -3,6 +3,7 @@
 
 class CSwitch;
 class CDoor;
+class CBox;
 
 // テスト用のフィールド
 class CTestField : public CFieldBase
@@ -20,4 +21,5 @@ private:
 
 	CSwitch* mpSwitch;	// スイッチ
 	CDoor* mpDoor;		// ドア
+	CBox* mpBox;		// 箱
 };

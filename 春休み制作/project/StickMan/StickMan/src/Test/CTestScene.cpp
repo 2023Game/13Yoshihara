@@ -51,6 +51,7 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("TutorialMap_Ground_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Ground_Col.obj");
 	CResourceManager::Load<CModel>("TutorialMap_Wall_Col",		"Field\\Map\\TutorialMap\\Col\\TutorialMap_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Door_Col",					"Field\\Door\\Col\\Door_Col.obj");
+	CResourceManager::Load<CModel>("Box_Col",					"Field\\Box\\Col\\Box_Col.obj");
 	/*
 	効果音
 	*/
@@ -91,9 +92,8 @@ void CTestScene::Load()
 		atPos
 	);
 	//// 衝突判定するコライダ―を追加
-	//mainCamera->AddCollider(fieldMgr->GetGroundCol());
-	//mainCamera->AddCollider(fieldMgr->GetWallCol());
-	//mainCamera->AddCollider(fieldMgr->GetObjCol());
+	mainCamera->AddCollider(field->GetGroundCol());
+	mainCamera->AddCollider(field->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
 

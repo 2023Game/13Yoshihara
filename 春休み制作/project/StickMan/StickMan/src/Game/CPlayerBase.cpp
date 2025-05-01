@@ -14,7 +14,7 @@
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
 
-
+#define THRESHOLD 0.1f
 
 #define GRAVITY 0.0625f
 
@@ -339,10 +339,44 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 		{
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
+
+			// 衝突した地面が床か天井かを内積で判定
+			CVector normal = hit.adjust.Normalized();
+			float dot = CVector::Dot(normal, CVector::up);
+			// 内積の結果がプラスであれば、床と衝突した
+			if (dot >= THRESHOLD)
+			{
+				// 落下などで床に上から衝突したとき（下移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY < 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+
+				// 接地した
+				mIsGrounded = true;
+				// 接地した地面の法線を記憶しておく
+				mGroundNormal = hit.adjust.Normalized();
+
+				if (other->Tag() == ETag::eRideableObject)
+				{
+					mpRideObject = other->Owner();
+				}
+			}
+			// 内積の結果がマイナスであれば、天井と衝突した
+			else if (dot < 0.0f)
+			{
+				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY > 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
+
 		}
 	}
 	// 調べるオブジェクトの探知コライダーの衝突判定

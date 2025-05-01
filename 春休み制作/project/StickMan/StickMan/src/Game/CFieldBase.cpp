@@ -121,7 +121,7 @@ void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::stri
 	{
 		mpObjectColliderMesh = new CColliderMesh
 		{
-			this,ELayer::eWall,
+			this,ELayer::eObject,
 			CResourceManager::Get<CModel>(objCol),
 			true
 		};

@@ -14,6 +14,8 @@ enum class ELayer
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用
 
+	eConnectSearch,	// 接続できるオブジェクト探知用
+
 	eSwitch,		// スイッチ
 	
 	ePlayer,		// プレイヤー
