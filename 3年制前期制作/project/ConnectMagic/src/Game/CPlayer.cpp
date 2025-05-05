@@ -152,6 +152,33 @@ void CPlayer::Update()
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
 
+	// 中心に一番近いオブジェクトを求める
+	CenterTarget();
+	// 中心に近いオブジェクトがある場合
+	if (mpCenterTarget != nullptr)
+	{
+		// ターゲット中の場所を表示
+		mpTargetPointImg->SetEnable(true);
+		mpTargetPointImg->SetShow(true);
+		// 座標を求める
+		CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(mpCenterTarget->Position());
+		// 画像のサイズを取得
+		float imgSizeX = mpTargetPointImg->GetSize().X();
+		float imgSizeY = mpTargetPointImg->GetSize().Y();
+		// サイズの半分を減算
+		screenPos.X(screenPos.X() - imgSizeX / 2);
+		screenPos.Y(screenPos.Y() - imgSizeY / 2);
+		// 座標を設定
+		mpTargetPointImg->SetPos(screenPos);
+	}
+	// ないなら
+	else
+	{
+		// ターゲット中の場所を非表示
+		mpTargetPointImg->SetEnable(false);
+		mpTargetPointImg->SetShow(false);
+	}
+
 	// 杖の行列を更新
 	mpWand->UpdateMtx();
 
@@ -277,33 +304,6 @@ void CPlayer::UpdateIdle()
 {
 	// キー入力
 	ActionInput();
-
-	// 中心に一番近いオブジェクトを求める
-	CenterTarget();
-	// 中心に近いオブジェクトがある場合
-	if (mpCenterTarget != nullptr)
-	{
-		// ターゲット中の場所を表示
-		mpTargetPointImg->SetEnable(true);
-		mpTargetPointImg->SetShow(true);
-		// 座標を求める
-		CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(mpCenterTarget->Position());
-		// 画像のサイズを取得
-		float imgSizeX = mpTargetPointImg->GetSize().X();
-		float imgSizeY = mpTargetPointImg->GetSize().Y();
-		// サイズの半分を減算
-		screenPos.X(screenPos.X() - imgSizeX / 2);
-		screenPos.Y(screenPos.Y() - imgSizeY / 2);
-		// 座標を設定
-		mpTargetPointImg->SetPos(screenPos);
-	}
-	// ないなら
-	else
-	{
-		// ターゲット中の場所を非表示
-		mpTargetPointImg->SetEnable(false);
-		mpTargetPointImg->SetShow(false);
-	}
 }
 
 // 移動処理
@@ -461,19 +461,19 @@ void CPlayer::UpdateAttack()
 {
 	switch (mStateStep)
 	{
-		// アニメーションが20フレーム以降なら次へ
+		// アニメーションが20フレーム以降なら
 	case 0:
 		if (GetAnimationFrame() > 20.0f)
 		{
-			CVector hitPos = CVector::zero;
-			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-			// レイが衝突するか判定
-			// 衝突したら衝突位置と接続
-			if (connectPointMgr->Ray(hitPos))
+			// 視点の中心に近いターゲットがあるなら
+			if (mpCenterTarget != nullptr)
 			{
+				// 接続部の管理クラス
+				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 				// 接続部を生成
-				connectPointMgr->CreateConnectPoint(hitPos);
+				connectPointMgr->CreateConnectPoint(mpCenterTarget->Position());
 			}
+			// 次へ
 			mStateStep++;
 		}
 		break;

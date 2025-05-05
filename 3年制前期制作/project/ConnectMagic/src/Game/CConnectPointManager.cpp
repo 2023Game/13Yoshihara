@@ -64,15 +64,19 @@ void CConnectPointManager::Update()
 		offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
 		mpPoint->Position(offsetPos);
 	}
+
+	// 接続部同士を繋いだ線が何かに衝突したら削除
+	RayPoint();
 }
 
 // 描画
 void CConnectPointManager::Render()
 {
+	// レイの開始と終了地点
+	CVector rayStart;
+	CVector rayEnd;
 	for (int i = 0; i < mPoints.size(); i += 2)
 	{
-		CVector rayStart;
-		CVector rayEnd;
 		// iの次の要素番号が要素範囲内なら
 		// 接続部同士を線で繋げる
 		if (i + 1 < mPoints.size())
@@ -185,6 +189,56 @@ bool CConnectPointManager::RayTarget(CVector targetPos)
 	return false;
 }
 
+// 接続部同士を繋いだレイと設定されているコライダーとの衝突判定を行い
+// 衝突していたら削除する
+void CConnectPointManager::RayPoint()
+{
+
+	CHitInfo hit;
+	// レイの開始と終了地点
+	CVector rayStart;
+	CVector rayEnd;
+	for (int i = 0; i < mPoints.size(); i += 2)
+	{
+		// 接続部同士で繋がっているか
+		bool isPoints = false;
+		// iの次の要素番号が要素範囲内なら
+		// 接続部二つを開始と終了地点に設定
+		if (i + 1 < mPoints.size())
+		{
+			rayStart = mPoints[i]->Position();
+			rayEnd = mPoints[i + 1]->Position();
+			// 接続部同士で繋がっている
+			isPoints = true;
+		}
+		// セットになっていない場合、接続部と杖の接続部を設定
+		else
+		{
+			// 杖の接続部の座標
+			rayStart = mpPoint->Position();
+			// 接続部の座標
+			rayEnd = mPoints[i]->Position();
+
+		}
+
+		// 設定されているコライダーを順番に調べる
+		for (CCollider* c : mColliders)
+		{
+			// レイとコライダーの衝突判定を行う
+			if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
+			{
+				DeleteConnectPoint(i);
+				// 接続部同士で繋がっているなら
+				if (isPoints)
+				{
+					// 接続相手も削除
+					DeleteConnectPoint(i);
+				}
+			}
+		}
+	}
+}
+
 // 衝突判定を行うコライダーをリストに追加
 void CConnectPointManager::AddCollider(CCollider* col)
 {
@@ -204,15 +258,10 @@ void CConnectPointManager::CreateConnectPoint(CVector createPos)
 	// 最古の接続部を削除する
 	if (mConnectMaxNum == mPoints.size())
 	{
-		// 最大値が１の場合だけは一つだけ消去
-		if (mConnectMaxNum == 1)
+		DeleteConnectPoint(0);
+		// 最大値が1じゃなければ接続相手も削除
+		if (mConnectMaxNum != 1)
 		{
-			DeleteConnectPoint(0);
-		}
-		// それ以外は2つ消去
-		else
-		{
-			DeleteConnectPoint(0);
 			DeleteConnectPoint(0);
 		}
 	}
@@ -240,6 +289,8 @@ void CConnectPointManager::CreateConnectPoint(CVector createPos)
 // 接続部を消去
 void CConnectPointManager::DeleteConnectPoint(int num)
 {
+	// サイズが0なら処理しない
+	if (mPoints.size() == 0) return;
 	// 一時保存
 	CConnectPoint* point = mPoints[num];
 	// 要素から除外
@@ -250,7 +301,9 @@ void CConnectPointManager::DeleteConnectPoint(int num)
 
 // 最後の要素を消去する
 void CConnectPointManager::DeleteLastConnectPoint()
-{
+{	
+	// サイズが0なら処理しない
+	if (mPoints.size() == 0) return;
 	// 一時保存
 	CConnectPoint* point = mPoints[mPoints.size() - 1];
 	// 要素から除外

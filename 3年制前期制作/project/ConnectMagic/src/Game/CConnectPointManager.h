@@ -34,6 +34,12 @@ public:
 	/// <returns>衝突したか</returns>
 	bool RayTarget(CVector targetPos);
 
+	/// <summary>
+	/// 接続部同士を繋いだレイと設定されているコライダーとの衝突判定を行い
+	/// 衝突していたら削除する
+	/// </summary>
+	void RayPoint();
+
 	// 衝突判定を行うコライダーをリストに追加
 	void AddCollider(CCollider* col);
 	// 衝突判定を行うコライダーをリストから取り除く
