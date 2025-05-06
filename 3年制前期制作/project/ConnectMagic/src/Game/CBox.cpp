@@ -9,9 +9,12 @@
 #define TARGET_POS_5 CVector( 0.0f, 5.0f, 5.0f)
 #define TARGET_POS_6 CVector( 0.0f, 5.0f,-5.0f)
 
+// 箱の重さ
+#define WEIGHT 0.1f
+
 // コンストラクタ
 CBox::CBox()
-	: CConnectObject()
+	: CConnectObject(WEIGHT)
 {
 	mpModel = CResourceManager::Get<CModel>("Box");
 
@@ -34,24 +37,13 @@ CBox::~CBox()
 {
 }
 
-// 更新
-void CBox::Update()
-{
-}
-
-// 引っ張られた時の処理
-void CBox::Pull()
-{
-}
-
 // コライダーを生成
 void CBox::CreateCol()
 {
 	mpCol = new CColliderMesh
 	(
 		this, ELayer::eObject,
-		CResourceManager::Get<CModel>("Box_Col"),
-		true
+		CResourceManager::Get<CModel>("Box_Col")
 	);
 	// プレイヤー、フィールド、敵、オブジェクト、コネクトオブジェクトの探知用と衝突判定
 	mpCol->SetCollisionLayers({ ELayer::ePlayer,

@@ -2,6 +2,9 @@
 #include "CConnectTarget.h"
 #include "CModel.h"
 
+// 重力
+#define GRAVITY 0.0625f
+
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	int sortOrder,ETaskPauseType pause)
@@ -9,6 +12,7 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mWeight(weight)
 	, mpCol(nullptr)
 	, mpModel(nullptr)
+	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
 {
 }
@@ -21,6 +25,17 @@ CConnectObject::~CConnectObject()
 // オブジェクト削除を伝える関数
 void CConnectObject::DeleteObject(CObjectBase* obj)
 {
+}
+
+// 更新
+void CConnectObject::Update()
+{
+	mMoveSpeedY -= GRAVITY /10 * Times::DeltaTime();
+	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
+	mMoveSpeed = CVector::zero;
+
+	// 移動
+	Position(Position() + moveSpeed);
 }
 
 // 描画
@@ -59,7 +74,7 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 			// 内積の結果がマイナスであれば、天井と衝突した
 			else if (dot < 0.0f)
 			{
-				// ジャンプなどで天井にしたから衝突したとき（上移動）のみ
+				// 天井にしたから衝突したとき（上移動）のみ
 				// 上下の移動速度を0にする
 				if (mMoveSpeedY > 0.0f)
 				{
@@ -82,15 +97,38 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 }
 
 // 引っ張られた時の処理
-void CConnectObject::Pull()
+void CConnectObject::Pull(CVector pullDir, float opponentWeight)
 {
+	// 自身が動かない重さの場合処理しない
+	if (mWeight == 1.0f) return;
+	// 移動速度
+	CVector moveSpeed = CVector::zero;
+	// 相手が動かない重さなら
+	if (opponentWeight == 1.0f)
+	{
+		// 引っ張る力はそのまま
+		moveSpeed = pullDir * PULL_POWER * Times::DeltaTime();
+	}
+	// それ以外なら
+	else
+	{
+		// 自分と相手の重さの総量
+		float totalWeight = mWeight + opponentWeight;
+		// 総量に対する相手の重さで引っ張る力を決める
+		moveSpeed = pullDir * (opponentWeight / totalWeight * PULL_POWER) * Times::DeltaTime();
+	}
+
+	// 移動速度を設定する
+	mMoveSpeedY = moveSpeed.Y();
+	moveSpeed.Y(0.0f);
+	mMoveSpeed = moveSpeed;
 }
 
 // 接続ターゲットの作成
 void CConnectObject::CreateTarget(CVector pos)
 {
 	// ターゲット生成
-	CConnectTarget* target = new CConnectTarget();
+	CConnectTarget* target = new CConnectTarget(this);
 	// 親子設定
 	target->SetParent(this);
 	// 位置設定
@@ -103,4 +141,10 @@ void CConnectObject::CreateTarget(CVector pos)
 std::vector<CConnectTarget*> CConnectObject::GetTargets()
 {
 	return mTargets;
+}
+
+// 重さを取得
+float CConnectObject::GetWeight()
+{
+	return mWeight;
 }

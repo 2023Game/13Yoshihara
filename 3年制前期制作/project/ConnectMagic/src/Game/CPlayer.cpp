@@ -251,25 +251,8 @@ void CPlayer::ActionInput()
 		// 左クリックで攻撃へ
 		if (CInput::PushKey(VK_LBUTTON))
 		{
-			// 待機状態なら
-			if (mState == EState::eIdle)
-			{
-				// 攻撃開始へ
-				ChangeState(EState::eAttackStart);
-			}
-			// それ以外の場合はアニメーションを変更せずに繋げる
-			else
-			{
-				CVector hitPos = CVector::zero;
-				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-				// レイが衝突するか判定
-				// 衝突したら衝突位置と接続
-				if (connectPointMgr->Ray(hitPos))
-				{
-					// 接続部を生成
-					connectPointMgr->CreateConnectPoint(hitPos);
-				}
-			}
+			// 攻撃開始へ
+			ChangeState(EState::eAttackStart);
 		}
 		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 		// Fで接続状態のキャンセル
@@ -277,6 +260,13 @@ void CPlayer::ActionInput()
 		{
 			connectPointMgr->SetWandConnect(false);
 			connectPointMgr->DeleteLastConnectPoint();
+		}
+
+		// 右クリック長押しで収縮
+		if (CInput::Key(VK_RBUTTON))
+		{
+			// 全ての引っ張る処理を実行
+			connectPointMgr->Pull();
 		}
 	}
 
@@ -471,7 +461,7 @@ void CPlayer::UpdateAttack()
 				// 接続部の管理クラス
 				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 				// 接続部を生成
-				connectPointMgr->CreateConnectPoint(mpCenterTarget->Position());
+				connectPointMgr->CreateConnectPoint(mpCenterTarget);
 			}
 			// 次へ
 			mStateStep++;

@@ -1,4 +1,5 @@
 #include "CConnectTarget.h"
+#include "CConnectObject.h"
 
 // ターゲット部分のデバッグ表示
 #if _DEBUG
@@ -6,7 +7,8 @@
 #endif
 
 // コンストラクタ
-CConnectTarget::CConnectTarget()
+CConnectTarget::CConnectTarget(CConnectObject* connectObj)
+	: mpConnectObj(connectObj)
 {
 }
 
@@ -27,4 +29,10 @@ void CConnectTarget::Render()
 		CColor::red
 	);
 #endif
+}
+
+// 接続部がついているオブジェクトを取得
+CConnectObject* CConnectTarget::GetConnectObj()
+{
+	return mpConnectObj;
 }

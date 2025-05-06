@@ -3,6 +3,9 @@
 #include "CWand.h"
 #include "CConnectPoint.h"
 #include "Primitive.h"
+#include "CConnectObject.h"
+#include "CConnectTarget.h"
+#include "Maths.h"
 
 // レイを伸ばせる距離
 #define RAY_DISTANCE 1000.0f
@@ -35,7 +38,7 @@ CConnectPointManager::CConnectPointManager()
 	spInstance = this;
 
 	// 杖用の接続部分のビルボード
-	mpPoint = new CConnectPoint();
+	mpPoint = new CConnectPoint(nullptr);
 	// 最初は非表示
 	mpPoint->SetEnable(false);
 	mpPoint->SetShow(false);
@@ -101,6 +104,44 @@ void CConnectPointManager::Render()
 			CColor::yellow,
 			5.0f
 		);
+	}
+}
+
+// 引っ張る処理を実行
+void CConnectPointManager::Pull()
+{
+	for (int i = 0; i < mPoints.size(); i += 2)
+	{
+		// iの次の要素番号が要素範囲内なら
+		// セットになっている接続部
+		if (i + 1 < mPoints.size())
+		{
+			// 引っ張られる方向を求める
+			CVector pullDir = mPoints[i + 1]->Position() - mPoints[i]->Position();
+			pullDir.Normalize();
+			// 接続部がついているオブジェクト
+			CConnectObject* connectObj1 = mPoints[i]->GetConnectObj();
+			CConnectObject* connectObj2 = mPoints[i + 1] ->GetConnectObj();
+			// 引っ張る
+			connectObj1->Pull(pullDir, connectObj2->GetWeight());
+
+			// 引っ張られる方向を求める
+			pullDir = mPoints[i]->Position() - mPoints[i + 1]->Position();
+			// 引っ張る
+			connectObj2->Pull(pullDir, connectObj1->GetWeight());
+		}
+		// セットになっていない接続部
+		else
+		{
+			// 引っ張られる方向を求める
+			// 接続部から杖の方向
+			CVector pullDir = mpPoint->Position() - mPoints[i]->Position();
+			pullDir.Normalize();
+			// 接続部がついているオブジェクト
+			CConnectObject* connectObj = mPoints[i]->GetConnectObj();
+			// 引っ張る(杖側は動かないので重さ1.0f）
+			connectObj->Pull(pullDir, 1.0f);
+		}
 	}
 }
 
@@ -252,7 +293,7 @@ void CConnectPointManager::RemoveCollider(CCollider* col)
 }
 
 // 接続部を生成
-void CConnectPointManager::CreateConnectPoint(CVector createPos)
+void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
 {
 	// 接続している数が最大値と同じ場合
 	// 最古の接続部を削除する
@@ -266,9 +307,11 @@ void CConnectPointManager::CreateConnectPoint(CVector createPos)
 		}
 	}
 	// 接続部を生成
-	CConnectPoint* point = new CConnectPoint();
+	CConnectPoint* point = new CConnectPoint(connectTarget->GetConnectObj());
 	// 座標を設定
-	point->Position(createPos);
+	point->Position(connectTarget->Position());
+	// 親子設定
+	point->SetParent(connectTarget);
 	// リストに追加
 	mPoints.push_back(point);
 

@@ -1,6 +1,7 @@
 #pragma once
 
 class CConnectPoint;
+class CConnectTarget;
 
 // 接続部の管理クラス
 class CConnectPointManager : CTask
@@ -19,6 +20,9 @@ public:
 
 	// 描画
 	void Render();
+
+	// 引っ張る処理を実行
+	void Pull();
 
 	/// <summary>
 	/// 視点からのレイと設定されているコライダーとの衝突判定を行う
@@ -46,7 +50,7 @@ public:
 	void RemoveCollider(CCollider* col);
 
 	// 接続部を生成
-	void CreateConnectPoint(CVector createPos);
+	void CreateConnectPoint(CConnectTarget* connectTarget);
 
 	/// <summary>
 	/// 接続部を消去

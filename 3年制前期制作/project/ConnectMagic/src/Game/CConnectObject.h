@@ -1,6 +1,9 @@
 #pragma once
 #include "CObjectBase.h"
 
+// 引っ張る力
+#define PULL_POWER 60.0f
+
 class CConnectTarget;
 class CModel;
 
@@ -19,6 +22,8 @@ public:
 	// オブジェクト削除を伝える関数
 	void DeleteObject(CObjectBase* obj) override;
 
+	// 更新
+	void Update() override;
 	// 描画
 	void Render() override;
 
@@ -31,13 +36,22 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	// 引っ張られた時の処理
-	virtual void Pull();
+
+	/// <summary>
+	/// 引っ張られたときの処理
+	/// </summary>
+	/// <param name="pullDir">引っ張られる方向</param>
+	/// <param name="opponentWeight">相手の重さ</param>
+	virtual void Pull(CVector pullDir, float opponentWeight);
 
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);
 
 	// 接続ターゲットを取得
 	std::vector<CConnectTarget*> GetTargets();
+
+	// 重さを取得
+	float GetWeight();
 
 protected:
 	// 接続ターゲット
@@ -50,5 +64,6 @@ protected:
 
 	CModel* mpModel;	// モデル
 
+	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 上下方向の移動速度
 };
