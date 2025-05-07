@@ -556,7 +556,7 @@ void CPlayer::CenterTarget()
 	// 最短距離
 	float minDist = -1.0f;
 	// 中心に一番近いターゲット
-	CConnectTarget* nearTarget= nullptr;
+	CConnectTarget* nearTarget = nullptr;
 
 	// 画面の中心を求める
 	CVector2 screenCenter = CVector2(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
@@ -564,6 +564,12 @@ void CPlayer::CenterTarget()
 	// リストの全てのオブジェクト
 	for (const auto& obj : mConnectObjs)
 	{
+		// オブジェクトが視界内にないなら次へ
+		CVector eyeVec = CCamera::CurrentCamera()->GetEyeVec();
+		CVector objVec = obj->Position() - Position();
+		float dot = eyeVec.Dot(objVec);
+		if (dot < 0.0f) continue;
+		
 		// オブジェクトが持つ全てのターゲット
 		for (const auto& target : obj->GetTargets())
 		{

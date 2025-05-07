@@ -1,5 +1,6 @@
 #include "CBox.h"
 #include "CColliderMesh.h"
+#include "CColliderSphere.h"
 #include "CConnectPointManager.h"
 
 #define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
@@ -11,6 +12,9 @@
 
 // 箱の重さ
 #define WEIGHT 0.1f
+
+// コライダーの半径
+#define RADIUS 2.4f
 
 // コンストラクタ
 CBox::CBox()
@@ -40,18 +44,30 @@ CBox::~CBox()
 // コライダーを生成
 void CBox::CreateCol()
 {
-	mpCol = new CColliderMesh
+	// フィールドやオブジェクトと衝突判定をするコライダー
+	mpCol = new CColliderSphere
+	(
+		this, ELayer::eObject,
+		RADIUS
+	);
+	// 座標を調整
+	mpCol->Position(Position() + CVector(0.0f, RADIUS / 2, 0.0f));
+	// フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチと衝突判定
+	mpCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall,
+		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch });
+
+	// キャラと衝突判定をするコライダー
+	mpCharaCol = new CColliderMesh
 	(
 		this, ELayer::eObject,
 		CResourceManager::Get<CModel>("Box_Col")
 	);
-	// プレイヤー、フィールド、敵、オブジェクト、コネクトオブジェクトの探知用と衝突判定
-	mpCol->SetCollisionLayers({ ELayer::ePlayer,
-		ELayer::eGround,ELayer::eWall,ELayer::eObject,ELayer::eConnectSearch });
+	// プレイヤー、敵と衝突判定
+	mpCharaCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eObject });
 
 	// 接続部の管理クラスの衝突判定するコライダーに追加
-	CConnectPointManager::Instance()->AddCollider(mpCol);
+	CConnectPointManager::Instance()->AddCollider(mpCharaCol);
 
 	// カメラの衝突判定するコライダーに追加
-	CCamera::CurrentCamera()->AddCollider(mpCol);
+	CCamera::CurrentCamera()->AddCollider(mpCharaCol);
 }

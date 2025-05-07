@@ -2,8 +2,7 @@
 #include "CConnectTarget.h"
 #include "CModel.h"
 
-// 重力
-#define GRAVITY 0.0625f
+#define THRESHOLD 0.1f
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
@@ -30,8 +29,12 @@ void CConnectObject::DeleteObject(CObjectBase* obj)
 // 更新
 void CConnectObject::Update()
 {
-	mMoveSpeedY -= GRAVITY /10 * Times::DeltaTime();
+	mMoveSpeedY -= GRAVITY;
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
+	if (mMoveSpeed.LengthSqr() > 0.0f)
+	{
+		CDebugPrint::Print("ObjMoveSpeed:%f,%f,%f\n", moveSpeed.X(), moveSpeed.Y(), moveSpeed.Z());
+	}
 	mMoveSpeed = CVector::zero;
 
 	// 移動
@@ -92,6 +95,38 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
+		}
+		else if (other->Layer() == ELayer::eObject)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+
+			// 衝突した面が上か下かを内積で判定
+			CVector normal = hit.adjust.Normalized();
+			float dot = CVector::Dot(normal, CVector::up);
+			// 内積の結果がプラスであれば、上面と衝突した
+			if (dot >= THRESHOLD)
+			{
+				// 落下などで上から衝突したとき（下移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY < 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
+			// 内積の結果がマイナスであれば、下面と衝突した
+			else if (dot < 0.0f)
+			{
+				// ジャンプなどで下から衝突したとき（上移動）のみ
+				// 上下の移動速度を0にする
+				if (mMoveSpeedY > 0.0f)
+				{
+					mMoveSpeedY = 0.0f;
+				}
+			}
 		}
 	}
 }

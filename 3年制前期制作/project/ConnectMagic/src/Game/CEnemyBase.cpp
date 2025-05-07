@@ -7,9 +7,6 @@
 #include "CNavManager.h"
 #include "CGaugeUI3D.h"
 
-// 基本の重力
-#define GRAVITY 0.0625f
-
 // コンストラクタ
 CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	std::vector<CVector> patrolPoints,

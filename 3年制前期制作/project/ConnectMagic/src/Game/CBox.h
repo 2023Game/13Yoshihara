@@ -12,4 +12,7 @@ public:
 private:
 	// コライダーを生成
 	void CreateCol() override;
+
+	// キャラと衝突判定をするコライダー
+	CCollider* mpCharaCol;
 };

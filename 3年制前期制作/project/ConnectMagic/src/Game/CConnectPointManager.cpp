@@ -7,8 +7,10 @@
 #include "CConnectTarget.h"
 #include "Maths.h"
 
-// レイを伸ばせる距離
-#define RAY_DISTANCE 1000.0f
+// レイを伸ばせる距離の最大
+#define RAY_MAX_DISTANCE 100.0f
+// レイを縮めれる距離の最小
+#define RAY_MIN_DISTANCE 15.0f
 
 // 接続部のオフセット座標
 #define POINT_OFFSET_POSX 0.0f
@@ -19,7 +21,7 @@
 #define POINT_SCALE 0.5f
 
 // 接続できる最大数の初期値
-#define DEFAULT_CONNECT_NUM 1
+#define DEFAULT_CONNECT_NUM 2
 
 // インスタンス
 CConnectPointManager* CConnectPointManager::spInstance = nullptr;
@@ -80,10 +82,23 @@ void CConnectPointManager::Render()
 	CVector rayEnd;
 	for (int i = 0; i < mPoints.size(); i += 2)
 	{
+		// 接続部同士で繋がっているか
+		bool isPoints = false;
 		// iの次の要素番号が要素範囲内なら
 		// 接続部同士を線で繋げる
 		if (i + 1 < mPoints.size())
 		{
+			// 接続部がついているオブジェクトが同じなら
+			if (mPoints[i]->GetConnectObj() == mPoints[i + 1]->GetConnectObj())
+			{
+				// 削除
+				DeleteConnectPoint(i);
+				DeleteConnectPoint(i);
+				// 1セット戻す
+				i -= 2;
+				// 次へ
+				continue;
+			}
 			rayStart = mPoints[i]->Position();
 			rayEnd = mPoints[i + 1]->Position();
 		}
@@ -95,6 +110,31 @@ void CConnectPointManager::Render()
 			// 接続部の座標
 			rayEnd = mPoints[i]->Position();
 
+		}
+
+		// 接続部同士の距離
+		float distance = (rayEnd - rayStart).Length();
+		// 最大距離より遠いなら
+		if (distance > RAY_MAX_DISTANCE)
+		{
+			// 接続削除
+			DeleteConnectPoint(i);
+			// 接続部同士なら
+			if (isPoints)
+			{
+				// もう一つ削除
+				DeleteConnectPoint(i);
+				// 1セット戻す
+				i -= 2;
+			}
+			// 杖とつながっているなら
+			else
+			{
+				// 杖の接続部を無効
+				SetWandConnect(false);
+			}
+			// 次へ
+			continue;
 		}
 
 		// 黄線を描画
@@ -116,17 +156,23 @@ void CConnectPointManager::Pull()
 		// セットになっている接続部
 		if (i + 1 < mPoints.size())
 		{
-			// 引っ張られる方向を求める
-			CVector pullDir = mPoints[i + 1]->Position() - mPoints[i]->Position();
-			pullDir.Normalize();
 			// 接続部がついているオブジェクト
 			CConnectObject* connectObj1 = mPoints[i]->GetConnectObj();
-			CConnectObject* connectObj2 = mPoints[i + 1] ->GetConnectObj();
+			CConnectObject* connectObj2 = mPoints[i + 1]->GetConnectObj();
+
+			// 引っ張られる方向を求める
+			CVector pullDir = mPoints[i + 1]->Position() - mPoints[i]->Position();
+			// 長さが最小未満なら次へ
+			if (pullDir.Length() < RAY_MIN_DISTANCE) continue;
+			// 正規化
+			pullDir.Normalize();
 			// 引っ張る
 			connectObj1->Pull(pullDir, connectObj2->GetWeight());
 
 			// 引っ張られる方向を求める
 			pullDir = mPoints[i]->Position() - mPoints[i + 1]->Position();
+			// 正規化
+			pullDir.Normalize();
 			// 引っ張る
 			connectObj2->Pull(pullDir, connectObj1->GetWeight());
 		}
@@ -136,6 +182,9 @@ void CConnectPointManager::Pull()
 			// 引っ張られる方向を求める
 			// 接続部から杖の方向
 			CVector pullDir = mpPoint->Position() - mPoints[i]->Position();
+			// 長さが最小未満なら次へ
+			if (pullDir.Length() < RAY_MIN_DISTANCE) continue;
+			// 正規化
 			pullDir.Normalize();
 			// 接続部がついているオブジェクト
 			CConnectObject* connectObj = mPoints[i]->GetConnectObj();
@@ -156,7 +205,7 @@ bool CConnectPointManager::Ray(CVector& hitPos)
 	dir.Normalize();
 	// レイの開始と終了地点
 	CVector rayStart = camera->GetEye();
-	CVector rayEnd = rayStart + dir * RAY_DISTANCE;
+	CVector rayEnd = rayStart + dir * RAY_MAX_DISTANCE;
 	float nearDist = 0.0f;
 	bool isHit = false;
 	// 設定されているコライダーを順番に調べる
@@ -274,6 +323,12 @@ void CConnectPointManager::RayPoint()
 				{
 					// 接続相手も削除
 					DeleteConnectPoint(i);
+				}
+				// 杖とつながっているなら
+				else
+				{
+					// 杖の接続を無効
+					SetWandConnect(false);
 				}
 			}
 		}

@@ -15,8 +15,6 @@
 #include "CTestField.h"
 #include "CConnectPointManager.h"
 
-#include "CBox.h"
-
 //コンストラクタ
 CTestScene::CTestScene()
 	: CSceneBase(EScene::eGameTest)

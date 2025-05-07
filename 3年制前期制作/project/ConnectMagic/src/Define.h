@@ -21,6 +21,9 @@
 //動的配列の領域解放をマクロ化
 #define SAFE_DELETE_ARRAY(ary) {if(ary != nullptr) delete[] ary; ary = nullptr;}
 
+// 重力
+#define GRAVITY 0.0625f
+
 
 
 #include "System.h"
