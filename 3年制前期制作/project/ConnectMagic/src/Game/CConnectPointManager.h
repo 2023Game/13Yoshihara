@@ -65,6 +65,19 @@ public:
 	void SetWandConnect(bool isOnOff);
 	// 杖が接続されているか
 	bool GetWandConnect();
+
+	// 杖と接続中のターゲットを設定
+	void SetConnectWandTarget(CConnectTarget* connectTarget);
+	// 杖と接続中のターゲットを取得
+	CConnectTarget* GetConnectWandTarget();
+
+	// 杖が接続している接続部とプレイヤーの距離を設定
+	void SetWandConnectDistance();
+	// 杖が接続している接続部とプレイヤーの距離を取得
+	float GetWandConnectDistance();
+
+	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
+	bool IsWandConnectAirObject();
 private:
 	// インスタンス
 	static CConnectPointManager* spInstance;
@@ -73,10 +86,18 @@ private:
 	std::vector<CConnectPoint*> mPoints;
 	// 杖用の接続部
 	CConnectPoint* mpPoint;
+	// 杖と接続中のターゲット
+	CConnectTarget* mpConnectWandTarget;
 
 	// 視点方向のレイで衝突判定するコライダーのリスト
 	std::list<CCollider*> mColliders;
 
 	// 接続できる数の最大値
 	int mConnectMaxNum;
+
+	// 杖の先の接続部の位置を特定
+	void WandPos();
+
+	// 杖が接続している接続部とプレイヤーの距離
+	float mWandConnectDistance;
 };

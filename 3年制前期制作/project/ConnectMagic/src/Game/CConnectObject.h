@@ -1,5 +1,6 @@
 #pragma once
 #include "CObjectBase.h"
+#include "CConnectObjectTag.h"
 
 // 引っ張る力
 #define PULL_POWER 60.0f
@@ -53,6 +54,14 @@ public:
 	// 重さを取得
 	float GetWeight();
 
+	// 重力を掛けるかを設定
+	void SetGravity(bool isGravity);
+
+	// 接続オブジェクトのタグを設定
+	void SetConnectObjTag(EConnectObjTag tag);
+	// 接続オブジェクトのタグを取得
+	EConnectObjTag GetConnectObjTag();
+
 protected:
 	// 接続ターゲット
 	std::vector<CConnectTarget*> mTargets;
@@ -66,4 +75,9 @@ protected:
 
 	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 上下方向の移動速度
+
+	bool mIsGravity;	// 重力を掛けるか
+
+	// 接続オブジェクトのタグ
+	EConnectObjTag mConnectObjTag;
 };

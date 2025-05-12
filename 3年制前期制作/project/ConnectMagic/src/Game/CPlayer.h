@@ -79,6 +79,10 @@ private:
 		eMove_Wand,	// 杖持ち移動
 		eJump,		// ジャンプ
 		eAttack,	// 攻撃中
+		eSwing,		// スイング
+		eSwing_End_Start,	// スイング終了開始
+		eSwing_End,			// スイング終了中
+		eSwing_End_End,		// スイング終了の終了
 
 		eDeath,		// 死亡
 
@@ -100,6 +104,9 @@ private:
 		eAttackStart,	// 攻撃開始
 		eAttack,		// 攻撃
 		eAttackEnd,		// 攻撃終了
+		eTarzanStart,	// ターザン開始
+		eTarzan,		// ターザン中
+		eTarzanEnd,		// ターザン終了
 		eDeath,			// 死亡
 	};
 
@@ -125,6 +132,12 @@ private:
 	void UpdateAttack();
 	// 攻撃終了
 	void UpdateAttackEnd();
+	// ターザン開始
+	void UpdateTarzanStart();
+	// ターザン中
+	void UpdateTarzan();
+	// ターザン終了
+	void UpdateTarzanEnd();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡
@@ -163,4 +176,6 @@ private:
 
 	// ターゲット中の場所の画像
 	CImage* mpTargetPointImg;
+	// ターゲット中の画像の位置や有効無効の更新
+	void UpdatePointImg();
 };

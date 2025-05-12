@@ -13,6 +13,8 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mpModel(nullptr)
 	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
+	, mIsGravity(true)
+	, mConnectObjTag(EConnectObjTag::eBox)
 {
 }
 
@@ -29,7 +31,10 @@ void CConnectObject::DeleteObject(CObjectBase* obj)
 // 更新
 void CConnectObject::Update()
 {
-	mMoveSpeedY -= GRAVITY;
+	if (mIsGravity)
+	{
+		mMoveSpeedY -= GRAVITY;
+	}
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 	if (mMoveSpeed.LengthSqr() > 0.0f)
 	{
@@ -182,4 +187,22 @@ std::vector<CConnectTarget*> CConnectObject::GetTargets()
 float CConnectObject::GetWeight()
 {
 	return mWeight;
+}
+
+// 重力を掛けるかを設定
+void CConnectObject::SetGravity(bool isGravity)
+{
+	mIsGravity = isGravity;
+}
+
+// 接続オブジェクトのタグを設定
+void CConnectObject::SetConnectObjTag(EConnectObjTag tag)
+{
+	mConnectObjTag = tag;
+}
+
+// 接続オブジェクトのタグを取得
+EConnectObjTag CConnectObject::GetConnectObjTag()
+{
+	return mConnectObjTag;
 }

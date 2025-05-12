@@ -37,7 +37,18 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ANIM_PATH"Run_Wand.x",				true,	43.0f,	1.0f},	// 杖持ち走り
 	{ANIM_PATH"Jump.x",					false,	51.0f,	1.0f},	// ジャンプ
 	{ANIM_PATH"Attack_Wand.x",			false,	61.0f,	1.5f},	// 杖攻撃
+	{ANIM_PATH"Swing.x",				true,	70.0f,	1.0f},	// スイング
+	{ANIM_PATH"Swing_End_Start.x",		false,	60.0f,	1.0f},	// スイング終了開始
+	{ANIM_PATH"Swing_End.x",			true,	40.0f,	1.0f},	// スイング終了中
+	{ANIM_PATH"Swing_End_End.x",		false,	69.0f,	2.0f},	// スイング終了の終了
 };
+
+// ターザン時の線の長さ
+#define TARZAN_DISTANCE 40.0f
+// 減速する速度
+#define DECREASE_SPEED 0.1f
+// 加速する速度
+#define INCREASE_SPEED 0.5f
 
 // コンストラクタ
 CPlayer::CPlayer()
@@ -125,6 +136,15 @@ void CPlayer::TakeDamage(int damage, CObjectBase* causer)
 // 更新
 void CPlayer::Update()
 {
+	// 待機中とジャンプ中は、移動処理を行う
+	if (mState == EState::eIdle ||
+		mState == EState::eJumpStart ||
+		mState == EState::eJump ||
+		mState == EState::eJumpEnd)
+	{
+		UpdateMove();
+	}
+
 	switch (mState)
 	{
 	case EState::eIdle:			UpdateIdle();			break;	// 待機
@@ -137,16 +157,21 @@ void CPlayer::Update()
 	case EState::eAttackStart:	UpdateAttackStart();	break;	// 攻撃開始
 	case EState::eAttack:		UpdateAttack();			break;	// 攻撃中
 	case EState::eAttackEnd:	UpdateAttackEnd();		break;	// 攻撃終了
-	case EState::eDeath:		UpdateDeath();			break;
+	case EState::eTarzanStart:	UpdateTarzanStart();	break;	// ターザン開始
+	case EState::eTarzan:		UpdateTarzan();			break;	// ターザン中
+	case EState::eTarzanEnd:	UpdateTarzanEnd();		break;	// ターザン終了
+	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
 
-	// 待機中とジャンプ中は、移動処理を行う
-	if (mState == EState::eIdle ||
-		mState == EState::eJumpStart ||
-		mState == EState::eJump ||
-		mState == EState::eJumpEnd)
+	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+
+	if (!mIsGrounded &&
+		mState != EState::eTarzanStart &&
+		mState != EState::eTarzan &&
+		mState != EState::eTarzanEnd&&
+		connectPointMgr->IsWandConnectAirObject())
 	{
-		UpdateMove();
+		ChangeState(EState::eTarzanStart);
 	}
 
 	// 基底プレイヤークラスの更新
@@ -154,30 +179,8 @@ void CPlayer::Update()
 
 	// 中心に一番近いオブジェクトを求める
 	CenterTarget();
-	// 中心に近いオブジェクトがある場合
-	if (mpCenterTarget != nullptr)
-	{
-		// ターゲット中の場所を表示
-		mpTargetPointImg->SetEnable(true);
-		mpTargetPointImg->SetShow(true);
-		// 座標を求める
-		CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(mpCenterTarget->Position());
-		// 画像のサイズを取得
-		float imgSizeX = mpTargetPointImg->GetSize().X();
-		float imgSizeY = mpTargetPointImg->GetSize().Y();
-		// サイズの半分を減算
-		screenPos.X(screenPos.X() - imgSizeX / 2);
-		screenPos.Y(screenPos.Y() - imgSizeY / 2);
-		// 座標を設定
-		mpTargetPointImg->SetPos(screenPos);
-	}
-	// ないなら
-	else
-	{
-		// ターゲット中の場所を非表示
-		mpTargetPointImg->SetEnable(false);
-		mpTargetPointImg->SetShow(false);
-	}
+	// ターゲット中の場所の画像の位置や有効無効を更新
+	UpdatePointImg();
 
 	// 杖の行列を更新
 	mpWand->UpdateMtx();
@@ -186,6 +189,7 @@ void CPlayer::Update()
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("IsWand:%s\n", mIsWand ? "持っている" : "持っていない");
 	CDebugPrint::Print("ConnectObj:%d\n", mConnectObjs.size());
+	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
 #endif
 
 	// コネクトオブジェクトのリストをクリア
@@ -276,8 +280,21 @@ void CPlayer::ActionInput()
 		// スペースでジャンプ
 		if (CInput::PushKey(VK_SPACE))
 		{
-			// ジャンプ開始へ
-			ChangeState(EState::eJumpStart);
+			// 接続部管理クラス
+			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+			
+			// 空中の接続オブジェクトなら
+			if (connectPointMgr->IsWandConnectAirObject())
+			{
+				// ターザン開始へ
+				ChangeState(EState::eTarzanStart);
+			}
+			// そうでないなら
+			else
+			{
+				// ジャンプ開始へ
+				ChangeState(EState::eJumpStart);
+			}
 		}
 	}
 
@@ -505,6 +522,169 @@ void CPlayer::UpdateAttackEnd()
 	}
 }
 
+// ターザン開始
+void CPlayer::UpdateTarzanStart()
+{
+	switch (mStateStep)
+	{
+		// ジャンプ開始
+	case 0:
+		mMoveSpeed = CVector::zero;
+		// ジャンプアニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eJump);
+		// ジャンプ速度を設定
+		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+
+		mStateStep++;
+		break;
+		// ジャンプアニメーションが20フレーム進行したら
+	case 1:
+		if (GetAnimationFrame() > 20.0f)
+		{
+			// 接続部管理クラス
+			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+			// 杖の接続線の長さを設定
+			connectPointMgr->SetWandConnectDistance();
+			mStateStep++;
+		}
+		break;
+		// スイングアニメーションに切り替えてターザン中へ
+	case 2:
+		// スイングアニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eSwing);
+		ChangeState(EState::eTarzan);
+		break;
+	}
+}
+
+// ターザン中
+void CPlayer::UpdateTarzan()
+{
+	switch (mStateStep)
+	{
+		// 振り子のように移動
+	case 0:
+	{
+		// 重力オフ
+		mIsGravity = false;
+		// 接続部管理クラス
+		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+		// ターゲット
+		CConnectTarget* target = connectPointMgr->GetConnectWandTarget();
+		// ターゲットがnullなら待機へ
+		if (target == nullptr)
+		{
+			// 重力オン
+			mIsGravity = true;
+			ChangeState(EState::eIdle);
+			return;
+		}
+		// ターゲットの座標
+		CVector targetPos = target->Position();
+		// プレイヤーの座標
+		CVector playerPos = Position();
+
+		// ターゲットからプレイヤーの方向
+		CVector dir = playerPos - targetPos;
+		dir.Normalize();
+
+		// 重力の方向
+		CVector gravity = CVector(0.0f, -GRAVITY, 0.0f);
+		// 線を引っ張る重力を除外
+		gravity = gravity - dir * gravity.Dot(dir);
+
+		// 移動入力
+		CVector moveDir = CalcMoveVec();
+
+		// 入力を線の垂直面に投影
+		moveDir = dir.Cross(moveDir.Cross(dir));
+		moveDir.Normalize();
+
+		// 移動速度
+		mMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
+		// 重力を加える
+		mMoveSpeed += gravity;
+
+		// 少しずつ減速していく
+		mMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
+
+		// 線方向の速度を削除
+		mMoveSpeed -= dir * mMoveSpeed.Dot(dir);
+		// プレイヤー座標に追加
+		playerPos += mMoveSpeed;
+
+		// 新しいプレイヤー座標への方向
+		dir = playerPos - targetPos;
+		dir.Normalize();
+		// プレイヤーの座標を線から一定の距離に保つ
+		playerPos = targetPos + 
+			dir * TARZAN_DISTANCE;
+
+		// 座標を設定
+		Position(playerPos);
+
+		// スペースを押したら次へ
+		if (CInput::PushKey(VK_SPACE))
+		{
+			// 重力オン
+			mIsGravity = true;
+			mStateStep++;
+		}
+		break;
+	}
+		// 接続を解除し飛ぶ
+	case 1:
+	{
+		// 接続部管理クラス
+		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+		// 杖の接続を解除
+		connectPointMgr->SetWandConnect(false);
+		connectPointMgr->DeleteLastConnectPoint();
+
+		// ターザンからのジャンプアニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eSwing_End_Start);
+		// ジャンプ速度を設定
+		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+
+		mStateStep++;
+		break;
+	}
+		// ターザンからのジャンプ中アニメーションに切り替え
+	case 2:
+		if (IsAnimationFinished())
+		{
+			ChangeAnimation((int)EAnimType::eSwing_End);
+			mStateStep++;
+		}
+		else if (mIsGrounded)
+		{
+			mStateStep++;
+		}
+		break;
+		// 地面に着いたらターザン終了へ
+	case 3:
+		if (mIsGrounded)
+		{
+			// 移動をなくす
+			mMoveSpeed = CVector::zero;
+			// ターザン終了アニメーションに切り替え
+			ChangeAnimation((int)EAnimType::eSwing_End_End);
+			ChangeState(EState::eTarzanEnd);
+		}
+		break;
+	}
+}
+
+// ターザン終了
+void CPlayer::UpdateTarzanEnd()
+{
+	// アニメーションが終了したら待機へ
+	if (IsAnimationFinished())
+	{
+		ChangeState(EState::eIdle);
+	}
+}
+
 // 死亡の更新処理
 void CPlayer::UpdateDeath()
 {
@@ -543,8 +723,13 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eAttackStart:	return "攻撃開始";		break;
 	case EState::eAttack:		return "攻撃中";		break;
 	case EState::eAttackEnd:	return "攻撃終了";		break;
+	case EState::eTarzanStart:	return "ターザン開始";	break;
+	case EState::eTarzan:		return "ターザン中";	break;
+	case EState::eTarzanEnd:	return "ターザン終了";	break;
 	case EState::eDeath:		return "死亡";			break;
 	}
+
+	return "エラー";
 }
 #endif
 
@@ -606,5 +791,34 @@ void CPlayer::CenterTarget()
 	{
 		// 一番近いターゲットを設定
 		mpCenterTarget = nearTarget;
+	}
+}
+
+// ターゲット中の画像の位置や有効無効の更新
+void CPlayer::UpdatePointImg()
+{
+	// 中心に近いオブジェクトがある場合
+	if (mpCenterTarget != nullptr)
+	{
+		// ターゲット中の場所を表示
+		mpTargetPointImg->SetEnable(true);
+		mpTargetPointImg->SetShow(true);
+		// 座標を求める
+		CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(mpCenterTarget->Position());
+		// 画像のサイズを取得
+		float imgSizeX = mpTargetPointImg->GetSize().X();
+		float imgSizeY = mpTargetPointImg->GetSize().Y();
+		// サイズの半分を減算
+		screenPos.X(screenPos.X() - imgSizeX / 2);
+		screenPos.Y(screenPos.Y() - imgSizeY / 2);
+		// 座標を設定
+		mpTargetPointImg->SetPos(screenPos);
+	}
+	// ないなら
+	else
+	{
+		// ターゲット中の場所を非表示
+		mpTargetPointImg->SetEnable(false);
+		mpTargetPointImg->SetShow(false);
 	}
 }

@@ -3,6 +3,7 @@
 #include "CColliderSphere.h"
 #include "CConnectPointManager.h"
 
+// 接続ターゲットの座標
 #define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
 #define TARGET_POS_2 CVector( 0.0f, 0.0f, 0.0f)
 #define TARGET_POS_3 CVector( 5.0f, 5.0f, 0.0f)
@@ -62,7 +63,7 @@ void CBox::CreateCol()
 		this, ELayer::eObject,
 		CResourceManager::Get<CModel>("Box_Col")
 	);
-	// プレイヤー、敵と衝突判定
+	// プレイヤー、敵、オブジェクトと衝突判定
 	mpCharaCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eObject });
 
 	// 接続部の管理クラスの衝突判定するコライダーに追加

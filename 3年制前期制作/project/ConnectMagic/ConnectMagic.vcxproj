@@ -74,6 +74,7 @@
     <ClCompile Include="src\BaseSystem\CObjectBase.cpp" />
     <ClCompile Include="src\BaseSystem\Maths.cpp" />
     <ClCompile Include="src\BaseSystem\System.cpp" />
+    <ClCompile Include="src\Game\CAirConnectObj.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CBox.cpp" />
     <ClCompile Include="src\Game\CConnectObject.cpp" />
@@ -218,9 +219,11 @@
     <ClInclude Include="src\BaseSystem\ObjectTag.h" />
     <ClInclude Include="src\BaseSystem\Times.h" />
     <ClInclude Include="src\Define.h" />
+    <ClInclude Include="src\Game\CAirConnectObj.h" />
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CBox.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
+    <ClInclude Include="src\Game\CConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
     <ClInclude Include="src\Game\CConnectPointManager.h" />
     <ClInclude Include="src\Game\CConnectTarget.h" />

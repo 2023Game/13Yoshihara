@@ -47,6 +47,7 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
+	CResourceManager::Load<CModel>("AirConnectObj",	"Field\\AirConnectPoint\\AirConnectPoint.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TutorialMap_Ground_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Ground_Col.obj");
 	CResourceManager::Load<CModel>("TutorialMap_Wall_Col",		"Field\\Map\\TutorialMap\\Col\\TutorialMap_Wall_Col.obj");

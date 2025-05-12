@@ -21,7 +21,7 @@
 #define POINT_SCALE 0.5f
 
 // 接続できる最大数の初期値
-#define DEFAULT_CONNECT_NUM 2
+#define DEFAULT_CONNECT_NUM 1
 
 // インスタンス
 CConnectPointManager* CConnectPointManager::spInstance = nullptr;
@@ -36,6 +36,8 @@ CConnectPointManager* CConnectPointManager::Instance()
 CConnectPointManager::CConnectPointManager()
 	: CTask(ETaskPriority::eNone,0,ETaskPauseType::eGame)
 	, mConnectMaxNum(DEFAULT_CONNECT_NUM)
+	, mpConnectWandTarget(nullptr)
+	, mWandConnectDistance(0.0f)
 {
 	spInstance = this;
 
@@ -57,18 +59,8 @@ CConnectPointManager::~CConnectPointManager()
 // 更新
 void CConnectPointManager::Update()
 {
-	// プレイヤーを取得
-	CPlayer* player = dynamic_cast<CPlayer*>(CPlayer::Instance());
-	if (player != nullptr)
-	{
-		CWand* wand = player->GetWand();
-		// 杖の先に接続部の位置を設定
-		CVector offsetPos = wand->Matrix().Position();
-		offsetPos += wand->Matrix().VectorX() * POINT_OFFSET_POSX;
-		offsetPos += wand->Matrix().VectorY() * POINT_OFFSET_POSY;
-		offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
-		mpPoint->Position(offsetPos);
-	}
+	// 杖の先の座標を求める
+	WandPos();
 
 	// 接続部同士を繋いだ線が何かに衝突したら削除
 	RayPoint();
@@ -101,6 +93,7 @@ void CConnectPointManager::Render()
 			}
 			rayStart = mPoints[i]->Position();
 			rayEnd = mPoints[i + 1]->Position();
+			isPoints = true;
 		}
 		// セットになっていない接続部を杖につなげる
 		else
@@ -375,6 +368,8 @@ void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
 	{
 		// 杖に接続
 		SetWandConnect(true);
+		// 杖と接続中のターゲットを設定
+		SetConnectWandTarget(connectTarget);
 	}
 	// 偶数なら
 	else
@@ -415,10 +410,97 @@ void CConnectPointManager::SetWandConnect(bool isOnOff)
 {
 	mpPoint->SetEnable(isOnOff);
 	mpPoint->SetShow(isOnOff);
+
+	// 接続解除するとき
+	if (!isOnOff)
+	{
+		// 杖と接続中のターゲットを解除
+		SetConnectWandTarget(nullptr);
+	}
 }
 
 // 杖が接続されているか
 bool CConnectPointManager::GetWandConnect()
 {
 	return mpPoint->IsShow();
+}
+
+// 杖と接続中のターゲットを設定
+void CConnectPointManager::SetConnectWandTarget(CConnectTarget* connectTarget)
+{
+	mpConnectWandTarget = connectTarget;
+}
+
+// 杖と接続中のターゲットを取得
+CConnectTarget* CConnectPointManager::GetConnectWandTarget()
+{
+	return mpConnectWandTarget;
+}
+
+// 杖が接続している接続部とプレイヤーの距離を設定
+void CConnectPointManager::SetWandConnectDistance()
+{
+	// 杖が接続されているなら
+	if (GetWandConnect())
+	{
+		// プレイヤーの座標
+		CVector rayStart = CPlayer::Instance()->Position();
+		// 杖と繋がっている接続部の座標
+		CVector rayEnd = mPoints[mPoints.size() - 1]->Position();
+		// 2点の距離
+		float distance = (rayEnd - rayStart).Length();
+		// 杖が接続している接続部とプレイヤーの距離を設定
+		mWandConnectDistance = distance;
+	}
+	// いないなら
+	else
+	{
+		// 不整値を設定
+		mWandConnectDistance = -1.0f;
+	}
+}
+
+// 杖が接続している接続部とプレイヤーの距離を取得
+float CConnectPointManager::GetWandConnectDistance()
+{
+	return mWandConnectDistance;
+}
+
+// 杖と接続しているオブジェクトが空中の接続オブジェクトか
+bool CConnectPointManager::IsWandConnectAirObject()
+{
+	// 杖が接続されているか
+	if (GetWandConnect())
+	{
+		// 杖と接続中のオブジェクト
+		CConnectObject* obj = GetConnectWandTarget()->GetConnectObj();
+		if (obj != nullptr)
+		{
+			// 空中の接続オブジェクトなら
+			if (obj->GetConnectObjTag() == EConnectObjTag::eAir)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+// 杖の先の接続部の位置を特定
+void CConnectPointManager::WandPos()
+{
+	// プレイヤーを取得
+	CPlayer* player = dynamic_cast<CPlayer*>(CPlayer::Instance());
+
+	if (player != nullptr)
+	{
+		CWand* wand = player->GetWand();
+		// 杖の先に接続部の位置を設定
+		CVector offsetPos = wand->Matrix().Position();
+		offsetPos += wand->Matrix().VectorX() * POINT_OFFSET_POSX;
+		offsetPos += wand->Matrix().VectorY() * POINT_OFFSET_POSY;
+		offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
+		mpPoint->Position(offsetPos);
+	}
 }

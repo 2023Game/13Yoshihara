@@ -11,6 +11,8 @@
 int gFPS = 60;
 // 前回のフレームの経過時間
 float gDeltaTime = 0.0f;
+// 初回のフレームか
+bool gIsFirst = true;
 
 CApplication gApplication;
 
@@ -208,5 +210,11 @@ float Times::FPS()
 // 前回のフレームの経過時間を取得
 float Times::DeltaTime()
 {
+	// 初回のフレームなら0を返す
+	if (gIsFirst)
+	{
+		gIsFirst = false;
+		return 0.0f;
+	}
 	return gDeltaTime;
 }

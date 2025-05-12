@@ -4,6 +4,7 @@
 class CSwitch;
 class CDoor;
 class CBox;
+class CAirConnectObj;
 
 // テスト用のフィールド
 class CTestField : public CFieldBase
@@ -22,4 +23,6 @@ private:
 	CSwitch* mpSwitch;	// スイッチ
 	CDoor* mpDoor;		// ドア
 	CBox* mpBox;		// 箱
+	// 空中の接続オブジェクト
+	std::list<CAirConnectObj*> mAirConnectObjs;
 };
