@@ -24,6 +24,9 @@
 // d—Í
 #define GRAVITY 0.0625f
 
+// êŠO”»’è‚Ì‚‚³
+#define MAX_UNDER_POS -100.0f
+
 
 
 #include "System.h"

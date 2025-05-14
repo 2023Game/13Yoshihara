@@ -40,6 +40,7 @@ CBox::CBox()
 // デストラクタ
 CBox::~CBox()
 {
+	SAFE_DELETE(mpCharaCol);
 }
 
 // コライダーを生成

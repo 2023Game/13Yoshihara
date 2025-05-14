@@ -19,10 +19,4 @@ private:
 	void CreateFieldObjects() override;
 	// フィールドのコライダ―を生成
 	void CreateCol() override;
-
-	CSwitch* mpSwitch;	// スイッチ
-	CDoor* mpDoor;		// ドア
-	CBox* mpBox;		// 箱
-	// 空中の接続オブジェクト
-	std::list<CAirConnectObj*> mAirConnectObjs;
 };

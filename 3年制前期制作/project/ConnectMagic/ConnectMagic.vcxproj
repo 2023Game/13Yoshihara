@@ -99,6 +99,7 @@
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CDesk.cpp" />
+    <ClCompile Include="src\Game\CPortal.cpp" />
     <ClCompile Include="src\Game\CSwitch.cpp" />
     <ClCompile Include="src\Game\CSwitchButton.cpp" />
     <ClCompile Include="src\Game\CSwitchFrame.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CDesk.h" />
+    <ClInclude Include="src\Game\CPortal.h" />
     <ClInclude Include="src\Game\CSwitch.h" />
     <ClInclude Include="src\Game\CSwitchButton.h" />
     <ClInclude Include="src\Game\CSwitchFrame.h" />

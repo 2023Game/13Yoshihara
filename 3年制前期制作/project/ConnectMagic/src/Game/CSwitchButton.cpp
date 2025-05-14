@@ -27,14 +27,12 @@ CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner)
 // デストラクタ
 CSwitchButton::~CSwitchButton()
 {
+	SAFE_DELETE(mpPushCol);
 }
 
 // 更新
 void CSwitchButton::Update()
 {
-	std::string state = "Default";
-	if (mState == EState::ePush)state = "Push";
-	CDebugPrint::Print("State:%s\n", state.c_str());
 	switch (mState)
 	{
 	case EState::eDefault:	UpdateDefault();	break;

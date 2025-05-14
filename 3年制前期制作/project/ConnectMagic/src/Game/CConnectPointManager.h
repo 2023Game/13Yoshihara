@@ -48,6 +48,8 @@ public:
 	void AddCollider(CCollider* col);
 	// 衝突判定を行うコライダーをリストから取り除く
 	void RemoveCollider(CCollider* col);
+	// 衝突判定を行うコライダーをリセット
+	void ResetCollider();
 
 	// 接続部を生成
 	void CreateConnectPoint(CConnectTarget* connectTarget);
@@ -76,8 +78,15 @@ public:
 	// 杖が接続している接続部とプレイヤーの距離を取得
 	float GetWandConnectDistance();
 
+	/// <summary>
+	/// 杖が接続している接続部とプレイヤーの距離を設定
+	/// </summary>
+	/// <param name="sign">符号</param>
+	void SetWandConnectDistance(int sign);
+
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
+
 private:
 	// インスタンス
 	static CConnectPointManager* spInstance;

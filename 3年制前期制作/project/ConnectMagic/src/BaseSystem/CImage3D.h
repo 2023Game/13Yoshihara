@@ -60,6 +60,10 @@ public:
 	void SetDepthMask(bool enable);
 	// ライティングのオンオフを設定
 	void SetLighting(bool enable);
+	// 回転のオンオフを設定
+	void SetRotate(bool enable);
+	// 回転速度を設定
+	void SetRotSpeed(float speed);
 
 	// 更新
 	void Update() override;
@@ -101,4 +105,10 @@ protected:
 	bool mIsDepthMask;
 	// ライティングが有効かどうか
 	bool mIsLighting;
+	// 回転が有効かどうか
+	bool mIsRotate;
+	// 回転速度
+	float mRotSpeed;
+	// 回転角度
+	float mAngle;
 };

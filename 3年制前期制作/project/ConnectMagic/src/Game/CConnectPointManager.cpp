@@ -29,18 +29,20 @@ CConnectPointManager* CConnectPointManager::spInstance = nullptr;
 // インスタンスを取得
 CConnectPointManager* CConnectPointManager::Instance()
 {
+	if (spInstance == nullptr)
+	{
+		spInstance = new CConnectPointManager();
+	}
 	return spInstance;
 }
 
 // コンストラクタ
 CConnectPointManager::CConnectPointManager()
-	: CTask(ETaskPriority::eNone,0,ETaskPauseType::eGame)
+	: CTask(ETaskPriority::eNone, 0, ETaskPauseType::eGame)
 	, mConnectMaxNum(DEFAULT_CONNECT_NUM)
 	, mpConnectWandTarget(nullptr)
 	, mWandConnectDistance(0.0f)
 {
-	spInstance = this;
-
 	// 杖用の接続部分のビルボード
 	mpPoint = new CConnectPoint(nullptr);
 	// 最初は非表示
@@ -53,7 +55,8 @@ CConnectPointManager::CConnectPointManager()
 // デストラクタ
 CConnectPointManager::~CConnectPointManager()
 {
-	spInstance = nullptr;
+	if (spInstance == this)
+		spInstance = nullptr;
 }
 
 // 更新
@@ -340,6 +343,12 @@ void CConnectPointManager::RemoveCollider(CCollider* col)
 	mColliders.remove(col);
 }
 
+// 衝突判定を行うコライダーをリセット
+void CConnectPointManager::ResetCollider()
+{
+	mColliders.clear();
+}
+
 // 接続部を生成
 void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
 {
@@ -422,6 +431,9 @@ void CConnectPointManager::SetWandConnect(bool isOnOff)
 // 杖が接続されているか
 bool CConnectPointManager::GetWandConnect()
 {
+	if (mpPoint == nullptr)
+		return false;
+
 	return mpPoint->IsShow();
 }
 
@@ -464,6 +476,12 @@ void CConnectPointManager::SetWandConnectDistance()
 float CConnectPointManager::GetWandConnectDistance()
 {
 	return mWandConnectDistance;
+}
+
+// 杖が接続している接続部とプレイヤーの距離を設定
+void CConnectPointManager::SetWandConnectDistance(int sign)
+{
+	mWandConnectDistance += sign * PULL_POWER / 2 *Times::DeltaTime();
 }
 
 // 杖と接続しているオブジェクトが空中の接続オブジェクトか

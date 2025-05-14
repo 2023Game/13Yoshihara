@@ -8,6 +8,8 @@
 #include "CConnectObject.h"
 #include "CConnectTarget.h"
 #include "CImage.h"
+#include "CFade.h"
+#include "CSceneManager.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
@@ -35,10 +37,12 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ANIM_PATH"Idle_Wand.x",			true,	221.0f,	1.0f},	// 杖持ち待機
 	{ANIM_PATH"Run.x",					true,	48.0f,	1.0f},	// 走り
 	{ANIM_PATH"Run_Wand.x",				true,	43.0f,	1.0f},	// 杖持ち走り
-	{ANIM_PATH"Jump.x",					false,	51.0f,	1.0f},	// ジャンプ
+	{ANIM_PATH"Jump_Start.x",			false,	40.0f,	2.0f},	// ジャンプ開始
+	{ANIM_PATH"Jump.x",					true,	40.0f,	1.0f},	// ジャンプ中
+	{ANIM_PATH"Jump_End.x",				false,	11.0f,	2.0f},	// ジャンプ終了
 	{ANIM_PATH"Attack_Wand.x",			false,	61.0f,	1.5f},	// 杖攻撃
 	{ANIM_PATH"Swing.x",				true,	70.0f,	1.0f},	// スイング
-	{ANIM_PATH"Swing_End_Start.x",		false,	60.0f,	1.0f},	// スイング終了開始
+	{ANIM_PATH"Swing_End_Start.x",		false,	60.0f,	2.0f},	// スイング終了の開始
 	{ANIM_PATH"Swing_End.x",			true,	40.0f,	1.0f},	// スイング終了中
 	{ANIM_PATH"Swing_End_End.x",		false,	69.0f,	2.0f},	// スイング終了の終了
 };
@@ -59,6 +63,7 @@ CPlayer::CPlayer()
 	, mIsAttacking(false)
 	, mpPoint(nullptr)
 	, mpCenterTarget(nullptr)
+	, mReturnPos(CVector::zero)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
@@ -108,6 +113,8 @@ CPlayer::~CPlayer()
 		mpWand->SetOwner(nullptr);
 		mpWand->Kill();
 	}
+
+	SAFE_DELETE(mpSearchConnectObjCol);
 }
 
 // 攻撃中か
@@ -136,13 +143,29 @@ void CPlayer::TakeDamage(int damage, CObjectBase* causer)
 // 更新
 void CPlayer::Update()
 {
-	// 待機中とジャンプ中は、移動処理を行う
+	// 場外へ落ちたら
+	if (Position().Y() < MAX_UNDER_POS)
+	{
+		// 帰還状態へ
+		ChangeState(EState::eReturn);
+	}
+
+	// 待機中とジャンプ中、ターザン開始は、移動処理を行う
 	if (mState == EState::eIdle ||
 		mState == EState::eJumpStart ||
 		mState == EState::eJump ||
-		mState == EState::eJumpEnd)
+		mState == EState::eJumpEnd ||
+		mState == EState::eTarzanStart)
 	{
 		UpdateMove();
+	}
+
+	// 待機中とジャンプ中、ターザン中とターザン終了は、キー入力可能
+	if (mState == EState::eIdle ||
+		mState == EState::eJump ||
+		mState == EState::eTarzanEnd)
+	{
+		ActionInput();
 	}
 
 	switch (mState)
@@ -160,6 +183,7 @@ void CPlayer::Update()
 	case EState::eTarzanStart:	UpdateTarzanStart();	break;	// ターザン開始
 	case EState::eTarzan:		UpdateTarzan();			break;	// ターザン中
 	case EState::eTarzanEnd:	UpdateTarzanEnd();		break;	// ターザン終了
+	case EState::eReturn:		UpdateReturn();			break;	// 場外から戻す
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
 
@@ -168,7 +192,8 @@ void CPlayer::Update()
 	if (!mIsGrounded &&
 		mState != EState::eTarzanStart &&
 		mState != EState::eTarzan &&
-		mState != EState::eTarzanEnd&&
+		mState != EState::eTarzanEnd &&
+		mState != EState::eJumpStart &&
 		connectPointMgr->IsWandConnectAirObject())
 	{
 		ChangeState(EState::eTarzanStart);
@@ -213,6 +238,16 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			mConnectObjs.push_back(obj);
 		}
 	}
+
+	// 本体コライダ―なら
+	if (self == mpBodyCol)
+	{
+		// ポータルの場合
+		if (other->Layer() == ELayer::ePortal)
+		{
+			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
+		}
+	}
 }
 
 // 杖のポインタを取得
@@ -232,9 +267,9 @@ void CPlayer::CreateCol()
 		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS
 	);
-	// フィールド,壁、オブジェクト、スイッチとだけ衝突
+	// フィールド,壁、オブジェクト、スイッチ、ポータルとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
-		ELayer::eWall,ELayer::eObject,ELayer::eSwitch });
+		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal });
 
 	// コネクトオブジェクトの探知用コライダ
 	mpSearchConnectObjCol = new CColliderSphere
@@ -255,8 +290,38 @@ void CPlayer::ActionInput()
 		// 左クリックで攻撃へ
 		if (CInput::PushKey(VK_LBUTTON))
 		{
-			// 攻撃開始へ
-			ChangeState(EState::eAttackStart);
+			// 
+			if (mState != EState::eTarzanEnd &&
+				mState != EState::eJump)
+			{
+				// 攻撃開始へ
+				ChangeState(EState::eAttackStart);
+			}
+			else
+			{			
+				// 視点の中心に近いターゲットがあるなら
+				if (mpCenterTarget != nullptr)
+				{
+					// 接続部の管理クラス
+					CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+					// 接続オブジェクトのタグが空中なら
+					if (mpCenterTarget->GetConnectObj()->GetConnectObjTag() == EConnectObjTag::eAir)
+					{
+						// 接続部を生成
+						connectPointMgr->CreateConnectPoint(mpCenterTarget);
+						// 杖の接続線の長さを設定
+						connectPointMgr->SetWandConnectDistance();
+						// ターザン中状態へ
+						ChangeState(EState::eTarzan);
+					}
+					// そうでないなら
+					else
+					{
+						// 攻撃開始へ
+						ChangeState(EState::eAttackStart);
+					}
+				}
+			}
 		}
 		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 		// Fで接続状態のキャンセル
@@ -280,21 +345,8 @@ void CPlayer::ActionInput()
 		// スペースでジャンプ
 		if (CInput::PushKey(VK_SPACE))
 		{
-			// 接続部管理クラス
-			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-			
-			// 空中の接続オブジェクトなら
-			if (connectPointMgr->IsWandConnectAirObject())
-			{
-				// ターザン開始へ
-				ChangeState(EState::eTarzanStart);
-			}
-			// そうでないなら
-			else
-			{
-				// ジャンプ開始へ
-				ChangeState(EState::eJumpStart);
-			}
+			// ジャンプ開始へ
+			ChangeState(EState::eJumpStart);
 		}
 	}
 
@@ -309,8 +361,6 @@ void CPlayer::ActionInput()
 // 待機状態
 void CPlayer::UpdateIdle()
 {
-	// キー入力
-	ActionInput();
 }
 
 // 移動処理
@@ -385,8 +435,8 @@ void CPlayer::UpdateJumpStart()
 	{
 		// ジャンプ開始
 	case 0:
-		// ジャンプアニメーションに切り替え
-		ChangeAnimation((int)EAnimType::eJump);
+		// ジャンプ開始アニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eJump_Start);
 		// ジャンプの速度を設定
 		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
 		mStateStep++;
@@ -405,8 +455,22 @@ void CPlayer::UpdateJump()
 {
 	switch (mStateStep)
 	{
-		// 地面に付いたら次の状態へ
+		// ジャンプ中アニメーションに切り替え
 	case 0:
+		// アニメーションが終了したら
+		if (IsAnimationFinished())
+		{
+			ChangeAnimation((int)EAnimType::eJump);
+			mStateStep++;
+		}
+		// その前に地面に付いたら次へ
+		else if (mIsGrounded)
+		{
+			mStateStep++;
+		}
+		break;
+		// 地面に付いたら次の状態へ
+	case 1:
 		// 地面に付いたら
 		if (mIsGrounded)
 		{
@@ -422,9 +486,17 @@ void CPlayer::UpdateJumpEnd()
 {
 	switch (mStateStep)
 	{
-		// 待機状態へ
+		// ジャンプ終了アニメーションに切り替え
 	case 0:
-		ChangeState(EState::eIdle);
+		ChangeAnimation((int)EAnimType::eJump_End);
+		mStateStep++;
+		break;
+		// アニメーションが終了したら待機状態へ
+	case 1:
+		if (IsAnimationFinished())
+		{
+			ChangeState(EState::eIdle);
+		}
 		break;
 	}
 }
@@ -527,19 +599,10 @@ void CPlayer::UpdateTarzanStart()
 {
 	switch (mStateStep)
 	{
-		// ジャンプ開始
+		// 20フレーム進行したら
 	case 0:
-		mMoveSpeed = CVector::zero;
-		// ジャンプアニメーションに切り替え
-		ChangeAnimation((int)EAnimType::eJump);
-		// ジャンプ速度を設定
-		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
-
-		mStateStep++;
-		break;
-		// ジャンプアニメーションが20フレーム進行したら
-	case 1:
-		if (GetAnimationFrame() > 20.0f)
+		mElapsedTime++;
+		if (mElapsedTime > 20.0f)
 		{
 			// 接続部管理クラス
 			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
@@ -548,10 +611,9 @@ void CPlayer::UpdateTarzanStart()
 			mStateStep++;
 		}
 		break;
-		// スイングアニメーションに切り替えてターザン中へ
-	case 2:
-		// スイングアニメーションに切り替え
-		ChangeAnimation((int)EAnimType::eSwing);
+		// ターザン中へ
+	case 1:
+
 		ChangeState(EState::eTarzan);
 		break;
 	}
@@ -560,25 +622,52 @@ void CPlayer::UpdateTarzanStart()
 // ターザン中
 void CPlayer::UpdateTarzan()
 {
+	// 接続部管理クラス
+	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+	// 左クリック長押しで線を伸ばす
+	if (CInput::Key(VK_LBUTTON))
+	{
+		connectPointMgr->SetWandConnectDistance(1);
+	}
+	// 右クリック長押しで線を縮める
+	else if (CInput::Key(VK_RBUTTON))
+	{
+		connectPointMgr->SetWandConnectDistance(-1);
+	}
+
 	switch (mStateStep)
 	{
-		// 振り子のように移動
+		// スイングアニメーションに切り替える
 	case 0:
-	{
-		// 重力オフ
-		mIsGravity = false;
-		// 接続部管理クラス
-		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+		mMoveSpeed = CVector::zero;
+		mMoveSpeedY = 0.0f;
+		// スイングアニメーションに切り替え
+		ChangeAnimation((int)EAnimType::eSwing);
+		mStateStep++;
+		break;
+
+		// スイング処理
+	case 1:
+		// 接地したら
+		if (mIsGrounded)
+		{
+			// 重力オン
+			mIsGravity = true;
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+			return;
+		}
 		// ターゲット
 		CConnectTarget* target = connectPointMgr->GetConnectWandTarget();
-		// ターゲットがnullなら待機へ
+		// ターゲットがnullなら重力オン
 		if (target == nullptr)
 		{
 			// 重力オン
 			mIsGravity = true;
-			ChangeState(EState::eIdle);
 			return;
 		}
+		// 重力オフ
+		mIsGravity = false;
 		// ターゲットの座標
 		CVector targetPos = target->Position();
 		// プレイヤーの座標
@@ -617,23 +706,30 @@ void CPlayer::UpdateTarzan()
 		dir = playerPos - targetPos;
 		dir.Normalize();
 		// プレイヤーの座標を線から一定の距離に保つ
-		playerPos = targetPos + 
-			dir * TARZAN_DISTANCE;
+		playerPos = targetPos +
+			dir * connectPointMgr->GetWandConnectDistance();
 
 		// 座標を設定
 		Position(playerPos);
 
-		// スペースを押したら次へ
+		// スペースを押したらターザン終了へ
 		if (CInput::PushKey(VK_SPACE))
 		{
 			// 重力オン
 			mIsGravity = true;
-			mStateStep++;
+			ChangeState(EState::eTarzanEnd);
 		}
 		break;
 	}
+}
+
+// ターザン終了
+void CPlayer::UpdateTarzanEnd()
+{
+	switch (mStateStep)
+	{
 		// 接続を解除し飛ぶ
-	case 1:
+	case 0:
 	{
 		// 接続部管理クラス
 		CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
@@ -649,39 +745,91 @@ void CPlayer::UpdateTarzan()
 		mStateStep++;
 		break;
 	}
-		// ターザンからのジャンプ中アニメーションに切り替え
-	case 2:
+	// ターザンからのジャンプ中アニメーションに切り替え
+	case 1:
+		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
 			ChangeAnimation((int)EAnimType::eSwing_End);
 			mStateStep++;
 		}
+		// その前に地面に付いたら次へ
 		else if (mIsGrounded)
 		{
 			mStateStep++;
 		}
 		break;
-		// 地面に着いたらターザン終了へ
-	case 3:
+		// ターザン終了アニメーションに切り替え
+	case 2:
 		if (mIsGrounded)
 		{
-			// 移動をなくす
 			mMoveSpeed = CVector::zero;
-			// ターザン終了アニメーションに切り替え
 			ChangeAnimation((int)EAnimType::eSwing_End_End);
-			ChangeState(EState::eTarzanEnd);
+			mStateStep++;
+		}
+		break;
+		// アニメーションが終了したら待機へ
+	case 3:
+		if (IsAnimationFinished())
+		{
+			ChangeState(EState::eIdle);
 		}
 		break;
 	}
 }
 
-// ターザン終了
-void CPlayer::UpdateTarzanEnd()
+// 場外から戻す処理
+void CPlayer::UpdateReturn()
 {
-	// アニメーションが終了したら待機へ
-	if (IsAnimationFinished())
+	switch (mStateStep)
 	{
-		ChangeState(EState::eIdle);
+		// フェードアウトを開始
+	case 0:
+		CFade::FadeOut();
+		mStateStep++;
+		break;
+		
+		// フェードアウトが終了したら次へ
+	case 1:
+		if (!CFade::IsFading())
+		{
+			mStateStep++;
+		}
+		break;
+
+		// 座標を設定
+	case 2:
+		// 落下したときに戻ってくる地点に設定
+		Position(mReturnPos);
+		mMoveSpeed = CVector::zero;
+		// 杖を持っていたら
+		if (mIsWand)
+		{
+			// 杖持ち待機アニメーション
+			ChangeAnimation((int)EAnimType::eIdle_Wand);
+		}
+		// 持ってないなら
+		else
+		{
+			// 待機アニメーション
+			ChangeAnimation((int)EAnimType::eIdle);
+		}
+		mStateStep++;
+		break;
+		
+		// フェードインを開始
+	case 3:
+		CFade::FadeIn();
+		mStateStep++;
+		break;
+		// フェードインが終了したら待機状態へ
+	case 4:
+		if (!CFade::IsFading())
+		{
+			// 待機状態へ
+			ChangeState(EState::eIdle);
+		}
+		break;
 	}
 }
 
@@ -726,6 +874,7 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eTarzanStart:	return "ターザン開始";	break;
 	case EState::eTarzan:		return "ターザン中";	break;
 	case EState::eTarzanEnd:	return "ターザン終了";	break;
+	case EState::eReturn:		return "場外から帰還中";break;
 	case EState::eDeath:		return "死亡";			break;
 	}
 

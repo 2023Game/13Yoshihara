@@ -57,13 +57,13 @@ void CTestScene::Load()
 	効果音
 	*/
 	
-
+	// 接続部管理クラスを取得
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// 衝突判定をするコライダーをリセット
+	pointMgr->ResetCollider();
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
-
-	// 経路探索管理クラスを作成
-	new CNavManager();
 
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
@@ -84,14 +84,12 @@ void CTestScene::Load()
 		atPos
 	);
 
-	// 接続部の管理クラスを生成
-	mpConnectPointMgr = new CConnectPointManager();
-
 	// フィールドクラス生成
 	CTestField* field = new CTestField();
 
-	mpConnectPointMgr->AddCollider(field->GetGroundCol());
-	mpConnectPointMgr->AddCollider(field->GetWallCol());
+	// 衝突判定するコライダーを追加
+	pointMgr->AddCollider(field->GetGroundCol());
+	pointMgr->AddCollider(field->GetWallCol());
 
 	//// 衝突判定するコライダ―を追加
 	mainCamera->AddCollider(field->GetGroundCol());

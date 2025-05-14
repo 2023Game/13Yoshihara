@@ -8,6 +8,7 @@
 #include "CSceneManager.h"
 #include "CGamePause.h"
 #include "CFade.h"
+#include "CConnectPointManager.h"
 
 CApplication::~CApplication()
 {
@@ -28,6 +29,8 @@ void CApplication::Start()
 	CSoundManager::Instance();
 	// BGM管理クラスを作成
 	CBGMManager::Instance();
+	// 接続部管理クラスを生成
+	CConnectPointManager::Instance();
 
 #if _DEBUG
 	// デバッグモードでは、ブートメニューを最初に開く

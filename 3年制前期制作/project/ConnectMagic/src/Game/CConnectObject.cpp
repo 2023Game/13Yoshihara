@@ -21,6 +21,7 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 // デストラクタ
 CConnectObject::~CConnectObject()
 {
+	SAFE_DELETE(mpCol);
 }
 
 // オブジェクト削除を伝える関数

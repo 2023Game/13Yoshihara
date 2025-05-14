@@ -11,6 +11,7 @@ enum class ETag
 	eInteractObject,	// 調べるオブジェクト
 	eConnectObject,		// 繋げれるオブジェクト
 	eItem,				// アイテムのオブジェクト
+	ePortal,			// ポータル
 	eObstruction,		// 障害物
 	eSwitch,			// スイッチ
 	eSwitchObject,		// スイッチで作用するオブジェクト

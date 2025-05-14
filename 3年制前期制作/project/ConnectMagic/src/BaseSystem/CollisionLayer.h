@@ -10,6 +10,7 @@ enum class ELayer
 	eWall,			// 壁
 	eObject,		// オブジェクト
 	eItem,			// アイテム
+	ePortal,		// ポータル
 	
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用

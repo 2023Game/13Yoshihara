@@ -77,10 +77,12 @@ private:
 		eIdle_Wand,	// 杖持ち待機
 		eMove,		// 移動
 		eMove_Wand,	// 杖持ち移動
-		eJump,		// ジャンプ
+		eJump_Start,// ジャンプ開始
+		eJump,		// ジャンプ中
+		eJump_End,	// ジャンプ終了
 		eAttack,	// 攻撃中
 		eSwing,		// スイング
-		eSwing_End_Start,	// スイング終了開始
+		eSwing_End_Start,	// スイング終了の開始
 		eSwing_End,			// スイング終了中
 		eSwing_End_End,		// スイング終了の終了
 
@@ -107,6 +109,7 @@ private:
 		eTarzanStart,	// ターザン開始
 		eTarzan,		// ターザン中
 		eTarzanEnd,		// ターザン終了
+		eReturn,		// 場外から帰還
 		eDeath,			// 死亡
 	};
 
@@ -138,6 +141,8 @@ private:
 	void UpdateTarzan();
 	// ターザン終了
 	void UpdateTarzanEnd();
+	// 場外から帰還する処理
+	void UpdateReturn();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡
@@ -178,4 +183,7 @@ private:
 	CImage* mpTargetPointImg;
 	// ターゲット中の画像の位置や有効無効の更新
 	void UpdatePointImg();
+
+	// 落下したときに戻ってくる初期地点
+	CVector mReturnPos;
 };

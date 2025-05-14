@@ -1,4 +1,5 @@
 #include "CImage3D.h"
+#include <cmath>
 
 // 3D空間での縮尺（3D空間での1のサイズに相当するピクセル数）
 #define WORLD_UNIT_PER_PIXEL 256.0f
@@ -20,6 +21,9 @@ CImage3D::CImage3D(std::string path,
 	, mIsDepthTest(true)
 	, mIsDepthMask(false)
 	, mIsLighting(false)
+	, mIsRotate(false)
+	, mRotSpeed(0.0f)
+	, mAngle(0.0f)
 {
 	// テクスチャ読み込み
 	mMaterial.LoadTexture(path, path, false);
@@ -203,6 +207,18 @@ void CImage3D::SetLighting(bool enable)
 	mIsLighting = enable;
 }
 
+// 回転のオンオフを設定
+void CImage3D::SetRotate(bool enable)
+{
+	mIsRotate = enable;
+}
+
+// 回転速度を設定
+void CImage3D::SetRotSpeed(float speed)
+{
+	mRotSpeed = speed;
+}
+
 // アニメーションを再生できるかどうか
 bool CImage3D::IsEnableAnim() const
 {
@@ -275,7 +291,27 @@ void CImage3D::Render(CMaterial* mpMaterial)
 		CCamera* cam = CCamera::CurrentCamera();
 		CMatrix camMtx = cam->GetViewMatrix().Inverse();
 		camMtx.Position(CVector::zero);
-		m = camMtx * m;
+		// Z軸回転の行列
+		CMatrix zRot;
+		// 回転が有効ならば
+		if (mIsRotate)
+		{
+			mAngle += mRotSpeed * Times::DeltaTime();
+			// 1000度を超えたら
+			if (std::abs(mAngle) > 1000.0f)
+			{
+				// 360度以内に戻す
+				mAngle = std::fmod(mAngle, 360.0f);
+			}
+			// Z軸での回転
+			zRot.RotateZ(mAngle);
+		}
+		else
+		{
+			// 単位行列にして影響をなくす
+			zRot.Identity();
+		}
+		m = zRot * camMtx * m;
 	}
 
 	// 行列を反映
