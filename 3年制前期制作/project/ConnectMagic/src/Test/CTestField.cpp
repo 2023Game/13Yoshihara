@@ -4,6 +4,7 @@
 #include "CBox.h"
 #include "CAirConnectObj.h"
 #include "CPortal.h"
+#include "CRespawnArea.h"
 
 // スイッチの座標
 #define SWITCH_POS	CVector(20.0f,0.0f,20.0f)
@@ -33,6 +34,11 @@
 // ポータルの設定
 #define PORTAL_POS	CVector(90.0f, 220.0f + 5.0f * PORTAL_SIZE, -700.0f)
 #define PORTAL_SIZE 2.0f
+
+// リスポーン地点の設定
+#define RESPAWN_POS_1	CVector(  0.0f,-5.0f,-180.0f)
+#define RESPAWN_POS_2	CVector(-90.0f,35.0f,-430.0f)
+#define RESPAWN_RADIUS	25.0f
 
 // コンストラクタ
 CTestField::CTestField()
@@ -137,6 +143,10 @@ void CTestField::CreateFieldObjects()
 	portal->Position(PORTAL_POS);
 	// サイズ調整
 	portal->SetSize(portal->GetSize() * PORTAL_SIZE);
+
+	// リスポーン地点を生成
+	new CRespawnArea(RESPAWN_POS_1, RESPAWN_RADIUS);
+	new CRespawnArea(RESPAWN_POS_2, RESPAWN_RADIUS);
 }
 
 // フィールドのコライダ―を生成

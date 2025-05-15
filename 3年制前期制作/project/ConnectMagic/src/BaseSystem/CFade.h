@@ -2,13 +2,16 @@
 #include "CTask.h"
 #include "CColor.h"
 #include "CImage.h"
+#include "FadeType.h"
+
+#define DEFAULT_FADE_TIME 0.4f
 
 // 画面のフェード処理
 class CFade : public CTask
 {
 public:
 	// インスタンスを取得
-	static CFade* Instance();
+	static CFade* Instance(EFadeType type = EFadeType::eBlackOut);
 
 	/// <summary>
 	/// フェードカラーを設定
@@ -20,12 +23,12 @@ public:
 	/// フェードイン開始
 	/// </summary>
 	/// <param name="time">フェード時間</param>
-	static void FadeIn(float time = 0.25f);
+	static void FadeIn(float time = DEFAULT_FADE_TIME);
 	/// <summary>
 	/// フェードアウト開始
 	/// </summary>
 	/// <param name="time">フェード時間</param>
-	static void FadeOut(float time = 0.25f);
+	static void FadeOut(float time = DEFAULT_FADE_TIME);
 
 	/// <summary>
 	/// フェード中かどうか
@@ -33,9 +36,23 @@ public:
 	/// <returns>trueならば、フェード中</returns>
 	static bool IsFading();
 
+	// フェードの種類を変更する
+	void ChangeFadeType(EFadeType type);
+
 private:
-	// コンストラクタ
-	CFade();
+	// フェードの種類
+	EFadeType mType;
+
+	// 暗転フェードの初期設定
+	void InitBlackOut();
+	// 渦状フェードの初期設定
+	void InitVortex();
+
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="type">フェードの種類</param>
+	CFade(EFadeType type);
 	// デストラクタ
 	~CFade();
 
@@ -50,6 +67,11 @@ private:
 	void Update() override;
 	// 描画
 	void Render() override;
+
+	// フェード中の処理
+	void Fade();
+	// フェード終了の処理
+	void FadeEnd();
 
 	// フェードクラスのインスタンス
 	static CFade* ms_instance;

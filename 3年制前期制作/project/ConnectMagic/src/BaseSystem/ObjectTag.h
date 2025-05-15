@@ -15,6 +15,7 @@ enum class ETag
 	eObstruction,		// 障害物
 	eSwitch,			// スイッチ
 	eSwitchObject,		// スイッチで作用するオブジェクト
+	eRespawnArea,		// リスポーン地点
 
 	ePlayer,	// プレイヤー
 	eEnemy,		// エネミー

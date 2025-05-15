@@ -8,6 +8,7 @@
 #include "CSceneManager.h"
 #include "CGamePause.h"
 #include "CFade.h"
+#include "FadeType.h"
 #include "CConnectPointManager.h"
 
 CApplication::~CApplication()
@@ -22,7 +23,7 @@ void CApplication::Start()
 #endif
 
 	// フェードクラスを作成
-	CFade::Instance();
+	CFade::Instance(EFadeType::eVortex);
 	// ゲームポーズクラスを作成
 	new CGamePause();
 	// サウンド管理クラスを作成

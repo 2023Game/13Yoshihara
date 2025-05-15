@@ -1,4 +1,5 @@
 #include "CImage.h"
+#include <cmath>
 
 //コンストラクタ
 CImage::CImage(const char* path, ETaskPriority prio, int sortOrder,
@@ -6,6 +7,9 @@ CImage::CImage(const char* path, ETaskPriority prio, int sortOrder,
 	: CUIBase(prio, sortOrder, pause, dontDelete, addTaskList)
 	, mpTexture(nullptr)
 	, mUV(0.0f, 0.0f, 1.0f, 1.0f)
+	, mIsRot(false)
+	, mRotSpeed(0.0f)
+	, mAngle(0.0f)
 {
 	mPosition = CVector2(0.0f, 0.0f);
 	mSize = CVector2(128.0f, 128.0f);
@@ -50,6 +54,18 @@ const CVector4& CImage::GetUV() const
 	return mUV;
 }
 
+// 回転するかを設定
+void CImage::SetRot(bool isRoll)
+{
+	mIsRot = isRoll;
+}
+
+// 回転速度を設定
+void CImage::SetRotSpeed(float rotSpeed)
+{
+	mRotSpeed = rotSpeed;
+}
+
 //描画
 void CImage::Render()
 {
@@ -59,6 +75,28 @@ void CImage::Render()
 	glPushMatrix();
 
 	glLoadIdentity();
+
+	// 回転するなら
+	if (mIsRot)
+	{
+		// 回転の中心
+		float posX = mPosition.X() + mSize.X() / 2;
+		float posY = mPosition.Y() + mSize.Y() / 2;
+		// 回転角度
+		mAngle += mRotSpeed * Times::DeltaTime();
+		// 1000度を超えたら
+		if (std::abs(mAngle) > 1000.0f)
+		{
+			// 360度以内に戻す
+			mAngle = std::fmod(mAngle, 360.0f);
+		}
+		// 画像の中心へ移動
+		glTranslated(posX, posY, 0.0f);
+		// Z軸で回転
+		glRotated(mAngle, 0.0f, 0.0f, 1.0f);
+		// 元の位置へ戻す
+		glTranslated(-posX, -posY, 0.0f);
+	}
 
 	//テクスチャを有効にする
 	glEnable(GL_TEXTURE_2D);

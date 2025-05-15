@@ -52,6 +52,9 @@ public:
 	// 杖のポインタを取得
 	CWand* GetWand();
 
+	// リスポーン地点を設定
+	void SetRespawnPos(CVector respawnPos);
+
 private:
 	// コライダ―を生成
 	void CreateCol() override;
@@ -184,6 +187,6 @@ private:
 	// ターゲット中の画像の位置や有効無効の更新
 	void UpdatePointImg();
 
-	// 落下したときに戻ってくる初期地点
-	CVector mReturnPos;
+	// リスポーン地点
+	CVector mRespawnPos;
 };

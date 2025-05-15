@@ -544,6 +544,9 @@
     <ClCompile Include="src\Game\CPortal.cpp">
       <Filter>ソース ファイル\Game\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CRespawnArea.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -977,6 +980,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CPortal.h">
       <Filter>ソース ファイル\Game\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRespawnArea.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\FadeType.h">
+      <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,6 +10,9 @@ class CImage : public CUIBase
 private:
 	CTexture* mpTexture;	//表示するイメージのテクスチャ
 	CVector4 mUV;			//表示するテクスチャ上の範囲（UV）
+	bool mIsRot;			// 回転するか
+	float mRotSpeed;		// 回転速度
+	float mAngle;			// 回転角度
 
 public:
 	//コンストラクタ
@@ -31,6 +34,11 @@ public:
 	void SetUV(const float& left, const float& top, const float& right, const float& bottom);
 	//表示する範囲を取得
 	const CVector4& GetUV() const;
+
+	// 回転するかを設定
+	void SetRot(bool isRot);
+	// 回転速度を設定
+	void SetRotSpeed(float rotSpeed);
 
 	//描画
 	void Render();

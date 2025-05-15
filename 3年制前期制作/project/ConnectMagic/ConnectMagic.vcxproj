@@ -100,6 +100,7 @@
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CDesk.cpp" />
     <ClCompile Include="src\Game\CPortal.cpp" />
+    <ClCompile Include="src\Game\CRespawnArea.cpp" />
     <ClCompile Include="src\Game\CSwitch.cpp" />
     <ClCompile Include="src\Game\CSwitchButton.cpp" />
     <ClCompile Include="src\Game\CSwitchFrame.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CDesk.h" />
     <ClInclude Include="src\Game\CPortal.h" />
+    <ClInclude Include="src\Game\CRespawnArea.h" />
     <ClInclude Include="src\Game\CSwitch.h" />
     <ClInclude Include="src\Game\CSwitchButton.h" />
     <ClInclude Include="src\Game\CSwitchFrame.h" />
@@ -278,6 +280,7 @@
     <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
+    <ClInclude Include="src\Game\FadeType.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColBox.h" />

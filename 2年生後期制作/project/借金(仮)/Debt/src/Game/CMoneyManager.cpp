@@ -9,7 +9,7 @@ CMoneyManager* CMoneyManager::spInstance = nullptr;
 #define DEFAULT_DEBT_MONEY 3000
 
 // ゲームクリアの日数
-#define CLEAR_DAY 2
+#define CLEAR_DAY 3
 
 // インスタンスを取得
 CMoneyManager* CMoneyManager::Instance()
@@ -33,11 +33,11 @@ CMoneyManager::CMoneyManager()
 	, mMoney(DEFAULT_MONEY)
 	, mDebtMoney(DEFAULT_DEBT_MONEY)
 	, mNextDebtMoney(DEFAULT_DEBT_MONEY)
-	, mDay(0)
+	, mDay(1)
 	, mDid(false)
 {
 	// 次の返済額を1日目に設定
-	SetNextDebtMoney(1);
+	SetNextDebtMoney(mDay + 1);
 }
 
 // デストラクタ

@@ -1,7 +1,8 @@
 #include "CPortal.h"
+#include "CSceneManager.h"
 
 // 回転速度
-#define ROT_SPEED 60.0f * 2.0f
+#define ROT_SPEED 200.0f
 
 // コライダーの半径
 #define RADIUS 5.0f
@@ -24,6 +25,20 @@ CPortal::CPortal()
 CPortal::~CPortal()
 {
 	SAFE_DELETE(mpCol);
+}
+
+// 衝突処理
+void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+{
+	if (self == mpCol)
+	{
+		// プレイヤーの場合
+		if (other->Layer() == ELayer::ePlayer)
+		{
+			// 次のステージへ
+			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
+		}
+	}
 }
 
 // コライダーを生成

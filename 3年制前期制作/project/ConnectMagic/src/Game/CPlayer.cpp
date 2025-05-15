@@ -9,7 +9,6 @@
 #include "CConnectTarget.h"
 #include "CImage.h"
 #include "CFade.h"
-#include "CSceneManager.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
@@ -63,7 +62,7 @@ CPlayer::CPlayer()
 	, mIsAttacking(false)
 	, mpPoint(nullptr)
 	, mpCenterTarget(nullptr)
-	, mReturnPos(CVector::zero)
+	, mRespawnPos(CVector::zero)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
@@ -238,22 +237,18 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			mConnectObjs.push_back(obj);
 		}
 	}
-
-	// 本体コライダ―なら
-	if (self == mpBodyCol)
-	{
-		// ポータルの場合
-		if (other->Layer() == ELayer::ePortal)
-		{
-			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
-		}
-	}
 }
 
 // 杖のポインタを取得
 CWand* CPlayer::GetWand()
 {
 	return mpWand;
+}
+
+// 復活地点を設定
+void CPlayer::SetRespawnPos(CVector respawnPos)
+{
+	mRespawnPos = respawnPos;
 }
 
 // コライダ―を生成
@@ -267,9 +262,11 @@ void CPlayer::CreateCol()
 		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS
 	);
-	// フィールド,壁、オブジェクト、スイッチ、ポータルとだけ衝突
+	// フィールド,壁、オブジェクト、
+	// スイッチ、ポータル、リスポーン地点とだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
-		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal });
+		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal,
+		ELayer::eRespawnArea});
 
 	// コネクトオブジェクトの探知用コライダ
 	mpSearchConnectObjCol = new CColliderSphere
@@ -692,12 +689,14 @@ void CPlayer::UpdateTarzan()
 		// 移動速度
 		mMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
 		// 重力を加える
+		// 振り切る時の減速と戻る時の加速のため
 		mMoveSpeed += gravity;
 
 		// 少しずつ減速していく
 		mMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
 
 		// 線方向の速度を削除
+		// ターゲットの真下での急な減速を防ぐため
 		mMoveSpeed -= dir * mMoveSpeed.Dot(dir);
 		// プレイヤー座標に追加
 		playerPos += mMoveSpeed;
@@ -800,7 +799,7 @@ void CPlayer::UpdateReturn()
 		// 座標を設定
 	case 2:
 		// 落下したときに戻ってくる地点に設定
-		Position(mReturnPos);
+		Position(mRespawnPos);
 		mMoveSpeed = CVector::zero;
 		// 杖を持っていたら
 		if (mIsWand)
