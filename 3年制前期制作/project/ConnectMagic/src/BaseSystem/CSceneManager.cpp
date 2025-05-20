@@ -1,6 +1,8 @@
 #include "CSceneManager.h"
 #include "CFade.h"
 #include "CTitleScene.h"
+#include "CTutorialScene.h"
+#include "CTaskManager.h"
 
 #include "Test/CBootMenuScene.h"
 #include "Test/CCollisionTestScene.h"
@@ -106,6 +108,8 @@ void CSceneManager::ChangeNextScene()
 	{
 		//タイトルシーン
 		case EScene::eTitle:		mpScene = new CTitleScene();			break;
+		// チュートリアルシーン
+		case EScene::eTutorial:		mpScene = new CTutorialScene();			break;
 		//起動時メニュー
 		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト
@@ -143,6 +147,7 @@ void CSceneManager::UpdateLoading()
 			ChangeNextScene();
 			mStateStep++;
 			break;
+
 		// ステップ1：読み込み終了待ち
 		case 1:
 			// 非同期読み込み未対応なため、

@@ -1,4 +1,4 @@
-#include "CTestScene.h"
+#include "CTutorialScene.h"
 #include "CSceneManager.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -12,23 +12,23 @@
 #include "CResourceManager.h"
 #include "CPlayer.h"
 #include "CWand.h"
-#include "CTestField.h"
+#include "CTutorialMap.h"
 #include "CConnectPointManager.h"
 
 //コンストラクタ
-CTestScene::CTestScene()
+CTutorialScene::CTutorialScene()
 	: CSceneBase(EScene::eGameTest)
 	, mpGameMenu(nullptr)
 {
 }
 
 //デストラクタ
-CTestScene::~CTestScene()
+CTutorialScene::~CTutorialScene()
 {
 }
 
 //シーン読み込み
-void CTestScene::Load()
+void CTutorialScene::Load()
 {
 	// ゲーム画面はカーソル非表示
 	CInput::ShowCursor(false);
@@ -41,22 +41,22 @@ void CTestScene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("TestField",		"Field\\Map\\Map_1\\Map_1.obj");
+	CResourceManager::Load<CModel>("TutorialMap",	"Field\\Map\\TutorialMap\\TutorialMap.obj");
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
 	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
 	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
-	CResourceManager::Load<CModel>("AirConnectObj",	"Field\\AirConnectPoint\\AirConnectPoint.obj");
+	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TestField_Ground_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Ground_Col.obj");
-	CResourceManager::Load<CModel>("TestField_Wall_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Door_Col",				"Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col",				"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("TutorialMap_Ground_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Ground_Col.obj");
+	CResourceManager::Load<CModel>("TutorialMap_Wall_Col",		"Field\\Map\\TutorialMap\\Col\\TutorialMap_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Door_Col",					"Field\\Door\\Col\\Door_Col.obj");
+	CResourceManager::Load<CModel>("Box_Col",					"Field\\Box\\Col\\Box_Col.obj");
 	/*
 	効果音
 	*/
-	
+
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 	// 衝突判定をするコライダーをリセット
@@ -85,7 +85,7 @@ void CTestScene::Load()
 	);
 
 	// フィールドクラス生成
-	CTestField* field = new CTestField();
+	CTutorialMap* field = new CTutorialMap();
 
 	// 衝突判定するコライダーを追加
 	pointMgr->AddCollider(field->GetGroundCol());
@@ -102,7 +102,7 @@ void CTestScene::Load()
 }
 
 //シーンの更新処理
-void CTestScene::Update()
+void CTutorialScene::Update()
 {
 #if _DEBUG
 	if (CInput::PushKey('H'))

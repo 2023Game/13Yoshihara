@@ -12,6 +12,9 @@
 // レイを縮めれる距離の最小
 #define RAY_MIN_DISTANCE 15.0f
 
+// ターザンの最短距離
+#define TARZAN_MIN_DISTANCE 30.0f
+
 // 接続部のオフセット座標
 #define POINT_OFFSET_POSX 0.0f
 #define POINT_OFFSET_POSY 45.0f
@@ -482,6 +485,13 @@ float CConnectPointManager::GetWandConnectDistance()
 void CConnectPointManager::SetWandConnectDistance(int sign)
 {
 	mWandConnectDistance += sign * PULL_POWER / 2 *Times::DeltaTime();
+
+	// ターザンの最短距離より短いなら
+	if (mWandConnectDistance < TARZAN_MIN_DISTANCE)
+	{
+		// 最短距離に設定
+		mWandConnectDistance = TARZAN_MIN_DISTANCE;
+	}
 }
 
 // 杖と接続しているオブジェクトが空中の接続オブジェクトか
@@ -514,11 +524,14 @@ void CConnectPointManager::WandPos()
 	if (player != nullptr)
 	{
 		CWand* wand = player->GetWand();
-		// 杖の先に接続部の位置を設定
-		CVector offsetPos = wand->Matrix().Position();
-		offsetPos += wand->Matrix().VectorX() * POINT_OFFSET_POSX;
-		offsetPos += wand->Matrix().VectorY() * POINT_OFFSET_POSY;
-		offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
-		mpPoint->Position(offsetPos);
+		if (wand != nullptr)
+		{
+			// 杖の先に接続部の位置を設定
+			CVector offsetPos = wand->Matrix().Position();
+			offsetPos += wand->Matrix().VectorX() * POINT_OFFSET_POSX;
+			offsetPos += wand->Matrix().VectorY() * POINT_OFFSET_POSY;
+			offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
+			mpPoint->Position(offsetPos);
+		}
 	}
 }

@@ -80,6 +80,7 @@ public:
 
 	/// <summary>
 	/// 杖が接続している接続部とプレイヤーの距離を設定
+	/// ターザン用
 	/// </summary>
 	/// <param name="sign">符号</param>
 	void SetWandConnectDistance(int sign);

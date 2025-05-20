@@ -481,25 +481,13 @@
     <ClCompile Include="src\Test\CTestField.cpp">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CFieldManager.cpp">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CMap_1.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CConnectWall.cpp">
+    <ClCompile Include="src\Game\CTutorialMap.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CMap_2.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CMap_3.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CClassRoom.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CDesk.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CGearBaseStatus.cpp">
@@ -546,6 +534,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CRespawnArea.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTutorialScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -915,25 +906,13 @@
     <ClInclude Include="src\Test\CTestField.h">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CFieldManager.h">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CMap_1.h">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CConnectWall.h">
+    <ClInclude Include="src\Game\CTutorialMap.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CMap_2.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CMap_3.h">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CClassRoom.h">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CDesk.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGearBaseStatus.h">
@@ -986,6 +965,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\FadeType.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTutorialScene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

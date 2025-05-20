@@ -12,9 +12,9 @@ public:
 	//デストラクタ
 	~CTestScene();
 	//シーン読み込み
-	void Load();
+	void Load() override;
 	//シーンの更新処理
-	void Update();
+	void Update() override;
 
 private:
 	// ゲームメニュー
