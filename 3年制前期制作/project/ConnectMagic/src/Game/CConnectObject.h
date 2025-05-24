@@ -45,6 +45,12 @@ public:
 	/// <param name="opponentWeight">相手の重さ</param>
 	virtual void Pull(CVector pullDir, float opponentWeight);
 
+	/// <summary>
+	/// 繋がったときの処理
+	/// </summary>
+	/// <param name="other">相手</param>
+	virtual void Connect(CConnectObject* other);
+
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);
 

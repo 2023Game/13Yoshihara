@@ -2,7 +2,7 @@
 #include "CBillBoardImage.h"
 #include "CColliderSphere.h"
 
-// ポータルのエフェクト
+// ポータル
 class CPortal : public CBillBoardImage
 {
 public:

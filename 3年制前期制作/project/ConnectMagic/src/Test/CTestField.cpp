@@ -5,6 +5,7 @@
 #include "CAirConnectObj.h"
 #include "CPortal.h"
 #include "CRespawnArea.h"
+#include "CGrass.h"
 
 // スイッチの座標
 #define SWITCH_POS	CVector(20.0f,0.0f,20.0f)
@@ -49,7 +50,7 @@ CTestField::CTestField()
 	// オブジェクトを生成
 	CreateFieldObjects();
 	// コライダ―を生成
-	CreateCol("TestField", "", "");
+	CreateCol("TestField_Ground_Col", "TestField_Wall_Col", "");
 }
 
 // デストラクタ
@@ -60,6 +61,7 @@ CTestField::~CTestField()
 // フィールドのオブジェクトを生成
 void CTestField::CreateFieldObjects()
 {
+	new CGrass();
 	// ドアを生成
 	CDoor* door = new CDoor(CVector::zero);
 	// ドアの位置調整

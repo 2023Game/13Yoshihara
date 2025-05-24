@@ -529,14 +529,17 @@
     <ClCompile Include="src\Game\CAirConnectObj.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CPortal.cpp">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CRespawnArea.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CTutorialScene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CGrass.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPortal.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -957,9 +960,6 @@
     <ClInclude Include="src\Game\CConnectObjectTag.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CPortal.h">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CRespawnArea.h">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
@@ -968,6 +968,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTutorialScene.h">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CGrass.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPortal.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

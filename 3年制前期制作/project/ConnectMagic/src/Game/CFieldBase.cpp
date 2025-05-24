@@ -99,8 +99,10 @@ void CFieldBase::CreateNavNodes()
 // コライダ―を生成する
 void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::string objCol)
 {
+	// 空じゃなければ
 	if (groundCol != "")
 	{
+		// 地面のコライダーを生成
 		mpGroundColliderMesh = new CColliderMesh
 		{
 			this,ELayer::eGround,
@@ -108,8 +110,10 @@ void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::stri
 			true
 		};
 	}
+	// 空じゃなければ
 	if (wallCol != "")
 	{
+		// 壁のコライダーを生成
 		mpWallColliderMesh = new CColliderMesh
 		{
 			this,ELayer::eWall,
@@ -117,8 +121,10 @@ void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::stri
 			true
 		};
 	}
+	// 空じゃなければ
 	if (objCol != "")
 	{
+		// オブジェクトのコライダーを生成
 		mpObjectColliderMesh = new CColliderMesh
 		{
 			this,ELayer::eObject,

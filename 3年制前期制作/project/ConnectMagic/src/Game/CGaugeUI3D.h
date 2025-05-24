@@ -3,7 +3,7 @@
 
 class CImage3D;
 
-// 3D空間に配置するイメージクラス
+// 3D空間に配置するゲージクラス
 class CGaugeUI3D : public CObjectBase
 {
 public:

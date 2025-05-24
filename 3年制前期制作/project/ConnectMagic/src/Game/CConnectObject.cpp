@@ -50,7 +50,8 @@ void CConnectObject::Update()
 // 描画
 void CConnectObject::Render()
 {
-	mpModel->Render(Matrix());
+	if (mpModel != nullptr)
+		mpModel->Render(Matrix());
 }
 
 // 衝突処理
@@ -163,6 +164,11 @@ void CConnectObject::Pull(CVector pullDir, float opponentWeight)
 	mMoveSpeedY = moveSpeed.Y();
 	moveSpeed.Y(0.0f);
 	mMoveSpeed = moveSpeed;
+}
+
+// 繋がったときの処理
+void CConnectObject::Connect(CConnectObject* other)
+{
 }
 
 // 接続ターゲットの作成

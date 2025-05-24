@@ -88,6 +88,7 @@
     <ClCompile Include="src\Game\CFieldBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CGearBaseStatus.cpp" />
+    <ClCompile Include="src\Game\CGrass.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CTutorialMap.cpp" />
@@ -233,6 +234,7 @@
     <ClInclude Include="src\Game\CFieldBase.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CGearBaseStatus.h" />
+    <ClInclude Include="src\Game\CGrass.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CTutorialMap.h" />
