@@ -5,6 +5,7 @@
 CConnectPoint::CConnectPoint(CConnectObject* connectObj)
 	: CBillBoardImage("Effect/ConnectPoint.png", ETag::eConnectPoint, ETaskPauseType::eGame)
 	, mpConnectObj(connectObj)
+	, mpPair(nullptr)
 {
 }
 
@@ -25,3 +26,16 @@ CConnectObject* CConnectPoint::GetConnectObj()
 {
 	return mpConnectObj;
 }
+
+// ペアの接続部を設定
+void CConnectPoint::SetPair(CConnectPoint* pair)
+{
+	mpPair = pair;
+}
+
+// ペアの接続部を取得
+CConnectPoint* CConnectPoint::GetPair() const
+{
+	return mpPair;
+}
+

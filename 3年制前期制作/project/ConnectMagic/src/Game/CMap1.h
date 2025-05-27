@@ -1,13 +1,13 @@
 #pragma once
 #include "CFieldBase.h"
 
-class CMap_2 : public CFieldBase
+class CMap1 : public CFieldBase
 {
 public:
 	// コンストラクタ
-	CMap_2();
+	CMap1();
 	// デストラクタ
-	~CMap_2();
+	~CMap1();
 
 private:
 	// フィールドオブジェクトを生成

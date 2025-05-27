@@ -1,4 +1,4 @@
-#include "CTestScene.h"
+#include "CMap1Scene.h"
 #include "CSceneManager.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -12,23 +12,23 @@
 #include "CResourceManager.h"
 #include "CPlayer.h"
 #include "CWand.h"
-#include "CTestField.h"
+#include "CMap1.h"
 #include "CConnectPointManager.h"
 
-//コンストラクタ
-CTestScene::CTestScene()
-	: CSceneBase(EScene::eGameTest)
+// コンストラクタ
+CMap1Scene::CMap1Scene()
+	: CSceneBase(EScene::eMap1)
 	, mpGameMenu(nullptr)
 {
 }
 
-//デストラクタ
-CTestScene::~CTestScene()
+// デストラクタ
+CMap1Scene::~CMap1Scene()
 {
 }
 
-//シーン読み込み
-void CTestScene::Load()
+// シーン読み込み
+void CMap1Scene::Load()
 {
 	// ゲーム画面はカーソル非表示
 	CInput::ShowCursor(false);
@@ -41,25 +41,25 @@ void CTestScene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("TestField",		"Field\\field.obj");
-	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
-	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
-	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
-	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
-	CResourceManager::Load<CModel>("AirConnectObj",	"Field\\AirConnectPoint\\AirConnectPoint.obj");
-	CResourceManager::Load<CModel>("Torch",			"Field\\Torch\\Torch.obj");
-	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
+	CResourceManager::Load<CModel>("Map1", "Field\\Map\\Map_1\\Map_1.obj");
+	CResourceManager::Load<CModel>("Wand", "Wepon\\Wand\\Wand.obj", true);
+	CResourceManager::Load<CModel>("Box", "Field\\Box\\Box.obj");
+	CResourceManager::Load<CModel>("Door", "Field\\Door\\Door.obj");
+	CResourceManager::Load<CModel>("SwitchFrame", "Field\\Switch\\Switch_Frame.obj");
+	CResourceManager::Load<CModel>("SwitchButton", "Field\\Switch\\Switch_Button.obj");
+	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
+	CResourceManager::Load<CModel>("Torch", "Field\\Torch\\Torch.obj");
+	CResourceManager::Load<CModel>("Bridge", "Field\\Bridge\\Bridge.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TestField_Ground_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
-	CResourceManager::Load<CModel>("TestField_Wall_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Door_Col",				"Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col",				"Field\\Box\\Col\\Box_Col.obj");
-	CResourceManager::Load<CModel>("Bridge_Col",			"Field\\Bridge\\Col\\Bridge_Col.obj");
+	CResourceManager::Load<CModel>("Map1_Ground_Col", "Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Map1_Wall_Col", "Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Door_Col", "Field\\Door\\Col\\Door_Col.obj");
+	CResourceManager::Load<CModel>("Box_Col", "Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("Bridge_Col", "Field\\Bridge\\Col\\Bridge_Col.obj");
 	/*
 	効果音
 	*/
-	
+
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 	// 衝突判定をするコライダーをリセット
@@ -71,14 +71,6 @@ void CTestScene::Load()
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
 
-	// CGameCameraのテスト
-	//CGameCamera* mainCamera = new CGameCamera
-	//(
-	//	//CVector(5.0f, -15.0f, 180.0f),
-	//	CVector(0.0f, 50.0f, 75.0f),
-	//	player->Position()
-	//);
-	// 
 	// CGameCamera2のテスト
 	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
@@ -88,7 +80,7 @@ void CTestScene::Load()
 	);
 
 	// フィールドクラス生成
-	CTestField* field = new CTestField();
+	CMap1* field = new CMap1();
 
 	// 衝突判定するコライダーを追加
 	pointMgr->AddCollider(field->GetGroundCol());
@@ -104,8 +96,8 @@ void CTestScene::Load()
 	mpGameMenu = new CGameMenu();
 }
 
-//シーンの更新処理
-void CTestScene::Update()
+// シーンの更新処理
+void CMap1Scene::Update()
 {
 #if _DEBUG
 	if (CInput::PushKey('H'))

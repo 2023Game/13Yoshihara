@@ -25,6 +25,9 @@
 // ターゲットするときの視点とオブジェクトの画面距離の最大
 #define TARGET_MAX_DISTANCE (WINDOW_HEIGHT / 2)
 
+// ターゲット場所の画像のスケール
+#define TARGET_POINT_IMG_SCALE 0.1f
+
 // アニメーションのパス
 #define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
 
@@ -94,9 +97,9 @@ CPlayer::CPlayer()
 	// ターゲットしている場所の画像
 	mpTargetPointImg = new CImage
 	(
-		"UI\\white.png"
+		"UI\\TargetPoint.png"
 	);
-	mpTargetPointImg->SetSize(mpTargetPointImg->GetSize() * 0.5f);
+	mpTargetPointImg->SetSize(mpTargetPointImg->GetSize() * TARGET_POINT_IMG_SCALE);
 	// 最初は非表示
 	mpTargetPointImg->SetEnable(false);
 	mpTargetPointImg->SetShow(false);

@@ -77,6 +77,7 @@
     <ClCompile Include="src\Game\CAirConnectObj.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CBox.cpp" />
+    <ClCompile Include="src\Game\CBridge.cpp" />
     <ClCompile Include="src\Game\CConnectObject.cpp" />
     <ClCompile Include="src\Game\CConnectPoint.cpp" />
     <ClCompile Include="src\Game\CConnectPointManager.cpp" />
@@ -86,13 +87,15 @@
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
+    <ClCompile Include="src\Game\CFire.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CGearBaseStatus.cpp" />
     <ClCompile Include="src\Game\CGrass.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
+    <ClCompile Include="src\Game\CMap1Scene.cpp" />
     <ClCompile Include="src\Game\CTutorialMap.cpp" />
-    <ClCompile Include="src\Game\CMap_2.cpp" />
+    <ClCompile Include="src\Game\CMap1.cpp" />
     <ClCompile Include="src\Game\CMap_3.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
@@ -127,6 +130,7 @@
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
     <ClCompile Include="src\Game\CTutorialScene.cpp" />
+    <ClCompile Include="src\Game\CUpgradeItem.cpp" />
     <ClCompile Include="src\Game\CWand.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
@@ -222,6 +226,7 @@
     <ClInclude Include="src\Game\CAirConnectObj.h" />
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CBox.h" />
+    <ClInclude Include="src\Game\CBridge.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
     <ClInclude Include="src\Game\CConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
@@ -232,13 +237,15 @@
     <ClInclude Include="src\Game\CEndUIBase.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
+    <ClInclude Include="src\Game\CFire.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CGearBaseStatus.h" />
     <ClInclude Include="src\Game\CGrass.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
+    <ClInclude Include="src\Game\CMap1Scene.h" />
     <ClInclude Include="src\Game\CTutorialMap.h" />
-    <ClInclude Include="src\Game\CMap_2.h" />
+    <ClInclude Include="src\Game\CMap1.h" />
     <ClInclude Include="src\Game\CMap_3.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CPlayerStatus.h" />
@@ -273,6 +280,7 @@
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
     <ClInclude Include="src\Game\CTutorialScene.h" />
+    <ClInclude Include="src\Game\CUpgradeItem.h" />
     <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />

@@ -16,6 +16,8 @@ public:
 
 	// 接続部がついているオブジェクトを取得
 	CConnectObject* GetConnectObj();
+	// 接続部がついているオブジェクトを設定
+	void SetConnectObj(CConnectObject* obj);
 
 private:
 	// 接続部がついているオブジェクト

@@ -1,25 +1,22 @@
 #pragma once
-#include "CConnectObject.h"
+#include "CFire.h"
 #include "CBillBoardImage.h"
 
 class CBillboardImage;
 
 // 火とつなげると燃える草オブジェクト
-class CGrass : public CConnectObject
+class CGrass : public CFire
 {
 public:
 	// コンストラクタ
-	CGrass();
+	CGrass(CVector fireOffsetPos = CVector::zero, float fireScale = FIRE_SCALE * 2.0f);
 	// デストラクタ
 	~CGrass();
 
-	// 繋がったときの処理
-	void Connect(CConnectObject* other);
+	// 更新
+	void Update() override;
 
 private:
-	// コライダーを生成
-	void CreateCol() override;
-
 	// 草の画像
 	CBillBoardImage* mpGrassImage;
 };

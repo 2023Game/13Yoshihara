@@ -14,6 +14,7 @@ CBootMenuScene::CBootMenuScene()
 		{ "■メイン",		EScene::eNone },
 		{ "タイトル画面",	EScene::eTitle},
 		{ "チュートリアル",	EScene::eTutorial},
+		{ "マップ1",		EScene::eMap1},
 		{ "",				EScene::eNone },
 		{ "■デバッグ",		EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest},

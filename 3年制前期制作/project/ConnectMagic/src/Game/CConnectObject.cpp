@@ -1,6 +1,7 @@
 #include "CConnectObject.h"
 #include "CConnectTarget.h"
 #include "CModel.h"
+#include "CConnectPointManager.h"
 
 #define THRESHOLD 0.1f
 
@@ -21,12 +22,36 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 // デストラクタ
 CConnectObject::~CConnectObject()
 {
+	// 接続部管理クラス
+	auto* pointMgr = CConnectPointManager::Instance();
+	// 自身についている接続部があれば削除
+	pointMgr->DeleteConnectPoint(this);
+
+	// 全てのターゲットを削除
+	for (int i = 0; i < mTargets.size(); i++)
+	{
+		mTargets[i]->SetConnectObj(nullptr);
+		mTargets[i]->Kill();
+	}
+	
+	// 配列を空にする
+	mTargets.clear();
 	SAFE_DELETE(mpCol);
 }
 
 // オブジェクト削除を伝える関数
 void CConnectObject::DeleteObject(CObjectBase* obj)
 {
+	int num = mTargets.size();
+	for (int i = 0; i < num; i++)
+	{
+		// 一致したら
+		if (mTargets[i] == obj)
+		{
+			// 配列から取り除く
+			mTargets.erase(mTargets.begin() + i);
+		}
+	}
 }
 
 // 更新
@@ -37,10 +62,6 @@ void CConnectObject::Update()
 		mMoveSpeedY -= GRAVITY;
 	}
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-	if (mMoveSpeed.LengthSqr() > 0.0f)
-	{
-		CDebugPrint::Print("ObjMoveSpeed:%f,%f,%f\n", moveSpeed.X(), moveSpeed.Y(), moveSpeed.Z());
-	}
 	mMoveSpeed = CVector::zero;
 
 	// 移動

@@ -40,10 +40,10 @@ CFlamethrower::CFlamethrower(CObjectBase* owner, const CMatrix* attach, const CV
 // デストラクタ
 CFlamethrower::~CFlamethrower()
 {
-	for (CFlame* flame : mFlames)
-	{
-		flame->Kill();
-	}
+	//for (CFlame* flame : mFlames)
+	//{
+	//	flame->Kill();
+	//}
 }
 
 // 炎を発射開始

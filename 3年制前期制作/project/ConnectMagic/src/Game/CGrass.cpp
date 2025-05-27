@@ -1,22 +1,20 @@
 #include "CGrass.h"
 #include "CColliderSphere.h"
 #include "CBillBoardImage.h"
-
-// 草の重さ(動かさない）
-#define WEIGHT 1.0f
+#include "CFlamethrower.h"
+#include "CConnectPointManager.h"
 
 // 画像のサイズ
 #define SIZE 2.0f
 
-// 接続ターゲットのオフセット座標
-#define TARGET_OFFSET_POS CVector(0.0f, 2.0f, 0.0f)
+// アルファの減少速度
+#define ALPHA_DECREASE_SPEED 0.5f
 
 // コンストラクタ
-CGrass::CGrass()
-	: CConnectObject(WEIGHT)
+CGrass::CGrass(CVector fireOffsetPos, float fireScale)
+	: CFire("", fireOffsetPos, fireScale)
 {
-	// 重力無効
-	mIsGravity = false;
+	SetConnectObjTag(EConnectObjTag::eGrass);
 
 	// 草の画像を生成
 	mpGrassImage = new CBillBoardImage
@@ -33,12 +31,6 @@ CGrass::CGrass()
 	mpGrassImage->SetSize(size);
 	// サイズの半分弱上に上げる
 	mpGrassImage->SetOffsetPos(CVector(0.0f, size.Y() * 0.8f, 0.0f));
-
-	// 接続ターゲットを生成
-	CreateTarget(Position() + TARGET_OFFSET_POS);
-
-	// コライダーを生成
-	CreateCol();
 }
 
 // デストラクタ
@@ -46,24 +38,29 @@ CGrass::~CGrass()
 {
 }
 
-// 繋がったときの処理
-void CGrass::Connect(CConnectObject* other)
+// 更新
+void CGrass::Update()
 {
-	// 接続オブジェクトのタグが炎なら
-	if (other->GetConnectObjTag() == EConnectObjTag::eFire)
-	{
-		// TODO：徐々に消えていく
-	}
-}
+	// 基底クラスの更新処理
+	CConnectObject::Update();
 
-// コライダーを生成
-void CGrass::CreateCol()
-{
-	mpCol = new CColliderSphere
-	(
-		this,ELayer::eObject,
-		10.0f,true
-	);
-	// コネクトオブジェクトの探知用とだけ衝突判定
-	mpCol->SetCollisionLayers({ ELayer::eConnectSearch });
+	// 炎がついているなら
+	if (mIsFire)
+	{
+		// アルファを減算していく
+		float alpha = mpGrassImage->GetAlpha();
+		alpha -= ALPHA_DECREASE_SPEED * Times::DeltaTime();
+		// アルファが0以下なら
+		if (alpha <= 0.0f)
+		{
+			// 炎生成も削除
+			mpFlamethrower->Kill();
+			mpFlamethrower = nullptr;
+			// 削除
+			Kill();
+			return;
+		}
+		// アルファを設定
+		mpGrassImage->SetAlpha(alpha);
+	}
 }

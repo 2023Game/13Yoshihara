@@ -2,6 +2,7 @@
 
 class CConnectPoint;
 class CConnectTarget;
+class CConnectObject;
 
 // 接続部の管理クラス
 class CConnectPointManager : CTask
@@ -23,6 +24,8 @@ public:
 
 	// 引っ張る処理を実行
 	void Pull();
+	// 繋がっている処理を実行
+	void Connect();
 
 	/// <summary>
 	/// 視点からのレイと設定されているコライダーとの衝突判定を行う
@@ -54,11 +57,20 @@ public:
 	// 接続部を生成
 	void CreateConnectPoint(CConnectTarget* connectTarget);
 
+	// 指定のオブジェクトが親の接続部を削除
+	void DeleteConnectPoint(CConnectObject* obj);
+
 	/// <summary>
-	/// 接続部を消去
+	/// 接続部を削除
 	/// </summary>
-	/// <param name="num">消去する要素番号</param>
+	/// <param name="num">削除する要素番号</param>
 	void DeleteConnectPoint(int num);
+
+	/// <summary>
+	/// 接続部をペアで削除
+	/// </summary>
+	/// <param name="num">削除する要素番号</param>
+	void DeleteConnectPointPair(int num);
 
 	// 最後の要素を消去する
 	void DeleteLastConnectPoint();

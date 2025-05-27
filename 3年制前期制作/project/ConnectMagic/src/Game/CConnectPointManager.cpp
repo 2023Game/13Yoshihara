@@ -24,7 +24,7 @@
 #define POINT_SCALE 0.5f
 
 // 接続できる最大数の初期値
-#define DEFAULT_CONNECT_NUM 1
+#define DEFAULT_CONNECT_NUM 2
 
 // インスタンス
 CConnectPointManager* CConnectPointManager::spInstance = nullptr;
@@ -70,6 +70,9 @@ void CConnectPointManager::Update()
 
 	// 接続部同士を繋いだ線が何かに衝突したら削除
 	RayPoint();
+
+	// 繋がっている処理を実行
+	Connect();
 }
 
 // 描画
@@ -89,9 +92,8 @@ void CConnectPointManager::Render()
 			// 接続部がついているオブジェクトが同じなら
 			if (mPoints[i]->GetConnectObj() == mPoints[i + 1]->GetConnectObj())
 			{
-				// 削除
-				DeleteConnectPoint(i);
-				DeleteConnectPoint(i);
+				// ペアで削除
+				DeleteConnectPointPair(i);
 				// 1セット戻す
 				i -= 2;
 				// 次へ
@@ -117,12 +119,10 @@ void CConnectPointManager::Render()
 		if (distance > RAY_MAX_DISTANCE)
 		{
 			// 接続削除
-			DeleteConnectPoint(i);
+			DeleteConnectPointPair(i);
 			// 接続部同士なら
 			if (isPoints)
 			{
-				// もう一つ削除
-				DeleteConnectPoint(i);
 				// 1セット戻す
 				i -= 2;
 			}
@@ -189,6 +189,30 @@ void CConnectPointManager::Pull()
 			CConnectObject* connectObj = mPoints[i]->GetConnectObj();
 			// 引っ張る(杖側は動かないので重さ1.0f）
 			connectObj->Pull(pullDir, 1.0f);
+		}
+	}
+}
+
+// 繋がっている処理を実行
+void CConnectPointManager::Connect()
+{
+	for (int i = 0; i < mPoints.size(); i += 2)
+	{
+		// iの次の要素番号が要素範囲内なら
+		// セットになっている接続部
+		if (i + 1 < mPoints.size())
+		{
+			// 接続部がついているオブジェクト
+			CConnectObject* connectObj1 = mPoints[i]->GetConnectObj();
+			CConnectObject* connectObj2 = mPoints[i + 1]->GetConnectObj();
+
+			// どちらかが空なら処理しない
+			if (connectObj1 == nullptr || connectObj2 == nullptr) return;
+			// 繋げる
+			connectObj1->Connect(connectObj2);
+
+			// 繋げる
+			connectObj2->Connect(connectObj1);
 		}
 	}
 }
@@ -359,12 +383,8 @@ void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
 	// 最古の接続部を削除する
 	if (mConnectMaxNum == mPoints.size())
 	{
-		DeleteConnectPoint(0);
-		// 最大値が1じゃなければ接続相手も削除
-		if (mConnectMaxNum != 1)
-		{
-			DeleteConnectPoint(0);
-		}
+		// 削除
+		DeleteConnectPointPair(0);
 	}
 	// 接続部を生成
 	CConnectPoint* point = new CConnectPoint(connectTarget->GetConnectObj());
@@ -388,20 +408,80 @@ void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
 	{
 		// 杖の接続解除
 		SetWandConnect(false);
+		// 生成した接続部と一つ前の接続部をペアに設定
+		int num = mPoints.size() - 2;
+		point->SetPair(mPoints[num]);
+		mPoints[num]->SetPair(point);
 	}
 }
 
-// 接続部を消去
+// 指定のオブジェクトが親の接続部を削除
+void CConnectPointManager::DeleteConnectPoint(CConnectObject* obj)
+{
+	// 削除する番号
+	std::vector<int> deleteNum;
+	// 後ろからチェック
+	for (int i = mPoints.size() - 1; i >= 0; i--)
+	{
+		// 一致したら
+		if (mPoints[i]->GetConnectObj() == obj)
+		{
+			// 削除する番号に追加
+			deleteNum.push_back(i);
+		}
+	}
+
+	// ペアで削除
+	for (int num : deleteNum)
+	{
+		DeleteConnectPointPair(num);
+	}
+}
+
+// 接続部を削除
 void CConnectPointManager::DeleteConnectPoint(int num)
 {
-	// サイズが0なら処理しない
-	if (mPoints.size() == 0) return;
+	// サイズが0かnumが範囲外なら処理しない
+	if (mPoints.size() == 0 || mPoints.size() <= num) return;
 	// 一時保存
 	CConnectPoint* point = mPoints[num];
 	// 要素から除外
 	mPoints.erase(mPoints.begin() + num);
 	// 削除
 	point->Kill();
+}
+
+// 接続部をペアで削除
+void CConnectPointManager::DeleteConnectPointPair(int num)
+{
+	// 接続部
+	CConnectPoint* point1 = mPoints[num];
+	CConnectPoint* point2 = point1->GetPair();
+
+	// ペアがnullptrじゃなければ
+	if (point2 != nullptr)
+	{
+		// 配列から取り除く
+		mPoints.erase(
+			std::remove_if(
+				mPoints.begin(), mPoints.end(),
+				[&](CConnectPoint* deletePoint)
+				{return deletePoint == point1 || deletePoint == point2; }
+			),
+			mPoints.end()
+		);
+		// 削除
+		point1->Kill();
+		point2->Kill();
+	}
+	// ペアがnullptrなら
+	else
+	{
+		// 一つだけ削除
+		DeleteConnectPoint(num);
+		// 杖の接続を解除
+		SetWandConnect(false);
+	}
 }
 
 // 最後の要素を消去する

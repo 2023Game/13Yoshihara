@@ -8,13 +8,19 @@
 
 // コンストラクタ
 CConnectTarget::CConnectTarget(CConnectObject* connectObj)
-	: mpConnectObj(connectObj)
+	: CObjectBase(ETag::eConnectTarget, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
+	, mpConnectObj(connectObj)
 {
 }
 
 // デストラクタ
 CConnectTarget::~CConnectTarget()
 {
+	if (mpConnectObj != nullptr)
+	{
+		mpConnectObj->DeleteObject(this);
+		mpConnectObj = nullptr;
+	}
 }
 
 // 描画
@@ -35,4 +41,10 @@ void CConnectTarget::Render()
 CConnectObject* CConnectTarget::GetConnectObj()
 {
 	return mpConnectObj;
+}
+
+// 接続部がついているオブジェクトを設定
+void CConnectTarget::SetConnectObj(CConnectObject* obj)
+{
+	mpConnectObj = obj;
 }

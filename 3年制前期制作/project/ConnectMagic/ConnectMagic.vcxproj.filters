@@ -484,7 +484,7 @@
     <ClCompile Include="src\Game\CTutorialMap.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CMap_2.cpp">
+    <ClCompile Include="src\Game\CMap1.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CMap_3.cpp">
@@ -503,9 +503,6 @@
       <Filter>ソース ファイル\Game\Effect</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CConnectObject.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CConnectTarget.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CSwitch.cpp">
@@ -540,6 +537,21 @@
     </ClCompile>
     <ClCompile Include="src\Game\CPortal.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFire.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CUpgradeItem.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CConnectTarget.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBridge.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap1Scene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -912,7 +924,7 @@
     <ClInclude Include="src\Game\CTutorialMap.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CMap_2.h">
+    <ClInclude Include="src\Game\CMap1.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CMap_3.h">
@@ -931,9 +943,6 @@
       <Filter>ソース ファイル\Game\Effect</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CConnectObject.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CConnectTarget.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CSwitch.h">
@@ -974,6 +983,21 @@
     </ClInclude>
     <ClInclude Include="src\Game\CPortal.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFire.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CUpgradeItem.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectTarget.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBridge.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap1Scene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

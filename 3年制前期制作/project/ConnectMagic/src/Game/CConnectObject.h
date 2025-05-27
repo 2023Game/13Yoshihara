@@ -18,7 +18,7 @@ public:
 		int sortOrder = 0,
 		ETaskPauseType pause = ETaskPauseType::eDefault);
 	// デストラクタ
-	virtual ~CConnectObject();
+	~CConnectObject();
 
 	// オブジェクト削除を伝える関数
 	void DeleteObject(CObjectBase* obj) override;

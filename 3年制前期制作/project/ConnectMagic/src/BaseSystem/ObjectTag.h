@@ -24,6 +24,7 @@ enum class ETag
 	eFlame,	// 炎
 	eSlash,	// 斬撃
 	eWand,	// 杖
+	eConnectTarget,	// 接続ターゲット
 	eConnectPoint,	// 接続部
 
 	eUI,
