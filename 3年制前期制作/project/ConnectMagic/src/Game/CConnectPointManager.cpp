@@ -26,6 +26,9 @@
 // 接続できる最大数の初期値
 #define DEFAULT_CONNECT_NUM 2
 
+// 杖の重量
+#define WAND_WEIGHT 0.5f
+
 // インスタンス
 CConnectPointManager* CConnectPointManager::spInstance = nullptr;
 
@@ -187,8 +190,8 @@ void CConnectPointManager::Pull()
 			pullDir.Normalize();
 			// 接続部がついているオブジェクト
 			CConnectObject* connectObj = mPoints[i]->GetConnectObj();
-			// 引っ張る(杖側は動かないので重さ1.0f）
-			connectObj->Pull(pullDir, 1.0f);
+			// 引っ張る
+			connectObj->Pull(pullDir, WAND_WEIGHT);
 		}
 	}
 }
@@ -340,19 +343,8 @@ void CConnectPointManager::RayPoint()
 			// レイとコライダーの衝突判定を行う
 			if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
 			{
-				DeleteConnectPoint(i);
-				// 接続部同士で繋がっているなら
-				if (isPoints)
-				{
-					// 接続相手も削除
-					DeleteConnectPoint(i);
-				}
-				// 杖とつながっているなら
-				else
-				{
-					// 杖の接続を無効
-					SetWandConnect(false);
-				}
+				// ペア削除
+				DeleteConnectPointPair(i);
 			}
 		}
 	}

@@ -24,7 +24,7 @@ public:
 
 private:
 	// ŠÔ
-	int mTime;
+	int mTimeLocation;
 	// Œo‰ßŠÔ
 	float mElapsedTime;
 

@@ -224,7 +224,7 @@ class CAnimationSet
 private:
 	std::string mPath;
 	char* mpName;	//アニメーションセット名
-	float mTime;	//現在時間
+	float mTimeLocation;	//現在時間
 	float mWeight;	//重み
 	float mMaxTime;	//最大時間
 	std::vector<CAnimation*> mAnimation;
@@ -285,7 +285,7 @@ class CAnimationKey
 	friend CAnimation;
 	friend CAnimationSet;
 private:
-	float mTime;		//時間
+	float mTimeLocation;		//時間
 	CMatrix mMatrix;	//行列
 };
 #endif

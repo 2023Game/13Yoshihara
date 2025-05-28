@@ -304,7 +304,7 @@ void CModelX::SeparateAnimationSet(int idx, int start, int end, char* name)
 				animation->mpKey[animation->mKeyNum] =
 					anim->mAnimation[i]->mpKey[anim->mAnimation[i]->mKeyNum - 1];
 			}
-			animation->mpKey[animation->mKeyNum].mTime = animation->mKeyNum++;
+			animation->mpKey[animation->mKeyNum].mTimeLocation = animation->mKeyNum++;
 		} //アニメーションキーのコピー
 		//アニメーションの追加
 		as->mAnimation.push_back(animation);
@@ -1203,7 +1203,7 @@ CAnimationSet
 */
 CAnimationSet::CAnimationSet(CModelX* model)
 	: mpName(nullptr)
-	, mTime(0)
+	, mTimeLocation(0)
 	, mWeight(0)
 	, mMaxTime(0)
 {
@@ -1225,7 +1225,7 @@ CAnimationSet::CAnimationSet(CModelX* model)
 		}
 	}
 	//終了時間設定
-	mMaxTime = mAnimation[0]->mpKey[mAnimation[0]->mKeyNum - 1].mTime;
+	mMaxTime = mAnimation[0]->mpKey[mAnimation[0]->mKeyNum - 1].mTimeLocation;
 #ifdef _DEBUG
 	//printf("AnimationSet:%s\n", mpName);
 #endif
@@ -1244,7 +1244,7 @@ CAnimationSet::~CAnimationSet()
 
 float CAnimationSet::Time()
 {
-	return mTime;
+	return mTimeLocation;
 }
 
 float CAnimationSet::MaxTime()
@@ -1271,13 +1271,13 @@ void CAnimationSet::AnimateMarix(CModelX* model)
 		//該当するフレームの取得
 		CModelXFrame* frame = model->mFrame[animation->mFrameIndex];
 		//最初の時間より小さい場合
-		if (mTime < animation->mpKey[0].mTime)
+		if (mTimeLocation < animation->mpKey[0].mTimeLocation)
 		{
 			//変換行列を0コマ目の行列で更新
 			frame->mTransformMatrix += animation->mpKey[0].mMatrix * mWeight;
 		}
 		//最後の時間より大きい場合
-		else if (mTime >= animation->mpKey[animation->mKeyNum - 1].mTime)
+		else if (mTimeLocation >= animation->mpKey[animation->mKeyNum - 1].mTimeLocation)
 		{
 			//変換行列を最後のコマの行列で更新
 			frame->mTransformMatrix += animation->mpKey[animation->mKeyNum - 1].mMatrix * mWeight;
@@ -1288,11 +1288,11 @@ void CAnimationSet::AnimateMarix(CModelX* model)
 			for (int k = 1; k < animation->mKeyNum; k++)
 			{
 				//変換行列を、線形補間にて更新
-				if (mTime < animation->mpKey[k].mTime &&
-					animation->mpKey[k - 1].mTime != animation->mpKey[k].mTime)
+				if (mTimeLocation < animation->mpKey[k].mTimeLocation &&
+					animation->mpKey[k - 1].mTimeLocation != animation->mpKey[k].mTimeLocation)
 				{
-					float r = (animation->mpKey[k].mTime - mTime) /
-						(animation->mpKey[k].mTime - animation->mpKey[k - 1].mTime);
+					float r = (animation->mpKey[k].mTimeLocation - mTimeLocation) /
+						(animation->mpKey[k].mTimeLocation - animation->mpKey[k - 1].mTimeLocation);
 
 					frame->mTransformMatrix +=
 						(animation->mpKey[k - 1].mMatrix * r +
@@ -1306,12 +1306,12 @@ void CAnimationSet::AnimateMarix(CModelX* model)
 
 void CAnimationSet::Time(float time)
 {
-	mTime = Math::Clamp(time, 0.0f, mMaxTime);
+	mTimeLocation = Math::Clamp(time, 0.0f, mMaxTime);
 }
 
 void CAnimationSet::TimeProgress(float progress)
 {
-	mTime = mMaxTime * Math::Clamp01(progress);
+	mTimeLocation = mMaxTime * Math::Clamp01(progress);
 }
 
 void CAnimationSet::Weight(float weight)
@@ -1419,7 +1419,7 @@ CAnimation::CAnimation(CModelX* model)
 				mpKey = new CAnimationKey[mKeyNum];
 				for (int i = 0; i < mKeyNum; i++)
 				{
-					mpKey[i].mTime = atof(model->GetToken());	//Time
+					mpKey[i].mTimeLocation = atof(model->GetToken());	//Time
 					model->GetToken();	//16
 					for (int j = 0; j < 16; j++)
 					{
@@ -1443,7 +1443,7 @@ CAnimation::CAnimation(CModelX* model)
 		for (int i = 0; i < mKeyNum; i++)
 		{
 			//時間設定
-			mpKey[i].mTime = time[2][i];	//Time
+			mpKey[i].mTimeLocation = time[2][i];	//Time
 			//行列作成 Size * Rotation * Position
 			mpKey[i].mMatrix = key[1][i] * key[0][i] * key[2][i];
 		}

@@ -195,7 +195,7 @@ void CXCharacter::Update(const CMatrix& matrix)
 		if (mBlendIndex >= 0)
 		{
 			// ブレンドするアニメーションの時間
-			float blendTime = blendAnim->mTime;
+			float blendTime = blendAnim->mTimeLocation;
 			blendAnim->Time(blendTime + frame);
 		}
 

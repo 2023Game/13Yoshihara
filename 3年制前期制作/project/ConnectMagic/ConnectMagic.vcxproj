@@ -55,6 +55,7 @@
     <ClCompile Include="src\BaseSystem\CSoundManager.cpp" />
     <ClCompile Include="src\BaseSystem\CTrailEffect.cpp" />
     <ClCompile Include="src\BaseSystem\CUIManager.cpp" />
+    <ClCompile Include="src\BaseSystem\CWaterShader.cpp" />
     <ClCompile Include="src\BaseSystem\Easing.cpp" />
     <ClCompile Include="src\BaseSystem\Primitive.cpp" />
     <ClCompile Include="src\BaseSystem\CQuaternion.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="src\Game\CTutorialScene.cpp" />
     <ClCompile Include="src\Game\CUpgradeItem.cpp" />
     <ClCompile Include="src\Game\CWand.cpp" />
+    <ClCompile Include="src\Game\CWater.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -197,6 +199,7 @@
     <ClInclude Include="src\BaseSystem\CSoundManager.h" />
     <ClInclude Include="src\BaseSystem\CTrailEffect.h" />
     <ClInclude Include="src\BaseSystem\CUIManager.h" />
+    <ClInclude Include="src\BaseSystem\CWaterShader.h" />
     <ClInclude Include="src\BaseSystem\Easing.h" />
     <ClInclude Include="src\BaseSystem\Primitive.h" />
     <ClInclude Include="src\BaseSystem\CQuaternion.h" />
@@ -282,6 +285,7 @@
     <ClInclude Include="src\Game\CTutorialScene.h" />
     <ClInclude Include="src\Game\CUpgradeItem.h" />
     <ClInclude Include="src\Game\CWand.h" />
+    <ClInclude Include="src\Game\CWater.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\FadeType.h" />

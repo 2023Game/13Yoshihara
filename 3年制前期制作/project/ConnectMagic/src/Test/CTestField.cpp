@@ -9,6 +9,8 @@
 #include "CFire.h"
 #include "CBridge.h"
 
+#include "CWater.h"
+
 // ポータルの設定
 #define PORTAL_POS	CVector(100.0f, 0.0f + 5.0f * PORTAL_SIZE, -100.0f)
 #define PORTAL_SIZE 2.0f
@@ -29,7 +31,13 @@
 #define GRASS_OFFSET_POS_2 CVector(-100.0f,0.0f,-50.0f)
 
 // 橋のオフセット座標
-#define BRIDGE_OFFSET_POS CVector(50.0f,0.0f,-50.0f)
+#define BRIDGE_OFFSET_POS_1 CVector(50.0f,0.0f,-50.0f)
+#define BRIDGE_OFFSET_POS_2 CVector(50.0f,0.0f,-100.0f)
+// 橋のオフセット回転
+#define BRIDGE_OFFSET_ROT_2 CVector(0.0f,180.0f,0.0f)
+
+// 箱のオフセット座標
+#define BOX_OFFSET_POS CVector(0.0f,0.0f,-25.0f)
 
 // コンストラクタ
 CTestField::CTestField()
@@ -51,10 +59,23 @@ CTestField::~CTestField()
 // フィールドのオブジェクトを生成
 void CTestField::CreateFieldObjects()
 {
+	CWater* water = new CWater();
+	water->Position(0.0f, 1.0f, 0.0f);
+
+	CBox* box = new CBox();
+	box->Position(BOX_OFFSET_POS);
+
 	// 橋を生成
 	CBridge* bridge = new CBridge();
 	// 位置設定
-	bridge->Position(BRIDGE_OFFSET_POS);
+	bridge->Position(BRIDGE_OFFSET_POS_1);
+
+	// 橋を生成
+	bridge = new CBridge();
+	// 位置設定
+	bridge->Position(BRIDGE_OFFSET_POS_2);
+	// 回転設定
+	bridge->Rotation(BRIDGE_OFFSET_ROT_2);
 
 	// 草を生成
 	CGrass* grass = new CGrass();

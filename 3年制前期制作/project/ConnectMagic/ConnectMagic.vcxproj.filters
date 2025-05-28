@@ -553,6 +553,12 @@
     <ClCompile Include="src\Game\CMap1Scene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CWaterShader.cpp">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CWater.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -998,6 +1004,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CMap1Scene.h">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CWaterShader.h">
+      <Filter>ソース ファイル\BaseSystem\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CWater.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

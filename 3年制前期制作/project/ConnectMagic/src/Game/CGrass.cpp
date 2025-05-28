@@ -19,7 +19,7 @@ CGrass::CGrass(CVector fireOffsetPos, float fireScale)
 	// ‘‚Ì‰æ‘œ‚ğ¶¬
 	mpGrassImage = new CBillBoardImage
 	(
-		"Field/Grass.png", ETag::eConnectObject,
+		"Field/Grass/Grass.png", ETag::eConnectObject,
 		ETaskPauseType::eGame
 	);
 	// e‚Éİ’è

@@ -7,7 +7,7 @@
 
 // コンストラクタ
 CTimeUI::CTimeUI(int maxTime)
-	: mTime(maxTime)
+	: mTimeLocation(maxTime)
 	, mElapsedTime(0.0f)
 {
 	// 時間UIを生成
@@ -47,18 +47,18 @@ void CTimeUI::Countdown()
 	{
 		// 1秒マイナス
 		mElapsedTime -= 1.0f;
-		mTime--;
+		mTimeLocation--;
 	}
 }
 
 // 時間が経過したか
 bool CTimeUI::GetElapsedTime()
 {
-	return mTime <= 0;
+	return mTimeLocation <= 0;
 }
 
 // 時間を取得する
 int CTimeUI::GetTime() const
 {
-	return mTime;
+	return mTimeLocation;
 }

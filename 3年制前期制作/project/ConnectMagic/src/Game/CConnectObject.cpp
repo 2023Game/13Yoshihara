@@ -50,6 +50,7 @@ void CConnectObject::DeleteObject(CObjectBase* obj)
 		{
 			// 配列から取り除く
 			mTargets.erase(mTargets.begin() + i);
+			return;
 		}
 	}
 }
@@ -113,8 +114,7 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 				}
 			}
 		}
-		// 衝突した相手が壁、オブジェクト、プレイヤーの
-		// いずれかの場合
+		// 衝突した相手が壁の場合
 		else if (other->Layer() == ELayer::eWall)
 		{
 			// 押し戻しベクトル
@@ -124,6 +124,7 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);
 		}
+		// 衝突した相手がオブジェクトの場合
 		else if (other->Layer() == ELayer::eObject)
 		{
 			// 押し戻しベクトル

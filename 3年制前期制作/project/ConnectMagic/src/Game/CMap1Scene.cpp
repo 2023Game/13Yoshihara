@@ -41,21 +41,21 @@ void CMap1Scene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("Map1", "Field\\Map\\Map_1\\Map_1.obj");
-	CResourceManager::Load<CModel>("Wand", "Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box", "Field\\Box\\Box.obj");
-	CResourceManager::Load<CModel>("Door", "Field\\Door\\Door.obj");
-	CResourceManager::Load<CModel>("SwitchFrame", "Field\\Switch\\Switch_Frame.obj");
-	CResourceManager::Load<CModel>("SwitchButton", "Field\\Switch\\Switch_Button.obj");
+	CResourceManager::Load<CModel>("Map1",			"Field\\Map\\Map_1\\Map_1.obj");
+	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
+	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
+	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
+	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
+	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
 	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
-	CResourceManager::Load<CModel>("Torch", "Field\\Torch\\Torch.obj");
-	CResourceManager::Load<CModel>("Bridge", "Field\\Bridge\\Bridge.obj");
+	CResourceManager::Load<CModel>("Torch",			"Field\\Torch\\Torch.obj");
+	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("Map1_Ground_Col", "Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Map1_Wall_Col", "Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Door_Col", "Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col", "Field\\Box\\Col\\Box_Col.obj");
-	CResourceManager::Load<CModel>("Bridge_Col", "Field\\Bridge\\Col\\Bridge_Col.obj");
+	CResourceManager::Load<CModel>("Map1_Ground_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Map1_Wall_Col",		"Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Door_Col",			"Field\\Door\\Col\\Door_Col.obj");
+	CResourceManager::Load<CModel>("Box_Col",			"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("Bridge_Col",		"Field\\Bridge\\Col\\Bridge_Col.obj");
 	/*
 	効果音
 	*/
