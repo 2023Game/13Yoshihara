@@ -100,6 +100,11 @@ public:
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
 
+	// 接続できる数を設定
+	void SetConnectMax(int num);
+	// 接続できる数を取得
+	int GetConnectMax() const;
+
 private:
 	// インスタンス
 	static CConnectPointManager* spInstance;

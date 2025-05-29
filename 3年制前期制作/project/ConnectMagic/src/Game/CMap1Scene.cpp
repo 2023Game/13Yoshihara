@@ -80,15 +80,15 @@ void CMap1Scene::Load()
 	);
 
 	// フィールドクラス生成
-	CMap1* field = new CMap1();
+	mpField = new CMap1();
 
 	// 衝突判定するコライダーを追加
-	pointMgr->AddCollider(field->GetGroundCol());
-	pointMgr->AddCollider(field->GetWallCol());
+	pointMgr->AddCollider(mpField->GetGroundCol());
+	pointMgr->AddCollider(mpField->GetWallCol());
 
 	//// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
+	mainCamera->AddCollider(mpField->GetGroundCol());
+	mainCamera->AddCollider(mpField->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
 
@@ -103,6 +103,10 @@ void CMap1Scene::Update()
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
+	}
+	if (CInput::PushKey('F'))
+	{
+		mpField->SetShow(!mpField->IsShow());
 	}
 #endif
 

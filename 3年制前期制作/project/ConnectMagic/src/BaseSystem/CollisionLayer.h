@@ -12,6 +12,7 @@ enum class ELayer
 	eItem,			// アイテム
 	ePortal,		// ポータル
 	eRespawnArea,	// リスポーン地点
+	eWater,			// 水
 	
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用

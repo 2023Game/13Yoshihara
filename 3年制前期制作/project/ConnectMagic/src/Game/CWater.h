@@ -2,24 +2,30 @@
 #include "CObjectBase.h"
 #include "CWaterShader.h"
 
-class CTexture;
 class CMaterial;
 
 // 水
 class CWater : public CObjectBase
 {
 private:
-	GLuint mVAO;
-	GLuint mVBO;
-	GLuint mNormalMapTex;
+	GLuint mVAO;				// 設定情報
+	GLuint mVBO;				// 頂点情報
+	GLuint mNormalMapTex;		// ノーマルマップのテクスチャID
 	CWaterShader mWaterShader;	// 水面用シェーダー
 	float mTime;				// 経過時間
 
+	// マテリアル
 	CMaterial* mpMaterial;
+
+	// コライダー
+	CCollider* mpCol;
+
+	// コライダーを生成
+	void CreateCol() override;
 
 public:
 	// コンストラクタ
-	CWater();
+	CWater(CVector scale);
 	// デストラクタ
 	~CWater();
 

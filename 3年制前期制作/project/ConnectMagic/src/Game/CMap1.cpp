@@ -1,5 +1,6 @@
 #include "CMap1.h"
 #include "CBridge.h"
+#include "CWater.h"
 
 // 松明の炎のオフセット座標
 #define TORCH_FIRE_OFFSET_POS CVector(0.0f,9.0f,0.0f)
@@ -13,6 +14,11 @@
 
 // 橋のデフォルト角度
 #define BRIDGE_ANGLE_1 90.0f
+
+// 水面のオフセット座標
+#define WATER_OFFSET_POS CVector(-250.0f,-10.0f,50.0f)
+// 水面のスケール
+#define WATER_SCALE CVector(500.0f,1.0f,300.0f)
 
 // コンストラクタ
 CMap1::CMap1()
@@ -35,6 +41,10 @@ CMap1::~CMap1()
 // フィールドオブジェクトを生成
 void CMap1::CreateFieldObjects()
 {
+	// 水面を生成
+	CWater* water = new CWater(WATER_SCALE);
+	water->Position(WATER_OFFSET_POS);
+
 	// 橋を生成
 	CBridge* bridge = new CBridge();
 	// 位置設定

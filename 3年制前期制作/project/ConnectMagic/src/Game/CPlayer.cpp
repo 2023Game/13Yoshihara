@@ -228,8 +228,19 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
 
+	// 本体コライダ―なら
+	if (self == mpBodyCol)
+	{
+		// 水の場合
+		if (other->Layer() == ELayer::eWater)
+		{
+			// 帰還状態へ
+			ChangeState(EState::eReturn);
+			return;
+		}
+	}
 	// コネクトオブジェクト探知用コライダーなら
-	if (self == mpSearchConnectObjCol)
+	else if (self == mpSearchConnectObjCol)
 	{
 		// コネクトオブジェクトの場合
 		if (other->Owner()->Tag() == ETag::eConnectObject)
@@ -266,10 +277,10 @@ void CPlayer::CreateCol()
 		BODY_RADIUS
 	);
 	// フィールド,壁、オブジェクト、
-	// スイッチ、ポータル、リスポーン地点とだけ衝突
+	// スイッチ、ポータル、リスポーン地点、水、アイテムとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
 		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal,
-		ELayer::eRespawnArea});
+		ELayer::eRespawnArea,ELayer::eWater,ELayer::eItem});
 
 	// コネクトオブジェクトの探知用コライダ
 	mpSearchConnectObjCol = new CColliderSphere
@@ -801,8 +812,9 @@ void CPlayer::UpdateReturn()
 
 		// 座標を設定
 	case 2:
-		// 落下したときに戻ってくる地点に設定
+		// リスポーン地点に設定
 		Position(mRespawnPos);
+		// 移動しない
 		mMoveSpeed = CVector::zero;
 		// 杖を持っていたら
 		if (mIsWand)

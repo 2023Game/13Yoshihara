@@ -15,8 +15,13 @@ public:
 
 	// XV
 	void Update() override;
+	// •`‰æ
+	void Render() override;
 
 private:
+	// ‘S‚Äíœ
+	void Delete() override;
+
 	// ‘‚Ì‰æ‘œ
 	CBillBoardImage* mpGrassImage;
 };

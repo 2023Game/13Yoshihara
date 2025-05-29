@@ -137,6 +137,9 @@
     <Filter Include="ソース ファイル\Game\Field\Object\SwitchObject\Switch">
       <UniqueIdentifier>{3e2ed5db-0bf8-4b8e-9abd-e504b429eabb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Object\ItemObject">
+      <UniqueIdentifier>{c91adb51-8896-4cba-a435-c27ceac46c3d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -558,6 +561,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CWater.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CItemBase.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1010,6 +1016,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CWater.h">
       <Filter>ソース ファイル\Game\Field</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CItemBase.h">
+      <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

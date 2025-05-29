@@ -112,7 +112,7 @@ private:
 		eTarzanStart,	// ターザン開始
 		eTarzan,		// ターザン中
 		eTarzanEnd,		// ターザン終了
-		eReturn,		// 場外から帰還
+		eReturn,		// 帰還
 		eDeath,			// 死亡
 	};
 

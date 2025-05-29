@@ -19,8 +19,9 @@ CImage3D::CImage3D(std::string path,
 	, mElapsedTime(0.0f)
 	, mIsBillboard(false)
 	, mIsDepthTest(true)
-	, mIsDepthMask(false)
+	, mIsDepthMask(true)
 	, mIsLighting(false)
+	, mIsAlphaTest(true)
 	, mIsRotate(false)
 	, mRotSpeed(0.0f)
 	, mAngle(0.0f)
@@ -207,6 +208,12 @@ void CImage3D::SetLighting(bool enable)
 	mIsLighting = enable;
 }
 
+// アルファテストのオンオフを設定
+void CImage3D::SetAlphaTest(bool enable)
+{
+	mIsAlphaTest = enable;
+}
+
 // 回転のオンオフを設定
 void CImage3D::SetRotate(bool enable)
 {
@@ -323,8 +330,13 @@ void CImage3D::Render(CMaterial* mpMaterial)
 
 	// 各設定のフラグの状態に合わせて、オフにする
 	if (!mIsDepthTest) glDisable(GL_DEPTH_TEST);	// デプステスト
-	if (!mIsDepthMask) glDepthMask(false);		// デプス書き込み
+	if (!mIsDepthMask) glDepthMask(false);			// デプス書き込み
 	if (!mIsLighting) glDisable(GL_LIGHTING);		// ライティング
+	// アルファテストがオンなら
+	if (mIsAlphaTest) {
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_GREATER, 0.1f); // αが0.1未満のピクセルは描画しない
+	}
 
 	// マテリアル適用
 	mpMaterial->Enabled(mColor);
@@ -338,6 +350,7 @@ void CImage3D::Render(CMaterial* mpMaterial)
 	glEnable(GL_DEPTH_TEST);	// デプステスト
 	glDepthMask(true);			// デプス書き込み
 	glEnable(GL_LIGHTING);		// ライティング
+	glDisable(GL_ALPHA_TEST);	// アルファテストを無効化
 
 	// 行列を戻す
 	glPopMatrix();

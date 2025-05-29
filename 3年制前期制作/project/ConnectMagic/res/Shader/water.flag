@@ -26,10 +26,12 @@ void main(){
 	vec3 blendedNormal = normalize(normal1 + normal2);
 
 	// 拡散反射
-	float diffuse = max(dot(blendedNormal, normalize(v_LightDir)), 0.0);
+	float diffuse = 0.3 + 0.7 * max(dot(blendedNormal, normalize(v_LightDir)), 0.0);
 
 	// フレネル反射（角度で明るくする）
 	float fresnel = pow(1.0 - max(dot(blendedNormal, normalize(v_ViewDir)), 0.0), 3.0);
+	// 明るくなりすぎないよう調整
+	fresnel = clamp(fresnel, 0.1, 0.25);
 
 	// 最終色（青＋フレネル反射）
 	vec3 waterColor = mix(vec3(0.0, 0.3, 0.5) * diffuse, vec3(0.8), fresnel);

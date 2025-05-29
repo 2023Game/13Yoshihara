@@ -587,6 +587,18 @@ bool CConnectPointManager::IsWandConnectAirObject()
 	return false;
 }
 
+// Ú‘±‚Å‚«‚é”‚ğİ’è
+void CConnectPointManager::SetConnectMax(int num)
+{
+	mConnectMaxNum = num;
+}
+
+// Ú‘±‚Å‚«‚é”‚ğæ“¾
+int CConnectPointManager::GetConnectMax() const
+{
+	return mConnectMaxNum;
+}
+
 // ñ‚Ìæ‚ÌÚ‘±•”‚ÌˆÊ’u‚ğ“Á’è
 void CConnectPointManager::WandPos()
 {

@@ -129,6 +129,12 @@ bool CObjectBase::IsDamaging() const
 	return mIsDamage;
 }
 
+// すべて削除
+void CObjectBase::Delete()
+{
+	Kill();
+}
+
 // コライダーを作成
 void CObjectBase::CreateCol()
 {

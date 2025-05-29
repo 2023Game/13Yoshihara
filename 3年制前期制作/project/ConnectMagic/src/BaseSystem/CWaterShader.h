@@ -7,7 +7,6 @@ class CWaterShader : public CShader
 private:
 	GLint mTimeLocation;		// 経過時間
 	GLint mNormalMapLocation;	// ノーマルマップのテクスチャユニット
-	GLint mLightPosLocation;	// 光源のワールド座標
 	GLint mCameraPosLocation;	// カメラのワールド座標
 	GLint mModelLocation;		// モデル変換行列
 	GLint mViewLocation;		// ビュー変換行列
@@ -23,7 +22,6 @@ public:
 	void SetUniforms(
 		float time,
 		int normalMapTextureUnit,
-		const CVector& lightPos,
 		const CVector& cameraPos,
 		const CMatrix& model,
 		const CMatrix& view,

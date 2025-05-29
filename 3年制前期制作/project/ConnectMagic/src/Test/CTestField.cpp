@@ -8,7 +8,7 @@
 #include "CGrass.h"
 #include "CFire.h"
 #include "CBridge.h"
-
+#include "CUpgradeItem.h"
 #include "CWater.h"
 
 // ポータルの設定
@@ -39,6 +39,12 @@
 // 箱のオフセット座標
 #define BOX_OFFSET_POS CVector(0.0f,0.0f,-25.0f)
 
+// 水の座標
+#define WATER_OFFSET_POS CVector(300.0f,1.0f,0.0f)
+
+// アイテムの座標
+#define ITEM_OFFSET_POS CVector(0.0f,10.0f,30.0f)
+
 // コンストラクタ
 CTestField::CTestField()
 	: CFieldBase()
@@ -59,9 +65,15 @@ CTestField::~CTestField()
 // フィールドのオブジェクトを生成
 void CTestField::CreateFieldObjects()
 {
-	CWater* water = new CWater();
-	water->Position(0.0f, 1.0f, 0.0f);
+	// 強化アイテムを生成
+	CUpgradeItem* item = new CUpgradeItem();
+	item->Position(ITEM_OFFSET_POS);
 
+	// 水を生成
+	CWater* water = new CWater(CVector(100.0f,1.0f,100.0f));
+	water->Position(WATER_OFFSET_POS);
+
+	// 箱を生成
 	CBox* box = new CBox();
 	box->Position(BOX_OFFSET_POS);
 

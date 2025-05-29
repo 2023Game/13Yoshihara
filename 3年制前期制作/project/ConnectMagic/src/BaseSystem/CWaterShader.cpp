@@ -12,7 +12,6 @@ bool CWaterShader::Load(const char* vertexPath, const char* flagPath)
 	// シェーダー内のuniform変数の場所を取得
 	mTimeLocation = glGetUniformLocation(GetProgram(), "u_Time");
 	mNormalMapLocation = glGetUniformLocation(GetProgram(), "u_NormalMap");
-	mLightPosLocation = glGetUniformLocation(GetProgram(), "u_LightPos");
 	mCameraPosLocation = glGetUniformLocation(GetProgram(), "u_CameraPos");
 	mModelLocation = glGetUniformLocation(GetProgram(), "u_Model");
 	mViewLocation = glGetUniformLocation(GetProgram(), "u_View");
@@ -25,7 +24,6 @@ bool CWaterShader::Load(const char* vertexPath, const char* flagPath)
 void CWaterShader::SetUniforms(
 	float time,
 	int normalMapTextureUnit,
-	const CVector& lightPos,
 	const CVector& cameraPos,
 	const CMatrix& model,
 	const CMatrix& view,
@@ -36,9 +34,6 @@ void CWaterShader::SetUniforms(
 
 	// ノーマルマップ用のテクスチャユニットを設定
 	glUniform1i(mNormalMapLocation, normalMapTextureUnit);
-
-	// 光源のワールド座標を設定
-	glUniform3fv(mLightPosLocation, 1, (float*)&lightPos);
 
 	// カメラのワールド座標を設定
 	glUniform3fv(mCameraPosLocation, 1, (float*)&cameraPos);

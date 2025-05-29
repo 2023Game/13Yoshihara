@@ -3,6 +3,8 @@
 
 class CGameMenu;
 
+class CFieldBase;
+
 // マップ１
 class CMap1Scene : public CSceneBase
 {
@@ -19,4 +21,6 @@ public:
 private:
 	// ゲームメニュー
 	CGameMenu* mpGameMenu;
+
+	CFieldBase* mpField;
 };

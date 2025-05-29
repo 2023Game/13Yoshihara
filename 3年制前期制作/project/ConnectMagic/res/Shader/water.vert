@@ -13,7 +13,6 @@ out vec3 v_ViewDir;     // 視点の方向
 uniform mat4 u_Model;       // モデル行列
 uniform mat4 u_View;        // ビュー行列
 uniform mat4 u_Projection;  // プロジェクション行列
-uniform vec3 u_LightPos;    // 光源の位置
 uniform vec3 u_CameraPos;   // カメラの位置
 
 void main() {
@@ -24,9 +23,16 @@ void main() {
     // モデル行列の逆転置行列を使って変形
     vec3 worldNormal = mat3(transpose(inverse(u_Model))) * a_Normal;
     
-    // 光方向と視線方向を計算
-    v_LightDir = normalize(u_LightPos - worldPos.xyz);
-    v_ViewDir = normalize(u_CameraPos - worldPos.xyz);
+    // 光は常に真上から
+    v_LightDir = normalize(vec3(0.0,1.0,0.0));
+
+    // ビュー上の座標
+    vec3 viewPos = vec3(u_View * worldPos);
+    // ビュー上のカメラ座標
+    vec3 cameraViewPos = vec3(u_View * vec4(u_CameraPos, 1.0));
+
+    // 視点の方向
+    v_ViewDir = normalize(cameraViewPos - viewPos);
 
     // 出力情報
     v_TexCoord = a_TexCoord;

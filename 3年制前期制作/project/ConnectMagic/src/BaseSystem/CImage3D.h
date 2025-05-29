@@ -60,6 +60,8 @@ public:
 	void SetDepthMask(bool enable);
 	// ライティングのオンオフを設定
 	void SetLighting(bool enable);
+	// アルファテストのオンオフを設定
+	void SetAlphaTest(bool enable);
 	// 回転のオンオフを設定
 	void SetRotate(bool enable);
 	// 回転速度を設定
@@ -105,6 +107,8 @@ protected:
 	bool mIsDepthMask;
 	// ライティングが有効かどうか
 	bool mIsLighting;
+	// アルファ0.1未満を消すかどうか
+	bool mIsAlphaTest;
 	// 回転が有効かどうか
 	bool mIsRotate;
 	// 回転速度

@@ -53,14 +53,30 @@ void CGrass::Update()
 		// アルファが0以下なら
 		if (alpha <= 0.0f)
 		{
-			// 炎生成も削除
-			mpFlamethrower->Kill();
-			mpFlamethrower = nullptr;
-			// 削除
-			Kill();
+			// 全て削除
+			Delete();
 			return;
 		}
 		// アルファを設定
 		mpGrassImage->SetAlpha(alpha);
 	}
+}
+
+// 描画
+void CGrass::Render()
+{
+	mpGrassImage->Render();
+}
+
+// 全て削除
+void CGrass::Delete()
+{
+	// 炎生成も削除
+	mpFlamethrower->Kill();
+	mpFlamethrower = nullptr;
+	// 草の画像も削除
+	mpGrassImage->Kill();
+	mpGrassImage = nullptr;
+	// 削除
+	Kill();
 }
