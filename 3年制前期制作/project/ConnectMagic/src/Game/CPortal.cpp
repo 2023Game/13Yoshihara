@@ -35,8 +35,22 @@ void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// プレイヤーの場合
 		if (other->Layer() == ELayer::ePlayer)
 		{
+			// シーン管理クラス
+			CSceneManager* SceneMgr = CSceneManager::Instance();
+			// 現在のシーン
+			EScene CurrentScene = SceneMgr->GetCurrentScene();
+			// 次のシーン
+			EScene NextScene = EScene::eTutorial;
+			// 現在のシーンから次のシーンを決定
+			switch (CurrentScene)
+			{
+			case EScene::eTutorial: NextScene = EScene::eMap1; break;
+			case EScene::eMap1:		NextScene = EScene::eTutorial;	break;
+			case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
+			}
+
 			// 次のステージへ
-			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
+			CSceneManager::Instance()->LoadScene(NextScene);
 		}
 	}
 }

@@ -45,6 +45,17 @@
 // アイテムの座標
 #define ITEM_OFFSET_POS CVector(0.0f,10.0f,30.0f)
 
+// キャンプファイヤーのオフセット座標
+#define CAMPFIRE_OFFSET_POS CVector(0.0f,0.0f,-70.0f)
+// 炎のオフセット座標
+#define CAMPFIRE_FIRE_OFFSET_POS CVector(0.0f,3.0f,0.0f)
+// 炎の大きさ
+#define CAMPFIRE_FIRE_SCALE 2.5f
+// 炎の移動速度
+#define CAMPFIRE_FIRE_SPEED 10.0f
+// 接続ターゲットのオフセット座標
+#define CAMPFIRE_TARGET_OFFSET_POS CVector(0.0f,15.0f,0.0f)
+
 // コンストラクタ
 CTestField::CTestField()
 	: CFieldBase()
@@ -109,6 +120,12 @@ void CTestField::CreateFieldObjects()
 	fire = new CFire("Torch", TORCH_FIRE_OFFSET_POS);
 	// 位置調整
 	fire->Position(TORCH_OFFSET_POS_2);
+
+	// キャンプファイヤー
+	fire = new CFire("CampFire", CAMPFIRE_FIRE_OFFSET_POS,
+		CAMPFIRE_FIRE_SCALE, CAMPFIRE_FIRE_SPEED,
+		CAMPFIRE_TARGET_OFFSET_POS);
+	fire->Position(CAMPFIRE_OFFSET_POS);
 
 	// ポータルを生成
 	CPortal* portal = new CPortal();

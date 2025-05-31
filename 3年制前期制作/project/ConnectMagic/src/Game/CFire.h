@@ -6,6 +6,12 @@ class CFlamethrower;
 // 炎のスケール
 #define FIRE_SCALE 0.7f
 
+// 炎の移動速度
+#define MOVE_SPEED 2.0f
+
+// 接続ターゲットのオフセット座標
+#define TARGET_OFFSET_POS CVector(0.0f,2.0f,0.0f)
+
 // 炎がつく接続オブジェクト
 class CFire : public CConnectObject
 {
@@ -16,8 +22,11 @@ public:
 	/// <param name="modelName">モデルの名前</param>
 	/// <param name="fireOffsetPos">炎のオフセット座標</param>
 	/// <param name="fireScale">炎のスケール</param>
+	/// <param name="fireSpeed">炎の移動速度</param>
+	/// <param name="targetOffsetPos">接続ターゲットのオフセット座標</param>
 	CFire(std::string modelName = "", CVector fireOffsetPos = CVector::zero,
-		float fireScale = FIRE_SCALE);
+		float fireScale = FIRE_SCALE, float fireSpeed = MOVE_SPEED,
+		CVector targetOffsetPos = TARGET_OFFSET_POS);
 	// デストラクタ
 	~CFire();
 

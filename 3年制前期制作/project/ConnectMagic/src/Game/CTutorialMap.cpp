@@ -7,7 +7,7 @@
 #include "CRespawnArea.h"
 
 // スイッチの座標
-#define SWITCH_POS	CVector(20.0f,0.0f,20.0f)
+#define SWITCH_POS	CVector(15.0f,0.0f,15.0f)
 // ドアの座標
 #define DOOR_POS	CVector(8.5f,0.0f,-42.5f)
 // 箱の座標

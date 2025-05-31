@@ -50,12 +50,14 @@ void CMap1Scene::Load()
 	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
 	CResourceManager::Load<CModel>("Torch",			"Field\\Torch\\Torch.obj");
 	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
+	CResourceManager::Load<CModel>("CampFire",		"Field\\CampFire\\CampFire.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("Map1_Ground_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
 	CResourceManager::Load<CModel>("Map1_Wall_Col",		"Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Door_Col",			"Field\\Door\\Col\\Door_Col.obj");
 	CResourceManager::Load<CModel>("Box_Col",			"Field\\Box\\Col\\Box_Col.obj");
 	CResourceManager::Load<CModel>("Bridge_Col",		"Field\\Bridge\\Col\\Bridge_Col.obj");
+	CResourceManager::Load<CModel>("CampFire_Col",		"Field\\CampFire\\Col\\CampFire.obj");
 	/*
 	効果音
 	*/
@@ -103,10 +105,6 @@ void CMap1Scene::Update()
 	if (CInput::PushKey('H'))
 	{
 		CSceneManager::Instance()->LoadScene(EScene::eTitle);
-	}
-	if (CInput::PushKey('F'))
-	{
-		mpField->SetShow(!mpField->IsShow());
 	}
 #endif
 

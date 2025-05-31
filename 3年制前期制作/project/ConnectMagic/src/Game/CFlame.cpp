@@ -15,6 +15,9 @@ CFlame::CFlame(ETag tag)
 	, mFlameScale(FLAME_SCALE)
 	, mFlameScaleAnimTime(FLAME_SCALE_ANIM_TIME)
 {
+	// デプステストオフ
+	SetDepthMask(false);
+
 	SetAnimData(&msAnimData);
 
 	mpCollider = new CColliderSphere

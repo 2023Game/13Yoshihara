@@ -2,24 +2,20 @@
 #include "CFlamethrower.h"
 #include "CColliderSphere.h"
 #include "CColliderCapsule.h"
+#include "CColliderMesh.h"
 
 // 重量（動かさない）
 #define WEIGHT 1.0f
 
-// 接続ターゲットのオフセット座標
-#define TARGET_OFFSET_POS CVector(0.0f,2.0f,0.0f)
-
 // コライダーの半径
 #define RADIUS 5.0f
-
-// 炎の移動速度
-#define MOVE_SPEED 2.0f
 
 // 松明の縦の長さ
 #define TORCH_HEIGHT 7.0f
 
 // コンストラクタ
-CFire::CFire(std::string modelName, CVector fireOffsetPos, float fireScale)
+CFire::CFire(std::string modelName, CVector fireOffsetPos,
+	float fireScale, float fireSpeed, CVector targetOffsetPos)
 	: CConnectObject(WEIGHT,ETaskPriority::eBillboard)
 	, mIsFire(false)
 {
@@ -42,7 +38,7 @@ CFire::CFire(std::string modelName, CVector fireOffsetPos, float fireScale)
 		CVector::up
 	);
 	// 移動速度を設定
-	mpFlamethrower->SetFlameMoveSpeed(MOVE_SPEED);
+	mpFlamethrower->SetFlameMoveSpeed(fireSpeed);
 	// スケールを設定
 	mpFlamethrower->SetFlameScale(fireScale);
 	// スケール値は変化していかない
@@ -51,7 +47,7 @@ CFire::CFire(std::string modelName, CVector fireOffsetPos, float fireScale)
 	mpFlamethrower->SetThrowOffsetPos(fireOffsetPos);
 
 	// 接続ターゲットを生成
-	CreateTarget(Position() + fireOffsetPos + TARGET_OFFSET_POS);
+	CreateTarget(Position() + fireOffsetPos + targetOffsetPos);
 
 	// コライダーを生成
 	CreateCol(modelName);
@@ -121,6 +117,16 @@ void CFire::CreateCol(std::string modelName)
 		);
 		// 接続オブジェクトの探知用とだけ衝突判定
 		mpCol->SetCollisionLayers({ ELayer::eConnectSearch });
+	}
+	// キャンプファイヤーの場合
+	else if (modelName == "CampFire")
+	{
+		mpCol = new CColliderMesh
+		(
+			this, ELayer::eObject,
+			CResourceManager::Get<CModel>("CampFire_Col"),
+			true
+		);
 	}
 	// それ以外の場合
 	else

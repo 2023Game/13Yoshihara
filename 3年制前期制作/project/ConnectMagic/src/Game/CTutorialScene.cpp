@@ -17,7 +17,7 @@
 
 //コンストラクタ
 CTutorialScene::CTutorialScene()
-	: CSceneBase(EScene::eGameTest)
+	: CSceneBase(EScene::eTutorial)
 	, mpGameMenu(nullptr)
 {
 }
