@@ -62,6 +62,8 @@ public:
 	void SetLighting(bool enable);
 	// アルファテストのオンオフを設定
 	void SetAlphaTest(bool enable);
+	// 裏面描画のオンオフを設定
+	void SetBackFace(bool enable);
 	// 回転のオンオフを設定
 	void SetRotate(bool enable);
 	// 回転速度を設定
@@ -109,6 +111,8 @@ protected:
 	bool mIsLighting;
 	// アルファ0.1未満を消すかどうか
 	bool mIsAlphaTest;
+	// 裏面を描画するか
+	bool mIsBackFace;
 	// 回転が有効かどうか
 	bool mIsRotate;
 	// 回転速度

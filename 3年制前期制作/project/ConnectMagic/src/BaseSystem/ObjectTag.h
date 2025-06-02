@@ -16,6 +16,7 @@ enum class ETag
 	eSwitch,			// スイッチ
 	eSwitchObject,		// スイッチで作用するオブジェクト
 	eRespawnArea,		// リスポーン地点
+	eFragmentMergeArea,	// 欠片を合成する場所
 
 	ePlayer,	// プレイヤー
 	eEnemy,		// エネミー

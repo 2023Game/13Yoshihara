@@ -14,6 +14,7 @@
 CGrass::CGrass(CVector fireOffsetPos, float fireScale)
 	: CFire("", fireOffsetPos, fireScale)
 {
+	// タグを草に設定
 	SetConnectObjTag(EConnectObjTag::eGrass);
 
 	// 草の画像を生成
@@ -30,7 +31,7 @@ CGrass::CGrass(CVector fireOffsetPos, float fireScale)
 	// サイズを設定
 	mpGrassImage->SetSize(size);
 	// サイズの半分弱上に上げる
-	mpGrassImage->SetOffsetPos(CVector(0.0f, size.Y() * 0.8f, 0.0f));
+	mpGrassImage->SetOffsetPos(CVector2(0.0f, size.Y() * 0.8f));
 }
 
 // デストラクタ

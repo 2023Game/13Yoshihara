@@ -565,6 +565,12 @@
     <ClCompile Include="src\Game\CItemBase.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CPortalFragment.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CFragmentMergeArea.cpp">
+      <Filter>ソース ファイル\Game\Field</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1019,6 +1025,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CItemBase.h">
       <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPortalFragment.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFragmentType.h">
+      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CFragmentMergeArea.h">
+      <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,9 +1,8 @@
 #pragma once
-#include "CBillBoardImage.h"
-#include "CColliderSphere.h"
+#include "CImage3D.h"
 
 // ポータル
-class CPortal : public CBillBoardImage
+class CPortal : public CImage3D
 {
 public:
 	// コンストラクタ

@@ -22,6 +22,7 @@ CImage3D::CImage3D(std::string path,
 	, mIsDepthMask(true)
 	, mIsLighting(false)
 	, mIsAlphaTest(true)
+	, mIsBackFace(false)
 	, mIsRotate(false)
 	, mRotSpeed(0.0f)
 	, mAngle(0.0f)
@@ -214,6 +215,12 @@ void CImage3D::SetAlphaTest(bool enable)
 	mIsAlphaTest = enable;
 }
 
+// 裏面描画のオンオフを設定
+void CImage3D::SetBackFace(bool enable)
+{
+	mIsBackFace = enable;
+}
+
 // 回転のオンオフを設定
 void CImage3D::SetRotate(bool enable)
 {
@@ -291,6 +298,27 @@ void CImage3D::Render(CMaterial* mpMaterial)
 	// 自身の行列を取得
 	CMatrix m = Matrix();
 
+	// Z軸回転の行列
+	CMatrix zRot = CMatrix::identity;
+	// 回転が有効ならば
+	if (mIsRotate)
+	{
+		mAngle += mRotSpeed * Times::DeltaTime();
+		// 1000度を超えたら
+		if (std::abs(mAngle) > 1000.0f)
+		{
+			// 360度以内に戻す
+			mAngle = std::fmod(mAngle, 360.0f);
+		}
+		// Z軸での回転
+		zRot.RotateZ(mAngle);
+	}
+	else
+	{
+		// 単位行列にして影響をなくす
+		zRot.Identity();
+	}
+
 	// ビルボードが有効ならば
 	if (mIsBillboard)
 	{
@@ -298,27 +326,12 @@ void CImage3D::Render(CMaterial* mpMaterial)
 		CCamera* cam = CCamera::CurrentCamera();
 		CMatrix camMtx = cam->GetViewMatrix().Inverse();
 		camMtx.Position(CVector::zero);
-		// Z軸回転の行列
-		CMatrix zRot;
-		// 回転が有効ならば
-		if (mIsRotate)
-		{
-			mAngle += mRotSpeed * Times::DeltaTime();
-			// 1000度を超えたら
-			if (std::abs(mAngle) > 1000.0f)
-			{
-				// 360度以内に戻す
-				mAngle = std::fmod(mAngle, 360.0f);
-			}
-			// Z軸での回転
-			zRot.RotateZ(mAngle);
-		}
-		else
-		{
-			// 単位行列にして影響をなくす
-			zRot.Identity();
-		}
+
 		m = zRot * camMtx * m;
+	}
+	else
+	{
+		m = zRot * m;
 	}
 
 	// 行列を反映
@@ -337,6 +350,8 @@ void CImage3D::Render(CMaterial* mpMaterial)
 		glEnable(GL_ALPHA_TEST);
 		glAlphaFunc(GL_GREATER, 0.1f); // αが0.1未満のピクセルは描画しない
 	}
+	// 裏面描画がオンなら
+	if (mIsBackFace) glDisable(GL_CULL_FACE);
 
 	// マテリアル適用
 	mpMaterial->Enabled(mColor);
@@ -351,6 +366,7 @@ void CImage3D::Render(CMaterial* mpMaterial)
 	glDepthMask(true);			// デプス書き込み
 	glEnable(GL_LIGHTING);		// ライティング
 	glDisable(GL_ALPHA_TEST);	// アルファテストを無効化
+	glEnable(GL_CULL_FACE);		// 裏面描画をオフ
 
 	// 行列を戻す
 	glPopMatrix();

@@ -12,6 +12,7 @@ enum class ELayer
 	eItem,			// アイテム
 	ePortal,		// ポータル
 	eRespawnArea,	// リスポーン地点
+	eFragmentMergeArea,	// 欠片を合成する場所
 	eWater,			// 水
 	
 	eInteractObj,	// 調べるオブジェクト

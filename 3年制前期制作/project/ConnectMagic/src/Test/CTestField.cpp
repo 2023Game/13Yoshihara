@@ -10,6 +10,8 @@
 #include "CBridge.h"
 #include "CUpgradeItem.h"
 #include "CWater.h"
+#include "CPortalFragment.h"
+#include "CFragmentMergeArea.h"
 
 // ポータルの設定
 #define PORTAL_POS	CVector(100.0f, 0.0f + 5.0f * PORTAL_SIZE, -100.0f)
@@ -76,6 +78,18 @@ CTestField::~CTestField()
 // フィールドのオブジェクトを生成
 void CTestField::CreateFieldObjects()
 {
+	// 欠片の合成場所
+	CFragmentMergeArea* mergeArea = new CFragmentMergeArea();
+	mergeArea->Position(0.0f, 0.0f, 100.0f);
+	
+	// ポータルの欠片
+	CPortalFragment* fragment = new CPortalFragment(EFragmentType::eFragment1);
+	fragment->Position(20.0f, 0.0f, 50.0f);
+	
+	fragment = new CPortalFragment(EFragmentType::eFragment2);
+	fragment = new CPortalFragment(EFragmentType::eFragment3);
+	fragment = new CPortalFragment(EFragmentType::eFragment4);
+
 	// 強化アイテムを生成
 	CUpgradeItem* item = new CUpgradeItem();
 	item->Position(ITEM_OFFSET_POS);

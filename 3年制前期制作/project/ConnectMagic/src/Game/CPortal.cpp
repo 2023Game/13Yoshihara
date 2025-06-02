@@ -1,5 +1,6 @@
 #include "CPortal.h"
 #include "CSceneManager.h"
+#include "CColliderSphere.h"
 
 // 回転速度
 #define ROT_SPEED 200.0f
@@ -9,9 +10,12 @@
 
 // コンストラクタ
 CPortal::CPortal()
-	: CBillBoardImage("Effect/Portal.png", ETag::ePortal
-		, ETaskPauseType::eGame)
+	: CImage3D("Effect/Portal.png",
+		ETag::ePortal, ETaskPriority::eEffect, 0,
+		ETaskPauseType::eGame)
 {
+	// 裏面描画する
+	SetBackFace(true);
 	// コライダーを生成
 	CreateCol();
 
