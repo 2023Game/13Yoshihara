@@ -1,24 +1,43 @@
 #include "CMap1.h"
 #include "CBridge.h"
 #include "CWater.h"
+#include "CFragmentMergeArea.h"
+#include "CPortalFragment.h"
+#include "CCampFire.h"
+#include "CTorch.h"
+#include "CGrass.h"
 
-// 松明の炎のオフセット座標
-#define TORCH_FIRE_OFFSET_POS CVector(0.0f,9.0f,0.0f)
+// 橋の座標
+#define BRIDGE_POS_1 CVector(-325.0f,0.0f,252.5f)
+#define BRIDGE_POS_2 CVector(-325.0f,0.0f,127.5f)
 
-// 橋のオフセット座標
-#define BRIDGE_OFFSET_POS_1 CVector(-325.0f,0.0f,252.5f)
-#define BRIDGE_OFFSET_POS_2 CVector(-325.0f,0.0f,127.5f)
-
-// 橋のオフセット回転
-#define BRIDGE_OFFSET_ROT_2 CVector(0.0f,180.0f,0.0f)
+// 橋の回転
+#define BRIDGE_ROT_2 CVector(0.0f,180.0f,0.0f)
 
 // 橋のデフォルト角度
 #define BRIDGE_ANGLE_1 90.0f
 
-// 水面のオフセット座標
-#define WATER_OFFSET_POS CVector(-250.0f,-10.0f,50.0f)
+// 水面の座標
+#define WATER_POS CVector(-250.0f,-10.0f,50.0f)
 // 水面のスケール
 #define WATER_SCALE CVector(500.0f,1.0f,300.0f)
+
+// ポータルの欠片の数
+#define PORTAL_FRAGMENT_NUM 4
+// 合成地の座標
+#define MERGE_AREA_POS CVector(-420.0f,10.0f,-200.0f)
+
+// キャンプファイヤーの座標
+#define CAMPFIRE_POS CVector(-260.0f,0.0f,-290.0f)
+
+// 松明の座標
+#define TORCH_POS_1 CVector(-240.0f,0.0f,-280.0f)
+
+// 草の座標
+#define GRASS_POS_1 CVector(-230.0f,0.0f,-280.0f)
+#define GRASS_POS_2 CVector(-230.0f,0.0f,-280.0f)
+#define GRASS_POS_3 CVector(-230.0f,0.0f,-280.0f)
+
 
 // コンストラクタ
 CMap1::CMap1()
@@ -41,23 +60,58 @@ CMap1::~CMap1()
 // フィールドオブジェクトを生成
 void CMap1::CreateFieldObjects()
 {
+	// 欠片の合成場所
+	CFragmentMergeArea* mergeArea = new CFragmentMergeArea(PORTAL_FRAGMENT_NUM);
+	// 座標を設定
+	mergeArea->Position(MERGE_AREA_POS);
+
 	// 水面を生成
 	CWater* water = new CWater(WATER_SCALE);
-	water->Position(WATER_OFFSET_POS);
+	// 座標設定
+	water->Position(WATER_POS);
 
 	// 橋を生成
 	CBridge* bridge = new CBridge();
 	// 位置設定
-	bridge->Position(BRIDGE_OFFSET_POS_1);
+	bridge->Position(BRIDGE_POS_1);
 	// 初期角度を設定
 	bridge->SetAngle(BRIDGE_ANGLE_1);
 
 	// 橋を生成
 	bridge = new CBridge();
 	// 位置設定
-	bridge->Position(BRIDGE_OFFSET_POS_2);
+	bridge->Position(BRIDGE_POS_2);
 	// 回転設定
-	bridge->Rotate(BRIDGE_OFFSET_ROT_2);
+	bridge->Rotate(BRIDGE_ROT_2);
+
+	// キャンプファイヤー
+	CCampFire* campFire = new CCampFire();
+	// 座標設定
+	campFire->Position(CAMPFIRE_POS);
+	// 落とすアイテムを設定
+	campFire->SetDropItem(mergeArea->GetFragment(0));	
+	
+	// 松明を生成
+	CTorch* torch = new CTorch();
+	// 位置調整
+	torch->Position(TORCH_POS_1);
+	torch->SetFire(true);
+
+	// 草を生成
+	CGrass* grass = new CGrass();
+	// 位置調整
+	grass->Position(GRASS_POS_1);
+	grass->SetDropItem(mergeArea->GetFragment(1));
+
+	grass = new CGrass();
+	// 位置調整
+	grass->Position(GRASS_POS_2);
+	grass->SetDropItem(mergeArea->GetFragment(2));
+
+	grass = new CGrass();
+	// 位置調整
+	grass->Position(GRASS_POS_3);
+	grass->SetDropItem(mergeArea->GetFragment(3));
 }
 
 // 経路探索用のノードを生成

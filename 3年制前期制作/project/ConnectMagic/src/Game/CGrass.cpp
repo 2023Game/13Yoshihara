@@ -12,7 +12,8 @@
 
 // コンストラクタ
 CGrass::CGrass(CVector fireOffsetPos, float fireScale)
-	: CFire("", fireOffsetPos, fireScale)
+	: CFire(fireOffsetPos, fireScale)
+	, CItemDrop()
 {
 	// タグを草に設定
 	SetConnectObjTag(EConnectObjTag::eGrass);
@@ -32,6 +33,9 @@ CGrass::CGrass(CVector fireOffsetPos, float fireScale)
 	mpGrassImage->SetSize(size);
 	// サイズの半分弱上に上げる
 	mpGrassImage->SetOffsetPos(CVector2(0.0f, size.Y() * 0.8f));
+
+	// コライダーを生成
+	CreateCol();
 }
 
 // デストラクタ
@@ -67,6 +71,15 @@ void CGrass::Update()
 void CGrass::Render()
 {
 	mpGrassImage->Render();
+}
+
+// 燃えたときの処理
+void CGrass::Burning()
+{
+	// 落とすアイテムの座標を設定
+	SetDropItemPos(Position());
+	// アイテムを落とす
+	Drop();
 }
 
 // 全て削除

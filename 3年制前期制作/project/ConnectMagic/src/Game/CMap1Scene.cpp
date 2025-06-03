@@ -57,7 +57,7 @@ void CMap1Scene::Load()
 	CResourceManager::Load<CModel>("Door_Col",			"Field\\Door\\Col\\Door_Col.obj");
 	CResourceManager::Load<CModel>("Box_Col",			"Field\\Box\\Col\\Box_Col.obj");
 	CResourceManager::Load<CModel>("Bridge_Col",		"Field\\Bridge\\Col\\Bridge_Col.obj");
-	CResourceManager::Load<CModel>("CampFire_Col",		"Field\\CampFire\\Col\\CampFire.obj");
+	CResourceManager::Load<CModel>("CampFire_Col",		"Field\\CampFire\\Col\\CampFire_Col.obj");
 	/*
 	Œø‰Ê‰¹
 	*/

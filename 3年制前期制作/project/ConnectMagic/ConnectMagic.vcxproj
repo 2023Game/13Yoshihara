@@ -79,12 +79,14 @@
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CBox.cpp" />
     <ClCompile Include="src\Game\CBridge.cpp" />
+    <ClCompile Include="src\Game\CCampFire.cpp" />
     <ClCompile Include="src\Game\CConnectObject.cpp" />
     <ClCompile Include="src\Game\CConnectPoint.cpp" />
     <ClCompile Include="src\Game\CConnectPointManager.cpp" />
     <ClCompile Include="src\Game\CConnectTarget.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
+    <ClCompile Include="src\Game\CDropItem.cpp" />
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
@@ -96,8 +98,10 @@
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CItemBase.cpp" />
+    <ClCompile Include="src\Game\CItemDrop.cpp" />
     <ClCompile Include="src\Game\CMap1Scene.cpp" />
     <ClCompile Include="src\Game\CPortalFragment.cpp" />
+    <ClCompile Include="src\Game\CTorch.cpp" />
     <ClCompile Include="src\Game\CTutorialMap.cpp" />
     <ClCompile Include="src\Game\CMap1.cpp" />
     <ClCompile Include="src\Game\CMap_3.cpp" />
@@ -233,6 +237,7 @@
     <ClInclude Include="src\Game\CApplication.h" />
     <ClInclude Include="src\Game\CBox.h" />
     <ClInclude Include="src\Game\CBridge.h" />
+    <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
     <ClInclude Include="src\Game\CConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
@@ -240,6 +245,7 @@
     <ClInclude Include="src\Game\CConnectTarget.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CDoor.h" />
+    <ClInclude Include="src\Game\CDropItem.h" />
     <ClInclude Include="src\Game\CEndUIBase.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
@@ -252,8 +258,10 @@
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CItemBase.h" />
+    <ClInclude Include="src\Game\CItemDrop.h" />
     <ClInclude Include="src\Game\CMap1Scene.h" />
     <ClInclude Include="src\Game\CPortalFragment.h" />
+    <ClInclude Include="src\Game\CTorch.h" />
     <ClInclude Include="src\Game\CTutorialMap.h" />
     <ClInclude Include="src\Game\CMap1.h" />
     <ClInclude Include="src\Game\CMap_3.h" />

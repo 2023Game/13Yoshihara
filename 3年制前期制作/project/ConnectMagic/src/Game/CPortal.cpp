@@ -8,6 +8,9 @@
 // コライダーの半径
 #define RADIUS 5.0f
 
+// 大きさ
+#define SIZE 2.0f
+
 // コンストラクタ
 CPortal::CPortal()
 	: CImage3D("Effect/Portal.png",
@@ -23,6 +26,9 @@ CPortal::CPortal()
 	SetRotate(true);
 	// 回転速度を設定
 	SetRotSpeed(ROT_SPEED);
+
+	// 大きさを設定
+	SetSize(GetSize() * SIZE);
 }
 
 // デストラクタ

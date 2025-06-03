@@ -1,11 +1,12 @@
 #pragma once
 #include "CFire.h"
 #include "CBillBoardImage.h"
+#include "CItemDrop.h"
 
 class CBillboardImage;
 
 // 火とつなげると燃える草オブジェクト
-class CGrass : public CFire
+class CGrass : public CFire, public CItemDrop
 {
 public:
 	// コンストラクタ
@@ -19,6 +20,9 @@ public:
 	void Render() override;
 
 private:
+	// 燃えたときの処理
+	void Burning() override;
+
 	// 全て削除
 	void Delete() override;
 

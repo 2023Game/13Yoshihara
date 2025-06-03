@@ -82,6 +82,7 @@ protected:
 	CVector mMoveSpeed;	// 前後左右の移動速度
 	float mMoveSpeedY;	// 上下方向の移動速度
 
+	bool mIsGrounded;	// 接地しているか
 	bool mIsGravity;	// 重力を掛けるか
 
 	// 接続オブジェクトのタグ

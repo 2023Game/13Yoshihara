@@ -16,6 +16,7 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mMoveSpeedY(0.0f)
 	, mIsGravity(true)
 	, mConnectObjTag(EConnectObjTag::eBox)
+	, mIsGrounded(false)
 {
 }
 
@@ -67,6 +68,8 @@ void CConnectObject::Update()
 
 	// 移動
 	Position(Position() + moveSpeed);
+
+	mIsGrounded = false;
 }
 
 // 描画
@@ -102,6 +105,8 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 				{
 					mMoveSpeedY = 0.0f;
 				}
+				// 接地
+				mIsGrounded = true;
 			}
 			// 内積の結果がマイナスであれば、天井と衝突した
 			else if (dot < 0.0f)

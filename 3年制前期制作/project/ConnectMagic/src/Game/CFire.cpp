@@ -7,14 +7,11 @@
 // 重量（動かさない）
 #define WEIGHT 1.0f
 
-// コライダーの半径
+// コライダー半径
 #define RADIUS 5.0f
 
-// 松明の縦の長さ
-#define TORCH_HEIGHT 7.0f
-
 // コンストラクタ
-CFire::CFire(std::string modelName, CVector fireOffsetPos,
+CFire::CFire(CVector fireOffsetPos,
 	float fireScale, float fireSpeed, CVector targetOffsetPos)
 	: CConnectObject(WEIGHT,ETaskPriority::eBillboard)
 	, mIsFire(false)
@@ -22,12 +19,6 @@ CFire::CFire(std::string modelName, CVector fireOffsetPos,
 	// 接続ターゲットのタグを炎に設定
 	SetConnectObjTag(EConnectObjTag::eFire);
 
-	// モデルの名前が設定されているなら
-	if (modelName != "")
-	{
-		// モデルを設定
-		mpModel = CResourceManager::Get<CModel>(modelName.c_str());
-	}
 	// 重力無効
 	mIsGravity = false;
 
@@ -48,9 +39,6 @@ CFire::CFire(std::string modelName, CVector fireOffsetPos,
 
 	// 接続ターゲットを生成
 	CreateTarget(Position() + fireOffsetPos + targetOffsetPos);
-
-	// コライダーを生成
-	CreateCol(modelName);
 }
 
 // デストラクタ
@@ -89,6 +77,8 @@ void CFire::SetFire(bool isEnable)
 	{
 		// 炎の生成開始
 		mpFlamethrower->Start();
+		// 燃えたときの処理
+		Burning();
 	}
 	// 炎がついていないなら
 	else
@@ -104,40 +94,17 @@ bool CFire::GetFire() const
 	return mIsFire;
 }
 
-// コライダーを生成
-void CFire::CreateCol(std::string modelName)
+void CFire::CreateCol()
 {
-	// 空の場合
-	if (modelName == "")
-	{
-		mpCol = new CColliderSphere
-		(
-			this, ELayer::eObject,
-			RADIUS, true
-		);
-		// 接続オブジェクトの探知用とだけ衝突判定
-		mpCol->SetCollisionLayers({ ELayer::eConnectSearch });
-	}
-	// キャンプファイヤーの場合
-	else if (modelName == "CampFire")
-	{
-		mpCol = new CColliderMesh
-		(
-			this, ELayer::eObject,
-			CResourceManager::Get<CModel>("CampFire_Col"),
-			true
-		);
-	}
-	// それ以外の場合
-	else
-	{
-		mpCol = new CColliderCapsule
-		(
-			this, ELayer::eObject,
-			CVector(0.0f, 0.0f, 0.0f) , CVector(0.0f, TORCH_HEIGHT, 0.0f),
-			RADIUS, true
-		);
-		// プレイヤーと接続オブジェクトの探知用とだけ衝突判定
-		mpCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eConnectSearch });
-	}
+	mpCol = new CColliderSphere(
+		this, ELayer::eObject,
+		RADIUS, true
+	);
+	// 接続オブジェクトの探知用とだけ衝突判定
+	mpCol->SetCollisionLayers({ ELayer::eConnectSearch });
+}
+
+// 燃えた時の処理
+void CFire::Burning()
+{
 }

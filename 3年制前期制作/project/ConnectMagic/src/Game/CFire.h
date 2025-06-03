@@ -19,12 +19,11 @@ public:
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
-	/// <param name="modelName">モデルの名前</param>
 	/// <param name="fireOffsetPos">炎のオフセット座標</param>
 	/// <param name="fireScale">炎のスケール</param>
 	/// <param name="fireSpeed">炎の移動速度</param>
 	/// <param name="targetOffsetPos">接続ターゲットのオフセット座標</param>
-	CFire(std::string modelName = "", CVector fireOffsetPos = CVector::zero,
+	CFire(CVector fireOffsetPos = CVector::zero,
 		float fireScale = FIRE_SCALE, float fireSpeed = MOVE_SPEED,
 		CVector targetOffsetPos = TARGET_OFFSET_POS);
 	// デストラクタ
@@ -40,7 +39,10 @@ public:
 
 protected:
 	// コライダーを生成
-	void CreateCol(std::string modelName);
+	void CreateCol() override;
+
+	// 燃えた時の処理
+	virtual void Burning();
 
 	// 炎のエフェクト生成用
 	CFlamethrower* mpFlamethrower;
