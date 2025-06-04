@@ -64,10 +64,8 @@ void CUpgradeItem::GetItem()
 {
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// 1つ増加
-	int num = pointMgr->GetConnectMax() + 1;
-	// 数を設定
-	pointMgr->SetConnectMax(num);
+	// 強化アイテムの獲得数を増加
+	pointMgr->AddUpgradeItemNum();
 }
 
 // 更新

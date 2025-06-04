@@ -1,9 +1,8 @@
 #include "CNavManager.h"
 #include "CNavNode.h"
 #include "CInput.h"
-#include <assert.h>
-#include "CFieldBase.h"
 #include "Primitive.h"
+#include <assert.h>
 
 CNavManager* CNavManager::spInstance = nullptr;
 
@@ -27,18 +26,17 @@ CNavManager::~CNavManager()
 {
 	spInstance = nullptr;
 
-	// 探索ノードを全て削除
 	auto itr = mNodes.begin();
 	auto end = mNodes.end();
 	while (itr != end)
 	{
 		CNavNode* del = *itr;
-		itr = mNodes.erase(itr);
+		itr++;
 		delete del;
 	}
 }
 
-// 経路探索用のノードを追加
+// 経路単サック用のノードを追加
 void CNavManager::AddNode(CNavNode* node)
 {
 	mNodes.push_back(node);
@@ -47,21 +45,19 @@ void CNavManager::AddNode(CNavNode* node)
 // 経路探索用のノードを取り除く
 void CNavManager::RemoveNode(CNavNode* node)
 {
-	mNodes.remove(node);
+	std::remove(mNodes.begin(), mNodes.end(), node);
 }
 
 // 指定したノードに接続できるノードを検索して設定
 int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 {
-	// 現在の接続先の情報をすべてクリアしておく
+	// 現在の接続先の情報を全てクリアしておく
 	node->ClearConnects();
 
 	for (CNavNode* findNode : mNodes)
 	{
-		// 自分自身であれば、スルー
+		//自分自身であれば、スルー
 		if (findNode == node) continue;
-		// 無効であれば、スルー
-		if (!findNode->IsEnable()) continue;
 
 		// 目的地専用ノードは距離を考慮しない
 		if (!node->mIsDestNode)
@@ -70,48 +66,42 @@ int CNavManager::FindConnectNavNodes(CNavNode* node, float distance)
 			float dist = (findNode->GetPos() - node->GetPos()).Length();
 			if (dist > distance) continue;
 		}
-		// フィールドとのレイ判定で遮蔽物チェックを行う
+		
+		// 自身から接続先のノードまでの遮蔽物チェック
 		CVector start = node->GetOffsetPos();
 		CVector end = findNode->GetOffsetPos();
 		CHitInfo hit;
 		bool isHit = false;
-
-		// TODO：管理クラスから呼んで衝突判定
-		//CFieldBase* fieldBase = CFieldBase::Instance();
-
-		//// フィールドがあるなら衝突判定をする
-		//if (fieldBase != nullptr)
-		//{
-		//	if (fieldBase->CollisionRay(start, end, &hit))
-		//	{
-		//		isHit = true;
-		//	}
-		//}
-
-		// 何かにヒットした場合は、遮蔽物があるので接続できない
-		if (isHit)
+		// 登録されているコライダー全てと判定
+		for (CCollider* col : mColliders)
 		{
-			continue;
+			// ヒットしていたら、ヒットフラグをtrueにしてチェック終了
+			if (CCollider::CollisionRay(col, start, end, &hit))
+			{
+				isHit = true;
+				break;
+			}
 		}
+		// 何かにヒットした場合は、遮蔽物があるので接続できない
+		if (isHit) continue;;
 
 		// 両方の条件を満たしたノードを接続リストに追加
 		node->AddConnect(findNode);
-	}
 
+	}
 	return node->mConnectData.size();
 }
 
 // 最短経路計算用のデータをリセット
 void CNavManager::ResetCalcData()
 {
-	// 全てのノードの計算用のデータをリセット
 	for (CNavNode* node : mNodes)
 	{
 		node->ResetCalcData();
 	}
 }
 
-// 指定したノードから次のノードへの移動コストを計算
+// 最短経路計算用のデータをリセット
 void CNavManager::CalcNextMoveCost(CNavNode* node, CNavNode* goal)
 {
 	// 指定されたノードまたは目的地ノードが空だった場合は、移動コスト計算不可
@@ -120,12 +110,14 @@ void CNavManager::CalcNextMoveCost(CNavNode* node, CNavNode* goal)
 	// 接続している全てのノードへの移動コストを求める
 	for (CNavConnectData& connect : node->mConnectData)
 	{
-		if (!connect.node->IsEnable()) continue;
+		// 接続先のノードが無効であれば、スルー
+		if (!connect.node->IsEnabel()) continue;
+
 		// 接続しているノードが目的地専用ノードの場合は、
 		// 今回の経路探索の目的地ノード以外は経由しないため、スルー
 		if (connect.node->mIsDestNode && connect.node != goal) continue;
 
-		// 移動コスト＝ここまでの移動コスト＋接続先のノードまでの移動コスト
+		// 移動コスト = ここまでの移動コスト + 接続先のノードまでの移動コスト
 		float cost = node->mCalcMoveCost + connect.cost;
 		// 接続先のノードまでの移動コストがまだ計算されていないか、
 		// 求めた移動コストの方が現在の接続先のノードまでの移動コストより小さい場合
@@ -134,7 +126,6 @@ void CNavManager::CalcNextMoveCost(CNavNode* node, CNavNode* goal)
 			// 接続先のノードの移動コストと1つ前のノードのポインタを更新
 			connect.node->mCalcMoveCost = cost;
 			connect.node->mpCalcFromNode = node;
-
 			// 接続先のノードが目的地のノードでなければ、
 			// 接続先のノードから接続されているノードへの移動コストを計算する
 			if (connect.node != goal)
@@ -145,25 +136,24 @@ void CNavManager::CalcNextMoveCost(CNavNode* node, CNavNode* goal)
 	}
 }
 
-
 // 指定した開始ノードから目的地ノードまでの最短経路を求める
 bool CNavManager::Navigate(CNavNode* start, CNavNode* goal, std::vector<CNavNode*>& route)
 {
 	// 開始ノードまたは目的地ノードが空だった場合は、経路探索不可
-	if (start == nullptr || goal == nullptr) return false;
+	if (start == nullptr || goal == nullptr)return false;
 	// 開始ノードまたは目的地ノードが無効だった場合は、経路探索不可
-	if (!start->IsEnable() || !goal->IsEnable()) return false;
+	if (!start->IsEnabel() || !goal->IsEnabel()) return false;
 
 	// 全てのノードの最短経路計算用のデータをクリア
 	ResetCalcData();
 
-	// 開始ノードへの移動コストを0に設定
+	// 開始ノードへ移動コストを0に設定
 	start->mCalcMoveCost = 0.0f;
 	// 開始ノードから順番に、
 	// 各ノードが接続しているノードまでの移動コストを計算
 	CalcNextMoveCost(start, goal);
 
-	// 最短経路のリストをクリアして、最初に目的地ノードを登録
+	// 最短経路のリストをクリアして最初に目的地ノードを登録
 	route.clear();
 	route.push_back(goal);
 
@@ -180,24 +170,37 @@ bool CNavManager::Navigate(CNavNode* start, CNavNode* goal, std::vector<CNavNode
 	// 求めた最短経路をデバッグ表示用の最短経路リストにコピー
 	mLastCalcRoute = route;
 
-	// 求めた最短経路の1番最初のノードが開始ノードであれば、
-	// 開始ノードから目的地ノードまで経路がつながっている
+	// 求め最短経路の1バン最初のノードが開始ノードであれば、
+	// 開始ノードから目的地ノードまで経路が繋がっている
 	return route[0] == start;
+}
+
+// 遮蔽物チェックに使用するコライダーを追加
+void CNavManager::AddCollider(CCollider* col)
+{
+	mColliders.push_back(col);
+}
+
+// 遮蔽物チェックに使用するコライダーを取り除く
+void CNavManager::RemoveCollider(CCollider* col)
+{
+	std::remove(mColliders.begin(), mColliders.end(), col);
 }
 
 // 全てのノードと経路を描画
 void CNavManager::Render()
 {
-	// Nキーで経路探索ノードの描画モードを切り替え
+#if _DEBUG
+	// [SPACE]キーで経路探索ノードの描画モードを切り替え
 	if (CInput::PushKey('N'))
 	{
 		mIsRender = !mIsRender;
 	}
 
-	// 経路探索ノードを描画しないならば、以降処理しない
+	// 経路探索ノードを描画しないならば、移行処理しない
 	if (!mIsRender) return;
 
-	// リスト内のノードを全て描画
+	// リスト内のノード全て描画
 	for (CNavNode* node : mNodes)
 	{
 		node->Render();
@@ -213,4 +216,6 @@ void CNavManager::Render()
 		Primitive::DrawLine(start, end, CColor::cyan, 4.0f);
 	}
 	glEnable(GL_DEPTH_TEST);
+#endif
 }
+

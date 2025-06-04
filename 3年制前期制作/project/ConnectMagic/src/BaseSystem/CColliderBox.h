@@ -30,7 +30,7 @@ public:
 	/// <param name="max">最大座標</param>
 	void Set(CVector min, CVector max);
 	// 四角形コライダの配列を取得
-	const std::list<SRVertexData>& Get() const;
+	const std::vector<SRVertexData>& Get() const;
 
 	//コライダ―描画
 	void Render() override;
@@ -41,5 +41,5 @@ protected:
 
 private:
 	// 四角形コライダの配列作成
-	std::list<SRVertexData> mVertices;
+	std::vector<SRVertexData> mVertices;
 };

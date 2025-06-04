@@ -17,5 +17,5 @@ private:
 	// ボックスコライダ―
 	CColliderBox* mpCollider;
 	// ボックスを構成する四角形のリスト
-	std::list<SRVertexData> mVertices;
+	std::vector<SRVertexData> mVertices;
 };

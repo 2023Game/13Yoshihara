@@ -1,6 +1,6 @@
 #pragma once
 
-#define GAME_TITLE "Debt"	//ゲームタイトル
+#define GAME_TITLE "ConnectMagic"	//ゲームタイトル
 
 #define WINDOW_WIDTH 1920 * 0.8f		//ウィンドウの幅
 #define WINDOW_HEIGHT 1080 * 0.8f		//ウィンドウの高さ

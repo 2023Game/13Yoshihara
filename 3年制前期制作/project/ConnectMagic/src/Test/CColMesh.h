@@ -25,5 +25,5 @@ private:
 	// メッシュコライダ―
 	CColliderMesh* mpCollider;
 	// 三角コライダの配列
-	std::list<STVertexData> mVertices;
+	std::vector<STVertexData> mVertices;
 };

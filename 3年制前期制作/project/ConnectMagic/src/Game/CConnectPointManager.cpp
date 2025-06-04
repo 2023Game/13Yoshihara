@@ -7,10 +7,15 @@
 #include "CConnectTarget.h"
 #include "Maths.h"
 
-// レイを伸ばせる距離の最大
-#define RAY_MAX_DISTANCE 100.0f
+// レイを伸ばせる距離の最大の初期値
+#define DEFAULT_RAY_MAX_DISTANCE 100.0f
 // レイを縮めれる距離の最小
 #define RAY_MIN_DISTANCE 15.0f
+
+// 伸ばせる距離の強化値
+#define RAY_MAX_UPGRADE_SCALE 10.0f
+// 接続できる最大数の増加に必要な強化アイテムの数
+#define CONNECT_UPGRADE_NUM 10
 
 // ターザンの最短距離
 #define TARZAN_MIN_DISTANCE 30.0f
@@ -24,7 +29,7 @@
 #define POINT_SCALE 0.5f
 
 // 接続できる最大数の初期値
-#define DEFAULT_CONNECT_NUM 2
+#define DEFAULT_CONNECT_NUM 1
 
 // 杖の重量
 #define WAND_WEIGHT 0.5f
@@ -48,6 +53,8 @@ CConnectPointManager::CConnectPointManager()
 	, mConnectMaxNum(DEFAULT_CONNECT_NUM)
 	, mpConnectWandTarget(nullptr)
 	, mWandConnectDistance(0.0f)
+	, mConnectMaxDist(DEFAULT_RAY_MAX_DISTANCE)
+	, mUpgradeItemNum(0)
 {
 	// 杖用の接続部分のビルボード
 	mpPoint = new CConnectPoint(nullptr);
@@ -119,7 +126,7 @@ void CConnectPointManager::Render()
 		// 接続部同士の距離
 		float distance = (rayEnd - rayStart).Length();
 		// 最大距離より遠いなら
-		if (distance > RAY_MAX_DISTANCE)
+		if (distance > mConnectMaxDist)
 		{
 			// 接続削除
 			DeleteConnectPointPair(i);
@@ -231,7 +238,7 @@ bool CConnectPointManager::Ray(CVector& hitPos)
 	dir.Normalize();
 	// レイの開始と終了地点
 	CVector rayStart = camera->GetEye();
-	CVector rayEnd = rayStart + dir * RAY_MAX_DISTANCE;
+	CVector rayEnd = rayStart + dir * mConnectMaxDist;
 	float nearDist = 0.0f;
 	bool isHit = false;
 	// 設定されているコライダーを順番に調べる
@@ -587,16 +594,32 @@ bool CConnectPointManager::IsWandConnectAirObject()
 	return false;
 }
 
-// 接続できる数を設定
-void CConnectPointManager::SetConnectMax(int num)
+// 接続できる距離を増加
+void CConnectPointManager::AddConnectMaxDist()
 {
-	mConnectMaxNum = num;
+	mConnectMaxDist += RAY_MAX_UPGRADE_SCALE;
 }
 
-// 接続できる数を取得
-int CConnectPointManager::GetConnectMax() const
+// 接続できる数を増加
+void CConnectPointManager::AddConnectMaxNum()
 {
-	return mConnectMaxNum;
+	mConnectMaxNum++;
+}
+
+// 強化アイテムの獲得数を増加
+void CConnectPointManager::AddUpgradeItemNum()
+{
+	mUpgradeItemNum++;
+
+	// 接続できる距離を増加
+	AddConnectMaxDist();
+
+	// 接続できる最大数の増加に必要な数なら
+	if (mUpgradeItemNum % CONNECT_UPGRADE_NUM == 0)
+	{
+		// 接続できる数の増加
+		AddConnectMaxNum();
+	}
 }
 
 // 杖の先の接続部の位置を特定

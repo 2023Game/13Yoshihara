@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "CTransform.h"
 #include "CollisionLayer.h"
 #include "ColliderType.h"
@@ -238,6 +239,26 @@ public:
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
+	/// 三角形と点の衝突判定
+	/// </summary>
+	/// <param name="t0">三角形の頂点1</param>
+	/// <param name="t1">三角形の頂点2</param>
+	/// <param name="t2">三角形の頂点3</param>
+	/// <param name="tn">三角形の法線</param>
+	/// <param name="p">点の座標</param>
+	/// <returns>trueならば、衝突している</returns>
+	static bool CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& tn, const CVector& p);
+	/// <summary>
+	/// 三角形と点の衝突判定
+	/// </summary>
+	/// <param name="t0">三角形の頂点1</param>
+	/// <param name="t1">三角形の頂点2</param>
+	/// <param name="t2">三角形の頂点3</param>
+	/// <param name="p">点の座標</param>
+	/// <returns>trueならば、衝突している</returns>
+	static bool CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& p);
+
+	/// <summary>
 	/// 三角形と球の衝突判定
 	/// </summary>
 	/// <param name="t0">三角形の頂点1</param>
@@ -314,7 +335,7 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
 	static bool CollisionCapsule(const CVector& cs0, const CVector& ce0, float cr0,
-		const CVector& cs1, const CVector& ce1, float cr1, 
+		const CVector& cs1, const CVector& ce1, float cr1,
 		CHitInfo* hit);
 
 	/// <summary>
@@ -340,7 +361,7 @@ public:
 	/// <param name="lb">線分のバウンディングボックス</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionMeshLine(const std::list<STVertexData>& tris,
+	static bool CollisionMeshLine(const std::vector<STVertexData>& tris,
 		const CVector& ls, const CVector& le, const CBounds& lb,
 		CHitInfo* hit, bool isLeftMain);
 
@@ -351,7 +372,7 @@ public:
 	/// <param name="sphereCol">球コライダー</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionMeshSphere(const std::list<STVertexData>& tris,
+	static bool CollisionMeshSphere(const std::vector<STVertexData>& tris,
 		CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
@@ -361,7 +382,7 @@ public:
 	/// <param name="triCol">三角形コライダー</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionMeshTriangle(const std::list<STVertexData>& tris,
+	static bool CollisionMeshTriangle(const std::vector<STVertexData>& tris,
 		CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
@@ -371,9 +392,9 @@ public:
 	/// <param name="capsuleCol">カプセルコライダー</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionMeshCapsule(const std::list<STVertexData>& tris,
-		CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain);
-
+	static bool CollisionMeshCapsule(const std::vector<STVertexData>& tris,
+		CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain);	
+	
 	/// <summary>
 	/// 四角形と三角形の衝突判定
 	/// </summary>
@@ -461,7 +482,7 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
 	static bool CollisionRectangleMesh(CColliderRectangle* rectCol,
-		const std::list<STVertexData>& tris,
+		const std::vector<STVertexData>& tris,
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
@@ -473,8 +494,8 @@ public:
 	/// <param name="lb">線分のバウンティングボックス</param>
 	/// <param name="hit">衝突したときの情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxLine(const std::list<SRVertexData>& rects,
-		const CVector& ls,const CVector& le,const CBounds& lb,
+	static bool CollisionBoxLine(const std::vector<SRVertexData>& rects,
+		const CVector& ls, const CVector& le, const CBounds& lb,
 		CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
@@ -484,9 +505,9 @@ public:
 	/// <param name="sphereCol">球コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxSphere(const std::list<SRVertexData>& rects,
+	static bool CollisionBoxSphere(const std::vector<SRVertexData>& rects,
 		CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain);
-	
+
 	/// <summary>
 	/// ボックスと三角形の衝突判定
 	/// </summary>
@@ -494,9 +515,9 @@ public:
 	/// <param name="triCol">三角形コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxTriangle(const std::list<SRVertexData>& rects,
+	static bool CollisionBoxTriangle(const std::vector<SRVertexData>& rects,
 		CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain);
-	
+
 	/// <summary>
 	/// ボックスとカプセルの衝突判定
 	/// </summary>
@@ -504,9 +525,9 @@ public:
 	/// <param name="capsuleCol">カプセルコライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxCapsule(const std::list<SRVertexData>& rects,
+	static bool CollisionBoxCapsule(const std::vector<SRVertexData>& rects,
 		CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain);
-	
+
 	/// <summary>
 	/// ボックスとメッシュの衝突判定
 	/// </summary>
@@ -514,8 +535,8 @@ public:
 	/// <param name="tris">メッシュを構成する三角形ポリゴンのリスト</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxMesh(const std::list<SRVertexData>& rects,
-		const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain);
+	static bool CollisionBoxMesh(const std::vector<SRVertexData>& rects,
+		const std::vector<STVertexData>& tris, CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
 	/// ボックスと四角形の衝突判定
@@ -524,7 +545,7 @@ public:
 	/// <param name="rectCol">四角形コライダ―</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBoxRectangle(const std::list<SRVertexData>& rects,
+	static bool CollisionBoxRectangle(const std::vector<SRVertexData>& rects,
 		CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain);
 
 	/// <summary>
@@ -534,8 +555,8 @@ public:
 	/// <param name="rects1">ボックス1を構成する四角形ポリゴンのリスト</param>
 	/// <param name="hit">衝突した時の情報</param>
 	/// <returns>trueならば、衝突している</returns>
-	static bool CollisionBox(const std::list<SRVertexData>& rects0,
-		const std::list<SRVertexData>& rects1,
+	static bool CollisionBox(const std::vector<SRVertexData>& rects0,
+		const std::vector<SRVertexData>& rects1,
 		CHitInfo* hit);
 
 	/// <summary>
@@ -580,7 +601,6 @@ public:
 	/// <param name="n">四角形の法線</param>
 	/// <returns>trueならば、四角形の内側にある</returns>
 	static bool IsInsideRectangle(const CVector& p, const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& n);
-
 
 	/// <summary>
 	/// 衝突判定

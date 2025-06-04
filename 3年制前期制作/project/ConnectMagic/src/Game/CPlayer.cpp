@@ -9,6 +9,7 @@
 #include "CConnectTarget.h"
 #include "CImage.h"
 #include "CFade.h"
+#include "Maths.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
@@ -895,8 +896,6 @@ std::string CPlayer::GetStateStr(EState state) const
 	return "エラー";
 }
 #endif
-
-#include "Maths.h"
 
 // 視点の中心に一番近いオブジェクトを求める
 void CPlayer::CenterTarget()

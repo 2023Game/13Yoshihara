@@ -22,6 +22,9 @@ public:
 	// XV
 	void Update() override;
 
+	// ‰ñ“]Šp“x‚ğİ’è
+	void SetRotateAngle(CVector angle);
+
 private:
 	CVector mFollowDefaultEyeVec;
 	CVector mRotateAngle;

@@ -6,6 +6,7 @@
 #include "CCampFire.h"
 #include "CTorch.h"
 #include "CGrass.h"
+#include "CUpgradeItem.h"
 
 // 橋の座標
 #define BRIDGE_POS_1 CVector(-325.0f,0.0f,252.5f)
@@ -37,7 +38,17 @@
 #define GRASS_POS_1 CVector(-230.0f,0.0f,-280.0f)
 #define GRASS_POS_2 CVector(-230.0f,0.0f,-280.0f)
 #define GRASS_POS_3 CVector(-230.0f,0.0f,-280.0f)
+// ツタの座標
+#define VINE_POS_1 CVector(-15.0f,0.0f,170.0f)
+// ツタの炎のオフセット座標
+#define VINE_FIRE_OFFSET_POS CVector(0.0f,VINE_HEIGHT/2.0f,0.0f)
+// ツタの炎の大きさ
+#define VINE_FIRE_SCALE FIRE_SCALE * 15.0f
 
+// 最初に配置するアイテムの座標
+#define FIRST_ITEM_POS	15.0f
+// 最初に配置するアイテムの数
+#define FIRST_ITEM_NUM	10
 
 // コンストラクタ
 CMap1::CMap1()
@@ -102,16 +113,30 @@ void CMap1::CreateFieldObjects()
 	// 位置調整
 	grass->Position(GRASS_POS_1);
 	grass->SetDropItem(mergeArea->GetFragment(1));
-
+	// 草を生成
 	grass = new CGrass();
 	// 位置調整
 	grass->Position(GRASS_POS_2);
 	grass->SetDropItem(mergeArea->GetFragment(2));
-
+	// 草を生成
 	grass = new CGrass();
 	// 位置調整
 	grass->Position(GRASS_POS_3);
 	grass->SetDropItem(mergeArea->GetFragment(3));
+
+	// ツタを生成
+	grass = new CGrass(EGrassType::eVine, VINE_FIRE_OFFSET_POS, VINE_FIRE_SCALE);
+	// 位置調整
+	grass->Position(VINE_POS_1);
+
+	// アイテムを生成
+	CUpgradeItem* item;
+	for (int i = 0; i < FIRST_ITEM_NUM; i++)
+	{
+		item = new CUpgradeItem();
+		// 座標を設定
+		item->Position(0.0f, 0.0f, FIRST_ITEM_POS * i);
+	}
 }
 
 // 経路探索用のノードを生成

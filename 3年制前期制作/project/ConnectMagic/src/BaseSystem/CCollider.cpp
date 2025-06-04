@@ -235,16 +235,10 @@ bool CCollider::CollisionRectPoint(const CRect& rect, const CVector2 point)
 	return false;
 }
 
-// コライダーの設定
-void CCollider::Set(CObjectBase* owner, ELayer layer)
-{
-	mpOwner = owner;
-	mLayer = layer;
-}
 
 // 分離軸上での投影範囲の衝突
-bool CCollider::OverlapOnAxis(const CVector* poly0,int size0,
-	const CVector* poly1,int size1,
+bool CCollider::OverlapOnAxis(const CVector* poly0, int size0,
+	const CVector* poly1, int size1,
 	const CVector& axis, float& overlapDepth)
 {
 	bool ret = false;
@@ -303,65 +297,19 @@ bool CCollider::OverlapOnAxis(const CVector* poly0,int size0,
 	return ret;
 }
 
+// コライダーの設定
+void CCollider::Set(CObjectBase* owner, ELayer layer)
+{
+	mpOwner = owner;
+	mLayer = layer;
+}
+
 // 三角形と三角形の衝突判定
 bool CCollider::CollisionTriangle(const CVector& t00, const CVector& t01, const CVector& t02,
 	const CVector& t10, const CVector& t11, const CVector& t12,
-	CHitInfo* h)
+	CHitInfo* hit)
 {
-	//面の法線を、外積を正規化して求める
-	CVector normal = CVector::Cross(t01 - t00, t02 - t00).Normalized();
-
-	// 三角形1の各頂点座標
-	CVector tri0[3] = { t00,t01,t02 };
-	// 三角形2の各頂点座標
-	CVector tri1[3] = { t10,t11,t12 };
-	// 分離軸
-	std::vector<CVector> axes;
-	// 衝突の深さ
-	float overlapDepth = FLT_MAX;
-	float currentOverlapDepth = FLT_MAX;
-
-	// 三角形の全ての辺の組み合わせの外積から分離軸を生成
-	for (int i = 0; i < 3; i++) 
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			CVector edge0 = tri0[(i + 1) % 3] - tri0[i];
-			CVector edge1 = tri1[(j + 1) % 3] - tri1[j];
-			CVector axis = edge0.Cross(edge1);
-
-			// 無効な軸は保存しない
-			if (axis.LengthSqr() > 1e-6f)
-			{
-				// 分離軸の候補として外積を追加
-				axes.push_back(axis);
-			}
-		}
-	}
-
-	int size = axes.size();
-	// すべての分離軸で重なりを確認
-	for (int i = 0; i < size; i++)
-	{
-		CVector ax = axes[i].Normalized();
-		// 重ならない軸があれば衝突なし
-		if (!OverlapOnAxis(tri0, std::size(tri0), tri1, std::size(tri1), ax, currentOverlapDepth))
-		{
-			return false;
-		}
-		
-		// 一番小さいものを衝突の深さに設定する
-		if (currentOverlapDepth < overlapDepth)
-		{
-			overlapDepth = currentOverlapDepth;
-		}
-	}
-
-	// 調整値計算
-	h->adjust = -normal * overlapDepth;
-
-	// すべての軸で重なっていれば衝突している
-	return true;
+	return false;
 }
 
 // 三角形と線分の衝突判定
@@ -525,6 +473,22 @@ bool CCollider::CollisionTriangleCapsule(
 	return false;
 }
 
+// 三角形と点の衝突判定
+bool CCollider::CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& tn, const CVector& p)
+{
+	if (CVector::Dot(CVector::Cross(t1 - t0, p - t0), tn) < 0.0f) return false;
+	if (CVector::Dot(CVector::Cross(t2 - t1, p - t1), tn) < 0.0f) return false;
+	if (CVector::Dot(CVector::Cross(t0 - t2, p - t2), tn) < 0.0f) return false;
+	return true;
+}
+
+// 三角形と点の衝突判定
+bool CCollider::CollisionTrianglePoint(const CVector& t0, const CVector& t1, const CVector& t2, const CVector& p)
+{
+	CVector n = CVector::Cross(t1 - t0, t2 - t0).Normalized();
+	return CollisionTrianglePoint(t0, t1, t2, n, p);
+}
+
 // 三角形と球の衝突判定
 bool CCollider::CollisionTriangleSphere(
 	const CVector& t0, const CVector& t1, const CVector& t2,
@@ -545,7 +509,7 @@ bool CCollider::CollisionTriangleSphere(
 	// 球の中心点から三角形へ垂直に下ろした点を求める
 	CVector point = sp + (-n * dist);
 	// 求めた点が三角形の範囲内か調べる
-	if (IsInsideTriangle(point, t0, t1, t2, n))
+	if (CollisionTrianglePoint(t0, t1, t2, n, point))
 	{
 		// 範囲内であれば、衝突しているので、
 		// 押し戻し量を計算
@@ -714,6 +678,7 @@ bool CCollider::CollisionCapsuleLine(
 	CHitInfo* hit, bool isLeftMain)
 {
 	hit->adjust = CVector(0.0f, 0.0f, 0.0f);
+
 	CVector SE0 = ce - cs;
 	CVector SE1 = le - ls;
 	CVector S10 = cs - ls;
@@ -773,14 +738,6 @@ bool CCollider::CollisionCapsuleLine(
 		CVector n = (C1 - C2).Normalized();
 		float length = cr - dist;
 		hit->adjust = n * length;
-		if (isLeftMain)
-		{
-			hit->cross = C1;
-		}
-		else
-		{
-			hit->cross = C2;
-		}
 
 		return true;
 	}
@@ -870,7 +827,7 @@ bool CCollider::CollisionCapsule(const CVector& cs0, const CVector& ce0, float c
 }
 
 // メッシュと線分の衝突判定
-bool CCollider::CollisionMeshLine(const std::list<STVertexData>& tris,
+bool CCollider::CollisionMeshLine(const std::vector<STVertexData>& tris,
 	const CVector& ls, const CVector& le, const CBounds& lb,
 	CHitInfo* hit, bool isLeftMain)
 {
@@ -917,7 +874,7 @@ bool CCollider::CollisionMeshLine(const std::list<STVertexData>& tris,
 }
 
 // メッシュと球の衝突判定
-bool CCollider::CollisionMeshSphere(const std::list<STVertexData>& tris,
+bool CCollider::CollisionMeshSphere(const std::vector<STVertexData>& tris,
 	CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector sp;
@@ -946,7 +903,7 @@ bool CCollider::CollisionMeshSphere(const std::list<STVertexData>& tris,
 }
 
 // メッシュと三角形の衝突判定
-bool CCollider::CollisionMeshTriangle(const std::list<STVertexData>& tris,
+bool CCollider::CollisionMeshTriangle(const std::vector<STVertexData>& tris,
 	CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector t0, t1, t2;
@@ -972,7 +929,7 @@ bool CCollider::CollisionMeshTriangle(const std::list<STVertexData>& tris,
 }
 
 // メッシュとカプセルの衝突判定
-bool CCollider::CollisionMeshCapsule(const std::list<STVertexData>& tris,
+bool CCollider::CollisionMeshCapsule(const std::vector<STVertexData>& tris,
 	CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector cs, ce;
@@ -1022,7 +979,7 @@ bool CCollider::CollisionMeshCapsule(const std::list<STVertexData>& tris,
 }
 
 // 四角形と三角形の衝突判定
-bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1, const CVector& r2,const CVector& r3, 
+bool CCollider::CollisionRectangleTriangle(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 	const CVector& t0, const CVector& t1, const CVector& t2,
 	CHitInfo* hit, bool isLeftMain)
 {
@@ -1144,8 +1101,8 @@ bool CCollider::CollisionRectangle(const CVector& r00, const CVector& r01, const
 }
 
 // 四角形と線分の衝突判定
-bool CCollider::CollisionRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, 
-	const CVector& ls, const CVector& le, 
+bool CCollider::CollisionRectangleLine(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
+	const CVector& ls, const CVector& le,
 	CHitInfo* hit, bool isLeftMain)
 {
 	//面の法線を、外積を正規化して求める
@@ -1194,7 +1151,7 @@ bool CCollider::CollisionRectangleLine(const CVector& r0, const CVector& r1, con
 }
 
 // 四角形とカプセルの衝突判定
-bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, 
+bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
 	const CVector& cs, const CVector& ce, float cr,
 	CHitInfo* hit, bool isLeftMain)
 {
@@ -1315,7 +1272,7 @@ bool CCollider::CollisionRectangleCapsule(const CVector& r0, const CVector& r1, 
 
 // 四角形と球の衝突判定
 bool CCollider::CollisionRectangleSphere(const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3,
-	const CVector& sp, const float sr, 
+	const CVector& sp, const float sr,
 	CHitInfo* hit, bool isLeftMain)
 {
 	// 四角形の法線を求める
@@ -1388,7 +1345,7 @@ bool CCollider::CollisionRectangleSphere(const CVector& r0, const CVector& r1, c
 
 // 四角形とメッシュの衝突判定
 bool CCollider::CollisionRectangleMesh(CColliderRectangle* rectCol,
-	const std::list<STVertexData>& tris, 
+	const std::vector<STVertexData>& tris,
 	CHitInfo* hit, bool isLeftMain)
 {
 	CVector r0, r1, r2, r3;
@@ -1415,7 +1372,7 @@ bool CCollider::CollisionRectangleMesh(CColliderRectangle* rectCol,
 }
 
 // ボックスと線分の衝突判定
-bool CCollider::CollisionBoxLine(const std::list<SRVertexData>& rects,
+bool CCollider::CollisionBoxLine(const std::vector<SRVertexData>& rects,
 	const CVector& ls, const CVector& le, const CBounds& lb,
 	CHitInfo* hit, bool isLeftMain)
 {
@@ -1478,7 +1435,7 @@ bool CCollider::CollisionBoxLine(const std::list<SRVertexData>& rects,
 }
 
 // ボックスと球の衝突判定
-bool CCollider::CollisionBoxSphere(const std::list<SRVertexData>& rects,
+bool CCollider::CollisionBoxSphere(const std::vector<SRVertexData>& rects,
 	CColliderSphere* sphereCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector sp;	// 球の座標
@@ -1517,7 +1474,7 @@ bool CCollider::CollisionBoxSphere(const std::list<SRVertexData>& rects,
 }
 
 // ボックスと三角形の衝突判定
-bool CCollider::CollisionBoxTriangle(const std::list<SRVertexData>& rects,
+bool CCollider::CollisionBoxTriangle(const std::vector<SRVertexData>& rects,
 	CColliderTriangle* triCol, CHitInfo* hit, bool isLeftMain)
 {
 	CVector t0, t1, t2;	// 三角形の頂点
@@ -1543,27 +1500,27 @@ bool CCollider::CollisionBoxTriangle(const std::list<SRVertexData>& rects,
 }
 
 // ボックスとカプセルの衝突判定
-bool CCollider::CollisionBoxCapsule(const std::list<SRVertexData>& rects,
+bool CCollider::CollisionBoxCapsule(const std::vector<SRVertexData>& rects,
 	CColliderCapsule* capsuleCol, CHitInfo* hit, bool isLeftMain)
 {
 	return false;
 }
 
 // ボックスとメッシュの衝突判定
-bool CCollider::CollisionBoxMesh(const std::list<SRVertexData>& rects, 
-	const std::list<STVertexData>& tris, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionBoxMesh(const std::vector<SRVertexData>& rects,
+	const std::vector<STVertexData>& tris, CHitInfo* hit, bool isLeftMain)
 {
 	return false;
 }
 
 // ボックスと四角形の衝突判定
-bool CCollider::CollisionBoxRectangle(const std::list<SRVertexData>& rects, CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain)
+bool CCollider::CollisionBoxRectangle(const std::vector<SRVertexData>& rects, CColliderRectangle* rectCol, CHitInfo* hit, bool isLeftMain)
 {
 	return false;
 }
 
 // ボックス同士の衝突判定
-bool CCollider::CollisionBox(const std::list<SRVertexData>& rects0, const std::list<SRVertexData>& rects1, CHitInfo* hit)
+bool CCollider::CollisionBox(const std::vector<SRVertexData>& rects0, const std::vector<SRVertexData>& rects1, CHitInfo* hit)
 {
 	return false;
 }
@@ -1610,7 +1567,6 @@ float CCollider::CalcDistanceLine(const CVector& s1, const CVector& e1, const CV
 	}
 }
 
-// 指定した点が三角形の内側にあるかどうか
 bool CCollider::IsInsideTriangle(const CVector& p, const CVector& t0, const CVector& t1, const CVector& t2, const CVector& n)
 {
 	// 三角形の各辺と三角形の各頂点から点までのベクトルに
@@ -2063,50 +2019,57 @@ bool CCollider::CollisionRay(CCollider* c, const CVector& start, const CVector& 
 	if (v.LengthSqr() == 0.0f) return false;
 
 	// コライダーの種類によって衝突判定を切り替える
-	switch(c->Type())
+	switch (c->Type())
 	{
 		// 線コライダーとの衝突
-		case EColliderType::eLine:
-		{
-			CColliderLine* line = dynamic_cast<CColliderLine*>(c);
-			CVector ls, le;
-			line->Get(&ls, &le);
-			return CollisionLine(start, end, ls, le, hit);
-		}
-		// 球コライダーとの衝突
-		case EColliderType::eSphere:
-		{
-			CColliderSphere* sphere = dynamic_cast<CColliderSphere*>(c);
-			CVector sp;
-			float sr;
-			sphere->Get(&sp, &sr);
-			return CollisionSphereLine(sp, sr, start, end, hit, false);
-		}
-		// カプセルコライダーとの衝突
-		case EColliderType::eCapsule:
-		{
-			CColliderCapsule* capsule = dynamic_cast<CColliderCapsule*>(c);
-			CVector cs, ce;
-			capsule->Get(&cs, &ce);
-			float cr = capsule->Radius();
-			return CollisionCapsuleLine(cs, ce, cr, start, end, hit, false);
-		}
-		// 三角形コライダーとの衝突
-		case EColliderType::eTriangle:
-		{
-			CColliderTriangle* triangle = dynamic_cast<CColliderTriangle*>(c);
-			CVector t0, t1, t2;
-			triangle->Get(&t0, &t1, &t2);
-			return CollisionTriangleLine(t0, t1, t2, start, end, hit, false);
-		}
-		// メッシュコライダーとの衝突
-		case EColliderType::eMesh:
-		{
-			CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c);
-			auto tris = mesh->Get();
-			CBounds bounds = CBounds::GetLineBounds(start, end);
-			return CollisionMeshLine(tris, start, end, bounds, hit, false);
-		}
+	case EColliderType::eLine:
+	{
+		CColliderLine* line = dynamic_cast<CColliderLine*>(c);
+		CVector ls, le;
+		line->Get(&ls, &le);
+		return CollisionLine(start, end, ls, le, hit);
+	}
+	// 球コライダーとの衝突
+	case EColliderType::eSphere:
+	{
+		CColliderSphere* sphere = dynamic_cast<CColliderSphere*>(c);
+		CVector sp;
+		float sr;
+		sphere->Get(&sp, &sr);
+		return CollisionSphereLine(sp, sr, start, end, hit, false);
+	}
+	// 三角形コライダーとの衝突
+	case EColliderType::eTriangle:
+	{
+		CColliderTriangle* triangle = dynamic_cast<CColliderTriangle*>(c);
+		CVector t0, t1, t2;
+		triangle->Get(&t0, &t1, &t2);
+		return CollisionTriangleLine(t0, t1, t2, start, end, hit, false);
+	}
+	// メッシュコライダーとの衝突
+	case EColliderType::eMesh:
+	{
+		CColliderMesh* mesh = dynamic_cast<CColliderMesh*>(c);
+		auto tris = mesh->Get();
+		CBounds bounds = CBounds::GetLineBounds(start, end);
+		return CollisionMeshLine(tris, start, end, bounds, hit, false);
+	}
+	// 四角形コライダーとの衝突
+	case EColliderType::eRectangle:
+	{
+		CColliderRectangle* rect = dynamic_cast<CColliderRectangle*>(c);
+		CVector r0, r1, r2, r3;
+		rect->Get(&r0, &r1, &r2, &r3);
+		return CollisionRectangleLine(r0, r1, r2, r3, start, end, hit, false);
+	}
+	// ボックスコライダーとの衝突
+	case EColliderType::eBox:
+	{
+		CColliderBox* box = dynamic_cast<CColliderBox*>(c);
+		auto rects = box->Get();
+		CBounds bounds = CBounds::GetLineBounds(start, end);
+		return CollisionBoxLine(rects, start, end, bounds, hit, false);
+	}
 	}
 
 	// それ以外は失敗

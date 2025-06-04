@@ -77,3 +77,9 @@ void CGameCamera2::Update()
 	// カメラのベースの更新処理
 	//CCamera::Update();
 }
+
+// 回転角度を設定
+void CGameCamera2::SetRotateAngle(CVector angle)
+{
+	mRotateAngle += angle;
+}

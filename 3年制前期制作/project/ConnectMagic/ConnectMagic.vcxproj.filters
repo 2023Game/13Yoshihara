@@ -101,9 +101,6 @@
     <Filter Include="ソース ファイル\Game\Debug">
       <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Navigation">
-      <UniqueIdentifier>{bdfd0c47-7480-4b01-b8e4-e2a8b8c71ad8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\UI\UI2D">
       <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
     </Filter>
@@ -142,6 +139,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Field\Object\ConnectObject\FireObject">
       <UniqueIdentifier>{f41d80ba-3670-41a1-866d-2cbd4c3f354c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Navigation">
+      <UniqueIdentifier>{f65178ff-9f6b-4c8a-a8db-e655071d2554}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -442,12 +442,6 @@
     <ClCompile Include="src\Game\CFieldBase.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CNavNode.cpp">
-      <Filter>ソース ファイル\Game\Navigation</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CNavManager.cpp">
-      <Filter>ソース ファイル\Game\Navigation</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CSky.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClCompile>
@@ -585,6 +579,12 @@
     </ClCompile>
     <ClCompile Include="src\Game\CDropItem.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CNavManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CNavNode.cpp">
+      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -909,12 +909,6 @@
     <ClInclude Include="src\Game\CFieldBase.h">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CNavNode.h">
-      <Filter>ソース ファイル\Game\Navigation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CNavManager.h">
-      <Filter>ソース ファイル\Game\Navigation</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CSky.h">
       <Filter>ソース ファイル\Game\Field</Filter>
     </ClInclude>
@@ -1061,6 +1055,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDropItem.h">
       <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CNavManager.h">
+      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CNavNode.h">
+      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

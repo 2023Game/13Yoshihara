@@ -100,10 +100,8 @@ public:
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
 
-	// 接続できる数を設定
-	void SetConnectMax(int num);
-	// 接続できる数を取得
-	int GetConnectMax() const;
+	// 強化アイテムの獲得数を増加
+	void AddUpgradeItemNum();
 
 private:
 	// インスタンス
@@ -119,12 +117,24 @@ private:
 	// 視点方向のレイで衝突判定するコライダーのリスト
 	std::list<CCollider*> mColliders;
 
-	// 接続できる数の最大値
-	int mConnectMaxNum;
-
 	// 杖の先の接続部の位置を特定
 	void WandPos();
 
 	// 杖が接続している接続部とプレイヤーの距離
 	float mWandConnectDistance;
+
+	// 接続できる最大距離
+	float mConnectMaxDist;
+
+	// 接続できる数の最大値
+	int mConnectMaxNum;
+
+	// 強化アイテム獲得数
+	int mUpgradeItemNum;
+
+	// 接続できる距離を増加
+	void AddConnectMaxDist();
+
+	// 接続できる数を増加
+	void AddConnectMaxNum();
 };

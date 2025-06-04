@@ -80,6 +80,8 @@ void CMap1Scene::Load()
 		atPos + CVector(0.0f, 0.0f, 20.0f),
 		atPos
 	);
+	// カメラの位置を反対へ
+	mainCamera->SetRotateAngle(CVector(0.0f, 180.0f, 0.0f));
 
 	// フィールドクラス生成
 	mpField = new CMap1();

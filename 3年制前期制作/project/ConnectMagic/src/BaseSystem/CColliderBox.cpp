@@ -58,7 +58,7 @@ void CColliderBox::Set(CVector min, CVector max)
 	mVertices.push_back({ rv5,rv5 });
 }
 
-const std::list<SRVertexData>& CColliderBox::Get() const
+const std::vector<SRVertexData>& CColliderBox::Get() const
 {
 	return mVertices;
 }

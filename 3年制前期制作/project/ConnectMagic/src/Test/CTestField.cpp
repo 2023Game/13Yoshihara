@@ -30,6 +30,11 @@
 #define GRASS_POS_1 CVector(-50.0f,0.0f,-50.0f)
 #define GRASS_POS_2 CVector(-100.0f,0.0f,-50.0f)
 
+// ツタの炎のオフセット座標
+#define VINE_FIRE_OFFSET_POS CVector(0.0f,VINE_HEIGHT/2.0f,0.0f)
+// ツタの炎の大きさ
+#define VINE_FIRE_SCALE FIRE_SCALE * 15.0f
+
 // 橋の座標
 #define BRIDGE_POS_1 CVector(50.0f,0.0f,-50.0f)
 #define BRIDGE_POS_2 CVector(50.0f,0.0f,-100.0f)
@@ -43,7 +48,7 @@
 #define WATER_POS CVector(300.0f,1.0f,0.0f)
 
 // アイテムの座標
-#define ITEM_OFFSET_POS CVector(0.0f,10.0f,30.0f)
+#define ITEM_POS CVector(0.0f,5.0f,30.0f)
 
 // キャンプファイヤーの座標
 #define CAMPFIRE_POS CVector(0.0f,0.0f,-70.0f)
@@ -77,7 +82,13 @@ void CTestField::CreateFieldObjects()
 
 	// 強化アイテムを生成
 	CUpgradeItem* item = new CUpgradeItem();
-	item->Position(ITEM_OFFSET_POS);
+	item->Position(ITEM_POS);
+
+	for (int i = 0; i < 10; i++)
+	{
+		item = new CUpgradeItem();
+		item->Position(10.0f + 10.0f * i, 5.0f, 0.0f);
+	}
 
 	// 水を生成
 	CWater* water = new CWater(CVector(100.0f,1.0f,100.0f));
@@ -106,7 +117,7 @@ void CTestField::CreateFieldObjects()
 	grass->SetDropItem(mergeArea->GetFragment(3));
 
 	// 草を生成
-	grass = new CGrass();
+	grass = new CGrass(EGrassType::eVine, VINE_FIRE_OFFSET_POS, VINE_FIRE_SCALE);
 	// 位置調整
 	grass->Position(GRASS_POS_2);
 
