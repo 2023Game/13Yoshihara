@@ -1,6 +1,6 @@
 #pragma once
 #include "CObjectBase.h"
-#include "CConnectObjectTag.h"
+#include "ConnectObjectTag.h"
 
 // ˆø‚Á’£‚é—Í
 #define PULL_POWER 60.0f

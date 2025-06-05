@@ -14,20 +14,21 @@ CFlame::CFlame(ETag tag)
 	, mIsDeath(false)
 	, mFlameScale(FLAME_SCALE)
 	, mFlameScaleAnimTime(FLAME_SCALE_ANIM_TIME)
+	, mpCollider(nullptr)
 {
 	// デプステストオフ
 	SetDepthMask(false);
 
 	SetAnimData(&msAnimData);
 
-	mpCollider = new CColliderSphere
-	(
-		this,
-		ELayer::eAttackCol,
-		1.0f
-	);
-	mpCollider->SetCollisionTags({ ETag::eField, ETag::eRideableObject });
-	mpCollider->SetCollisionLayers({ ELayer::eGround });
+	//mpCollider = new CColliderSphere
+	//(
+	//	this,
+	//	ELayer::eAttackCol,
+	//	1.0f
+	//);
+	//mpCollider->SetCollisionTags({ ETag::eField, ETag::eRideableObject });
+	//mpCollider->SetCollisionLayers({ ELayer::eGround });
 }
 
 // デストラクタ

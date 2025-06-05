@@ -241,7 +241,7 @@
     <ClInclude Include="src\Game\CBridge.h" />
     <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
-    <ClInclude Include="src\Game\CConnectObjectTag.h" />
+    <ClInclude Include="src\Game\ConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
     <ClInclude Include="src\Game\CConnectPointManager.h" />
     <ClInclude Include="src\Game\CConnectTarget.h" />
@@ -253,7 +253,7 @@
     <ClInclude Include="src\Game\CFieldBase.h" />
     <ClInclude Include="src\Game\CFire.h" />
     <ClInclude Include="src\Game\CFragmentMergeArea.h" />
-    <ClInclude Include="src\Game\CFragmentType.h" />
+    <ClInclude Include="src\Game\FragmentType.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
     <ClInclude Include="src\Game\CGearBaseStatus.h" />
     <ClInclude Include="src\Game\CGrass.h" />

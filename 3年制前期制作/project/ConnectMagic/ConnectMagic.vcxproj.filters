@@ -993,7 +993,7 @@
     <ClInclude Include="src\Game\CAirConnectObj.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CConnectObjectTag.h">
+    <ClInclude Include="src\Game\ConnectObjectTag.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CRespawnArea.h">
@@ -1032,7 +1032,7 @@
     <ClInclude Include="src\Game\CPortalFragment.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CFragmentType.h">
+    <ClInclude Include="src\Game\FragmentType.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CFragmentMergeArea.h">

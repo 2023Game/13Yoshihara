@@ -1,6 +1,6 @@
 #pragma once
 #include "CConnectObject.h"
-#include "CFragmentType.h"
+#include "FragmentType.h"
 #include "CDropItem.h"
 
 class CImage3D;

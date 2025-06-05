@@ -620,6 +620,12 @@ void CConnectPointManager::AddUpgradeItemNum()
 		// Ú‘±‚Å‚«‚é”‚Ì‘‰Á
 		AddConnectMaxNum();
 	}
+	// Šl“¾‚ª1‚Â–Ú‚¾‚Á‚½ê‡
+	else if (mUpgradeItemNum == 1)
+	{
+		// Ú‘±‚Å‚«‚é”‚Ì‘‰Á
+		AddConnectMaxNum();
+	}
 }
 
 // ñ‚Ìæ‚ÌÚ‘±•”‚ÌˆÊ’u‚ğ“Á’è

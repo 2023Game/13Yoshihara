@@ -5,7 +5,7 @@
 class CImage3D;
 
 // ƒcƒ^‚Ì‚‚³‚Æ•
-#define VINE_HEIGHT 40.0f
+#define VINE_HEIGHT 50.0f
 #define VINE_WIDTH	100.0f
 
 // ‘‚Ìí—Ş
