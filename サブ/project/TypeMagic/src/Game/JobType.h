@@ -1,0 +1,11 @@
+#pragma once
+
+enum class EJobType
+{
+	eNone = -1,
+
+	eTrash,		// ÉSÉ~èEÇ¢
+	eDelivery,	// îzíB
+
+	Num
+};

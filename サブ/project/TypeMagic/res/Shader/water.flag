@@ -1,0 +1,40 @@
+#version 330 core
+// uniform：外部からの値
+uniform sampler2D u_NormalMap;	// ノーマルマップ
+uniform float u_Time;			// 経過時間
+
+// in：頂点シェーダーからの値
+in vec2 v_TexCoord;	// メッシュのUV
+in vec3 v_Normal;	// 法線
+in vec3 v_LightDir;	// 光の方向
+in vec3 v_ViewDir;	// 視点方向
+
+// out：外部へ
+out vec4 FragColor;
+
+void main(){
+	// ノーマルマップをスクロール
+	// スクロールUV（2方向の波を合成）
+	vec2 uv1 = v_TexCoord + vec2(u_Time * 0.05, u_Time * 0.03);
+	vec2 uv2 = v_TexCoord + vec2(-u_Time * 0.04, u_Time * 0.06);
+
+	// ノーマルマップを読み込み（[-1,1]に変換）
+	vec3 normal1 = texture(u_NormalMap, uv1).rgb * 2.0 - 1.0;
+	vec3 normal2 = texture(u_NormalMap, uv2).rgb * 2.0 - 1.0;
+
+	// ノーマル合成（波っぽく）
+	vec3 blendedNormal = normalize(normal1 + normal2);
+
+	// 拡散反射
+	float diffuse = 0.3 + 0.7 * max(dot(blendedNormal, normalize(v_LightDir)), 0.0);
+
+	// フレネル反射（角度で明るくする）
+	float fresnel = pow(1.0 - max(dot(blendedNormal, normalize(v_ViewDir)), 0.0), 3.0);
+	// 明るくなりすぎないよう調整
+	fresnel = clamp(fresnel, 0.1, 0.25);
+
+	// 最終色（青＋フレネル反射）
+	vec3 waterColor = mix(vec3(0.0, 0.3, 0.5) * diffuse, vec3(0.8), fresnel);
+
+	FragColor = vec4(waterColor, 1.0);
+}
