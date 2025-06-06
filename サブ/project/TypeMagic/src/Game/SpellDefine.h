@@ -1,5 +1,8 @@
 #pragma once
 
+// 狙う高さ
+#define TARGET_HEIGHT 10.0f
+
 // 炎
 #define FIRE_POWER		1			// 攻撃力
 #define FIRE_SPEED		10.0f		// 速度
@@ -44,25 +47,37 @@
 
 // ボール型
 #define BALL_POWER		1
-#define BALL_SPEED		10.0f
+#define BALL_SPEED		100.0f
 #define BALL_HP			1
 #define BALL_IDLE_TIME	0.1f
 #define BALL_GENERATE_SPEED 0.1f
 // オフセット座標
-#define BALL_OFFSET_POS_1 CVector(0.0f,25.0f,0.0f)
-#define BALL_OFFSET_POS_2 CVector(5.0f,20.0f,0.0f)
-#define BALL_OFFSET_POS_3 CVector(-5.0f,20.0f,0.0f)
-#define BALL_OFFSET_POS_4 CVector(10.0f,15.0f,0.0f)
-#define BALL_OFFSET_POS_5 CVector(-10.0f,15.0f,0.0f)
+#define BALL_OFFSET_POS_1 CVector(  0.0f,25.0f,5.0f)
+#define BALL_OFFSET_POS_2 CVector(  5.0f,20.0f,5.0f)
+#define BALL_OFFSET_POS_3 CVector(- 5.0f,20.0f,5.0f)
+#define BALL_OFFSET_POS_4 CVector( 10.0f,15.0f,5.0f)
+#define BALL_OFFSET_POS_5 CVector(-10.0f,15.0f,5.0f)
 // 最大生成数
 #define BALL_MAX_GENERATE_NUM 5
+// 追跡終了する距離
+#define BALL_CHASE_END_DIST 12.0f
+// 加速
+#define BALL_ACCELERATE 1.0f
+// 消滅するまでの時間
+#define BALL_DELETE_TIME 2.0f
 
 // ボルト型
 #define BOLT_POWER		1
-#define BOLT_SPEED		10.0f
+#define BOLT_SPEED		400.0f
 #define BOLT_HP			1
-#define BOLT_IDLE_TIME	1.0f
+#define BOLT_IDLE_TIME	0.5f
 #define BOLT_GENERATE_SPEED 0.1f
+// オフセット座標
+#define BOLT_OFFSET_POS CVector(0.0f,TARGET_HEIGHT,7.5f)
+// 加速
+#define BOLT_ACCELERATE 5.0f
+// 消滅するまでの時間
+#define BOLT_DELETE_TIME 2.0f
 
 // ブレス型
 #define BREATH_POWER		1
@@ -70,6 +85,8 @@
 #define BREATH_HP			1
 #define BREATH_IDLE_TIME	1.0f
 #define BREATH_GENERATE_SPEED 0.1f
+// 消滅するまでの時間
+#define BREATH_DELETE_TIME 2.0f
 
 // テレポート型
 #define TELEPORT_POWER		1
@@ -77,6 +94,8 @@
 #define TELEPORT_HP			1
 #define TELEPORT_IDLE_TIME	1.0f
 #define TELEPORT_GENERATE_SPEED 0.1f
+// 消滅するまでの時間
+#define TELEPORT_DELETE_TIME 2.0f
 
 // シールド型
 #define SHIELD_POWER		1
@@ -84,6 +103,8 @@
 #define SHIELD_HP			1
 #define SHIELD_IDLE_TIME	1.0f
 #define SHIELD_GENERATE_SPEED 0.1f
+// 消滅するまでの時間
+#define SHIELD_DELETE_TIME 2.0f
 
 // リフレクター型
 #define REFLECTOR_POWER		1
@@ -91,3 +112,5 @@
 #define REFLECTOR_HP			1
 #define REFLECTOR_IDLE_TIME	1.0f
 #define REFLECTOR_GENERATE_SPEED 0.1f
+// 消滅するまでの時間
+#define REFLECTOR_DELETE_TIME 2.0f

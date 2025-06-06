@@ -74,12 +74,6 @@ void CPlayer::Update()
 	lookPos.Y(Position().Y());
 	LookAt(lookPos);
 
-	//CGameCamera2* camera = dynamic_cast<CGameCamera2*>(CCamera::CurrentCamera());
-	//CVector angle = camera->CameraRotate(lookPos);
-	//camera->SetRotateAngle(angle);
-
-
-
 	// 待機中は、移動処理を行う
 	if (mState == EState::eIdle)
 	{
@@ -142,21 +136,32 @@ void CPlayer::ActionInput()
 		// 攻撃開始へ
 		ChangeState(EState::eAttackStart);
 	}
-	if (CInput::PushKey('B'))
+
+	if (CInput::PushKey('U'))
 	{
 		// ボール呪文を詠唱
 		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
+	}
+	if (CInput::PushKey('I'))
+	{
+		// ボルト呪文を詠唱
+		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBolt);
+	}
+	if (CInput::PushKey('O'))
+	{
+		// ブレス呪文を詠唱
+		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBreath);
 	}
 
 	// スペースで上移動
 	if (CInput::Key(VK_SPACE))
 	{
-		mMoveSpeedY = GetBaseMoveSpeed() * Times::DeltaTime();
+		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
 	}
 	// シフトで下移動
 	else if (CInput::Key(VK_SHIFT))
 	{
-		mMoveSpeedY = -GetBaseMoveSpeed() * Times::DeltaTime();
+		mMoveSpeedY = -GetJumpSpeed() * Times::DeltaTime();
 	}
 	else
 	{

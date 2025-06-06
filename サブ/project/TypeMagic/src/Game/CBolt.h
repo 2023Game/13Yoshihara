@@ -15,6 +15,8 @@ private:
 	// コライダーを生成
 	void CreateCol() override;
 
+	// 待機中の更新
+	void UpdateIdle() override;
 	// 発射中の更新
 	void UpdateShooting() override;
 };

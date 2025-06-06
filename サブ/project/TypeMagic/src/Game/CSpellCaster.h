@@ -43,6 +43,13 @@ private:
 	// 生成速度と待機時間の設定
 	void SetTime(ESpellElementalType elemental, ESpellShapeType shape);
 
+	// 生成待機
+	bool WaitGenerate();
+	// 発射待機
+	bool WaitShoot();
+	// 発射
+	bool Shoot();
+
 	// 詠唱中の呪文の属性
 	ESpellElementalType mSpellElemental;
 	// 詠唱中の呪文の形

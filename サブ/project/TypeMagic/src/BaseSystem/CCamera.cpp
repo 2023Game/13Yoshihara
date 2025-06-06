@@ -455,11 +455,13 @@ CVector CCamera::CameraRotate(CVector targetPos)
 	float angle = Math::RadianToDegree(acosf(dot));
 	// ‰ñ“]Ž²‚ð‹‚ß‚é
 	CVector axis = eyeVec.Cross(dir);
-
-	return axis * angle;
+	axis.X(0.0f);
+	axis.Z(0.0f);
 
 	CQuaternion rot = CQuaternion(axis * angle);
 	mAt = mFollowTargetTf->Position() + mFollowOffsetPos;
 	mTargetEye = mAt + rot * (mTargetEye - mAt);
 	mEye = mTargetEye;
+
+	return axis * angle;
 }

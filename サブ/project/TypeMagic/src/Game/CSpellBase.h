@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
 #include "CSpellStatus.h"
+#include "SpellDefine.h"
 
 class CSpellCaster;
 class CModel;
@@ -18,8 +19,9 @@ public:
 	/// <param name="shape">形</param>
 	/// <param name="owner">持ち主</param>
 	/// <param name="target">目標</param>
+	/// <param name="deleteTime">消滅するまでの時間</param>
 	CSpellBase(ESpellElementalType elemental, ESpellShapeType shape,
-		CObjectBase* owner, CObjectBase* target);
+		CObjectBase* owner, CObjectBase* target, float deleteTime);
 	// デストラクタ
 	~CSpellBase();
 
@@ -28,14 +30,20 @@ public:
 	// 描画
 	void Render() override;
 
+	// 衝突処理
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
+
 	// 呪文のターゲットを設定
 	void SetTarget(CObjectBase* target);
 
 protected:
 	// 待機中の更新
-	void UpdateIdle();
+	virtual void UpdateIdle();
 	// 発射中の更新
-	virtual void UpdateShooting() = 0;
+	virtual void UpdateShooting();
+
+	// 消滅するまでの時間
+	float mDeleteTime;
 
 	// 状態
 	enum class EState
@@ -63,4 +71,7 @@ protected:
 
 	// 呪文のターゲット
 	CObjectBase* mpTarget;
+
+	// 移動方向
+	CVector mMoveDir;
 };

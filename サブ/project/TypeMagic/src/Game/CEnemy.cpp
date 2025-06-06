@@ -36,9 +36,9 @@ void CEnemy::Update()
 	CSpellCaster::Update();
 
 	mElapsedTime += Times::DeltaTime();
-	if (mElapsedTime > 5.0f)
+	if (mElapsedTime > 2.0f)
 	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
+		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBolt);
 		mElapsedTime = 0.0f;
 	}
 }
@@ -49,7 +49,7 @@ void CEnemy::CreateCol()
 	// 本体コライダ
 	mpBodyCol = new CColliderCapsule
 	(
-		this, ELayer::ePlayer,
+		this, ELayer::eEnemy,
 		CVector(0.0f, BODY_RADIUS / Scale().Y(), 0.0f),
 		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS

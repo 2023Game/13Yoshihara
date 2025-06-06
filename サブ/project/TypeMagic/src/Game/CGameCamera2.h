@@ -25,7 +25,13 @@ public:
 	// 回転角度を設定
 	void SetRotateAngle(CVector angle);
 
+	// ロックオンターゲットを設定
+	void SetLockOnTarget(CTransform* target);
+
 private:
 	CVector mFollowDefaultEyeVec;
 	CVector mRotateAngle;
+
+	// ロックオンターゲット
+	CTransform* mpLockOnTarget;
 };

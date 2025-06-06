@@ -41,9 +41,10 @@ void CTestScene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("TestField",		"Field\\field.obj");
+	CResourceManager::Load<CModel>("TestField",	"Field\\field.obj");
 	CResourceManager::Load<CModel>("TestModel",	"Character\\TestModel.obj");
-	CResourceManager::Load<CModel>("FireBall",		"Wepon\\FireBall.obj");
+	CResourceManager::Load<CModel>("FireBall",	"Wepon\\FireBall.obj");
+	CResourceManager::Load<CModel>("FireBolt",	"Wepon\\FireBolt.obj");
 	// 当たり判定用のコリジョンモデル
 	/*
 	効果音
@@ -64,7 +65,7 @@ void CTestScene::Load()
 	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 20.0f, 40.0f),
+		atPos + CVector(0.0f, 20.0f, 0.0f),
 		atPos
 	);
 
@@ -76,6 +77,7 @@ void CTestScene::Load()
 	mainCamera->AddCollider(field->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
+	mainCamera->SetLockOnTarget(enemy);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();

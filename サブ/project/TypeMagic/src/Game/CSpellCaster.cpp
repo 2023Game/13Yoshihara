@@ -49,13 +49,8 @@ void CSpellCaster::CastBall()
 	{
 		// 生成間隔の待機
 	case 0:
-		// 時間経過
-		mElapsedTime += Times::DeltaTime();
-		// 生成速度の数値を超えたら
-		if (mElapsedTime > mGenerateSpeed)
+		if (WaitGenerate())
 		{
-			mElapsedTime = 0.0f;
-			// 次へ
 			mStep++;
 		}
 		break;
@@ -104,14 +99,9 @@ void CSpellCaster::CastBall()
 		break;
 	}
 		// 発射待機
-	case 2:		
-		// 時間経過
-		mElapsedTime += Times::DeltaTime();
-		// 待機時間を超えたら
-		if (mElapsedTime > mIdleTime)
+	case 2:
+		if (WaitShoot())
 		{
-			mElapsedTime = 0.0f;
-			// 次へ
 			mStep++;
 		}
 		break;
@@ -148,6 +138,73 @@ void CSpellCaster::CastBall()
 // ボルト呪文の詠唱
 void CSpellCaster::CastBolt()
 {
+	switch (mStep)
+	{
+		// 生成間隔の待機
+	case 0:
+		if (WaitGenerate())
+		{
+			mStep++;
+		}
+		break;
+
+		// 呪文生成
+	case 1:
+	{
+		// 生成座標
+		CVector offsetPos = BOLT_OFFSET_POS;
+		// 持ち主の方向で設定
+		offsetPos =
+			mpOwner->VectorX() * offsetPos.X() +
+			mpOwner->VectorY() * offsetPos.Y() +
+			mpOwner->VectorZ() * offsetPos.Z();
+
+		// ボルト呪文を生成
+		CBolt* bolt = new CBolt(mSpellElemental
+			, mpOwner, mpOpponent);
+		// 座標を設定
+		bolt->Position(mpOwner->Position() + offsetPos);
+		// リストに追加
+		mSpells.push_back(bolt);
+		// 生成数をプラス
+		mGenerateNum++;
+
+		// 次へ
+		mStep++;
+
+		break;
+	}
+
+		// 発射待機
+	case 2:
+		if (WaitShoot())
+		{
+			mStep++;
+		}
+		break;
+
+		// 順番に発射状態へ
+	case 3:
+		// 全て発射状態にしたので
+		if (Shoot())
+		{
+			// 次へ
+			mStep++;
+		}
+		// してないので
+		else
+		{
+			// 戻る
+			mStep--;
+		}
+
+		break;
+
+		// 詠唱終了
+	case 4:
+		mIsSpellCasting = false;
+		break;
+	}
 }
 
 // ブレス呪文の詠唱
@@ -234,6 +291,58 @@ void CSpellCaster::SetTime(ESpellElementalType elemental, ESpellShapeType shape)
 
 	mGenerateSpeed = generateSpeed;
 	mIdleTime = idleTime;
+}
+
+// 生成待機
+bool CSpellCaster::WaitGenerate()
+{		
+	// 時間経過
+	mElapsedTime += Times::DeltaTime();
+	// 生成速度の数値を超えたら
+	if (mElapsedTime > mGenerateSpeed)
+	{
+		mElapsedTime = 0.0f;
+		// 待機終了
+		return true;
+	}
+
+	// 待機中
+	return false;
+}
+
+// 発射待機
+bool CSpellCaster::WaitShoot()
+{		
+	// 時間経過
+	mElapsedTime += Times::DeltaTime();
+	// 待機時間を超えたら
+	if (mElapsedTime > mIdleTime)
+	{
+		mElapsedTime = 0.0f;
+		// 待機終了
+		return true;
+	}
+
+	// 待機中
+	return false;
+}
+
+// 発射
+bool CSpellCaster::Shoot()
+{
+	// 発射状態へ
+	mSpells[mGenerateNum - 1]->ChangeState(CSpellBase::EState::eShooting);
+
+	mGenerateNum--;
+	// 全て発射状態にした
+	if (mGenerateNum <= 0)
+	{
+		// 発射終了
+		return true;
+	}
+
+	// まだ残っている
+	return false;
 }
 
 // 詠唱開始

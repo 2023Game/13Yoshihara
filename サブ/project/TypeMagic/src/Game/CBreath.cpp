@@ -2,7 +2,7 @@
 
 // コンストラクタ
 CBreath::CBreath(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target)
-	: CSpellBase(elemental, ESpellShapeType::eBreath, owner, target)
+	: CSpellBase(elemental, ESpellShapeType::eBreath, owner, target, BREATH_DELETE_TIME)
 {
 }
 

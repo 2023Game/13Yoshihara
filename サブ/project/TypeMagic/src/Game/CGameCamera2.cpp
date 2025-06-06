@@ -3,15 +3,18 @@
 #include "Maths.h"
 
 // カメラの回転速度
-#define ROTATE_SPEED 0.1f
+#define ROTATE_SPEED 1.0f
 // カメラの上下回転の範囲
 #define ROTATE_RANGE_X 45.0f
+// カメラのオフセット座標Z
+#define EYE_OFFSET_POS_Z 100.0f
 
 // コンストラクタ
 CGameCamera2::CGameCamera2(const CVector& eye, const CVector& center, bool isMainCamera)
 	: CCamera(eye, center, isMainCamera)
 	, mFollowDefaultEyeVec(CVector::forward)
 	, mRotateAngle(CVector::zero)
+	, mpLockOnTarget(nullptr)
 {
 }
 
@@ -46,21 +49,20 @@ void CGameCamera2::LookAt(const CVector& eye, const CVector& at, const CVector& 
 // 更新
 void CGameCamera2::Update()
 {
-	// 追従するターゲットが設定されていれば、
-	if (mFollowTargetTf != nullptr)
+	// 追従するターゲットとロックオンターゲットが設定されていれば
+	if (mFollowTargetTf != nullptr &&
+		mpLockOnTarget != nullptr)
 	{
-		// マウスの移動量に合わせて、カメラの回転角度を変更
-		CVector2 delta = CInput::GetDeltaMousePos();
-		float x = Math::Clamp(mRotateAngle.X() + delta.Y() * ROTATE_SPEED, -ROTATE_RANGE_X, ROTATE_RANGE_X);
-		float y = Math::Repeat(mRotateAngle.Y() + delta.X() * ROTATE_SPEED, 360.0f);
-		mRotateAngle.X(x);
-		mRotateAngle.Y(y);
+		// 追従ターゲットへの方向
+		CVector dir = mFollowTargetTf->Position() - mpLockOnTarget->Position();
+		dir.Normalize();
 
-		// 回転値を求めて、注視点から視点までのベクトルを回転させることで、
-		// 視点の位置を更新する
-		CQuaternion rot = CQuaternion(mRotateAngle);
-		mAt = mFollowTargetTf->Position() + mFollowOffsetPos;
-		mTargetEye = mAt + rot * mFollowDefaultEyeVec;
+		// 注視点は追従ターゲット
+		mAt = mFollowTargetTf->Position()+ mFollowOffsetPos;
+		// 視点は注視点をdir方向にずらした座標
+		CVector eye = mAt + dir * EYE_OFFSET_POS_Z;
+		// 補間した値を設定
+		mTargetEye = CVector::Lerp(mEye, eye, 0.1f);
 		mEye = mTargetEye;
 	}
 
@@ -83,3 +85,10 @@ void CGameCamera2::SetRotateAngle(CVector angle)
 {
 	mRotateAngle += angle;
 }
+
+// ロックオンターゲットを設定
+void CGameCamera2::SetLockOnTarget(CTransform* target)
+{
+	mpLockOnTarget = target;
+}
+

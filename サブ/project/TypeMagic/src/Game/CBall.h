@@ -7,15 +7,12 @@ class CBall : public CSpellBase
 {
 public:
 	// コンストラクタ
-	CBall(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target, int generateNum = 0);
+	CBall(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target);
 	// デストラクタ
 	~CBall();
 
 	// 更新処理
 	void Update() override;
-
-	// 衝突処理
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 private:
 	// コライダーを生成
@@ -23,7 +20,4 @@ private:
 
 	// 発射中の更新
 	void UpdateShooting() override;
-
-	// 生成番号
-	int mGenerateNum;
 };
