@@ -1,11 +1,10 @@
 #include "CEnemy.h"
-#include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "CBall.h"
 #include "CPlayer.h"
 
-// 体の半径と高さ
-#define BODY_RADIUS 2.5f
-#define BODY_HEIGHT 15.0f
+// 体の半径
+#define BODY_RADIUS 4.0f
 
 // コンストラクタ
 CEnemy::CEnemy()
@@ -13,6 +12,11 @@ CEnemy::CEnemy()
 	, CSpellCaster(this)
 	, mElapsedTime(0.0f)
 {
+	// 重力無効
+	mIsGravity = false;
+	// 移動方向を向かない
+	mIsMoveDir = false;
+
 	// コライダーを生成
 	CreateCol();
 }
@@ -38,20 +42,22 @@ void CEnemy::Update()
 	mElapsedTime += Times::DeltaTime();
 	if (mElapsedTime > 2.0f)
 	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBolt);
+		//CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
 		mElapsedTime = 0.0f;
 	}
+
+#if _DEBUG
+	CDebugPrint::Print("EnemyHit:%d\n", mHitCount);
+#endif
 }
 
 // コライダーを生成
 void CEnemy::CreateCol()
 {
 	// 本体コライダ
-	mpBodyCol = new CColliderCapsule
+	mpBodyCol = new CColliderSphere
 	(
 		this, ELayer::eEnemy,
-		CVector(0.0f, BODY_RADIUS / Scale().Y(), 0.0f),
-		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
 		BODY_RADIUS
 	);
 	// フィールド,壁、オブジェクトとプレイヤーと攻撃とだけ衝突

@@ -11,9 +11,10 @@ CSpellBase::CSpellBase(ESpellElementalType elemental, ESpellShapeType shape,
 	, mpTarget(target)
 	, mMoveDir(CVector::zero)
 	, mDeleteTime(deleteTime)
+	, mpSpellCol(nullptr)
 {
-	// 待機状態へ
-	ChangeState(EState::eIdle);
+	// 親についていく
+	SetParent(owner);
 }
 
 // デストラクタ
@@ -38,7 +39,10 @@ void CSpellBase::Update()
 // 描画
 void CSpellBase::Render()
 {
-	mpModel->Render(Matrix());
+	if (mpModel != nullptr)
+	{
+		mpModel->Render(Matrix());
+	}
 }
 
 // 衝突処理
@@ -59,12 +63,31 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 		{
 			// 削除
 			Kill();
+
+#if _DEBUG
+			other->Owner()->AddHitCount();
+#endif
 		}
 		// 相手が敵なら
 		else if (other->Layer() == ELayer::eEnemy)
 		{
 			// 削除
 			Kill();
+			
+#if _DEBUG
+			other->Owner()->AddHitCount();
+#endif
+		}
+		// 相手が攻撃判定なら
+		else if (other->Layer() == ELayer::eAttackCol)
+		{
+			CSpellBase* spell = dynamic_cast<CSpellBase*>(other->Owner());
+			// 違う持ち主なら
+			if (spell->mpOwner != mpOwner)
+			{
+				// 削除
+				Kill();
+			}
 		}
 	}
 }
@@ -78,13 +101,6 @@ void CSpellBase::SetTarget(CObjectBase* target)
 // 待機中の更新
 void CSpellBase::UpdateIdle()
 {
-	if (mpSpellCol != nullptr)
-	{
-		// コライダーは無効
-		mpSpellCol->SetEnable(false);
-	}
-	// 持ち主についていく
-	SetParent(mpOwner);
 }
 
 // 発射中の更新
@@ -95,8 +111,14 @@ void CSpellBase::UpdateShooting()
 	if (mElapsedTime > mDeleteTime)
 	{
 		Kill();
-		return;
 	}
+}
+
+// 目標への方向を求める
+CVector CSpellBase::TargetDir()
+{	
+	// 目標への方向
+	return mpTarget->Position() - Position();
 }
 
 // 状態を切り替え
@@ -108,13 +130,23 @@ void CSpellBase::ChangeState(EState state)
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
 
-	// 発射するときにコライダーがあるなら
-	if (mState == EState::eShooting &&
-		mpSpellCol != nullptr)
+	// コライダーがあるなら
+	if (mpSpellCol != nullptr)
 	{
-		// 有効
-		mpSpellCol->SetEnable(true);
-		// ついていかない
-		SetParent(nullptr);
+		switch (mState)
+		{
+			// 待機時はコライダーは無効で
+			// 親についていく
+		case CSpellBase::EState::eIdle:
+			mpSpellCol->SetEnable(false);
+			SetParent(mpOwner);
+			break;
+			// 発射時は有効で
+			// 親についていかない
+		case CSpellBase::EState::eShooting:
+			mpSpellCol->SetEnable(true);
+			SetParent(nullptr);
+			break;
+		}
 	}
 }

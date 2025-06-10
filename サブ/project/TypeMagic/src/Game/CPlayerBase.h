@@ -53,19 +53,8 @@ protected:
 	// プレイヤーのインスタンス
 	static CPlayerBase* spInstance;
 
-	CVector mMoveSpeed;	// 前後左右の移動速度
-	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
-
-	bool mIsGrounded;	// 接地しているかどうか
-	bool mIsGravity;	// 重力を掛けるかどうか
-	bool mIsMoveDir;	// 移動方向を向くかどうか
-
-	CVector mGroundNormal;	// 接地している地面の法線
-
 	CCollider* mpBodyCol;	// 本体のコライダ―
 	CCollider* mpAttackCol;	// 攻撃のコライダ―
-
-	CTransform* mpRideObject;
 
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;

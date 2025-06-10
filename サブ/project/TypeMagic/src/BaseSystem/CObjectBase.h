@@ -86,6 +86,11 @@ public:
 	// 攻撃を受けているかどうか
 	bool IsDamaging() const;
 
+#if _DEBUG
+	// 攻撃のヒット数のカウントを増加
+	void AddHitCount();
+#endif
+
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
 	bool mIsEnableCol;	// 衝突判定を行うかどうか
@@ -117,4 +122,9 @@ protected:
 
 	// 攻撃を受けているか
 	bool mIsDamage;
+
+
+#if _DEBUG
+	int mHitCount = 0;	// 攻撃のヒット数のカウント
+#endif
 };

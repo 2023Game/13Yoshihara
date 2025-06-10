@@ -1,20 +1,22 @@
 #pragma once
 #include "CSpellBase.h"
 
-// ボール呪文
+// テレポート呪文
 // 呪文ベースクラスを継承
-class CBall : public CSpellBase
+class CTeleport : public CSpellBase
 {
 public:
 	// コンストラクタ
-	CBall(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target);
+	CTeleport(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target);
 	// デストラクタ
-	~CBall();
+	~CTeleport();
 
 private:
 	// コライダーを生成
 	void CreateCol() override;
 
+	// 待機中の更新
+	void UpdateIdle() override;
 	// 発射中の更新
 	void UpdateShooting() override;
 };

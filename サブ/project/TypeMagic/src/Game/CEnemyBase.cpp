@@ -126,34 +126,6 @@ void CEnemyBase::DeleteObject(CObjectBase* obj)
 // 更新
 void CEnemyBase::Update()
 {
-	SetParent(mpRideObject);
-	mpRideObject = nullptr;
-
-	// 重力を掛けるなら
-	if (mIsGravity)
-	{
-		mMoveSpeedY -= mGravity;
-	}
-
-	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-
-	// 移動
-	Position(Position() + moveSpeed);
-
-	// 攻撃を受けていない時かつ
-	// 移動方向を向く設定がオンの時
-	if (!mIsDamage &&
-		mIsMoveDir)
-	{
-		// 敵を移動方向へ向ける
-		CVector current = VectorZ();
-		CVector target = moveSpeed;
-		target.Y(0.0f);
-		target.Normalize();
-		CVector forward = CVector::Slerp(current, target, 0.125f);
-		Rotation(CQuaternion::LookRotation(forward));
-	}
-
 	// キャラクターの更新
 	CXCharacter::Update();
 

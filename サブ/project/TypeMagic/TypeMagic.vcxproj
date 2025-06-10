@@ -83,6 +83,8 @@
     <ClCompile Include="src\Game\CBreath.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
+    <ClCompile Include="src\Game\CReflector.cpp" />
+    <ClCompile Include="src\Game\CShield.cpp" />
     <ClCompile Include="src\Game\CSpellCaster.cpp" />
     <ClCompile Include="src\Game\CSpellStatus.cpp" />
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
@@ -92,6 +94,7 @@
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CSpellBase.cpp" />
+    <ClCompile Include="src\Game\CTeleport.cpp" />
     <ClCompile Include="src\Game\CTutorialMap.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
@@ -218,9 +221,12 @@
     <ClInclude Include="src\Game\CBreath.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
+    <ClInclude Include="src\Game\CReflector.h" />
+    <ClInclude Include="src\Game\CShield.h" />
     <ClInclude Include="src\Game\CSpellCaster.h" />
     <ClInclude Include="src\Game\CSpellStatus.h" />
     <ClInclude Include="src\Game\CSpellBase.h" />
+    <ClInclude Include="src\Game\CTeleport.h" />
     <ClInclude Include="src\Game\SpellDefine.h" />
     <ClInclude Include="src\Game\SpellType.h" />
     <ClInclude Include="src\Game\CEndUIBase.h" />

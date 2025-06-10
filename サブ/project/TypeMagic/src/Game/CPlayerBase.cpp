@@ -25,11 +25,6 @@ CPlayerBase* CPlayerBase::spInstance = nullptr;
 // コンストラクタ
 CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
-	, mMoveSpeedY(0.0f)
-	, mIsGrounded(false)
-	, mIsGravity(true)
-	, mIsMoveDir(true)
-	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
@@ -164,40 +159,6 @@ void CPlayerBase::DeleteObject(CObjectBase* obj)
 // 更新
 void CPlayerBase::Update()
 {
-	SetParent(mpRideObject);
-	mpRideObject = nullptr;
-
-	// 重力を掛けるなら
-	if (mIsGravity)
-	{
-		mMoveSpeedY -= GRAVITY;
-	}
-	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-
-	// 移動
-	Position(Position() + moveSpeed);
-
-	// 攻撃を受けていない時かつ
-	// 移動方向を向く設定がオンの時
-	if (!mIsDamage&&
-		mIsMoveDir)
-	{
-		// プレイヤーを移動方向へ向ける
-		CVector current = VectorZ();
-		CVector target = moveSpeed;
-		target.Y(0.0f);
-		target.Normalize();
-		CVector forward = CVector::Slerp(current, target, 0.125f);
-		Rotation(CQuaternion::LookRotation(forward));
-	}
-
-
-	// 「P」キーを押したら、ゲームを終了
-	if (CInput::PushKey('P'))
-	{
-		System::ExitGame();
-	}
-
 	// キャラクターの更新
 	CXCharacter::Update();
 

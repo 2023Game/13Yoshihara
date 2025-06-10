@@ -101,8 +101,6 @@ private:
 	void UpdateAttack();
 	// 攻撃終了
 	void UpdateAttackEnd();
-	// 場外から帰還する処理
-	void UpdateReturn();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡

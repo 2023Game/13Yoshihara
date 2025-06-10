@@ -1,14 +1,16 @@
 #include "CPlayer.h"
-#include "CColliderCapsule.h"
+#include "CColliderSphere.h"
 #include "CInput.h"
 #include "CImage.h"
 #include "CFade.h"
 #include "CBall.h"
 #include "CGameCamera2.h"
 
-// 体の半径と高さ
-#define BODY_RADIUS 2.5f
-#define BODY_HEIGHT 15.0f
+// 体の半径
+#define BODY_RADIUS 4.0f
+
+// 移動速度の減速
+#define DECREASE_MOVE_SPEED 0.005f
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
@@ -101,6 +103,7 @@ void CPlayer::Update()
 #if _DEBUG
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
+	CDebugPrint::Print("PlayerHit:%d\n", mHitCount);
 #endif
 }
 
@@ -114,12 +117,10 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 void CPlayer::CreateCol()
 {
 	// 本体コライダ
-	mpBodyCol = new CColliderCapsule
+	mpBodyCol = new CColliderSphere
 	(
 		this, ELayer::ePlayer,
-		CVector(0.0f, BODY_RADIUS / Scale().Y(), 0.0f),
-		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
-		BODY_RADIUS
+		BODY_RADIUS		
 	);
 	// フィールド,壁、オブジェクトと敵と攻撃とだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
@@ -137,20 +138,35 @@ void CPlayer::ActionInput()
 		ChangeState(EState::eAttackStart);
 	}
 
+	// ボール呪文を詠唱
 	if (CInput::PushKey('U'))
 	{
-		// ボール呪文を詠唱
 		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
 	}
+	// ボルト呪文を詠唱
 	if (CInput::PushKey('I'))
 	{
-		// ボルト呪文を詠唱
 		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBolt);
 	}
+	// ブレス呪文を詠唱
 	if (CInput::PushKey('O'))
 	{
-		// ブレス呪文を詠唱
 		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBreath);
+	}
+	// テレポート呪文を詠唱
+	if (CInput::PushKey('J'))
+	{
+		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eTeleport);
+	}
+	// シールド呪文を詠唱
+	if (CInput::PushKey('K'))
+	{
+		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eShield);
+	}
+	// リフレクター呪文を詠唱
+	if (CInput::PushKey('L'))
+	{
+		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eReflector);
 	}
 
 	// スペースで上移動
@@ -180,6 +196,7 @@ void CPlayer::UpdateIdle()
 // 移動処理
 void CPlayer::UpdateMove()
 {
+	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;
 	// プレイヤーの移動ベクトルを求める
 	CVector move = CalcMoveVec();
 	// 求めた移動ベクトルの長さで入力されているか判定

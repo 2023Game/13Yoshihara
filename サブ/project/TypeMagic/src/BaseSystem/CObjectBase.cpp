@@ -129,6 +129,14 @@ bool CObjectBase::IsDamaging() const
 	return mIsDamage;
 }
 
+#if _DEBUG
+// 攻撃のヒット数のカウントを増加
+void CObjectBase::AddHitCount()
+{
+	mHitCount++;
+}
+#endif
+
 // すべて削除
 void CObjectBase::Delete()
 {

@@ -241,6 +241,7 @@ void CXCharacter::Update(const CMatrix& matrix)
 //更新処理
 void CXCharacter::Update()
 {
+	CCharaBase::Update();
 	//アニメーションを更新する
 	Update(Matrix());
 	CDebugPrint::Print("AnimationIndex:%d\n", mAnimationIndex);

@@ -128,6 +128,12 @@
     <Filter Include="ソース ファイル\Game\Character\Enemy">
       <UniqueIdentifier>{b29747e3-0e16-4987-9d07-e86901e17640}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Weapon\Spell\Support">
+      <UniqueIdentifier>{9285313e-0d0f-4489-879a-a2084d6f60cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\Weapon\Spell\Attack">
+      <UniqueIdentifier>{6780f90a-1f7d-44d0-af91-f04401a8c938}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -481,15 +487,6 @@
     <ClCompile Include="src\BaseSystem\CNavNode.cpp">
       <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CBall.cpp">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CBolt.cpp">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CBreath.cpp">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CSpellStatus.cpp">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
     </ClCompile>
@@ -501,6 +498,24 @@
     </ClCompile>
     <ClCompile Include="src\Game\CSpellCaster.cpp">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CTeleport.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CReflector.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CShield.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBall.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBolt.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CBreath.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -882,15 +897,6 @@
     <ClInclude Include="src\BaseSystem\CNavNode.h">
       <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CBall.h">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CBolt.h">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CBreath.h">
-      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CSpellStatus.h">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
     </ClInclude>
@@ -908,6 +914,24 @@
     </ClInclude>
     <ClInclude Include="src\Game\CSpellCaster.h">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CTeleport.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CShield.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CReflector.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBall.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBolt.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CBreath.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

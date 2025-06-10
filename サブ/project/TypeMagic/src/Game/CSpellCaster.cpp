@@ -3,6 +3,9 @@
 #include "CBall.h"
 #include "CBolt.h"
 #include "CBreath.h"
+#include "CTeleport.h"
+#include "CShield.h"
+#include "CReflector.h"
 
 // コンストラクタ
 CSpellCaster::CSpellCaster(CObjectBase* owner)
@@ -14,7 +17,7 @@ CSpellCaster::CSpellCaster(CObjectBase* owner)
 	, mElapsedTime(0.0f)
 	, mStep(0)
 	, mIsSpellCasting(false)
-	, mGenerateSpeed(0.0f)
+	, mGenerateInterval(0.0f)
 	, mIdleTime(0.0f)
 {
 }
@@ -85,7 +88,7 @@ void CSpellCaster::CastBall()
 		mGenerateNum++;
 
 		// 最大数生成したら
-		if (mGenerateNum == BALL_MAX_GENERATE_NUM)
+		if (mGenerateNum >= BALL_MAX_GENERATE_NUM)
 		{
 			// 次へ
 			mStep++;
@@ -108,12 +111,8 @@ void CSpellCaster::CastBall()
 
 		// 順番に発射状態へ
 	case 3:
-		// 発射状態へ
-		mSpells[mGenerateNum - 1]->ChangeState(CSpellBase::EState::eShooting);
-
-		mGenerateNum--;
 		// 全て発射状態にしたので
-		if (mGenerateNum <= 0)
+		if (Shoot())
 		{
 			// 次へ
 			mStep++;
@@ -210,53 +209,191 @@ void CSpellCaster::CastBolt()
 // ブレス呪文の詠唱
 void CSpellCaster::CastBreath()
 {
+	switch (mStep)
+	{
+		// 生成間隔の待機
+	case 0:
+		if (WaitGenerate())
+		{
+			mStep++;
+		}
+		break;
+
+		// 呪文生成
+	case 1:
+	{
+		// 生成座標
+		CVector offsetPos = BREATH_OFFSET_POS;
+		// 持ち主の方向で設定
+		offsetPos =
+			mpOwner->VectorX() * offsetPos.X() +
+			mpOwner->VectorY() * offsetPos.Y() +
+			mpOwner->VectorZ() * offsetPos.Z();
+
+		// ブレス呪文を生成
+		CBreath* breath = new CBreath(mSpellElemental
+			, mpOwner, mpOpponent);
+		// 座標を設定
+		breath->Position(mpOwner->Position() + offsetPos);
+		// リストに追加
+		mSpells.push_back(breath);
+		// 生成数をプラス
+		mGenerateNum++;
+
+		// 最大数生成したら
+		if (mGenerateNum >= BREATH_MAX_GENERATE_NUM)
+		{
+			// 次へ
+			mStep++;
+		}
+		// まだなら
+		else
+		{
+			// 前へ
+			mStep--;
+		}
+
+		break;
+	}
+
+		// 詠唱終了
+	case 2:
+		mIsSpellCasting = false;
+		break;
+	}
 }
 
 // テレポート呪文の詠唱
 void CSpellCaster::CastTeleport()
 {
+	switch (mStep)
+	{
+		// 生成間隔の待機
+	case 0:
+		if (WaitGenerate())
+		{
+			mStep++;
+		}
+		break;
+
+		// 呪文生成
+	case 1:
+	{
+		// テレポート呪文を生成
+		CTeleport* teleport = new CTeleport(mSpellElemental
+			, mpOwner, mpOwner);
+		// 座標を設定
+		teleport->Position(mpOwner->Position());
+		// リストに追加
+		mSpells.push_back(teleport);
+		// 次へ
+		mStep++;
+		break;
+	}
+
+		// 詠唱終了
+	case 2:
+		// 削除フラグが経っていたら
+		if (mSpells[0]->IsKill())
+		{
+			mIsSpellCasting = false;
+		}
+		break;
+	}
 }
 
-// テレポート呪文の詠唱
+// シールド呪文の詠唱
 void CSpellCaster::CastShield()
 {
+	switch (mStep)
+	{
+		// 生成間隔の待機
+	case 0:
+		if (WaitGenerate())
+		{
+			mStep++;
+		}
+		break;
+
+		// 呪文生成
+	case 1:
+	{
+		// 生成座標
+		CVector offsetPos = SHIELD_OFFSET_POS;
+		// 持ち主の方向で設定
+		offsetPos =
+			mpOwner->VectorX() * offsetPos.X() +
+			mpOwner->VectorY() * offsetPos.Y() +
+			mpOwner->VectorZ() * offsetPos.Z();
+
+		// シールド呪文を生成
+		CShield* shield = new CShield(mSpellElemental
+			, mpOwner, mpOwner);
+		// 座標を設定
+		shield->Position(mpOwner->Position() + offsetPos);
+		// リストに追加
+		mSpells.push_back(shield);
+		// 生成数を増加
+		mGenerateNum++;
+
+		// 最大数生成したら
+		if (mGenerateNum >= SHIELD_MAX_GENERATE_NUM)
+		{
+			// 次へ
+			mStep++;
+		}
+		// してないなら
+		else
+		{
+			// 前へ
+			mStep--;
+		}
+		break;
+	}
+
+	// 詠唱終了
+	case 2:
+		mIsSpellCasting = false;
+		break;
+	}
 }
 
 // リフレクター呪文の詠唱
 void CSpellCaster::CastReflector()
 {
+	mIsSpellCasting = false;
 }
 
 // 生成速度と待機時間の設定
 void CSpellCaster::SetTime(ESpellElementalType elemental, ESpellShapeType shape)
 {
-	float generateSpeed = 0.0f;	// 生成速度
+	float generateInterval = 0.0f;	// 生成間隔
 	float idleTime = 0.0f;		// 待機時間
 
 	switch (elemental)
 	{
 	case ESpellElementalType::eFire:
-		generateSpeed += FIRE_GENERATE_SPEED;
+		generateInterval += FIRE_GENERATE_INTERVAL;
 		idleTime += FIRE_IDLE_TIME;
 		break;
 	case ESpellElementalType::eWind:
-		generateSpeed += WIND_GENERATE_SPEED;
+		generateInterval += WIND_GENERATE_INTERVAL;
 		idleTime += WIND_IDLE_TIME;
 		break;
 	case ESpellElementalType::eEarth:
-		generateSpeed += EARTH_GENERATE_SPEED;
+		generateInterval += EARTH_GENERATE_INTERVAL;
 		idleTime += EARTH_IDLE_TIME;
 		break;
 	case ESpellElementalType::eThunder:
-		generateSpeed += THUNDER_GENERATE_SPEED;
+		generateInterval += THUNDER_GENERATE_INTERVAL;
 		idleTime += THUNDER_IDLE_TIME;
 		break;
 	case ESpellElementalType::eWater:
-		generateSpeed += WATER_GENERATE_SPEED;
+		generateInterval += WATER_GENERATE_INTERVAL;
 		idleTime += WATER_IDLE_TIME;
 		break;
 	case ESpellElementalType::eNeutral:
-		generateSpeed += NEUTRAL_GENERATE_SPEED;
+		generateInterval += NEUTRAL_GENERATE_INTERVAL;
 		idleTime += NEUTRAL_IDLE_TIME;
 		break;
 	}
@@ -264,32 +401,35 @@ void CSpellCaster::SetTime(ESpellElementalType elemental, ESpellShapeType shape)
 	switch (shape)
 	{
 	case ESpellShapeType::eBall:
-		generateSpeed += BALL_GENERATE_SPEED;
+		generateInterval += BALL_GENERATE_INTERVAL;
 		idleTime += BALL_IDLE_TIME;
 		break;
 	case ESpellShapeType::eBolt:
-		generateSpeed += BOLT_GENERATE_SPEED;
+		generateInterval += BOLT_GENERATE_INTERVAL;
 		idleTime += BOLT_IDLE_TIME;
 		break;
+		// ブレスの場合ブレスの生成間隔を設定
 	case ESpellShapeType::eBreath:
-		generateSpeed += BREATH_GENERATE_SPEED;
+		generateInterval = BREATH_GENERATE_INTERVAL;
 		idleTime += BREATH_IDLE_TIME;
 		break;
+		// テレポートの場合テレポートの待機時間を設定
 	case ESpellShapeType::eTeleport:
-		generateSpeed += TELEPORT_GENERATE_SPEED;
-		idleTime += TELEPORT_IDLE_TIME;
+		generateInterval += TELEPORT_GENERATE_INTERVAL;
+		idleTime = TELEPORT_IDLE_TIME;
 		break;
+		// シールドの場合シールドの生成間隔を設定
 	case ESpellShapeType::eShield:
-		generateSpeed += SHIELD_GENERATE_SPEED;
+		generateInterval = SHIELD_GENERATE_INTERVAL;
 		idleTime += SHIELD_IDLE_TIME;
 		break;
 	case ESpellShapeType::eReflector:
-		generateSpeed += REFLECTOR_GENERATE_SPEED;
+		generateInterval += REFLECTOR_GENERATE_INTERVAL;
 		idleTime += REFLECTOR_IDLE_TIME;
 		break;
 	}
 
-	mGenerateSpeed = generateSpeed;
+	mGenerateInterval = generateInterval;
 	mIdleTime = idleTime;
 }
 
@@ -298,8 +438,8 @@ bool CSpellCaster::WaitGenerate()
 {		
 	// 時間経過
 	mElapsedTime += Times::DeltaTime();
-	// 生成速度の数値を超えたら
-	if (mElapsedTime > mGenerateSpeed)
+	// 生成間隔が過ぎたら
+	if (mElapsedTime > mGenerateInterval)
 	{
 		mElapsedTime = 0.0f;
 		// 待機終了

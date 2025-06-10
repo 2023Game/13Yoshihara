@@ -37,7 +37,7 @@
 #define TORCH_POS_2	CVector(-65.0f,0.0f,245.0f)
 #define TORCH_POS_3 CVector(-145.0f,0.0f,335.0f)
 #define TORCH_POS_4 CVector(-230.0f,0.0f,250.0f)
-#define TORCH_POS_5 CVector(-275.0f,0.0f,130.0f)
+#define TORCH_POS_5 CVector(-250.0f,0.0f,120.0f)
 #define TORCH_POS_6 CVector(-275.0f,0.0f,-90.0f)
 #define TORCH_POS_7 CVector(-250.0f,0.0f,40.0f)
 #define TORCH_POS_8 CVector(-375.0f,0.0f,80.0f)
@@ -45,10 +45,12 @@
 #define TORCH_POS_10 CVector(-465.0f,0.0f,-40.0f)
 #define TORCH_POS_11 CVector(-70.0f,0.0f,-125.0f)
 #define TORCH_POS_12 CVector(-170.0f,0.0f,-10.0f)
+#define TORCH_POS_13 CVector(-380.0f,0.0f,-135.0f)
+#define TORCH_POS_14 CVector(-180.0f,0.0f,-210.0f)
 
 // 草の座標
 #define GRASS_POS_1 CVector(-230.0f,0.0f,-280.0f)
-#define GRASS_POS_2 CVector(-475.0f,0.0f,25.0f)
+#define GRASS_POS_2 CVector(-460.0f,0.0f,25.0f)
 #define GRASS_POS_3 CVector(-370.0f,0.0f,-140.0f)
 #define GRASS_POS_4 CVector(-200.0f,0.0f,-160.0f)
 #define GRASS_POS_5 CVector(-5.0f,0.0f,-180.0f)
@@ -135,6 +137,8 @@ void CMap1::CreateFieldObjects()
 		TORCH_POS_10,
 		TORCH_POS_11,
 		TORCH_POS_12,
+		TORCH_POS_13,
+		TORCH_POS_14,
 	};
 	// サイズ
 	int size = ARRAY_SIZE(torchPosList);
@@ -209,6 +213,12 @@ void CMap1::CreateFieldObjects()
 	item = new CUpgradeItem();
 	// 座標を設定
 	item->Position(ITEM_POS_2);
+	item = new CUpgradeItem();
+	// 座標を設定
+	item->Position(ITEM_POS_3);
+	item = new CUpgradeItem();
+	// 座標を設定
+	item->Position(ITEM_POS_3);
 	item = new CUpgradeItem();
 	// 座標を設定
 	item->Position(ITEM_POS_3);

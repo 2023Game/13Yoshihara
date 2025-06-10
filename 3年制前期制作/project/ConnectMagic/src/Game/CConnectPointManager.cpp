@@ -83,6 +83,8 @@ void CConnectPointManager::Update()
 
 	// 繋がっている処理を実行
 	Connect();
+
+	CDebugPrint::Print("POINT:%d\n", mPoints.size());
 }
 
 // 描画
@@ -453,6 +455,9 @@ void CConnectPointManager::DeleteConnectPoint(int num)
 // 接続部をペアで削除
 void CConnectPointManager::DeleteConnectPointPair(int num)
 {
+	// サイズが0かnumが範囲外なら処理しない
+	if (mPoints.size() == 0 || mPoints.size() <= num) return;
+
 	// 接続部
 	CConnectPoint* point1 = mPoints[num];
 	CConnectPoint* point2 = point1->GetPair();

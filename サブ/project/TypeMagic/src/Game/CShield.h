@@ -1,15 +1,18 @@
 #pragma once
 #include "CSpellBase.h"
 
-// ボール呪文
+// シールド呪文
 // 呪文ベースクラスを継承
-class CBall : public CSpellBase
+class CShield : public CSpellBase
 {
 public:
 	// コンストラクタ
-	CBall(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target);
+	CShield(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target);
 	// デストラクタ
-	~CBall();
+	~CShield();
+
+	// 更新
+	void Update() override;
 
 private:
 	// コライダーを生成
@@ -17,4 +20,7 @@ private:
 
 	// 発射中の更新
 	void UpdateShooting() override;
+
+	// 現在の角度
+	float mCurrentAngle;
 };

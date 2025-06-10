@@ -62,8 +62,8 @@ private:
 	// Œo‰ßŠÔ
 	float mElapsedTime;
 
-	// ¶¬‘¬“x
-	float mGenerateSpeed;
+	// ¶¬ŠÔŠu
+	float mGenerateInterval;
 	// ‘Ò‹@ŠÔ
 	float mIdleTime;
 

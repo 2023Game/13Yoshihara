@@ -13,6 +13,8 @@ CBolt::CBolt(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* tar
 	mpModel = CResourceManager::Get<CModel>("FireBolt");
 	// コライダーを生成
 	CreateCol();
+	// 待機状態
+	ChangeState(EState::eIdle);
 }
 
 // デストラクタ
@@ -29,18 +31,16 @@ void CBolt::CreateCol()
 		CVector(0.0f, 0.0f, WIDTH),
 		RADIUS
 	);
-	// 地形とプレイヤーと敵とだけ衝突判定
+	// 地形とプレイヤーと敵と攻撃判定とだけ衝突判定
 	mpSpellCol->SetCollisionLayers({ ELayer::eGround,ELayer::eWall,ELayer::eObject,
-		ELayer::ePlayer,ELayer::eEnemy });
+		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol });
 }
 
 // 待機中の更新
 void CBolt::UpdateIdle()
 {
-	CVector targetPos = mpTarget->Position();
-	targetPos.Y(targetPos.Y() + TARGET_HEIGHT);
 	// 目標の方向を向く
-	LookAt(targetPos);
+	LookAt(mpTarget->Position());
 
 	CSpellBase::UpdateIdle();
 }
@@ -50,32 +50,24 @@ void CBolt::UpdateShooting()
 {
 	switch (mStateStep)
 	{
-		// 目標方向を求める
+		// 目標への方向を移動方向に設定
 	case 0:
 	{
-		// 狙う高さを足す
-		CVector targetPos = mpTarget->Position();
-		targetPos.Y(targetPos.Y() + TARGET_HEIGHT);
-		// 目標への方向
-		mMoveDir = targetPos - Position();
+		mMoveDir = TargetDir();
 		mMoveDir.Normalize();
 
-		// 次へ
+		// 移動方向の更新終了
 		mStateStep++;
 		break;
 	}
-		
-		// 目標方向へ移動
-	case 1:
-		float speed = GetSpellStatus().speed;
-
-		// 目標方向に向かって移動
-		mMoveSpeed = mMoveDir * speed * Times::DeltaTime();
-
-		// 加速
-		SetSpeed(speed + BOLT_ACCELERATE);
-		break;
 	}
+	// 速度
+	float speed = GetSpellStatus().speed;
+	// 移動を設定
+	mMoveSpeed = mMoveDir * speed * Times::DeltaTime();
+
+	// 加速
+	SetSpeed(speed + BOLT_ACCELERATE);
 
 	// 基底クラスの更新
 	CSpellBase::UpdateShooting();

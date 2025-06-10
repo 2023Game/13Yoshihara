@@ -42,6 +42,9 @@ protected:
 	// ”­Ë’†‚ÌXV
 	virtual void UpdateShooting();
 
+	// –Ú•W‚Ö‚Ì•ûŒü‚ğ‹‚ß‚é
+	CVector TargetDir();
+
 	// Á–Å‚·‚é‚Ü‚Å‚ÌŠÔ
 	float mDeleteTime;
 

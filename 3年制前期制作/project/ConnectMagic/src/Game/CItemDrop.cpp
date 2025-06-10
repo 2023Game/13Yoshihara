@@ -16,7 +16,7 @@ CItemDrop::~CItemDrop()
 void CItemDrop::SetDropItem(CDropItem* item)
 {
 	// ‹ó‚È‚çˆ—‚µ‚È‚¢
-	if (mpDropItem == nullptr) return;
+	if (item == nullptr) return;
 	mpDropItem = item;
 }
 

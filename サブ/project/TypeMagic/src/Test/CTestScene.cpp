@@ -41,10 +41,14 @@ void CTestScene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("TestField",	"Field\\field.obj");
-	CResourceManager::Load<CModel>("TestModel",	"Character\\TestModel.obj");
-	CResourceManager::Load<CModel>("FireBall",	"Wepon\\FireBall.obj");
-	CResourceManager::Load<CModel>("FireBolt",	"Wepon\\FireBolt.obj");
+	CResourceManager::Load<CModel>("TestField",			"Field\\field.obj");
+	CResourceManager::Load<CModel>("TestModel",			"Character\\TestModel.obj");
+	CResourceManager::Load<CModel>("FireBall",			"Wepon\\Spell_Attack\\FireBall.obj");
+	CResourceManager::Load<CModel>("FireBolt",			"Wepon\\Spell_Attack\\FireBolt.obj");
+	CResourceManager::Load<CModel>("FireBreath",		"Wepon\\Spell_Attack\\FireBreath.obj");
+	CResourceManager::Load<CModel>("NeutralTeleport",	"Wepon\\Spell_Support\\NeutralTeleport.obj");
+	CResourceManager::Load<CModel>("NeutralShield",		"Wepon\\Spell_Support\\NeutralShield.obj");
+	CResourceManager::Load<CModel>("NeutralReflector",	"Wepon\\Spell_Support\\NeutralReflector.obj");
 	// 当たり判定用のコリジョンモデル
 	/*
 	効果音
@@ -55,9 +59,12 @@ void CTestScene::Load()
 
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
+	player->Position(0.0f, 5.0f, 0.0f);
 
 	CEnemy* enemy = new CEnemy();
-	enemy->Position(0.0f, 0.0f, -50.0f);
+	enemy->Position(0.0f, 5.0f, -50.0f);
+
+	// それぞれの相手を設定
 	enemy->SetOpponent(player);
 	player->SetOpponent(enemy);
 
