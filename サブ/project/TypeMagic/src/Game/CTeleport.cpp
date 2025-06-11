@@ -1,6 +1,7 @@
 #include "CTeleport.h"
 #include "CColliderSphere.h"
 #include "CCharaBase.h"
+#include "CFieldBase.h"
 
 // コライダーの半径
 #define RADIUS 15.0f
@@ -107,8 +108,19 @@ void CTeleport::UpdateShooting()
 		// 移動
 		CVector moveSpeed = chara->GetMoveDir() * TELEPORT_MOVE_DIST;
 
-		// プレイヤーの座標を変更
-		mpOwner->Position(mpOwner->Position() + moveSpeed);
+		// 新しい座標
+		CVector newPos = mpOwner->Position() + moveSpeed;
+
+		CHitInfo hit;
+		// フィールドと衝突しているなら
+		if (CFieldBase::Instance()->CollisionRay(mpOwner->Position(), newPos, &hit))
+		{
+			// 衝突位置を新しい座標にする
+			newPos = hit.cross;
+		}
+
+		// 持ち主の座標を変更
+		mpOwner->Position(newPos);
 		mStateStep++;
 		break;
 	}

@@ -43,9 +43,9 @@
 #define NEUTRAL_GENERATE_INTERVAL 0.1f
 
 // ボール型
-#define BALL_POWER		1
-#define BALL_SPEED		100.0f
-#define BALL_HP			1
+#define BALL_POWER		10
+#define BALL_SPEED		200.0f
+#define BALL_HP			10
 #define BALL_IDLE_TIME	0.1f
 #define BALL_GENERATE_INTERVAL 0.1f
 // オフセット座標
@@ -57,9 +57,7 @@
 // 最大生成数
 #define BALL_MAX_GENERATE_NUM 5
 // 追跡終了する距離
-#define BALL_CHASE_END_DIST 12.0f
-// 加速
-#define BALL_ACCELERATE 60.0f * Times::DeltaTime()
+#define BALL_CHASE_END_DIST 15.0f
 // 消滅するまでの時間
 #define BALL_DELETE_TIME 20.0f
 // 追跡終了後の消滅までの時間
@@ -73,16 +71,14 @@
 #define BOLT_GENERATE_INTERVAL 0.1f
 // オフセット座標
 #define BOLT_OFFSET_POS CVector(0.0f,10.0f,7.5f)
-// 加速
-#define BOLT_ACCELERATE 300.0f * Times::DeltaTime()
 // 消滅するまでの時間
 #define BOLT_DELETE_TIME 2.0f
 
 // ブレス型
-#define BREATH_POWER		1
+#define BREATH_POWER		2
 #define BREATH_SPEED		200.0f
 #define BREATH_HP			1
-#define BREATH_IDLE_TIME	1.0f		// ブレスでは使用しない
+#define BREATH_IDLE_TIME	0.0f		// ブレスでは使用しない
 #define BREATH_GENERATE_INTERVAL 0.01f	// ブレスの生成間隔はこの値以外の影響は受けない
 // オフセット座標
 #define BREATH_OFFSET_POS CVector(0.0f,0.0f,7.5f)
@@ -98,7 +94,7 @@
 // テレポート型
 #define TELEPORT_POWER		1
 #define TELEPORT_SPEED		10.0f
-#define TELEPORT_HP			1
+#define TELEPORT_HP			0			// テレポート呪文は壊れない
 #define TELEPORT_IDLE_TIME	0.1f		// テレポートの待機時間はこの値以外の影響は受けない
 #define TELEPORT_GENERATE_INTERVAL 0.1f
 // 最小のスケール
@@ -106,23 +102,21 @@
 // 最大のスケール
 #define TELEPORT_SCALE_MAX CVector::one
 // スケールの増加量
-#define TELEPORT_SCALE_UP_NUM CVector::one * 10.0f * Times::DeltaTime()
+#define TELEPORT_SCALE_UP_NUM CVector::one * 5.0f * Times::DeltaTime()
 // 移動距離
 #define TELEPORT_MOVE_DIST 100.0f
 // 消滅するまでの時間
 #define TELEPORT_DELETE_TIME 1.0f
 
 // シールド型
-#define SHIELD_POWER		1
+#define SHIELD_POWER		10
 #define SHIELD_SPEED		10.0f
-#define SHIELD_HP			1
-#define SHIELD_IDLE_TIME	1.0f		// シールドでは使用しない
+#define SHIELD_HP			50
+#define SHIELD_IDLE_TIME	0.0f		// シールドでは使用しない
 // シールドの生成間隔は最大数と回転スピードから計算して求める
 #define SHIELD_GENERATE_INTERVAL (360.0f / SHIELD_MAX_GENERATE_NUM) / SHIELD_ROT_SPEED
-// オフセット座標
-#define SHIELD_OFFSET_POS CVector(0.0f,0.0f,17.5f)
 // 最大生成数
-#define SHIELD_MAX_GENERATE_NUM 5
+#define SHIELD_MAX_GENERATE_NUM 4
 // 最小のスケール
 #define SHIELD_SCALE_MIN CVector::zero
 // 最大のスケール
@@ -130,23 +124,28 @@
 // スケールの増加量
 #define SHIELD_SCALE_UP_NUM CVector::one * Times::DeltaTime()
 // 回転の半径
-#define SHIELD_ROT_RADIUS 0.5f
+#define SHIELD_ROT_RADIUS 10.0f
 // 回転スピード
-#define SHIELD_ROT_SPEED 90.0f
+#define SHIELD_ROT_SPEED 180.0f
 // 消滅するまでの時間
-#define SHIELD_DELETE_TIME 2.0f
+#define SHIELD_DELETE_TIME 10.0f
 
 // リフレクター型
 #define REFLECTOR_POWER		1
 #define REFLECTOR_SPEED		10.0f
-#define REFLECTOR_HP			1
-#define REFLECTOR_IDLE_TIME	1.0f
+#define REFLECTOR_HP		50
+#define REFLECTOR_IDLE_TIME	0.0f			// リフレクターでは使用しない
 #define REFLECTOR_GENERATE_INTERVAL 0.1f
+// オフセット座標
+#define REFLECTOR_OFFSET_POS CVector(0.0f,0.0f,20.0f)
 // 最小のスケール
 #define REFLECTOR_SCALE_MIN CVector::zero
 // 最大のスケール
 #define REFLECTOR_SCALE_MAX CVector::one
 // スケールの増加量
-#define REFLECTOR_SCALE_UP_NUM CVector::one * Times::DeltaTime()
+#define REFLECTOR_SCALE_UP_NUM CVector::one * 5.0f * Times::DeltaTime()
+// 反射時の強化値
+#define REFLECTOR_POWER_UP	10
+#define REFLECTOR_HP_UP		50
 // 消滅するまでの時間
-#define REFLECTOR_DELETE_TIME 2.0f
+#define REFLECTOR_DELETE_TIME 0.5f

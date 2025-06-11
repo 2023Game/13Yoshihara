@@ -21,6 +21,8 @@ public:
 
 	// ‘Îí‘Šè‚ğİ’è
 	void SetOpponent(CObjectBase* opponent);
+	// ‘Îí‘Šè‚ğæ“¾
+	CObjectBase* GetOpponent() const;
 
 protected:
 	// ‘Îí‘Šè

@@ -23,8 +23,10 @@ public:
 	// 呪文のステータスを取得
 	SpellStatus GetSpellStatus() const;
 
-	// 速度を設定
-	void SetSpeed(float speed);
+	// 攻撃力を強化
+	void AddPower(int power);
+	// 耐久を強化
+	void AddHp(int hp);
 
 protected:
 	// 呪文のステータス

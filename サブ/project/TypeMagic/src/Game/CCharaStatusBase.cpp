@@ -17,7 +17,7 @@ CCharaStatusBase::~CCharaStatusBase()
 }
 
 // ダメージを受ける
-void CCharaStatusBase::TakeDamage(int damage, CObjectBase* causer)
+void CCharaStatusBase::TakeDamage(int damage, CObjectBase* attacker)
 {
 	// 既に死亡していたら、ダメージを受けない
 	if (IsDeath()) return;

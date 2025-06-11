@@ -5,6 +5,9 @@
 class CFieldBase : public CObjectBase
 {
 public:
+	// インスタンスのポインタの取得
+	static CFieldBase* Instance();
+
 	// コンストラクタ
 	CFieldBase();
 	// デストラクタ
@@ -53,4 +56,7 @@ protected:
 	CColliderMesh* mpWallColliderMesh;
 	// フィールドのオブジェクトの衝突判定
 	CColliderMesh* mpObjectColliderMesh;
+
+	// フィールドのインスタンス
+	static CFieldBase* spInstance;
 };

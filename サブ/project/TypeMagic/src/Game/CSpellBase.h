@@ -35,6 +35,11 @@ public:
 
 	// 呪文のターゲットを設定
 	void SetTarget(CObjectBase* target);
+	// 呪文の持ち主を設定
+	void SetOwner(CObjectBase* owner);
+
+	// 発射をリスタート
+	void Restart();
 
 protected:
 	// 待機中の更新
@@ -44,6 +49,12 @@ protected:
 
 	// 目標への方向を求める
 	CVector TargetDir();
+
+	// 耐久を減らす(最初から耐久0の呪文はダメージで破棄されない)
+	void TakeDamage(int num, CSpellBase* attacker);
+
+	// 属性による攻撃力倍率を計算する
+	float PowerRatio(ESpellElementalType self, ESpellElementalType other);
 
 	// 消滅するまでの時間
 	float mDeleteTime;

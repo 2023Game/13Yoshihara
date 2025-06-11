@@ -4,15 +4,16 @@
 #include <cmath>
 
 // コライダーの頂点
-#define VERT_POS_1 CVector(3.0f,7.0f,0.5f)
-#define VERT_POS_2 CVector(3.0f,7.0f,0.5f)
-#define VERT_POS_3 CVector(3.0f,7.0f,0.5f)
-#define VERT_POS_4 CVector(3.0f,7.0f,0.5f)
+#define VERT_POS_1 CVector( 3.0f, 7.0f,-0.5f)
+#define VERT_POS_2 CVector( 3.0f,-7.0f,-0.5f)
+#define VERT_POS_3 CVector(-3.0f,-7.0f,-0.5f)
+#define VERT_POS_4 CVector(-3.0f, 7.0f,-0.5f)
 
 // コンストラクタ
 CShield::CShield(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target)
 	: CSpellBase(elemental, ESpellShapeType::eShield, owner, target, SHIELD_DELETE_TIME)
 	, mCurrentAngle(0.0f)
+	, mAnglePos(CVector::zero)
 {
 	// 最小スケールに設定
 	Scale(SHIELD_SCALE_MIN);
@@ -64,19 +65,36 @@ void CShield::UpdateShooting()
 		// 大きくなっていく
 	case 0:
 		// 拡大
-		Scale(Scale() + TELEPORT_SCALE_UP_NUM);
+		Scale(Scale() + SHIELD_SCALE_UP_NUM);
 
 		// 最大スケール以上になったら
-		if (Scale().X() >= TELEPORT_SCALE_MAX.X())
+		if (Scale().X() >= SHIELD_SCALE_MAX.X())
 		{
 			mElapsedTime = 0.0f;
 			// 最大に設定
-			Scale(TELEPORT_SCALE_MAX);
+			Scale(SHIELD_SCALE_MAX);
 			// 拡大終了
 			mStateStep++;
 		}
 		break;
-		// TODO：削除時間が経過したら小さくなっていって削除
+		// 削除時間が経過したら次へ
+	case 1:
+		if (mElapsedTime > mDeleteTime)
+		{
+			mStateStep++;
+		}
+		break;
+		// 最小スケールになったら削除
+	case 2:
+		// 縮小
+		Scale(Scale() - SHIELD_SCALE_UP_NUM);
+		// 最小スケール以下になったら
+		if (Scale().X() <= SHIELD_SCALE_MIN.X())
+		{
+			// 削除
+			Kill();
+		}
+		break;
 	}
 	// 角度を増加
 	mCurrentAngle += SHIELD_ROT_SPEED * Times::DeltaTime();
@@ -86,10 +104,13 @@ void CShield::UpdateShooting()
 	// 回転角度
 	float rad = mCurrentAngle * M_PI / 180.0f;
 
-	// 移動を求める
-	mMoveSpeed =
+	// 回転後のオフセット座標
+	CVector offsetPos =
 		CVector(
 			cos(rad) * SHIELD_ROT_RADIUS,
 			0.0f,
 			sin(rad) * SHIELD_ROT_RADIUS);
+
+	// 座標更新
+	Position(mpOwner->Position() + offsetPos);
 }

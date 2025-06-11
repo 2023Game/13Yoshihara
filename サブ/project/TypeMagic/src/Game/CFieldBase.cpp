@@ -2,6 +2,15 @@
 #include "CSceneManager.h"
 #include <assert.h>
 
+// フィールドのインスタンス
+CFieldBase* CFieldBase::spInstance = nullptr;
+
+// インスタンスのポインタの取得
+CFieldBase* CFieldBase::Instance()
+{
+	return spInstance;
+}
+
 // コンストラクタ
 CFieldBase::CFieldBase()
 	: CObjectBase(ETag::eField, ETaskPriority::eBackground, 0, ETaskPauseType::eGame)
@@ -11,6 +20,7 @@ CFieldBase::CFieldBase()
 	, mpWallColliderMesh(nullptr)
 	, mpObjectColliderMesh(nullptr)
 {
+	spInstance = this;
 }
 
 // デストラクタ
@@ -19,6 +29,11 @@ CFieldBase::~CFieldBase()
 	SAFE_DELETE(mpGroundColliderMesh);
 	SAFE_DELETE(mpWallColliderMesh);
 	SAFE_DELETE(mpObjectColliderMesh);
+
+	if (spInstance == this)
+	{
+		spInstance = nullptr;
+	}
 }
 
 //レイとフィールドオブジェクトの衝突判定

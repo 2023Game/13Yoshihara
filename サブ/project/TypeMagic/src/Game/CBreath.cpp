@@ -28,9 +28,9 @@ void CBreath::CreateCol()
 		this, ELayer::eAttackCol,
 		RADIUS
 	);
-	// 地形とプレイヤーと敵と攻撃判定とだけ衝突判定
+	// 地形とプレイヤーと敵と攻撃判定と防御判定とだけ衝突判定
 	mpSpellCol->SetCollisionLayers({ ELayer::eGround,ELayer::eWall,ELayer::eObject,
-		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol });
+		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol });
 }
 
 // 発射中の更新
@@ -56,10 +56,8 @@ void CBreath::UpdateShooting()
 	// 大きくする
 	Scale(Scale() + BREATH_SCALE_UP_NUM);
 
-	// 速度
-	float speed = GetSpellStatus().speed;
 	// 移動を設定
-	mMoveSpeed = mMoveDir * speed * Times::DeltaTime();
+	mMoveSpeed = mMoveDir * GetSpellStatus().speed * Times::DeltaTime();
 
 	// 基底クラスの更新
 	CSpellBase::UpdateShooting();

@@ -9,7 +9,7 @@ public:
 
 
 	// ƒ_ƒ[ƒW‚ğó‚¯‚é
-	virtual void TakeDamage(int damage, CObjectBase* causer);
+	virtual void TakeDamage(int damage, CObjectBase* attacker);
 
 	// €–S
 	virtual void Death();

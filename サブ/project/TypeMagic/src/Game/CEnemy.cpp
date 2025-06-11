@@ -42,7 +42,7 @@ void CEnemy::Update()
 	mElapsedTime += Times::DeltaTime();
 	if (mElapsedTime > 2.0f)
 	{
-		//CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
+		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBreath);
 		mElapsedTime = 0.0f;
 	}
 

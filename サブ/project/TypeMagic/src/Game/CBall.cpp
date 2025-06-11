@@ -28,9 +28,9 @@ void CBall::CreateCol()
 		this, ELayer::eAttackCol,
 		RADIUS
 	);
-	// 地形とプレイヤーと敵と攻撃判定とだけ衝突判定
+	// 地形とプレイヤーと敵と攻撃判定と防御判定とだけ衝突判定
 	mpSpellCol->SetCollisionLayers({ ELayer::eGround,ELayer::eWall,ELayer::eObject,
-		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol });
+		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol });
 }
 
 // 発射中の更新
@@ -66,13 +66,8 @@ void CBall::UpdateShooting()
 	}
 	}
 
-	// 移動速度
-	float speed = GetSpellStatus().speed;
 	// 移動速度を設定
-	mMoveSpeed = mMoveDir * speed * Times::DeltaTime();
-
-	// 加速
-	SetSpeed(speed + BALL_ACCELERATE);
+	mMoveSpeed = mMoveDir * GetSpellStatus().speed * Times::DeltaTime();
 
 	// 基底クラスの更新
 	CSpellBase::UpdateShooting();

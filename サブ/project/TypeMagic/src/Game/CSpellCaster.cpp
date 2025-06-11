@@ -318,19 +318,9 @@ void CSpellCaster::CastShield()
 		// 呪文生成
 	case 1:
 	{
-		// 生成座標
-		CVector offsetPos = SHIELD_OFFSET_POS;
-		// 持ち主の方向で設定
-		offsetPos =
-			mpOwner->VectorX() * offsetPos.X() +
-			mpOwner->VectorY() * offsetPos.Y() +
-			mpOwner->VectorZ() * offsetPos.Z();
-
 		// シールド呪文を生成
 		CShield* shield = new CShield(mSpellElemental
 			, mpOwner, mpOwner);
-		// 座標を設定
-		shield->Position(mpOwner->Position() + offsetPos);
 		// リストに追加
 		mSpells.push_back(shield);
 		// 生成数を増加
@@ -361,7 +351,48 @@ void CSpellCaster::CastShield()
 // リフレクター呪文の詠唱
 void CSpellCaster::CastReflector()
 {
-	mIsSpellCasting = false;
+	switch (mStep)
+	{
+		// 生成間隔の待機
+	case 0:
+		if (WaitGenerate())
+		{
+			mStep++;
+		}
+		break;
+
+		// 呪文生成
+	case 1:
+	{		
+		// 生成座標
+		CVector offsetPos = REFLECTOR_OFFSET_POS;
+		// 持ち主の方向で設定
+		offsetPos =
+			mpOwner->VectorX() * offsetPos.X() +
+			mpOwner->VectorY() * offsetPos.Y() +
+			mpOwner->VectorZ() * offsetPos.Z();
+
+		// リフレクター呪文を生成
+		CReflector* reflector = new CReflector(mSpellElemental
+			, mpOwner, mpOwner);
+		// 座標設定
+		reflector->Position(mpOwner->Position() + offsetPos);
+		// リストに追加
+		mSpells.push_back(reflector);
+		// 生成数を増加
+		mGenerateNum++;
+
+		// 次へ
+		mStep++;
+
+		break;
+	}
+
+	// 詠唱終了
+	case 2:
+		mIsSpellCasting = false;
+		break;
+	}
 }
 
 // 生成速度と待機時間の設定
@@ -509,4 +540,10 @@ bool CSpellCaster::CastStart(ESpellElementalType elemental
 void CSpellCaster::SetOpponent(CObjectBase* opponent)
 {
 	mpOpponent = opponent;
+}
+
+// 対戦相手を取得
+CObjectBase* CSpellCaster::GetOpponent() const
+{
+	return mpOpponent;
 }

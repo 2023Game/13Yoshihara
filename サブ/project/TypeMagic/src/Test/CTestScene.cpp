@@ -59,10 +59,10 @@ void CTestScene::Load()
 
 	// ƒvƒŒƒCƒ„[¶¬
 	CPlayer* player = new CPlayer();
-	player->Position(0.0f, 5.0f, 0.0f);
+	player->Position(0.0f, 50.0f, 0.0f);
 
 	CEnemy* enemy = new CEnemy();
-	enemy->Position(0.0f, 5.0f, -50.0f);
+	enemy->Position(0.0f, 50.0f, -50.0f);
 
 	// ‚»‚ê‚¼‚ê‚Ì‘ŠŽè‚ðÝ’è
 	enemy->SetOpponent(player);

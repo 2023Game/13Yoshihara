@@ -23,4 +23,6 @@ private:
 
 	// Œ»İ‚ÌŠp“x
 	float mCurrentAngle;
+	// Šp“x‚É‚æ‚éÀ•W
+	CVector mAnglePos;
 };

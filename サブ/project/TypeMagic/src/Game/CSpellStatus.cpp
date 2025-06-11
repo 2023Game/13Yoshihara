@@ -19,10 +19,16 @@ SpellStatus CSpellStatus::GetSpellStatus() const
 	return mSpellStatus;
 }
 
-// 速度を設定
-void CSpellStatus::SetSpeed(float speed)
+// 攻撃力を強化
+void CSpellStatus::AddPower(int power)
 {
-	mSpellStatus.speed = speed;
+	mSpellStatus.power += power;
+}
+
+// 耐久を強化
+void CSpellStatus::AddHp(int hp)
+{
+	mSpellStatus.hp += hp;
 }
 
 // ステータス設定

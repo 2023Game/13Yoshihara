@@ -31,9 +31,9 @@ void CBolt::CreateCol()
 		CVector(0.0f, 0.0f, WIDTH),
 		RADIUS
 	);
-	// 地形とプレイヤーと敵と攻撃判定とだけ衝突判定
+	// 地形とプレイヤーと敵と攻撃判定と防御判定とだけ衝突判定
 	mpSpellCol->SetCollisionLayers({ ELayer::eGround,ELayer::eWall,ELayer::eObject,
-		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol });
+		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol });
 }
 
 // 待機中の更新
@@ -55,19 +55,16 @@ void CBolt::UpdateShooting()
 	{
 		mMoveDir = TargetDir();
 		mMoveDir.Normalize();
+		// 目標の方向を向く
+		LookAt(mpTarget->Position());
 
 		// 移動方向の更新終了
 		mStateStep++;
 		break;
 	}
 	}
-	// 速度
-	float speed = GetSpellStatus().speed;
 	// 移動を設定
-	mMoveSpeed = mMoveDir * speed * Times::DeltaTime();
-
-	// 加速
-	SetSpeed(speed + BOLT_ACCELERATE);
+	mMoveSpeed = mMoveDir * GetSpellStatus().speed * Times::DeltaTime();
 
 	// 基底クラスの更新
 	CSpellBase::UpdateShooting();
