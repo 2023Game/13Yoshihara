@@ -91,18 +91,21 @@ void CSpellStatus::SetStatus(ESpellElementalType elemental, ESpellShapeType shap
 		speed += BREATH_SPEED;
 		hp += BREATH_HP;
 		break;
+		// テレポートの場合、テレポートのHPを設定
 	case ESpellShapeType::eTeleport:
 		power += TELEPORT_POWER;
 		speed += TELEPORT_SPEED;
-		hp += TELEPORT_HP;
+		hp = TELEPORT_HP;
 		break;
+		// シールドの場合シールドの攻撃力を設定
 	case ESpellShapeType::eShield:
-		power += SHIELD_POWER;
+		power = SHIELD_POWER;
 		speed += SHIELD_SPEED;
 		hp += SHIELD_HP;
 		break;
+		// リフレクターの場合リフレクターの攻撃力を設定
 	case ESpellShapeType::eReflector:
-		power += REFLECTOR_POWER;
+		power = REFLECTOR_POWER;
 		speed += REFLECTOR_SPEED;
 		hp += REFLECTOR_HP;
 		break;

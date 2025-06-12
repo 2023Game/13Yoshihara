@@ -17,7 +17,27 @@ CShield::CShield(ESpellElementalType elemental, CObjectBase* owner, CObjectBase*
 {
 	// 最小スケールに設定
 	Scale(SHIELD_SCALE_MIN);
-	mpModel = CResourceManager::Get<CModel>("NeutralShield");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireShield");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindShield");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthShield");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderShield");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterShield");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralShield");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 発射状態

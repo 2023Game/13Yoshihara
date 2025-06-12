@@ -81,6 +81,7 @@
     <ClCompile Include="src\Game\CBall.cpp" />
     <ClCompile Include="src\Game\CBolt.cpp" />
     <ClCompile Include="src\Game\CBreath.cpp" />
+    <ClCompile Include="src\Game\CDamageUI3D.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
     <ClCompile Include="src\Game\CReflector.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="src\Game\CBall.h" />
     <ClInclude Include="src\Game\CBolt.h" />
     <ClInclude Include="src\Game\CBreath.h" />
+    <ClInclude Include="src\Game\CDamageUI3D.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
     <ClInclude Include="src\Game\CReflector.h" />

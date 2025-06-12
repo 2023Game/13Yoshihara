@@ -141,32 +141,32 @@ void CPlayer::ActionInput()
 	// ボール呪文を詠唱
 	if (CInput::PushKey('U'))
 	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBall);
+		CastStart(ESpellElementalType::eFire, ESpellShapeType::eShield);
 	}
 	// ボルト呪文を詠唱
 	if (CInput::PushKey('I'))
 	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBolt);
+		CastStart(ESpellElementalType::eWind, ESpellShapeType::eShield);
 	}
 	// ブレス呪文を詠唱
 	if (CInput::PushKey('O'))
 	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eBreath);
+		CastStart(ESpellElementalType::eEarth, ESpellShapeType::eShield);
 	}
 	// テレポート呪文を詠唱
 	if (CInput::PushKey('J'))
 	{
-		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eTeleport);
+		CastStart(ESpellElementalType::eThunder, ESpellShapeType::eShield);
 	}
 	// シールド呪文を詠唱
 	if (CInput::PushKey('K'))
 	{
-		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eShield);
+		CastStart(ESpellElementalType::eWater, ESpellShapeType::eShield);
 	}
 	// リフレクター呪文を詠唱
 	if (CInput::PushKey('L'))
 	{
-		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eReflector);
+		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eShield);
 	}
 
 	// スペースで上移動

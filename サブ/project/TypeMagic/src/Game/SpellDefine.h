@@ -1,5 +1,25 @@
 #pragma once
 
+#define ELEMENTAL_POWER_RATIO	2.0f	// 弱点属性の倍率
+
+// プレイヤーの色
+#define PLAYER_COLOR	CColor(0.15f,0.2f,0.6f)
+// 敵の色
+#define ENEMY_COLOR		CColor(0.6f,0.1f,0.1f)
+
+// 炎の色
+#define FIRE_COLOR		CColor(1.0f,0.3f,0.1f)
+// 風の色
+#define WIND_COLOR		CColor(0.6f,0.9f,0.6f)
+// 地の色
+#define EARTH_COLOR		CColor(0.647f, 0.165f, 0.165f)
+// 雷の色
+#define THUNDER_COLOR	CColor(0.9f,0.75f,0.2f)
+// 水の色
+#define WATER_COLOR		CColor(0.4f,0.6f,1.0f)
+// 無の色
+#define NEUTRAL_COLOR	CColor(0.9f,0.9f,0.9f)
+
 // 炎
 #define FIRE_POWER		1			// 攻撃力
 #define FIRE_SPEED		10.0f		// 速度
@@ -11,35 +31,35 @@
 #define WIND_POWER		1
 #define WIND_SPEED		10.0f
 #define WIND_HP			1
-#define WIND_IDLE_TIME	1.0f
+#define WIND_IDLE_TIME	0.1f
 #define WIND_GENERATE_INTERVAL 0.1f
 
 // 地
 #define EARTH_POWER		1
 #define EARTH_SPEED		10.0f
 #define EARTH_HP		1
-#define EARTH_IDLE_TIME	1.0f
+#define EARTH_IDLE_TIME	0.1f
 #define EARTH_GENERATE_INTERVAL 0.1f
 
 // 雷
 #define THUNDER_POWER		1
 #define THUNDER_SPEED		10.0f
 #define THUNDER_HP			1
-#define THUNDER_IDLE_TIME	1.0f
+#define THUNDER_IDLE_TIME	0.1f
 #define THUNDER_GENERATE_INTERVAL 0.1f
 
 // 水
 #define WATER_POWER		1
 #define WATER_SPEED		10.0f
 #define WATER_HP		1
-#define WATER_IDLE_TIME	1.0f
+#define WATER_IDLE_TIME	0.1f
 #define WATER_GENERATE_INTERVAL 0.1f
 
 // 無
 #define NEUTRAL_POWER		1
 #define NEUTRAL_SPEED		10.0f
 #define NEUTRAL_HP			1
-#define NEUTRAL_IDLE_TIME	1.0f
+#define NEUTRAL_IDLE_TIME	0.1f
 #define NEUTRAL_GENERATE_INTERVAL 0.1f
 
 // ボール型
@@ -79,11 +99,11 @@
 #define BREATH_SPEED		200.0f
 #define BREATH_HP			1
 #define BREATH_IDLE_TIME	0.0f		// ブレスでは使用しない
-#define BREATH_GENERATE_INTERVAL 0.01f	// ブレスの生成間隔はこの値以外の影響は受けない
+#define BREATH_GENERATE_INTERVAL 0.05f	// ブレスの生成間隔はこの値以外の影響は受けない
 // オフセット座標
 #define BREATH_OFFSET_POS CVector(0.0f,0.0f,7.5f)
 // 最大生成数
-#define BREATH_MAX_GENERATE_NUM 50
+#define BREATH_MAX_GENERATE_NUM 25
 // ぶれ幅
 #define BREATH_DIR_RAND 0.1f
 // 大きくなる数値
@@ -109,7 +129,7 @@
 #define TELEPORT_DELETE_TIME 1.0f
 
 // シールド型
-#define SHIELD_POWER		10
+#define SHIELD_POWER		0			// シールドの攻撃力は必ず0
 #define SHIELD_SPEED		10.0f
 #define SHIELD_HP			50
 #define SHIELD_IDLE_TIME	0.0f		// シールドでは使用しない
@@ -124,14 +144,14 @@
 // スケールの増加量
 #define SHIELD_SCALE_UP_NUM CVector::one * Times::DeltaTime()
 // 回転の半径
-#define SHIELD_ROT_RADIUS 10.0f
+#define SHIELD_ROT_RADIUS 20.0f
 // 回転スピード
 #define SHIELD_ROT_SPEED 180.0f
 // 消滅するまでの時間
 #define SHIELD_DELETE_TIME 10.0f
 
 // リフレクター型
-#define REFLECTOR_POWER		1
+#define REFLECTOR_POWER		0				// リフレクターの攻撃力は必ず0
 #define REFLECTOR_SPEED		10.0f
 #define REFLECTOR_HP		50
 #define REFLECTOR_IDLE_TIME	0.0f			// リフレクターでは使用しない

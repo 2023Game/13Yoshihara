@@ -98,9 +98,6 @@
     <Filter Include="ソース ファイル\Game\Debug">
       <UniqueIdentifier>{ff3151b9-81fa-44c0-ac2b-6c20c377b912}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\UI\UI2D">
-      <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\UI\EndUI">
       <UniqueIdentifier>{b3f74eef-2f5b-4ed1-ac80-724a8385f870}</UniqueIdentifier>
     </Filter>
@@ -133,6 +130,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Weapon\Spell\Attack">
       <UniqueIdentifier>{6780f90a-1f7d-44d0-af91-f04401a8c938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\UI\UI2D">
+      <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -516,6 +516,9 @@
     </ClCompile>
     <ClCompile Include="src\Game\CBreath.cpp">
       <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CDamageUI3D.cpp">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -932,6 +935,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CBreath.h">
       <Filter>ソース ファイル\Game\Weapon\Spell\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDamageUI3D.h">
+      <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

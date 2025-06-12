@@ -9,7 +9,27 @@
 CBreath::CBreath(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target)
 	: CSpellBase(elemental, ESpellShapeType::eBreath, owner, target, BREATH_DELETE_TIME)
 {
-	mpModel = CResourceManager::Get<CModel>("FireBreath");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireBreath");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindBreath");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthBreath");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderBreath");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterBreath");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralBreath");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 最初から発射状態

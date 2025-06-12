@@ -9,7 +9,27 @@
 CBall::CBall(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target)
 	: CSpellBase(elemental, ESpellShapeType::eBall, owner, target, BALL_DELETE_TIME)
 {
-	mpModel = CResourceManager::Get<CModel>("FireBall");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireBall");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindBall");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthBall");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderBall");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterBall");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralBall");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 待機状態

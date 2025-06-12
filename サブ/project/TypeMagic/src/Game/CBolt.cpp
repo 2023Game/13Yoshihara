@@ -10,7 +10,27 @@
 CBolt::CBolt(ESpellElementalType elemental, CObjectBase* owner, CObjectBase* target)
 	: CSpellBase(elemental, ESpellShapeType::eBolt, owner, target, BOLT_DELETE_TIME)
 {
-	mpModel = CResourceManager::Get<CModel>("FireBolt");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireBolt");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindBolt");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthBolt");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderBolt");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterBolt");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralBolt");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 待機状態

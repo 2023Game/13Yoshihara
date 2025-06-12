@@ -1,6 +1,8 @@
 #include "CSpellBase.h"
 #include "CModel.h"
 #include "CSpellCaster.h"
+#include "CDamageUI3D.h"
+#include "CPlayer.h"
 
 // コンストラクタ
 CSpellBase::CSpellBase(ESpellElementalType elemental, ESpellShapeType shape,
@@ -62,43 +64,110 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 		// 相手がプレイヤーなら
 		else if (other->Layer() == ELayer::ePlayer)
 		{
-			// 削除
-			Kill();
+			// 持ち主なら処理しない
+			if (mpOwner == other->Owner()) return;
+			// 既にヒットしていたら処理しない
+			if (IsAttackHitObj(other->Owner())) return;
+
+			// ダメージ表記を生成
+			CDamageUI3D* text = new CDamageUI3D(other->Owner()->Position());
+			// ダメージの数値
+			text->ChangeToStr("%d\n", mSpellStatus.power);
+			// 属性ごとの色を文字色に設定
+			text->SetFontColor(ElementalColor(mSpellStatus.elemental));
+			// 色
+			CColor color;
+			// 持ち主がプレイヤーなら
+			if (mpOwner == CPlayer::Instance())
+			{
+				color = PLAYER_COLOR;
+			}
+			// 敵なら
+			else
+			{
+				color = ENEMY_COLOR;
+			}
+			// アウトラインの色を設定
+			text->SetOutLineColor(color);
+
+			// 攻撃がヒットしたオブジェクトに追加
+			AddAttackHitObj(other->Owner());
 
 #if _DEBUG
 			other->Owner()->AddHitCount();
 #endif
+
+			// テレポート呪文なら処理しない
+			if (mSpellStatus.shape == ESpellShapeType::eTeleport) return;
+			// 削除
+			Kill();
 		}
 		// 相手が敵なら
 		else if (other->Layer() == ELayer::eEnemy)
 		{
-			// 削除
-			Kill();
+			// 持ち主なら処理しない
+			if (mpOwner == other->Owner()) return;
+			// 既にヒットしていたら処理しない
+			if (IsAttackHitObj(other->Owner())) return;
+
+			// ダメージ表記を生成
+			CDamageUI3D* text = new CDamageUI3D(other->Owner()->Position());
+			// ダメージの数値
+			text->ChangeToStr("%d\n", mSpellStatus.power);;
+			// 属性ごとの色を文字色に設定
+			text->SetFontColor(ElementalColor(mSpellStatus.elemental));
+			CColor color;
+			// 持ち主がプレイヤーなら
+			if (mpOwner == CPlayer::Instance())
+			{
+				color = PLAYER_COLOR;
+			}
+			// 敵なら
+			else
+			{
+				color = ENEMY_COLOR;
+			}
+			// アウトラインの色を設定
+			text->SetOutLineColor(color);
+
+			// 攻撃がヒットしたオブジェクトに追加
+			AddAttackHitObj(other->Owner());
 			
 #if _DEBUG
 			other->Owner()->AddHitCount();
 #endif
+
+			// テレポート呪文なら処理しない
+			if (mSpellStatus.shape == ESpellShapeType::eTeleport) return;
+			// 削除
+			Kill();
 		}
 		// 相手が攻撃判定なら
 		else if (other->Layer() == ELayer::eAttackCol)
 		{
 			CSpellBase* spell = dynamic_cast<CSpellBase*>(other->Owner());
-			// 呪文の持ち主が違うなら
-			if (spell->mpOwner != mpOwner)
+			// 呪文の持ち主が違うかつまだヒットしていないなら
+			if (spell->mpOwner != mpOwner &&
+				!IsAttackHitObj(other->Owner()))
 			{
-				// 削除
-				TakeDamage(spell->GetSpellStatus().power, spell);
+				// ダメージを与える
+				spell->TakeDamage(mSpellStatus.power, this);
+				// 攻撃がヒットしたオブジェクトに追加
+				AddAttackHitObj(other->Owner());
 			}
 		}
 		// 相手が防御判定なら
 		else if (other->Layer() == ELayer::eDefenseCol)
 		{
 			CSpellBase* spell = dynamic_cast<CSpellBase*>(other->Owner());
-			// 呪文の持ち主が違うなら
-			if (spell->mpOwner != mpOwner)
+			// 呪文の持ち主が違うかつまだヒットしていないなら
+			if (spell->mpOwner != mpOwner &&
+				!IsAttackHitObj(other->Owner()))
 			{
-				// 削除
-				TakeDamage(spell->GetSpellStatus().power, spell);
+				// ダメージを与える
+				spell->TakeDamage(mSpellStatus.power, this);
+				// 攻撃がヒットしたオブジェクトに追加
+				AddAttackHitObj(other->Owner());
 			}
 		}
 	}
@@ -147,21 +216,32 @@ CVector CSpellBase::TargetDir()
 	return mpTarget->Position() - Position();
 }
 
-// 耐久を減らす(最初から0の呪文はダメージで破棄されない)
+// 耐久を減らす(最初から耐久0の呪文はダメージで破棄されない)
 void CSpellBase::TakeDamage(int num, CSpellBase* attacker)
 {
 	// 耐久が0なら処理しない
 	if (mSpellStatus.hp == 0) return;
+	// 攻撃力が0以下なら処理しない
+	if (num <= 0) return;
 
-	// 相手のステータス
-	SpellStatus status = attacker->GetSpellStatus();
+	// 攻撃者のステータス
+	SpellStatus attackerStatus = attacker->GetSpellStatus();
+	// ダメージ
+	int damage = num;
 
-	// 相手の形
-	switch (status.shape)
+	// 自身の形
+	switch (mSpellStatus.shape)
 	{
 		// リフレクターの場合反射
 	case ESpellShapeType::eReflector:
 	{
+		// 弱点なら
+		if (ELEMENTAL_POWER_RATIO <= ElementalPowerRatio(attackerStatus.elemental, mSpellStatus.elemental))
+		{
+			// 削除
+			Kill();
+			return;
+		}
 		// 詠唱クラスを取得
 		CSpellCaster* caster = dynamic_cast<CSpellCaster*>(mpOwner);
 		// 目標を対戦相手に設定
@@ -173,14 +253,14 @@ void CSpellBase::TakeDamage(int num, CSpellBase* attacker)
 		// 耐久を強化
 		attacker->AddHp(REFLECTOR_HP_UP);
 		// 発射をリスタート
-		Restart();
+		attacker->Restart();
 		break;
 	}
-		// それ以外
+		// それ以外の場合
 	default:
 		// 属性倍率を適用
-		int damage = num * PowerRatio(mSpellStatus.elemental, status.elemental);
-		// ダメージを減算
+		damage *= ElementalPowerRatio(attackerStatus.elemental, mSpellStatus.elemental);
+		// HPを減算
 		mSpellStatus.hp -= damage;
 		// 耐久が0以下なら
 		if (mSpellStatus.hp <= 0)
@@ -191,6 +271,151 @@ void CSpellBase::TakeDamage(int num, CSpellBase* attacker)
 		}
 		break;
 	}
+
+	// 攻撃側のダメージ表記を生成
+	CDamageUI3D* text = new CDamageUI3D(Position());
+	// ダメージの数値
+	text->ChangeToStr("%d\n", damage);;
+	// 属性ごとの色を文字色に設定
+	text->SetFontColor(ElementalColor(attackerStatus.elemental));
+	CColor color;
+	// 持ち主がプレイヤーなら
+	if (attacker->mpOwner == CPlayer::Instance())
+	{
+		color = PLAYER_COLOR;
+	}
+	// 敵なら
+	else
+	{
+		color = ENEMY_COLOR;
+	}
+	// アウトラインの色を設定
+	text->SetOutLineColor(color);
+}
+
+// 属性による攻撃力倍率を計算する
+float CSpellBase::ElementalPowerRatio(ESpellElementalType attacker, ESpellElementalType target)
+{
+	// 倍率
+	float ratio = 1.0f;
+
+	switch (attacker)
+	{
+		// 攻撃が炎
+	case ESpellElementalType::eFire:
+		// 弱点
+		// 相手が風なら
+		if (target == ESpellElementalType::eWind)
+		{
+			ratio *= ELEMENTAL_POWER_RATIO;
+		}
+
+		// いまひとつ
+		// 相手が水なら
+		if (target == ESpellElementalType::eWater)
+		{
+			ratio /= ELEMENTAL_POWER_RATIO;
+		}
+		break;
+
+		// 攻撃が風
+	case ESpellElementalType::eWind:
+		// 弱点
+		// 相手が地なら
+		if (target == ESpellElementalType::eEarth)
+		{
+			ratio *= ELEMENTAL_POWER_RATIO;
+		}
+
+		// いまひとつ
+		// 相手が炎なら
+		if (target == ESpellElementalType::eFire)
+		{
+			ratio /= ELEMENTAL_POWER_RATIO;
+		}
+		break;
+
+		// 攻撃が地
+	case ESpellElementalType::eEarth:
+		// 弱点
+		// 相手が雷なら
+		if (target == ESpellElementalType::eThunder)
+		{
+			ratio *= ELEMENTAL_POWER_RATIO;
+		}
+
+		// いまひとつ
+		// 相手が風なら
+		if (target == ESpellElementalType::eWind)
+		{
+			ratio /= ELEMENTAL_POWER_RATIO;
+		}
+		break;
+		
+		// 攻撃が雷
+	case ESpellElementalType::eThunder:
+		// 弱点
+		// 相手が水なら
+		if (target == ESpellElementalType::eWater)
+		{
+			ratio *= ELEMENTAL_POWER_RATIO;
+		}
+
+		// いまひとつ
+		// 相手が地なら
+		if (target == ESpellElementalType::eEarth)
+		{
+			ratio /= ELEMENTAL_POWER_RATIO;
+		}
+		break;
+
+		// 攻撃が水
+	case ESpellElementalType::eWater:
+		// 弱点属性
+		// 相手が炎なら
+		if (target == ESpellElementalType::eFire)
+		{
+			ratio *= ELEMENTAL_POWER_RATIO;
+		}
+
+		// いまひとつ
+		// 相手が雷なら
+		if (target == ESpellElementalType::eThunder)
+		{
+			ratio /= ELEMENTAL_POWER_RATIO;
+		}
+		break;
+	}
+
+	return ratio;
+}
+
+// 属性によってカラーを返す
+CColor CSpellBase::ElementalColor(ESpellElementalType elemental)
+{
+	CColor color;
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		color = FIRE_COLOR;
+		break;
+	case ESpellElementalType::eWind:
+		color = WIND_COLOR;
+		break;
+	case ESpellElementalType::eEarth:
+		color = EARTH_COLOR;
+		break;
+	case ESpellElementalType::eThunder:
+		color = THUNDER_COLOR;
+		break;
+	case ESpellElementalType::eWater:
+		color = WATER_COLOR;
+		break;
+	case ESpellElementalType::eNeutral:
+		color = NEUTRAL_COLOR;
+		break;
+	}
+	return color;
 }
 
 // 状態を切り替え

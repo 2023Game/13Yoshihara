@@ -16,7 +16,27 @@ CReflector::CReflector(ESpellElementalType elemental, CObjectBase* owner, CObjec
 {
 	// 最小スケールに設定
 	Scale(REFLECTOR_SCALE_MIN);
-	mpModel = CResourceManager::Get<CModel>("NeutralReflector");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireReflector");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindReflector");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthReflector");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderReflector");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterReflector");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralReflector");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 発射状態

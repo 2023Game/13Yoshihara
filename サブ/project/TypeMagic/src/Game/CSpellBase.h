@@ -53,8 +53,16 @@ protected:
 	// ‘Ï‹v‚ğŒ¸‚ç‚·(Å‰‚©‚ç‘Ï‹v0‚Ìô•¶‚Íƒ_ƒ[ƒW‚Å”jŠü‚³‚ê‚È‚¢)
 	void TakeDamage(int num, CSpellBase* attacker);
 
-	// ‘®«‚É‚æ‚éUŒ‚—Í”{—¦‚ğŒvZ‚·‚é
-	float PowerRatio(ESpellElementalType self, ESpellElementalType other);
+	/// <summary>
+	/// ‘®«‚É‚æ‚éUŒ‚—Í”{—¦‚ğŒvZ‚·‚é
+	/// </summary>
+	/// <param name="attacker">UŒ‚‘¤‚Ì‘®«</param>
+	/// <param name="target">ó‚¯‚é‘¤‚Ì‘®«</param>
+	/// <returns>UŒ‚—Í‚Ì”{—¦</returns>
+	float ElementalPowerRatio(ESpellElementalType attacker, ESpellElementalType target);
+
+	// ‘®«‚É‚æ‚Á‚ÄƒJƒ‰[‚ğ•Ô‚·
+	CColor ElementalColor(ESpellElementalType elemental);
 
 	// Á–Å‚·‚é‚Ü‚Å‚ÌŠÔ
 	float mDeleteTime;

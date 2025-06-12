@@ -12,7 +12,27 @@ CTeleport::CTeleport(ESpellElementalType elemental, CObjectBase* owner, CObjectB
 {
 	// 最小スケールに設定
 	Scale(TELEPORT_SCALE_MIN);
-	mpModel = CResourceManager::Get<CModel>("NeutralTeleport");
+	switch (elemental)
+	{
+	case ESpellElementalType::eFire:
+		mpModel = CResourceManager::Get<CModel>("FireTeleport");
+		break;
+	case ESpellElementalType::eWind:
+		mpModel = CResourceManager::Get<CModel>("WindTeleport");
+		break;
+	case ESpellElementalType::eEarth:
+		mpModel = CResourceManager::Get<CModel>("EarthTeleport");
+		break;
+	case ESpellElementalType::eThunder:
+		mpModel = CResourceManager::Get<CModel>("ThunderTeleport");
+		break;
+	case ESpellElementalType::eWater:
+		mpModel = CResourceManager::Get<CModel>("WaterTeleport");
+		break;
+	case ESpellElementalType::eNeutral:
+		mpModel = CResourceManager::Get<CModel>("NeutralTeleport");
+		break;
+	}
 	// コライダーを生成
 	CreateCol();
 	// 待機状態
@@ -29,13 +49,14 @@ CTeleport::~CTeleport()
 // コライダーを生成
 void CTeleport::CreateCol()
 {
+	// サポート呪文だが攻撃判定もある
 	mpSpellCol = new CColliderSphere(
-		this, ELayer::eDefenseCol,
+		this, ELayer::eAttackCol,
 		RADIUS,
 		true
 	);
-	// 攻撃判定とだけ衝突判定
-	mpSpellCol->SetCollisionLayers({ ELayer::eAttackCol });
+	// プレイヤーと敵と攻撃判定と防御判定とだけ衝突判定
+	mpSpellCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol });
 }
 
 // 待機中の更新
@@ -102,6 +123,8 @@ void CTeleport::UpdateShooting()
 		// 移動
 	case 0:
 	{
+		// ヒットしたオブジェクトのリストをリセット
+		AttackStart();
 		// キャラクラスを取得
 		CCharaBase* chara = dynamic_cast<CCharaBase*>(mpOwner);
 
