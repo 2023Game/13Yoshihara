@@ -129,13 +129,6 @@ void CTestScene::Load()
 //シーンの更新処理
 void CTestScene::Update()
 {
-#if _DEBUG
-	if (CInput::PushKey('H'))
-	{
-		CSceneManager::Instance()->LoadScene(EScene::eTitle);
-	}
-#endif
-
 	// ゲームメニューを開いてなければ、[TAB]キーでメニューを開く
 	if (!mpGameMenu->IsOpened())
 	{

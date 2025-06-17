@@ -136,7 +136,7 @@
 // シールドの生成間隔は最大数と回転スピードから計算して求める
 #define SHIELD_GENERATE_INTERVAL (360.0f / SHIELD_MAX_GENERATE_NUM) / SHIELD_ROT_SPEED
 // 最大生成数
-#define SHIELD_MAX_GENERATE_NUM 4
+#define SHIELD_MAX_GENERATE_NUM 8
 // 最小のスケール
 #define SHIELD_SCALE_MIN CVector::zero
 // 最大のスケール

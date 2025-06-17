@@ -10,6 +10,8 @@ enum class ESpellElementalType
 	eWater,		// 水
 
 	eNeutral,	// 無属性
+
+	eError,		// エラー用
 };
 
 // 形
@@ -22,4 +24,6 @@ enum class ESpellShapeType
 	eTeleport,	// テレポート
 	eShield,	// シールド
 	eReflector,	// リフレクター
+
+	eError,		// エラー用
 };

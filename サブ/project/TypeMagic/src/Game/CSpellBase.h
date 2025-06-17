@@ -64,6 +64,10 @@ protected:
 	// 属性によってカラーを返す
 	CColor ElementalColor(ESpellElementalType elemental);
 
+	// ダメージ表記を生成
+	void DamageText(int damage, ESpellElementalType elemental,
+		CSpellBase* attacker);
+
 	// 消滅するまでの時間
 	float mDeleteTime;
 

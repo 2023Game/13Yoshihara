@@ -3,15 +3,21 @@
 
 class CSpellBase;
 
-// 呪文詠唱クラス
+// 実際に呪文を発動する呪文詠唱クラス
 class CSpellCaster
 {
 public:
+	// 対戦相手を設定
+	void SetOpponent(CObjectBase* opponent);
+	// 対戦相手を取得
+	CObjectBase* GetOpponent() const;
+
+protected:
 	// コンストラクタ
 	CSpellCaster(CObjectBase* owner);
 	// デストラクタ
 	~CSpellCaster();
-
+	
 	// 更新
 	void Update();
 
@@ -19,12 +25,6 @@ public:
 	bool CastStart(ESpellElementalType elemental,
 		ESpellShapeType shape);
 
-	// 対戦相手を設定
-	void SetOpponent(CObjectBase* opponent);
-	// 対戦相手を取得
-	CObjectBase* GetOpponent() const;
-
-protected:
 	// 対戦相手
 	CObjectBase* mpOpponent;
 

@@ -49,21 +49,8 @@ protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
 
-	CVector mMoveSpeed;	// 前後左右の移動速度
-	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
-
-	float mGravity;	// 重力
-
-	bool mIsGrounded;	// 接地しているかどうか
-	bool mIsGravity;	// 重力を掛けるかどうか
-	bool mIsMoveDir;	// 移動方向を向くか
-
-	CVector mGroundNormal;	// 接地している地面の法線
-
 	CCollider* mpBodyCol;	// 本体のコライダー
 	CCollider* mpAttackCol;	// 攻撃コライダー
-
-	CTransform* mpRideObject;
 
 	float mFovAngle;	// 視野範囲の角度
 	float mFovLength;	// 視野範囲の距離

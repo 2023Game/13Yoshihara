@@ -4,6 +4,7 @@
 
 GLFWwindow* CInput::spWindow = nullptr;	// ウィンドウのポインタ
 std::map<int, int> CInput::msInputBits;	// キーの入力状態を管理するリスト
+std::string CInput::msInputStr;			// 入力された文字列のバッファ
 CVector2 CInput::msMousePos = CVector2(0.0f, 0.0f);	// 現在のマウス座標
 CVector2 CInput::msLastMousePos = CVector2(0.0f, 0.0f);	// 前回のマウス座標
 int CInput::msMouseWheel = 0;		// マウスホイールの回転量
@@ -146,4 +147,24 @@ void CInput::Update()
 	// マウスホイールの回転量を更新
 	msDeltaMouseWheel = msMouseWheel - msLastMouseWheel;
 	msLastMouseWheel = msMouseWheel;
+}
+
+// 文字を追加
+void CInput::AddChar(char c)
+{
+	msInputStr += c;
+}
+
+// 押された文字列を返す
+std::string CInput::GetInputStr()
+{
+	std::string str = msInputStr;
+	msInputStr.clear();	// 取得したらクリア
+	return str;
+}
+
+// 文字列をクリア
+void CInput::ClearStr()
+{
+	msInputStr.clear();
 }

@@ -3,10 +3,11 @@
 #include "CPlayerBase.h"
 // プレイヤーのステータスクラスのインクルード
 #include "CPlayerStatus.h"
-#include "CSpellCaster.h"
+#include "CCastSpellStr.h"
 
 class CSound;
 class CImage;
+class CCastSpellStr;
 
 /*
 ゲームのプレイヤークラス
@@ -14,7 +15,7 @@ class CImage;
 プレイヤーのステータスクラスと
 呪文詠唱クラスを継承
 */
-class CPlayer : public CPlayerBase ,  public CPlayerStatus, public CSpellCaster
+class CPlayer : public CPlayerBase ,  public CPlayerStatus, public CCastSpellStr
 {
 public:
 	// コンストラクタ
@@ -55,6 +56,12 @@ private:
 	回収員がついていないときのみ入力可能
 	*/
 	void ActionInput();
+	// 詠唱のキー入力
+	void CastInput();
+	// 基本詠唱のキー入力
+	void BasicCastInput();
+	// 短縮詠唱のキー入力
+	void QuickCastInput();
 
 	/*
 	アニメーションの種類
@@ -75,13 +82,10 @@ private:
 	enum class EState
 	{
 		eIdle,			// 待機
-		eMove,			// 移動
 		eDamageStart,	// 被弾開始
 		eDamage,		// 被弾ノックバック
 		eDamageEnd,		// 被弾終了
-		eAttackStart,	// 攻撃開始
-		eAttack,		// 攻撃
-		eAttackEnd,		// 攻撃終了
+		eCast,			// 詠唱中
 		eDeath,			// 死亡
 	};
 
@@ -95,12 +99,6 @@ private:
 	void UpdateDamage();
 	// 被弾終了
 	void UpdateDamageEnd();
-	// 攻撃開始
-	void UpdateAttackStart();
-	// 攻撃中
-	void UpdateAttack();
-	// 攻撃終了
-	void UpdateAttackEnd();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡

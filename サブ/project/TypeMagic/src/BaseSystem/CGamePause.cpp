@@ -59,14 +59,14 @@ void CGamePause::Update()
 	//ポーズ中ではない場合
 	if (!mIsPaused)
 	{
-		//「P」キーを押すと、ポーズ開始
-		if (CInput::PushKey('P'))
-		{
-			//TaskManagerからポーズを設定する
-			CTaskManager::Instance()->Pause(PAUSE_GAME);
-			//ポーズ中のフラグも立てる
-			mIsPaused = true;
-		}
+		////「P」キーを押すと、ポーズ開始
+		//if (CInput::PushKey('P'))
+		//{
+		//	//TaskManagerからポーズを設定する
+		//	CTaskManager::Instance()->Pause(PAUSE_GAME);
+		//	//ポーズ中のフラグも立てる
+		//	mIsPaused = true;
+		//}
 	}
 	//ポーズ中
 	else

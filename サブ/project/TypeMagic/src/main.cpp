@@ -43,6 +43,20 @@ void wheel(GLFWwindow* window, double x, double y)
 	CInput::AddMouseWheel((int)y);
 }
 
+/// <summary>
+/// 文字入力のコールバック関数
+/// </summary>
+/// <param name="window"></param>
+/// <param name="codepoint"></param>
+void charInput(GLFWwindow* window, unsigned int codepoint)
+{
+	// 制御文字でなければ追加
+	if (codepoint >= 32 && codepoint < 127)
+	{
+		CInput::AddChar((char)codepoint);
+	}
+}
+
 /*ウィンドウサイズ変更時の処理
 void reshape(int width, int height)
 width:画面幅
@@ -146,6 +160,8 @@ int main(void)
 
 	// マウスホイール回転時のコールバック関数を登録
 	glfwSetScrollCallback(window, wheel);
+	// 文字入力のコールバック関数を登録
+	glfwSetCharCallback(window, charInput);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

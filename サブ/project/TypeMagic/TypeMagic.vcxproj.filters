@@ -520,6 +520,9 @@
     <ClCompile Include="src\Game\CDamageUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CCastSpellStr.cpp">
+      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -938,6 +941,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CDamageUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCastSpellStr.h">
+      <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

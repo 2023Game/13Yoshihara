@@ -66,6 +66,13 @@ public:
 	/// </summary>
 	static void Update();
 
+	// 文字を追加
+	static void AddChar(char c);
+	// 押された文字列を返す
+	static std::string GetInputStr();
+	// 文字列をクリア
+	static void ClearStr();
+
 private:
 	// コンストラクタ
 	// （インスタンスを生成できないようにprivate）
@@ -83,6 +90,8 @@ private:
 	};
 	// キーの入力状態を管理するリスト
 	static std::map<int, int> msInputBits;
+	// 入力された文字列のバッファ
+	static std::string msInputStr;
 	// 現在のマウス座標
 	static CVector2 msMousePos;
 	// 前回のマウス座標

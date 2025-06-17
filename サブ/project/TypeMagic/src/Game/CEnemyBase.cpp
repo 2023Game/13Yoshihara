@@ -12,12 +12,6 @@ CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
 	std::vector<CVector> patrolPoints,
 	float eyeHeight)
 	: CXCharacter(ETag::eEnemy, ETaskPriority::eEnemy)
-	, mMoveSpeedY(0.0f)
-	, mGravity(GRAVITY)
-	, mIsGrounded(false)
-	, mIsGravity(true)
-	, mIsMoveDir(true)
-	, mpRideObject(nullptr)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
 	, mFovAngle(fovAngle)

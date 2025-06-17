@@ -10,7 +10,12 @@
 #define BODY_RADIUS 4.0f
 
 // 移動速度の減速
-#define DECREASE_MOVE_SPEED 0.005f
+#define DECREASE_MOVE_SPEED 0.0001f
+
+// 詠唱文字のオフセット座標
+#define SPELL_TEXT_UI_OFFSET_POS CVector(0.0f,WINDOW_HEIGHT * 0.1f, 0.0f)
+
+#define SPELLS {"fire","water","wind","ball","bolt","breath","teleport","shield","reflector"}
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
@@ -25,7 +30,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
-	, CSpellCaster(this)
+	, CCastSpellStr(this, ECastType::eQuick, SPELLS)
 	, mState(EState::eIdle)
 	, mIsAttacking(false)
 {
@@ -76,10 +81,21 @@ void CPlayer::Update()
 	lookPos.Y(Position().Y());
 	LookAt(lookPos);
 
+	// 少しずつ減速
+	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;
+
 	// 待機中は、移動処理を行う
 	if (mState == EState::eIdle)
 	{
 		UpdateMove();
+	}
+
+	// 待機か詠唱中なら
+	if (mState == EState::eIdle ||
+		mState == EState::eCast)
+	{
+		// 詠唱のキー入力
+		CastInput();
 	}
 
 	switch (mState)
@@ -88,16 +104,12 @@ void CPlayer::Update()
 	case EState::eDamageStart:	UpdateDamageStart();	break;	// 被弾開始
 	case EState::eDamage:		UpdateDamage();			break;	// 被弾中
 	case EState::eDamageEnd:	UpdateDamageEnd();		break;	// 被弾終了
-	case EState::eAttackStart:	UpdateAttackStart();	break;	// 攻撃開始
-	case EState::eAttack:		UpdateAttack();			break;	// 攻撃中
-	case EState::eAttackEnd:	UpdateAttackEnd();		break;	// 攻撃終了
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
-
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
-	// 呪文詠唱クラスの更新
-	CSpellCaster::Update();
+	// 詠唱呪文指定クラスの更新
+	CCastSpellStr::Update();
 
 
 #if _DEBUG
@@ -131,44 +143,6 @@ void CPlayer::CreateCol()
 // アクションのキー入力
 void CPlayer::ActionInput()
 {
-	// 左クリックで攻撃へ
-	if (CInput::PushKey(VK_LBUTTON))
-	{
-		// 攻撃開始へ
-		ChangeState(EState::eAttackStart);
-	}
-
-	// ボール呪文を詠唱
-	if (CInput::PushKey('U'))
-	{
-		CastStart(ESpellElementalType::eFire, ESpellShapeType::eShield);
-	}
-	// ボルト呪文を詠唱
-	if (CInput::PushKey('I'))
-	{
-		CastStart(ESpellElementalType::eWind, ESpellShapeType::eShield);
-	}
-	// ブレス呪文を詠唱
-	if (CInput::PushKey('O'))
-	{
-		CastStart(ESpellElementalType::eEarth, ESpellShapeType::eShield);
-	}
-	// テレポート呪文を詠唱
-	if (CInput::PushKey('J'))
-	{
-		CastStart(ESpellElementalType::eThunder, ESpellShapeType::eShield);
-	}
-	// シールド呪文を詠唱
-	if (CInput::PushKey('K'))
-	{
-		CastStart(ESpellElementalType::eWater, ESpellShapeType::eShield);
-	}
-	// リフレクター呪文を詠唱
-	if (CInput::PushKey('L'))
-	{
-		CastStart(ESpellElementalType::eNeutral, ESpellShapeType::eShield);
-	}
-
 	// スペースで上移動
 	if (CInput::Key(VK_SPACE))
 	{
@@ -186,6 +160,110 @@ void CPlayer::ActionInput()
 
 }
 
+// 詠唱のキー入力
+void CPlayer::CastInput()
+{
+	switch (mCastType)
+	{
+		// 基本詠唱のキー入力
+	case CCastSpellStr::ECastType::eBasic:
+		// 詠唱中なら
+		if (mState == EState::eCast)
+		{
+			// キー入力
+			BasicCastInput();
+			// エンターで呪文を発動
+			if (CInput::PushKey(VK_RETURN))
+			{
+				// 呪文を詠唱
+				CastSpell();
+				//　待機へ
+				ChangeState(EState::eIdle);
+			}
+			// バックスペースで文字列の削除
+			if (CInput::PushKey(VK_BACK))
+			{
+				DeleteStr();
+			}
+		}
+		// そうでないなら
+		else
+		{
+			// エンターで詠唱中へ
+			if (CInput::PushKey(VK_RETURN))
+			{
+				// 文字列をクリア
+				CInput::ClearStr();
+				ChangeState(EState::eCast);
+			}
+		}
+		break;
+		// 短縮詠唱のキー入力
+	case CCastSpellStr::ECastType::eQuick:
+		// キー入力
+		QuickCastInput();
+		// エンターで呪文を発動
+		if (CInput::PushKey(VK_RETURN))
+		{
+			CastSpell();
+		}
+		// バックスペースで文字列の削除
+		if (CInput::PushKey(VK_BACK))
+		{
+			DeleteStr();
+		}
+		break;
+	}
+}
+
+// 基本詠唱のキー入力
+void CPlayer::BasicCastInput()
+{
+	// 押された文字列を取得して設定
+	BasicCastSpell(CInput::GetInputStr());
+}
+
+// 短縮詠唱のキー入力
+void CPlayer::QuickCastInput()
+{
+	if (CInput::PushKey('U'))
+	{
+		QuickCastSpell(0);
+	}
+	if (CInput::PushKey('I'))
+	{
+		QuickCastSpell(1);
+	}
+	if (CInput::PushKey('O'))
+	{
+		QuickCastSpell(2);
+	}
+	if (CInput::PushKey('J'))
+	{
+		QuickCastSpell(3);
+	}
+	if (CInput::PushKey('K'))
+	{
+		QuickCastSpell(4);
+	}
+	if (CInput::PushKey('L'))
+	{
+		QuickCastSpell(5);
+	}
+	if (CInput::PushKey('M'))
+	{
+		QuickCastSpell(6);
+	}
+	if (CInput::PushKey(VK_OEM_COMMA))
+	{
+		QuickCastSpell(7);
+	}
+	if (CInput::PushKey(VK_OEM_PERIOD))
+	{
+		QuickCastSpell(8);
+	}
+}
+
 // 待機状態
 void CPlayer::UpdateIdle()
 {
@@ -196,7 +274,6 @@ void CPlayer::UpdateIdle()
 // 移動処理
 void CPlayer::UpdateMove()
 {
-	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;
 	// プレイヤーの移動ベクトルを求める
 	CVector move = CalcMoveVec();
 	// 求めた移動ベクトルの長さで入力されているか判定
@@ -236,21 +313,6 @@ void CPlayer::UpdateDamageEnd()
 {
 }
 
-// 攻撃開始
-void CPlayer::UpdateAttackStart()
-{
-}
-
-// 攻撃中
-void CPlayer::UpdateAttack()
-{
-}
-
-// 攻撃終了
-void CPlayer::UpdateAttackEnd()
-{
-}
-
 // 死亡の更新処理
 void CPlayer::UpdateDeath()
 {
@@ -279,13 +341,10 @@ std::string CPlayer::GetStateStr(EState state) const
 	switch (state)
 	{
 	case EState::eIdle:			return "待機";			break;
-	case EState::eMove:			return "移動";			break;
 	case EState::eDamageStart:	return "被弾開始";		break;
 	case EState::eDamage:		return "被弾中";		break;
 	case EState::eDamageEnd:	return "被弾終了";		break;
-	case EState::eAttackStart:	return "攻撃開始";		break;
-	case EState::eAttack:		return "攻撃中";		break;
-	case EState::eAttackEnd:	return "攻撃終了";		break;
+	case EState::eCast:			return "詠唱中";		break;
 	case EState::eDeath:		return "死亡";			break;
 	}
 

@@ -70,25 +70,7 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 			if (IsAttackHitObj(other->Owner())) return;
 
 			// ダメージ表記を生成
-			CDamageUI3D* text = new CDamageUI3D(other->Owner()->Position());
-			// ダメージの数値
-			text->ChangeToStr("%d\n", mSpellStatus.power);
-			// 属性ごとの色を文字色に設定
-			text->SetFontColor(ElementalColor(mSpellStatus.elemental));
-			// 色
-			CColor color;
-			// 持ち主がプレイヤーなら
-			if (mpOwner == CPlayer::Instance())
-			{
-				color = PLAYER_COLOR;
-			}
-			// 敵なら
-			else
-			{
-				color = ENEMY_COLOR;
-			}
-			// アウトラインの色を設定
-			text->SetOutLineColor(color);
+			DamageText(mSpellStatus.power, mSpellStatus.elemental, this);
 
 			// 攻撃がヒットしたオブジェクトに追加
 			AddAttackHitObj(other->Owner());
@@ -111,24 +93,7 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 			if (IsAttackHitObj(other->Owner())) return;
 
 			// ダメージ表記を生成
-			CDamageUI3D* text = new CDamageUI3D(other->Owner()->Position());
-			// ダメージの数値
-			text->ChangeToStr("%d\n", mSpellStatus.power);;
-			// 属性ごとの色を文字色に設定
-			text->SetFontColor(ElementalColor(mSpellStatus.elemental));
-			CColor color;
-			// 持ち主がプレイヤーなら
-			if (mpOwner == CPlayer::Instance())
-			{
-				color = PLAYER_COLOR;
-			}
-			// 敵なら
-			else
-			{
-				color = ENEMY_COLOR;
-			}
-			// アウトラインの色を設定
-			text->SetOutLineColor(color);
+			DamageText(mSpellStatus.power, mSpellStatus.elemental, this);
 
 			// 攻撃がヒットしたオブジェクトに追加
 			AddAttackHitObj(other->Owner());
@@ -256,41 +221,29 @@ void CSpellBase::TakeDamage(int num, CSpellBase* attacker)
 		attacker->Restart();
 		break;
 	}
+		// シールドの場合消滅
+	case ESpellShapeType::eShield:
+		// 攻撃者を削除
+		attacker->Kill();
+		break;
 		// それ以外の場合
 	default:
-		// 属性倍率を適用
-		damage *= ElementalPowerRatio(attackerStatus.elemental, mSpellStatus.elemental);
-		// HPを減算
-		mSpellStatus.hp -= damage;
-		// 耐久が0以下なら
-		if (mSpellStatus.hp <= 0)
-		{
-			mSpellStatus.hp = 0;
-			// 削除
-			Kill();
-		}
 		break;
 	}
 
-	// 攻撃側のダメージ表記を生成
-	CDamageUI3D* text = new CDamageUI3D(Position());
-	// ダメージの数値
-	text->ChangeToStr("%d\n", damage);;
-	// 属性ごとの色を文字色に設定
-	text->SetFontColor(ElementalColor(attackerStatus.elemental));
-	CColor color;
-	// 持ち主がプレイヤーなら
-	if (attacker->mpOwner == CPlayer::Instance())
+	// 属性倍率を適用
+	damage *= ElementalPowerRatio(attackerStatus.elemental, mSpellStatus.elemental);
+	// HPを減算
+	mSpellStatus.hp -= damage;
+	// 耐久が0以下なら
+	if (mSpellStatus.hp <= 0)
 	{
-		color = PLAYER_COLOR;
+		mSpellStatus.hp = 0;
+		// 削除
+		Kill();
 	}
-	// 敵なら
-	else
-	{
-		color = ENEMY_COLOR;
-	}
-	// アウトラインの色を設定
-	text->SetOutLineColor(color);
+	// ダメージ表記を生成
+	DamageText(damage, attackerStatus.elemental, attacker);
 }
 
 // 属性による攻撃力倍率を計算する
@@ -416,6 +369,31 @@ CColor CSpellBase::ElementalColor(ESpellElementalType elemental)
 		break;
 	}
 	return color;
+}
+
+// ダメージ表記を生成
+void CSpellBase::DamageText(int damage, ESpellElementalType elemental,
+	CSpellBase* attacker)
+{	
+	// 攻撃側のダメージ表記を生成
+	CDamageUI3D* text = new CDamageUI3D(Position());
+	// ダメージの数値
+	text->ChangeToStr("%d\n", damage);;
+	// 属性ごとの色を文字色に設定
+	text->SetFontColor(ElementalColor(elemental));
+	CColor color;
+	// 持ち主がプレイヤーなら
+	if (attacker->mpOwner == CPlayer::Instance())
+	{
+		color = PLAYER_COLOR;
+	}
+	// 敵なら
+	else
+	{
+		color = ENEMY_COLOR;
+	}
+	// アウトラインの色を設定
+	text->SetOutLineColor(color);
 }
 
 // 状態を切り替え
