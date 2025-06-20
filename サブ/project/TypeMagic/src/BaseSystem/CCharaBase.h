@@ -14,8 +14,13 @@ public:
 	// 更新
 	void Update() override;
 
+	// 移動方向を設定する
+	void SetMoveDir(CVector dir);
 	// 移動方向を取得する
-	CVector GetMoveDir();
+	CVector GetMoveDir() const;
+
+	// 移動速度を設定
+	void SetMoveSpeed(CVector moveSpeed);
 
 protected:
 	CVector mMoveSpeed;	// 前後左右の移動速度

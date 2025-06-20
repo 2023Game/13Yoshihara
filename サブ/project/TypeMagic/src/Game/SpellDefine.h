@@ -79,7 +79,7 @@
 // ’ÇÕI—¹‚·‚é‹——£
 #define BALL_CHASE_END_DIST 15.0f
 // Á–Å‚·‚é‚Ü‚Å‚ÌŽžŠÔ
-#define BALL_DELETE_TIME 20.0f
+#define BALL_DELETE_TIME 2.0f
 // ’ÇÕI—¹Œã‚ÌÁ–Å‚Ü‚Å‚ÌŽžŠÔ
 #define BALL_AFTER_CHASE_END_DELETE_TIME 2.0f
 

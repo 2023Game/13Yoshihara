@@ -1,13 +1,14 @@
 #include "CCharaStatusBase.h"
 
 // コンストラクタ
-CCharaStatusBase::CCharaStatusBase(int maxHp, float baseMoveSpeed,
-	float jumpSpeed, int attackPower)
+CCharaStatusBase::CCharaStatusBase(int maxHp, int maxMp,
+	float baseMoveSpeed, float jumpSpeed)
 	: mMaxHp(maxHp)
 	, mHp(mMaxHp)
+	, mMaxMp(maxMp)
+	, mMp(mMaxMp)
 	, mBaseMoveSpeed(baseMoveSpeed)
 	, mJumpSpeed(jumpSpeed)
-	, mAttackPower(attackPower)
 {
 }
 
@@ -83,6 +84,41 @@ void CCharaStatusBase::ResetHp()
 	mHp = mMaxHp;
 }
 
+// 最大MPを取得
+int CCharaStatusBase::GetMaxMp() const
+{
+	return mMp;
+}
+
+// 最大MPを設定
+void CCharaStatusBase::SetMaxMp(int maxMp)
+{
+	mMaxMp = maxMp;
+}
+
+// 現在MPを取得
+int CCharaStatusBase::GetMp() const
+{
+	return mMp;
+}
+
+// 現在MPを加減算する
+void CCharaStatusBase::SetMp(int num)
+{
+	mMp += num;
+	// Mpが0以下なら0
+	if (mMp <= 0)
+	{
+		mMp = 0;
+	}
+}
+
+// 現在MPをリセット
+void CCharaStatusBase::ResetMp()
+{
+	mMp = mMaxMp;
+}
+
 // 基礎移動速度を取得
 float CCharaStatusBase::GetBaseMoveSpeed() const
 {
@@ -105,16 +141,4 @@ float CCharaStatusBase::GetJumpSpeed() const
 void CCharaStatusBase::SetJumpSpeed(float jumpSpeed)
 {
 	mJumpSpeed = jumpSpeed;
-}
-
-// 攻撃力を取得
-int CCharaStatusBase::GetAttackPower() const
-{
-	return mAttackPower;
-}
-
-// 攻撃力を設定
-void CCharaStatusBase::SetAttackPower(int attackPower)
-{
-	mAttackPower = attackPower;
 }

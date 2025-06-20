@@ -12,6 +12,13 @@ public:
 	// 対戦相手を取得
 	CObjectBase* GetOpponent() const;
 
+	// 詠唱中かを取得
+	bool IsCasting() const;
+
+	// 詠唱開始
+	bool CastStart(ESpellElementalType elemental,
+		ESpellShapeType shape);
+
 protected:
 	// コンストラクタ
 	CSpellCaster(CObjectBase* owner);
@@ -20,10 +27,6 @@ protected:
 	
 	// 更新
 	void Update();
-
-	// 詠唱開始
-	bool CastStart(ESpellElementalType elemental,
-		ESpellShapeType shape);
 
 	// 対戦相手
 	CObjectBase* mpOpponent;

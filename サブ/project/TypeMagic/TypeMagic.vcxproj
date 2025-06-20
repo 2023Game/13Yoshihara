@@ -85,6 +85,14 @@
     <ClCompile Include="src\Game\CDamageUI3D.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CEnemy.cpp" />
+    <ClCompile Include="src\Game\CEnemyCastState.cpp" />
+    <ClCompile Include="src\Game\CEnemyChaseState.cpp" />
+    <ClCompile Include="src\Game\CEnemyDodgeState.cpp" />
+    <ClCompile Include="src\Game\CEnemyIdleState.cpp" />
+    <ClCompile Include="src\Game\CEnemyRunState.cpp" />
+    <ClCompile Include="src\Game\CEnemyStateBase.cpp" />
+    <ClCompile Include="src\Game\CEnemyStatus.cpp" />
+    <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CReflector.cpp" />
     <ClCompile Include="src\Game\CShield.cpp" />
     <ClCompile Include="src\Game\CSpellCaster.cpp" />
@@ -99,7 +107,6 @@
     <ClCompile Include="src\Game\CTeleport.cpp" />
     <ClCompile Include="src\Game\CTutorialMap.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
-    <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CTextUI3D.cpp" />
     <ClCompile Include="src\Game\CCharaStatusBase.cpp" />
     <ClCompile Include="src\Game\CGaugeUI3D.cpp" />
@@ -125,6 +132,7 @@
     <ClCompile Include="src\Game\CWater.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
+    <ClCompile Include="src\Game\CEnemyContext.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Test\CBootMenuScene.cpp" />
     <ClCompile Include="src\Test\CColBase.cpp" />
@@ -225,6 +233,15 @@
     <ClInclude Include="src\Game\CDamageUI3D.h" />
     <ClInclude Include="src\Game\CDebugFieldOfView.h" />
     <ClInclude Include="src\Game\CEnemy.h" />
+    <ClInclude Include="src\Game\CEnemyCastState.h" />
+    <ClInclude Include="src\Game\CEnemyChaseState.h" />
+    <ClInclude Include="src\Game\CEnemyContext.h" />
+    <ClInclude Include="src\Game\CEnemyDodgeState.h" />
+    <ClInclude Include="src\Game\CEnemyIdleState.h" />
+    <ClInclude Include="src\Game\CEnemyRunState.h" />
+    <ClInclude Include="src\Game\CEnemyStateBase.h" />
+    <ClInclude Include="src\Game\CEnemyStatus.h" />
+    <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CReflector.h" />
     <ClInclude Include="src\Game\CShield.h" />
     <ClInclude Include="src\Game\CSpellCaster.h" />
@@ -241,7 +258,6 @@
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CTutorialMap.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
-    <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CTextUI3D.h" />
     <ClInclude Include="src\Game\CCharaStatusBase.h" />
     <ClInclude Include="src\Game\CGaugeUI3D.h" />
@@ -268,6 +284,7 @@
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\FadeType.h" />
+    <ClInclude Include="src\Game\CharaStatusDefine.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColBox.h" />

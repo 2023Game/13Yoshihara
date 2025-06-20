@@ -1,13 +1,13 @@
-#include "CPlayerStatus.h"
+#include "CEnemyStatus.h"
 #include "CharaStatusDefine.h"
 
 // コンストラクタ
-CPlayerStatus::CPlayerStatus()
+CEnemyStatus::CEnemyStatus()
 	: CCharaStatusBase(MAX_HP, MAX_MP, MOVE_SPEED, JUMP_SPEED)
 {
 }
 
 // デストラクタ
-CPlayerStatus::~CPlayerStatus()
+CEnemyStatus::~CEnemyStatus()
 {
 }

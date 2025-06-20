@@ -1,14 +1,18 @@
 #pragma once
 #include "CEnemyBase.h"
+#include "CEnemyStatus.h"
 #include "CCastSpellStr.h"
 
-// 敵の基底クラスと
-// 呪文詠唱クラスを継承した敵クラス
-class CEnemy : public CEnemyBase, public CCastSpellStr
+class CEnemyStateBase;
+
+// 敵の基底クラスとステータスクラス
+// を継承した敵クラス
+class CEnemy : public CEnemyBase, public CEnemyStatus, public CCastSpellStr
 {
+	friend CEnemyStateBase;
 public:
 	// コンストラクタ
-	CEnemy();
+	CEnemy(ESpellElementalType elemental = ESpellElementalType::eNeutral);
 	// デストラクタ
 	~CEnemy();
 
@@ -17,41 +21,43 @@ public:
 
 	// メイン属性を設定
 	void SetMainElemental(ESpellElementalType elemental);
+	// メイン属性を取得
+	ESpellElementalType GetMainElemental() const;
+
+	// 詠唱する形を取得
+	ESpellShapeType GetCastShape() const;
+
+	// 状態内のステップを設定
+	void SetStateStep(int step);
+	// 状態内のステップを取得
+	int GetStateStep() const;
+	// 経過時間を設定
+	void SetElapsedTime(float time);
+	// 経過時間を取得
+	float GetElapsedTime() const;
 
 private:
 	// コライダーを生成
 	void CreateCol() override;
 
-	// 敵の状態
-	enum class EState
-	{
-		eIdle,	// 待機
-		eCast,	// 詠唱中
-		eChase,	// 追いかける
-		eDodge,	// 回避中
-		eRun,	// 逃げる
-	};
-
-	// 待機状態
-	void UpdateIdle();
-	// 移動処理
-	void UpdateMove();
-	// 詠唱中
-	void UpdateCast();
-	// 追いかける
-	void UpdateChase();
-	// 回避中
-	void UpdateDodge();
-	// 逃げる
-	void UpdateRun();
+	// 最適な行動に変更する
+	void ChangeBestState();
 
 	// 状態切り替え
-	void ChangeState(EState state);
-	EState mState;	// 敵の状態
-	int mStateStep;	// 状態内のステップ管理用
+	void ChangeState(CEnemyStateBase* state);
+	CEnemyStateBase* mState;	// 敵の状態
+	// 状態内のステップ管理用
+	int mStateStep;
 	// 経過時間
 	float mElapsedTime;
 
+#if _DEBUG
+	// 状態の文字列を取得
+	std::string GetStateStr(CEnemyStateBase* state) const;
+#endif
+
 	// メイン属性
-	ESpellElementalType mMainElement;
+	ESpellElementalType mMainElemental;
+	// 詠唱する形
+	ESpellShapeType mCastShape;
 };

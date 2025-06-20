@@ -10,6 +10,23 @@ class CTextUI2D;
 // ÀÛ‚Éô•¶‚ğ”­“®‚·‚éô•¶‰r¥ƒNƒ‰ƒX‚ğŒp³
 class CCastSpellStr : public CSpellCaster
 {
+public:
+	// •¶š—ñ‚ğ’Ç‰Á
+	void AddStr(std::string str);
+	// •¶š—ñ‚ğíœ
+	void DeleteStr();
+
+	// Šî–{‰r¥
+	void BasicCastSpell(std::string str);
+	// ’Zk‰r¥
+	void QuickCastSpell(int num);
+
+	// ‰r¥•¶š—ñ‚©‚çô•¶‚ğ‰r¥
+	void CastSpell();
+
+	// w’è‚µ‚½‘®«‚Ì•¶š—ñ‚ğæ“¾
+	std::string GetElementStr(ESpellElementalType elemental);
+
 protected:
 	// ‰r¥‚Ìí—Ş
 	enum class ECastType
@@ -41,22 +58,6 @@ protected:
 	// ’Zk‰r¥‚Å‘‚©‚ê‚é•¶š—ñ‚ÌƒŠƒXƒg
 	std::vector<std::string> mQuickSpellStr;
 
-	// •¶š—ñ‚ğ’Ç‰Á
-	void AddStr(std::string str);
-	// •¶š—ñ‚ğíœ
-	void DeleteStr();
-
-	// Šî–{‰r¥
-	void BasicCastSpell(std::string str);
-	// ’Zk‰r¥
-	void QuickCastSpell(int num);
-
-	// ‰r¥•¶š—ñ‚©‚çô•¶‚ğ‰r¥
-	void CastSpell();
-
 	// ƒeƒLƒXƒg
 	CTextUI2D* mpSpellText;
-
-	// w’è‚µ‚½‘®«‚Ì•¶š—ñ‚ğæ“¾
-	std::string GetElementStr(ESpellElementalType elemental);
 };

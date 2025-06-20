@@ -134,6 +134,9 @@
     <Filter Include="ソース ファイル\Game\UI\UI2D">
       <UniqueIdentifier>{bd80871d-d265-49d4-97c0-8bfa239fd878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Character\Enemy\State">
+      <UniqueIdentifier>{f4114d33-4da9-421e-bcb0-df884c6c501d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -460,9 +463,6 @@
     <ClCompile Include="src\Game\CPlayer.cpp">
       <Filter>ソース ファイル\Game\Character\Player</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CPlayerStatus.cpp">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClCompile>
     <ClCompile Include="src\Test\CTestField.cpp">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClCompile>
@@ -522,6 +522,33 @@
     </ClCompile>
     <ClCompile Include="src\Game\CCastSpellStr.cpp">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CPlayerStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyStatus.cpp">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyContext.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyIdleState.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyCastState.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyChaseState.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyDodgeState.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyRunState.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CEnemyStateBase.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -873,9 +900,6 @@
     <ClInclude Include="src\Game\CPlayer.h">
       <Filter>ソース ファイル\Game\Character\Player</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CPlayerStatus.h">
-      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
-    </ClInclude>
     <ClInclude Include="src\Test\CTestField.h">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClInclude>
@@ -944,6 +968,36 @@
     </ClInclude>
     <ClInclude Include="src\Game\CCastSpellStr.h">
       <Filter>ソース ファイル\Game\Weapon\Spell</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CharaStatusDefine.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CPlayerStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyStatus.h">
+      <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyContext.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyStateBase.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyIdleState.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyCastState.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyChaseState.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyDodgeState.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyRunState.h">
+      <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
 #include "CPlayer.h"
+#include "CharaStatusDefine.h"
 #include "CColliderSphere.h"
 #include "CInput.h"
 #include "CImage.h"
@@ -8,9 +9,6 @@
 
 // 体の半径
 #define BODY_RADIUS 4.0f
-
-// 移動速度の減速
-#define DECREASE_MOVE_SPEED 0.0001f
 
 // 詠唱文字のオフセット座標
 #define SPELL_TEXT_UI_OFFSET_POS CVector(0.0f,WINDOW_HEIGHT * 0.1f, 0.0f)

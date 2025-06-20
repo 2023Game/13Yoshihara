@@ -48,8 +48,20 @@ void CCharaBase::Update()
 	}
 }
 
+// ˆÚ“®•ûŒü‚ğİ’è‚·‚é
+void CCharaBase::SetMoveDir(CVector dir)
+{
+	mMoveDir = dir;
+}
+
 // ˆÚ“®•ûŒü‚ğæ“¾‚·‚é
-CVector CCharaBase::GetMoveDir()
+CVector CCharaBase::GetMoveDir() const
 {
 	return mMoveDir;
+}
+
+// ˆÚ“®‘¬“x‚ğİ’è
+void CCharaBase::SetMoveSpeed(CVector moveSpeed)
+{
+	mMoveSpeed = moveSpeed;
 }

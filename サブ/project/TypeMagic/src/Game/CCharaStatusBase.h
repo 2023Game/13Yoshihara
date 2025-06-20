@@ -3,8 +3,8 @@
 class CCharaStatusBase
 {
 public:
-	CCharaStatusBase(int maxHp, float baseMoveSpeed, 
-		float jumpSpeed, int attackPower);
+	CCharaStatusBase(int maxHp, int maxMp,
+		float baseMoveSpeed, float jumpSpeed);
 	~CCharaStatusBase();
 
 
@@ -27,6 +27,16 @@ public:
 	// 現在HPをリセット
 	void ResetHp();
 
+	// 最大MPを取得
+	int GetMaxMp() const;
+	// 最大MPを設定
+	void SetMaxMp(int maxMp);
+	// 現在MPを取得
+	int GetMp() const;
+	// 現在MPを加減算する
+	void SetMp(int num);
+	// 現在MPをリセット
+	void ResetMp();
 
 	// 基礎移動速度を取得
 	virtual float GetBaseMoveSpeed() const;
@@ -38,15 +48,11 @@ public:
 	// ジャンプ速度を設定
 	void SetJumpSpeed(float jumpSpeed);
 
-	// 攻撃力を取得
-	int GetAttackPower() const;
-	// 攻撃力を設定
-	void SetAttackPower(int attackPower);
-
 private:
 	int mMaxHp;				// 最大HP
 	int mHp;				// 現在HP
+	int mMaxMp;				// 最大MP
+	int mMp;				// 現在MP
 	float mBaseMoveSpeed;	// 基礎移動速度
 	float mJumpSpeed;		// ジャンプ速度
-	int mAttackPower;		// 攻撃力
 };

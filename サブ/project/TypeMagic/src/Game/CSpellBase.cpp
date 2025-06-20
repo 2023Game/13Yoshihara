@@ -71,6 +71,9 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 
 			// ダメージ表記を生成
 			DamageText(mSpellStatus.power, mSpellStatus.elemental, this);
+			// ダメージを与える
+			CCharaStatusBase* status = dynamic_cast<CCharaStatusBase*>(other->Owner());
+			status->TakeDamage(mSpellStatus.power, this);
 
 			// 攻撃がヒットしたオブジェクトに追加
 			AddAttackHitObj(other->Owner());
@@ -94,6 +97,9 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 
 			// ダメージ表記を生成
 			DamageText(mSpellStatus.power, mSpellStatus.elemental, this);
+			// ダメージを与える
+			CCharaStatusBase* status = dynamic_cast<CCharaStatusBase*>(other->Owner());
+			status->TakeDamage(mSpellStatus.power, this);
 
 			// 攻撃がヒットしたオブジェクトに追加
 			AddAttackHitObj(other->Owner());

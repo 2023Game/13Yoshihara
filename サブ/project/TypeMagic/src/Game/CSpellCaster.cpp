@@ -547,3 +547,9 @@ CObjectBase* CSpellCaster::GetOpponent() const
 {
 	return mpOpponent;
 }
+
+// ‰r¥’†‚©‚ğæ“¾
+bool CSpellCaster::IsCasting() const
+{
+	return mIsSpellCasting;
+}
