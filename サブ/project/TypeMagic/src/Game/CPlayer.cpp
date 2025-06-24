@@ -48,29 +48,6 @@ CPlayer::~CPlayer()
 {
 }
 
-// 攻撃中か
-bool CPlayer::IsAttacking() const
-{
-	return mIsAttacking;
-}
-
-// 攻撃開始
-void CPlayer::AttackStart()
-{
-	mIsAttacking = true;
-}
-
-// 攻撃終了
-void CPlayer::AttackEnd()
-{
-	mIsAttacking = false;
-}
-
-// ダメージを受ける
-void CPlayer::TakeDamage(int damage, CObjectBase* causer)
-{
-}
-
 // 更新
 void CPlayer::Update()
 {
@@ -104,6 +81,9 @@ void CPlayer::Update()
 	case EState::eDamageEnd:	UpdateDamageEnd();		break;	// 被弾終了
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
+	// Mpの再生
+	RegeneMp();
+
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
 	// 詠唱呪文指定クラスの更新
@@ -111,9 +91,11 @@ void CPlayer::Update()
 
 
 #if _DEBUG
-	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
 	CDebugPrint::Print("PlayerHit:%d\n", mHitCount);
+	CDebugPrint::Print("PlayerHp:%d\n", GetHp());
+	CDebugPrint::Print("PlayerMp:%f\n", GetMp());
+	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 #endif
 }
 

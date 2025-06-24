@@ -3,7 +3,7 @@
 
 // コンストラクタ
 CEnemyStatus::CEnemyStatus()
-	: CCharaStatusBase(MAX_HP, MAX_MP, MOVE_SPEED, JUMP_SPEED)
+	: CCharaStatusBase(MAX_HP, MAX_MP, REGENE_MP, MOVE_SPEED, JUMP_SPEED)
 {
 }
 

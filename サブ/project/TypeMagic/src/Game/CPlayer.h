@@ -23,20 +23,6 @@ public:
 	// デストラクタ
 	~CPlayer();
 
-	// 攻撃中か
-	bool IsAttacking() const override;
-	// 攻撃開始
-	void AttackStart() override;
-	// 攻撃終了
-	void AttackEnd() override;
-
-	/// <summary>
-	/// ダメージを受ける
-	/// </summary>
-	/// <param name="damage">受けるダメージ</param>
-	/// <param name="causer">攻撃してきた相手</param>
-	void TakeDamage(int damage, CObjectBase* causer) override;
-
 	// 更新
 	void Update();
 

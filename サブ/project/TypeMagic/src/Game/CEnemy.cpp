@@ -9,6 +9,8 @@
 
 // 体の半径
 #define BODY_RADIUS 4.0f
+// 探知の半径
+#define SEARCH_RADIUS 100.0f
 
 // 詠唱文字のオフセット座標
 #define SPELL_TEXT_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.25f, WINDOW_HEIGHT * 0.2f, 0.0f)
@@ -32,6 +34,9 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	, mMainElemental(elemental)
 	, mCastShape(ESpellShapeType::eBall)
 	, mState(CEnemyIdleState::Instance())
+	, mIsSpellComing(false)
+	, mPriorityScore(0.0f)
+	, mSpellMoveDir(CVector::zero)
 {
 	// 重力無効
 	mIsGravity = false;
@@ -45,6 +50,7 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 // デストラクタ
 CEnemy::~CEnemy()
 {
+	SAFE_DELETE(mpSpellSearch);
 }
 
 // 更新
@@ -65,6 +71,9 @@ void CEnemy::Update()
 	if (mState != nullptr)
 		mState->Update(this);
 
+	// MPの再生
+	RegeneMp();
+
 	// 敵の基底クラスの更新
 	CEnemyBase::Update();
 	// 詠唱呪文指定クラスの更新
@@ -73,8 +82,23 @@ void CEnemy::Update()
 #if _DEBUG
 	CDebugPrint::Print("EnemyHit:%d\n", mHitCount);
 	CDebugPrint::Print("EnemyHp:%d\n", GetHp());
+	CDebugPrint::Print("EnemyMp:%f\n", GetMp());
+	// 状況を取得
+	CEnemyContext::EnemyContext context = GetContext();
+	// スコア評価クラス
+	CEnemyContext* enemyContext = CEnemyContext::Instance();
+	CDebugPrint::Print("EnemyMpRatio:%f\n", context.mpRatio);
+	CDebugPrint::Print("EnemyScoreIdle:%f\n", enemyContext->ScoreIdle(context));
+	CDebugPrint::Print("EnemyScoreCast:%f\n", enemyContext->ScoreCast(context));
+	CDebugPrint::Print("EnemyScoreChase:%f\n", enemyContext->ScoreChase(context));
+	CDebugPrint::Print("EnemyScoreDodge:%f\n", enemyContext->ScoreDodge(context));
+	CDebugPrint::Print("EnemyScoreRun:%f\n", enemyContext->ScoreRun(context));
 	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
+	CDebugPrint::Print("SpellComing:%s\n", mIsSpellComing ? "true" : "false");
 #endif
+
+	// 飛んできているかをリセット
+	SetSpellComing(false);
 }
 
 // メイン属性を設定
@@ -113,10 +137,53 @@ void CEnemy::SetElapsedTime(float time)
 	mElapsedTime = time;
 }
 
+// 経過時間に加算
+void CEnemy::AddElapsedTime(float addTime)
+{
+	mElapsedTime += addTime;
+}
+
 // 経過時間を取得
 float CEnemy::GetElapsedTime() const
 {
 	return mElapsedTime;
+}
+
+// 呪文が飛んできているかを設定
+void CEnemy::SetSpellComing(bool enable, float score, CVector moveDir)
+{
+	// 飛んできているなら
+	if (enable)
+	{
+		// 一個目の探知なら
+		if (!mIsSpellComing)
+		{
+			// 優先度スコアを設定
+			mPriorityScore = score;
+			// 呪文の移動方向を設定
+			mSpellMoveDir = moveDir;
+		}
+		// 二個目以降なら
+		else
+		{
+			// 新しい呪文の方が優先度が高いなら
+			if (mPriorityScore < score)
+			{
+				// 優先度スコアを設定
+				mPriorityScore = score;
+				// 呪文の移動方向を設定
+				mSpellMoveDir = moveDir;
+			}
+		}
+	}
+
+	mIsSpellComing = enable;
+}
+
+// 飛んできている呪文の移動方向を取得
+CVector CEnemy::GetComingSpellMoveDir() const
+{
+	return mSpellMoveDir;
 }
 
 // コライダーを生成
@@ -132,28 +199,49 @@ void CEnemy::CreateCol()
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
 		ELayer::eWall,ELayer::eObject,ELayer::ePlayer,
 		ELayer::eAttackCol});
+
+	// 呪文探知用
+	mpSpellSearch = new CColliderSphere
+	(
+		this, ELayer::eSpellSearch,
+		SEARCH_RADIUS
+	);
+	// 攻撃とだけ衝突
+	mpSpellSearch->SetCollisionLayers({ ELayer::eAttackCol });
 }
 
-// 最適な行動に変更する
-void CEnemy::ChangeBestState()
-{
+// 状況を取得
+CEnemyContext::EnemyContext CEnemy::GetContext()
+{	
 	// プレイヤーを取得
 	CPlayer* player = dynamic_cast<CPlayer*>(CPlayer::Instance());
 	// 状況情報
 	CEnemyContext::EnemyContext context;
 	// HP割合を設定
-	context.hpRatio = GetHp() / GetMaxHp();
+	context.hpRatio = (float)GetHp() / (float)GetMaxHp();
 	// MP割合を設定
-	context.mpRatio = GetMp() / GetMaxMp();
+	context.mpRatio = (float)GetMp() / (float)GetMaxMp();
+	// プレイヤーのHP割合を設定
+	context.hpRatioP = (float)player->GetHp() / (float)GetMaxHp();
+	// プレイヤーのMP割合を設定
+	context.mpRatioP = (float)player->GetMp() / (float)GetMaxMp();
 	// プレイヤーまでの距離を設定
 	context.distanceToPlayer = (player->Position() - Position()).Length();
 	// プレイヤーが詠唱しているか
 	context.isPlayerCasting = player->IsCasting();
-	// 近くに壁があるかを設定
-	context.isNearWall = false;
+	// 呪文が飛んできているか
+	context.isSpellComing = mIsSpellComing;
+	// 飛んできている呪文のスコア
+	context.comingSpellScore = mPriorityScore;
 
+	return context;
+}
+
+// 最適な行動に変更する
+void CEnemy::ChangeBestState()
+{
 	// 最適な行動に変更
-	ChangeState(CEnemyContext::Instance()->GetBestState(context));
+	ChangeState(CEnemyContext::Instance()->GetBestState(GetContext()));
 }
 
 // 状態切り替え

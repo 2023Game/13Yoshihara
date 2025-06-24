@@ -10,23 +10,12 @@ enum class ELayer
 	eWall,			// 壁
 	eObject,		// オブジェクト
 	eItem,			// アイテム
-	ePortal,		// ポータル
-	eRespawnArea,	// リスポーン地点
-	eFragmentMergeArea,	// 欠片を合成する場所
-	eWater,			// 水
-	
-	eInteractObj,	// 調べるオブジェクト
-	eInteractSearch,// 調べるオブジェクト探知用
-
-	eConnectSearch,	// 接続できるオブジェクト探知用
-
-	eSwitch,		// スイッチ
 	
 	ePlayer,		// プレイヤー
 	eEnemy,			// 敵
 	
 	eCharaSearch,	// キャラクター探知用
-
+	eSpellSearch,	// 呪文探知用
 	eSearch,		// 衝突レイヤーのオブジェクト探知用
 
 	eAttackCol,		// 攻撃判定

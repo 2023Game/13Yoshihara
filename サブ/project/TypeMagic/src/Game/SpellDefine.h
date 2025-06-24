@@ -26,6 +26,7 @@
 #define FIRE_HP			1			// 耐久
 #define FIRE_IDLE_TIME	0.1f		// 待機時間
 #define FIRE_GENERATE_INTERVAL 0.1f	// 生成間隔
+#define FIRE_USE_MP		1			// 消費MP
 
 // 風
 #define WIND_POWER		1
@@ -33,6 +34,7 @@
 #define WIND_HP			1
 #define WIND_IDLE_TIME	0.1f
 #define WIND_GENERATE_INTERVAL 0.1f
+#define WIND_USE_MP		1
 
 // 地
 #define EARTH_POWER		1
@@ -40,6 +42,7 @@
 #define EARTH_HP		1
 #define EARTH_IDLE_TIME	0.1f
 #define EARTH_GENERATE_INTERVAL 0.1f
+#define EARTH_USE_MP		1
 
 // 雷
 #define THUNDER_POWER		1
@@ -47,6 +50,7 @@
 #define THUNDER_HP			1
 #define THUNDER_IDLE_TIME	0.1f
 #define THUNDER_GENERATE_INTERVAL 0.1f
+#define THUNDER_USE_MP		1
 
 // 水
 #define WATER_POWER		1
@@ -54,6 +58,7 @@
 #define WATER_HP		1
 #define WATER_IDLE_TIME	0.1f
 #define WATER_GENERATE_INTERVAL 0.1f
+#define WATER_USE_MP		1
 
 // 無
 #define NEUTRAL_POWER		1
@@ -61,6 +66,7 @@
 #define NEUTRAL_HP			1
 #define NEUTRAL_IDLE_TIME	0.1f
 #define NEUTRAL_GENERATE_INTERVAL 0.1f
+#define NEUTRAL_USE_MP		1
 
 // ボール型
 #define BALL_POWER		10
@@ -68,6 +74,7 @@
 #define BALL_HP			10
 #define BALL_IDLE_TIME	0.1f
 #define BALL_GENERATE_INTERVAL 0.1f
+#define BALL_USE_MP		10
 // オフセット座標
 #define BALL_OFFSET_POS_1 CVector(  0.0f,15.0f,7.5f)
 #define BALL_OFFSET_POS_2 CVector(  5.0f,10.0f,7.5f)
@@ -77,7 +84,7 @@
 // 最大生成数
 #define BALL_MAX_GENERATE_NUM 5
 // 追跡終了する距離
-#define BALL_CHASE_END_DIST 15.0f
+#define BALL_CHASE_END_DIST 17.5f
 // 消滅するまでの時間
 #define BALL_DELETE_TIME 2.0f
 // 追跡終了後の消滅までの時間
@@ -89,6 +96,7 @@
 #define BOLT_HP			1
 #define BOLT_IDLE_TIME	0.5f
 #define BOLT_GENERATE_INTERVAL 0.1f
+#define BOLT_USE_MP		1
 // オフセット座標
 #define BOLT_OFFSET_POS CVector(0.0f,10.0f,7.5f)
 // 消滅するまでの時間
@@ -100,6 +108,7 @@
 #define BREATH_HP			1
 #define BREATH_IDLE_TIME	0.0f		// ブレスでは使用しない
 #define BREATH_GENERATE_INTERVAL 0.05f	// ブレスの生成間隔はこの値以外の影響は受けない
+#define BREATH_USE_MP		1
 // オフセット座標
 #define BREATH_OFFSET_POS CVector(0.0f,0.0f,7.5f)
 // 最大生成数
@@ -117,6 +126,7 @@
 #define TELEPORT_HP			0			// テレポート呪文は壊れない
 #define TELEPORT_IDLE_TIME	0.1f		// テレポートの待機時間はこの値以外の影響は受けない
 #define TELEPORT_GENERATE_INTERVAL 0.1f
+#define TELEPORT_USE_MP		1
 // 最小のスケール
 #define TELEPORT_SCALE_MIN CVector::zero
 // 最大のスケール
@@ -133,8 +143,9 @@
 #define SHIELD_SPEED		10.0f
 #define SHIELD_HP			50
 #define SHIELD_IDLE_TIME	0.0f		// シールドでは使用しない
+#define SHIELD_USE_MP		1
 // シールドの生成間隔は最大数と回転スピードから計算して求める
-#define SHIELD_GENERATE_INTERVAL (360.0f / SHIELD_MAX_GENERATE_NUM) / SHIELD_ROT_SPEED
+#define SHIELD_GENERATE_INTERVAL (360.0f / (SHIELD_MAX_GENERATE_NUM + 1)) / SHIELD_ROT_SPEED
 // 最大生成数
 #define SHIELD_MAX_GENERATE_NUM 8
 // 最小のスケール
@@ -156,6 +167,7 @@
 #define REFLECTOR_HP		50
 #define REFLECTOR_IDLE_TIME	0.0f			// リフレクターでは使用しない
 #define REFLECTOR_GENERATE_INTERVAL 0.1f
+#define REFLECTOR_USE_MP		1
 // オフセット座標
 #define REFLECTOR_OFFSET_POS CVector(0.0f,0.0f,20.0f)
 // 最小のスケール

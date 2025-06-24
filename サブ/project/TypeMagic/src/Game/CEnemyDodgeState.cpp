@@ -34,39 +34,10 @@ void CEnemyDodgeState::Update(CEnemy* enemy)
 	dir.Normalize();
 	// 移動の方向
 	CVector moveDir;
-
-	switch (enemy->GetStateStep())
-	{
-	case 0:
-	{
-		// ランダム数値
-		int rand = Math::Rand(1, 2);
-
-		// ランダムで左右の回避方向を決定
-		switch (rand)
-		{
-		case 1:
-			moveDir = CVector::up.Cross(dir);
-			break;
-		case 2:
-			moveDir = dir.Cross(CVector::up);
-			break;
-		}
-
-		// ランダムの数値のステップへ進む
-		enemy->SetStateStep(rand);
-		break;
-	}
-	// 回避方向の更新
-	case 1:
-		moveDir = CVector::up.Cross(dir);
-		break;
-
-		// 回避方向の更新
-	case 2:
-		moveDir = dir.Cross(CVector::up);
-		break;
-	}
+	// 呪文の移動方向
+	CVector spellMoveDir = enemy->GetComingSpellMoveDir();
+	// 移動方向を設定
+	moveDir = CVector(-spellMoveDir.Z(), 0.0f, spellMoveDir.X());
 
 	moveDir.Normalize();
 	// 移動方向を設定

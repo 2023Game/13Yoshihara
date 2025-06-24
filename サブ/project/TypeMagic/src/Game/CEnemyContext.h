@@ -14,15 +14,17 @@ public:
 	{
 		float hpRatio;			// HPの割合
 		float mpRatio;			// MPの割合
+		float hpRatioP;			// プレイヤーのHPの割合
+		float mpRatioP;			// プレイヤーのMPの割合
 		float distanceToPlayer;	// プレイヤーまでの距離
 		bool isPlayerCasting;	// プレイヤーが詠唱しているか
-		bool isNearWall;		// 近くに壁があるか
+		bool isSpellComing;		// 呪文が飛んできているか
+		float comingSpellScore;	// 飛んできている呪文のスコア
 	};
 
 	// 最適な行動を取得
 	CEnemyStateBase* GetBestState(const EnemyContext& context);
 
-private:
 	// 待機のスコアを計算
 	float ScoreIdle(const EnemyContext& context);
 	// 詠唱のスコアを計算

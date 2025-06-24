@@ -51,9 +51,9 @@ void CBolt::CreateCol()
 		CVector(0.0f, 0.0f, WIDTH),
 		RADIUS
 	);
-	// 地形とプレイヤーと敵と攻撃判定と防御判定とだけ衝突判定
+	// 地形とプレイヤーと敵と攻撃判定と防御判定と呪文探知用とだけ衝突判定
 	mpSpellCol->SetCollisionLayers({ ELayer::eGround,ELayer::eWall,ELayer::eObject,
-		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol });
+		ELayer::ePlayer,ELayer::eEnemy,ELayer::eAttackCol,ELayer::eDefenseCol,ELayer::eSpellSearch });
 }
 
 // 待機中の更新

@@ -1,6 +1,9 @@
 #include "CEnemyCastState.h"
 #include "CEnemy.h"
 
+// 詠唱の速度
+#define CAST_SPEED 1 / 5.6f
+
 // インスタンス
 CEnemyCastState* CEnemyCastState::Instance()
 {
@@ -32,8 +35,15 @@ void CEnemyCastState::Update(CEnemy* enemy)
 	ESpellElementalType elemental = enemy->GetMainElemental();
 	// 形を取得
 	ESpellShapeType shape = enemy->GetCastShape();
-	// TODO:一文字ずつ詠唱していく
-	enemy->CastStart(elemental, shape);
+	// 経過させる
+	enemy->AddElapsedTime(Times::DeltaTime());
+
+	// 詠唱時間が経過したら
+	if (enemy->GetElapsedTime() > CAST_SPEED)
+	{
+		// 詠唱速度分減少
+		enemy->AddElapsedTime(-CAST_SPEED);
+	}
 }
 
 // 終了時の処理

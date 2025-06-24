@@ -45,8 +45,8 @@ private:
 	// リフレクター呪文の詠唱
 	void CastReflector();
 
-	// 生成速度と待機時間の設定
-	void SetTime(ESpellElementalType elemental, ESpellShapeType shape);
+	// 生成速度と待機時間と消費MPの設定
+	void SetTimeAndMp(ESpellElementalType elemental, ESpellShapeType shape);
 
 	// 生成待機
 	bool WaitGenerate();
@@ -71,6 +71,8 @@ private:
 	float mGenerateInterval;
 	// 待機時間
 	float mIdleTime;
+	// 消費MP
+	int mUseMp;
 
 	// 詠唱した呪文
 	std::vector<CSpellBase*> mSpells;

@@ -1,12 +1,13 @@
 #include "CCharaStatusBase.h"
 
 // コンストラクタ
-CCharaStatusBase::CCharaStatusBase(int maxHp, int maxMp,
+CCharaStatusBase::CCharaStatusBase(int maxHp, int maxMp, int regeneMp,
 	float baseMoveSpeed, float jumpSpeed)
 	: mMaxHp(maxHp)
 	, mHp(mMaxHp)
 	, mMaxMp(maxMp)
 	, mMp(mMaxMp)
+	, mRegeneMp(regeneMp)
 	, mBaseMoveSpeed(baseMoveSpeed)
 	, mJumpSpeed(jumpSpeed)
 {
@@ -35,6 +36,19 @@ void CCharaStatusBase::TakeDamage(int damage, CObjectBase* attacker)
 	{
 		mHp -= damage;
 	}
+}
+
+// MPを使用
+bool CCharaStatusBase::UseMp(int useMp)
+{
+	// MPが足りないなら失敗
+	if (mMp < useMp) return false;
+
+	// 消費分を減らす
+	mMp -= useMp;
+
+	// 成功
+	return true;
 }
 
 // 死亡
@@ -85,25 +99,25 @@ void CCharaStatusBase::ResetHp()
 }
 
 // 最大MPを取得
-int CCharaStatusBase::GetMaxMp() const
+float CCharaStatusBase::GetMaxMp() const
 {
-	return mMp;
+	return mMaxMp;
 }
 
 // 最大MPを設定
-void CCharaStatusBase::SetMaxMp(int maxMp)
+void CCharaStatusBase::SetMaxMp(float maxMp)
 {
 	mMaxMp = maxMp;
 }
 
 // 現在MPを取得
-int CCharaStatusBase::GetMp() const
+float CCharaStatusBase::GetMp() const
 {
 	return mMp;
 }
 
 // 現在MPを加減算する
-void CCharaStatusBase::SetMp(int num)
+void CCharaStatusBase::SetMp(float num)
 {
 	mMp += num;
 	// Mpが0以下なら0
@@ -111,12 +125,23 @@ void CCharaStatusBase::SetMp(int num)
 	{
 		mMp = 0;
 	}
+	// Mpが最大値より大きいなら最大値
+	else if (mMp > mMaxMp)
+	{
+		mMp = mMaxMp;
+	}
 }
 
 // 現在MPをリセット
 void CCharaStatusBase::ResetMp()
 {
 	mMp = mMaxMp;
+}
+
+// MPの再生
+void CCharaStatusBase::RegeneMp()
+{
+	SetMp(mRegeneMp * Times::DeltaTime());
 }
 
 // 基礎移動速度を取得

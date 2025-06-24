@@ -3,13 +3,21 @@
 class CCharaStatusBase
 {
 public:
-	CCharaStatusBase(int maxHp, int maxMp,
+	CCharaStatusBase(int maxHp, int maxMp, int regeneMp,
 		float baseMoveSpeed, float jumpSpeed);
 	~CCharaStatusBase();
 
 
 	// ダメージを受ける
 	virtual void TakeDamage(int damage, CObjectBase* attacker);
+	// MPを消費
+
+	/// <summary>
+	/// MPを使用
+	/// </summary>
+	/// <param name="useMp">使用するMP</param>
+	/// <returns>使用が成功したか</returns>
+	bool UseMp(int useMp);
 
 	// 死亡
 	virtual void Death();
@@ -28,15 +36,17 @@ public:
 	void ResetHp();
 
 	// 最大MPを取得
-	int GetMaxMp() const;
+	float GetMaxMp() const;
 	// 最大MPを設定
-	void SetMaxMp(int maxMp);
+	void SetMaxMp(float maxMp);
 	// 現在MPを取得
-	int GetMp() const;
+	float GetMp() const;
 	// 現在MPを加減算する
-	void SetMp(int num);
+	void SetMp(float num);
 	// 現在MPをリセット
 	void ResetMp();
+	// MPの再生
+	void RegeneMp();
 
 	// 基礎移動速度を取得
 	virtual float GetBaseMoveSpeed() const;
@@ -51,8 +61,9 @@ public:
 private:
 	int mMaxHp;				// 最大HP
 	int mHp;				// 現在HP
-	int mMaxMp;				// 最大MP
-	int mMp;				// 現在MP
+	float mMaxMp;			// 最大MP
+	float mMp;				// 現在MP
+	float mRegeneMp;			// MPの1秒当たりの再生数値
 	float mBaseMoveSpeed;	// 基礎移動速度
 	float mJumpSpeed;		// ジャンプ速度
 };

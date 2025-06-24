@@ -2,6 +2,7 @@
 #include "CEnemyBase.h"
 #include "CEnemyStatus.h"
 #include "CCastSpellStr.h"
+#include "CEnemyContext.h"
 
 class CEnemyStateBase;
 
@@ -33,13 +34,22 @@ public:
 	int GetStateStep() const;
 	// 経過時間を設定
 	void SetElapsedTime(float time);
+	// 経過時間に加算
+	void AddElapsedTime(float addTime);
 	// 経過時間を取得
 	float GetElapsedTime() const;
+
+	// 呪文が飛んできているかを設定
+	void SetSpellComing(bool enable, float score = 0.0f, CVector moveDir = CVector::zero);
+	// 飛んできている呪文の移動方向を取得
+	CVector GetComingSpellMoveDir() const;
 
 private:
 	// コライダーを生成
 	void CreateCol() override;
 
+	// 状況を取得
+	CEnemyContext::EnemyContext GetContext();
 	// 最適な行動に変更する
 	void ChangeBestState();
 
@@ -60,4 +70,13 @@ private:
 	ESpellElementalType mMainElemental;
 	// 詠唱する形
 	ESpellShapeType mCastShape;
+
+	// 飛んでくる呪文探知用
+	CCollider* mpSpellSearch;
+	// 呪文が飛んできているか
+	bool mIsSpellComing;
+	// 呪文の回避優先度スコア
+	float mPriorityScore;
+	// 呪文の移動方向
+	CVector mSpellMoveDir;
 };

@@ -3,6 +3,7 @@
 #include "CSpellCaster.h"
 #include "CDamageUI3D.h"
 #include "CPlayer.h"
+#include "CEnemy.h"
 
 // コンストラクタ
 CSpellBase::CSpellBase(ESpellElementalType elemental, ESpellShapeType shape,
@@ -139,6 +140,50 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 				spell->TakeDamage(mSpellStatus.power, this);
 				// 攻撃がヒットしたオブジェクトに追加
 				AddAttackHitObj(other->Owner());
+			}
+		}
+		// 相手が呪文探知用なら
+		else if (other->Layer() == ELayer::eSpellSearch)
+		{
+			// 持ち主が同じなら処理しない
+			if (mpOwner == other->Owner()) return;
+
+			// 敵を取得
+			CEnemy* enemy = dynamic_cast<CEnemy*>(other->Owner());
+			if (enemy == nullptr) return;
+
+			// ホーミング系呪文なら
+			if (mSpellStatus.shape == ESpellShapeType::eBall)
+			{
+				// 敵までの距離
+				float distance = (enemy->Position() - Position()).Length();
+				// 当たるまでの時間
+				float hitTime = distance / mSpellStatus.speed;
+				// 優先度を求める
+				float score = mSpellStatus.power / hitTime;
+				// 飛んできている
+				enemy->SetSpellComing(true, score, mMoveDir);
+				return;
+			}
+
+			// 消滅までの残り時間
+			float time = mDeleteTime - mElapsedTime;
+			// このまま進んだ時の最終地点のオフセット座標を取得
+			CVector offsetPos = mMoveDir * mSpellStatus.speed * time;
+
+			CHitInfo hit;
+			// レイが当たっているなら
+			if (CCollider::CollisionRay(other, Position(), Position() + offsetPos, &hit))
+			{
+				// 衝突地点までの距離
+				float distance = (hit.cross - Position()).Length();
+				// 当たるまでの時間
+				float hitTime = distance / mSpellStatus.speed;
+				// 優先度を求める
+				float score = mSpellStatus.power / hitTime;
+				// 飛んできている
+				enemy->SetSpellComing(true, score, mMoveDir);
+				return;
 			}
 		}
 	}

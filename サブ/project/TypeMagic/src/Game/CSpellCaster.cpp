@@ -6,6 +6,7 @@
 #include "CTeleport.h"
 #include "CShield.h"
 #include "CReflector.h"
+#include "CCharaStatusBase.h"
 
 // コンストラクタ
 CSpellCaster::CSpellCaster(CObjectBase* owner)
@@ -395,37 +396,44 @@ void CSpellCaster::CastReflector()
 	}
 }
 
-// 生成速度と待機時間の設定
-void CSpellCaster::SetTime(ESpellElementalType elemental, ESpellShapeType shape)
+// 生成速度と待機時間と消費MPの設定
+void CSpellCaster::SetTimeAndMp(ESpellElementalType elemental, ESpellShapeType shape)
 {
 	float generateInterval = 0.0f;	// 生成間隔
-	float idleTime = 0.0f;		// 待機時間
+	float idleTime = 0.0f;			// 待機時間
+	int useMp = 0;					// 使用するMP
 
 	switch (elemental)
 	{
 	case ESpellElementalType::eFire:
 		generateInterval += FIRE_GENERATE_INTERVAL;
 		idleTime += FIRE_IDLE_TIME;
+		useMp += FIRE_USE_MP;
 		break;
 	case ESpellElementalType::eWind:
 		generateInterval += WIND_GENERATE_INTERVAL;
 		idleTime += WIND_IDLE_TIME;
+		useMp += WIND_USE_MP;
 		break;
 	case ESpellElementalType::eEarth:
 		generateInterval += EARTH_GENERATE_INTERVAL;
 		idleTime += EARTH_IDLE_TIME;
+		useMp += EARTH_USE_MP;
 		break;
 	case ESpellElementalType::eThunder:
 		generateInterval += THUNDER_GENERATE_INTERVAL;
 		idleTime += THUNDER_IDLE_TIME;
+		useMp += THUNDER_USE_MP;
 		break;
 	case ESpellElementalType::eWater:
 		generateInterval += WATER_GENERATE_INTERVAL;
 		idleTime += WATER_IDLE_TIME;
+		useMp += WATER_USE_MP;
 		break;
 	case ESpellElementalType::eNeutral:
 		generateInterval += NEUTRAL_GENERATE_INTERVAL;
 		idleTime += NEUTRAL_IDLE_TIME;
+		useMp += NEUTRAL_USE_MP;
 		break;
 	}
 
@@ -434,34 +442,41 @@ void CSpellCaster::SetTime(ESpellElementalType elemental, ESpellShapeType shape)
 	case ESpellShapeType::eBall:
 		generateInterval += BALL_GENERATE_INTERVAL;
 		idleTime += BALL_IDLE_TIME;
+		useMp += BALL_USE_MP;
 		break;
 	case ESpellShapeType::eBolt:
 		generateInterval += BOLT_GENERATE_INTERVAL;
 		idleTime += BOLT_IDLE_TIME;
+		useMp += BOLT_USE_MP;
 		break;
 		// ブレスの場合ブレスの生成間隔を設定
 	case ESpellShapeType::eBreath:
 		generateInterval = BREATH_GENERATE_INTERVAL;
 		idleTime += BREATH_IDLE_TIME;
+		useMp += BREATH_USE_MP;
 		break;
 		// テレポートの場合テレポートの待機時間を設定
 	case ESpellShapeType::eTeleport:
 		generateInterval += TELEPORT_GENERATE_INTERVAL;
 		idleTime = TELEPORT_IDLE_TIME;
+		useMp += TELEPORT_USE_MP;
 		break;
 		// シールドの場合シールドの生成間隔を設定
 	case ESpellShapeType::eShield:
 		generateInterval = SHIELD_GENERATE_INTERVAL;
 		idleTime += SHIELD_IDLE_TIME;
+		useMp += SHIELD_USE_MP;
 		break;
 	case ESpellShapeType::eReflector:
 		generateInterval += REFLECTOR_GENERATE_INTERVAL;
 		idleTime += REFLECTOR_IDLE_TIME;
+		useMp += REFLECTOR_USE_MP;
 		break;
 	}
 
 	mGenerateInterval = generateInterval;
 	mIdleTime = idleTime;
+	mUseMp = useMp;
 }
 
 // 生成待機
@@ -523,6 +538,14 @@ bool CSpellCaster::CastStart(ESpellElementalType elemental
 	// 詠唱中なので開始失敗
 	if (mIsSpellCasting) return false;
 
+	// 生成速度と待機時間と消費MPを求めて設定する
+	SetTimeAndMp(elemental, shape);
+
+	// 持ち主のステータスを取得
+	CCharaStatusBase* charaStatus = dynamic_cast<CCharaStatusBase*>(mpOwner);
+	// Mpを消費できなければ開始失敗
+	if (!charaStatus->UseMp(mUseMp)) return false;
+
 	// 詠唱開始
 	mIsSpellCasting = true;
 	mSpellElemental = elemental;
@@ -531,9 +554,6 @@ bool CSpellCaster::CastStart(ESpellElementalType elemental
 	mStep = 0;
 	mGenerateNum = 0;
 	mSpells.clear();
-
-	// 生成速度と待機時間を求めて設定する
-	SetTime(elemental, shape);
 }
 
 // 対戦相手を設定

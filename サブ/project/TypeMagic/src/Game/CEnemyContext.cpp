@@ -11,13 +11,15 @@
 // 多いHPの閾値
 #define HIGH_HP_THRESHOLD 0.6f
 // 少ないMPの閾値
-#define LOW_MP_THRESHOLD 0.4f
-// 多いHPの閾値
+#define LOW_MP_THRESHOLD 0.2f
+// 多いMPの閾値
 #define HIGH_MP_THRESHOLD 0.6f
 // 近いプレイヤーとの距離の閾値
 #define NEAR_PLAYER_DISTANCE 100.0f
+// 遠いプレイヤーとの距離の閾値
+#define FAR_PLAYER_DISTANCE 250.0f
 // スコアの加算量
-#define SCORE_AMOUNT 0.5f
+#define SCORE_AMOUNT 1.0f
 
 // インスタンス
 CEnemyContext* CEnemyContext::Instance()
@@ -39,18 +41,36 @@ float CEnemyContext::ScoreCast(const EnemyContext& context)
     float score = 0.0f;
     // HP残量が多ければ
     if (context.hpRatio > HIGH_HP_THRESHOLD)
-        score -= SCORE_AMOUNT;  // 上昇
+        score += SCORE_AMOUNT;  // 上昇
+
+    // HP残量がプレイヤーより多ければ
+    if (context.hpRatio > context.hpRatioP)
+        score += SCORE_AMOUNT;  // 上昇
 
     // MP残量が多ければ
     if (context.mpRatio > HIGH_MP_THRESHOLD)
-        score -= SCORE_AMOUNT;  // 上昇
+        score += SCORE_AMOUNT * 2;  // 上昇
+    // MP残量が少なければ
+    else if (context.mpRatio < LOW_MP_THRESHOLD)
+        score -= SCORE_AMOUNT * 2;  // 低下
+
+    // プレイヤーのMP残量が少なければ
+    if (context.mpRatioP < LOW_MP_THRESHOLD)
+        score += SCORE_AMOUNT;      // 上昇
     
     // プレイヤーが近ければ
     if (context.distanceToPlayer < NEAR_PLAYER_DISTANCE)
         score += SCORE_AMOUNT;  // 上昇
+    // 近くないなら
+    else
+        score -= SCORE_AMOUNT * 4;  // 低下
     
     // プレイヤーが詠唱していなければ
     if (!context.isPlayerCasting)
+        score += SCORE_AMOUNT;  // 上昇
+
+    // 呪文が飛んできていないなら
+    if (!context.isSpellComing)
         score += SCORE_AMOUNT;  // 上昇
 
     return score;
@@ -64,16 +84,31 @@ float CEnemyContext::ScoreChase(const EnemyContext& context)
     if (context.hpRatio > HIGH_HP_THRESHOLD)
         score += SCORE_AMOUNT;  // 上昇
 
+    // HP残量がプレイヤーより多ければ
+    if (context.hpRatio > context.hpRatioP)
+        score += SCORE_AMOUNT;  // 上昇
+
     // MP残量が多ければ
     if (context.mpRatio > HIGH_MP_THRESHOLD)
         score += SCORE_AMOUNT;  // 上昇
 
-    // プレイヤーが遠ければ
+    // プレイヤーのMP残量が少なければ
+    if (context.mpRatioP < LOW_MP_THRESHOLD)
+        score += SCORE_AMOUNT;      // 上昇
+
+    // プレイヤーが近くなければ
     if (context.distanceToPlayer > NEAR_PLAYER_DISTANCE)
         score += SCORE_AMOUNT;  // 上昇
+    // 近いなら
+    else
+        score -= SCORE_AMOUNT * 4;  // 低下
 
     // プレイヤーが詠唱していなければ
     if (!context.isPlayerCasting)
+        score += SCORE_AMOUNT;  // 上昇
+
+    // 呪文が飛んできていないなら
+    if (!context.isSpellComing)
         score += SCORE_AMOUNT;  // 上昇
 
 
@@ -99,6 +134,13 @@ float CEnemyContext::ScoreDodge(const EnemyContext& context)
     // プレイヤーが詠唱していれば
     if (context.isPlayerCasting)
         score += SCORE_AMOUNT;  // 上昇
+    // いなければ
+    else
+        score -= SCORE_AMOUNT;  // 低下
+
+    // 呪文が飛んできているなら
+    if (context.isSpellComing)
+        score += context.comingSpellScore * 2;  // 上昇
 
     return score;
 }
@@ -110,18 +152,28 @@ float CEnemyContext::ScoreRun(const EnemyContext& context)
     // HP残量が少なければ
     if (context.hpRatio < LOW_HP_THRESHOLD)
         score += SCORE_AMOUNT;  // 上昇
-
+    /// それ以外
+    else
+        score -= SCORE_AMOUNT;  // 低下
+    
     // MP残量が少なければ
     if (context.mpRatio < LOW_MP_THRESHOLD)
-        score += SCORE_AMOUNT;  // 上昇
+        score += SCORE_AMOUNT * 2;  // 上昇
+    /// それ以外
+    else
+        score -= SCORE_AMOUNT;  // 低下
 
-    // プレイヤーが近ければ
-    if (context.distanceToPlayer < NEAR_PLAYER_DISTANCE)
+    // プレイヤーが遠くなければ
+    if (context.distanceToPlayer < FAR_PLAYER_DISTANCE)
         score += SCORE_AMOUNT;  // 上昇
 
     // プレイヤーが詠唱していれば
     if (context.isPlayerCasting)
         score += SCORE_AMOUNT;  // 上昇
+
+    // 呪文が飛んできているなら
+    if (context.isSpellComing)
+        score += context.comingSpellScore;  // 上昇
 
     return score;
 }
