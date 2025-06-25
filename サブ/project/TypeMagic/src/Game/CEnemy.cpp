@@ -6,6 +6,7 @@
 #include "SpellDefine.h"
 #include "CEnemyContext.h"
 #include "CEnemyIdleState.h"
+#include "CEnemyCastState.h"
 
 // 体の半径
 #define BODY_RADIUS 4.0f
@@ -13,7 +14,7 @@
 #define SEARCH_RADIUS 100.0f
 
 // 詠唱文字のオフセット座標
-#define SPELL_TEXT_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.25f, WINDOW_HEIGHT * 0.2f, 0.0f)
+#define SPELL_TEXT_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.4f, WINDOW_HEIGHT * 0.4f, 0.0f)
 
 // 詠唱文字のサイズ
 #define SPELL_TEXT_SIZE 32
@@ -31,13 +32,16 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	, CCastSpellStr(this, ECastType::eBasic, {}, SPELL_TEXT_UI_OFFSET_POS, SPELL_TEXT_SIZE)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
-	, mMainElemental(elemental)
-	, mCastShape(ESpellShapeType::eBall)
 	, mState(CEnemyIdleState::Instance())
 	, mIsSpellComing(false)
 	, mPriorityScore(0.0f)
 	, mSpellMoveDir(CVector::zero)
 {
+	// メイン属性の文字列を設定
+	SetMainElementalStr(elemental);
+	// 詠唱する形の文字列を設定
+	SetCastShapeStr(ESpellShapeType::eBall);
+
 	// 重力無効
 	mIsGravity = false;
 	// 移動方向を向かない
@@ -56,8 +60,12 @@ CEnemy::~CEnemy()
 // 更新
 void CEnemy::Update()
 {
-	// 最適な行動に変更
-	ChangeBestState();
+	// 詠唱状態でなければ
+	if (mState != CEnemyCastState::Instance())
+	{
+		// 最適な行動に変更
+		ChangeBestState();
+	}
 
 	// プレイヤーの方向を向き続ける
 	CVector lookPos = CPlayer::Instance()->Position();
@@ -87,6 +95,7 @@ void CEnemy::Update()
 	CEnemyContext::EnemyContext context = GetContext();
 	// スコア評価クラス
 	CEnemyContext* enemyContext = CEnemyContext::Instance();
+
 	CDebugPrint::Print("EnemyMpRatio:%f\n", context.mpRatio);
 	CDebugPrint::Print("EnemyScoreIdle:%f\n", enemyContext->ScoreIdle(context));
 	CDebugPrint::Print("EnemyScoreCast:%f\n", enemyContext->ScoreCast(context));
@@ -101,22 +110,28 @@ void CEnemy::Update()
 	SetSpellComing(false);
 }
 
-// メイン属性を設定
-void CEnemy::SetMainElemental(ESpellElementalType elemental)
+// メイン属性の文字列を設定
+void CEnemy::SetMainElementalStr(ESpellElementalType elemental)
 {
-	mMainElemental = elemental;
+	mMainElementalStr = GetElementStr(elemental);
 }
 
-// メイン属性を取得
-ESpellElementalType CEnemy::GetMainElemental() const
+// メイン属性の文字列を取得
+std::string CEnemy::GetMainElementalStr() const
 {
-	return mMainElemental;
+	return mMainElementalStr;
 }
 
-// 詠唱する形を取得
-ESpellShapeType CEnemy::GetCastShape() const
+// 詠唱する形の文字列を設定
+void CEnemy::SetCastShapeStr(ESpellShapeType shape)
 {
-	return mCastShape;
+	mCastShapeStr = GetShapeStr(shape);
+}
+
+// 詠唱する形の文字列を取得
+std::string CEnemy::GetCastShapeStr() const
+{
+	return mCastShapeStr;
 }
 
 // 状態内のステップを設定
@@ -150,7 +165,7 @@ float CEnemy::GetElapsedTime() const
 }
 
 // 呪文が飛んできているかを設定
-void CEnemy::SetSpellComing(bool enable, float score, CVector moveDir)
+void CEnemy::SetSpellComing(bool enable, ESpellShapeType shape, float score, CVector moveDir)
 {
 	// 飛んできているなら
 	if (enable)
@@ -158,6 +173,8 @@ void CEnemy::SetSpellComing(bool enable, float score, CVector moveDir)
 		// 一個目の探知なら
 		if (!mIsSpellComing)
 		{
+			// 呪文の形を設定
+			mComingSpellShape = shape;
 			// 優先度スコアを設定
 			mPriorityScore = score;
 			// 呪文の移動方向を設定
@@ -169,6 +186,8 @@ void CEnemy::SetSpellComing(bool enable, float score, CVector moveDir)
 			// 新しい呪文の方が優先度が高いなら
 			if (mPriorityScore < score)
 			{
+				// 呪文の形を設定
+				mComingSpellShape = shape;
 				// 優先度スコアを設定
 				mPriorityScore = score;
 				// 呪文の移動方向を設定
@@ -227,10 +246,22 @@ CEnemyContext::EnemyContext CEnemy::GetContext()
 	context.mpRatioP = (float)player->GetMp() / (float)GetMaxMp();
 	// プレイヤーまでの距離を設定
 	context.distanceToPlayer = (player->Position() - Position()).Length();
-	// プレイヤーが詠唱しているか
-	context.isPlayerCasting = player->IsCasting();
+
+	// プレイヤーが詠唱中か詠唱状態なら
+	if (player->IsCasting() || player->IsCastState())
+	{
+		// 詠唱している
+		context.isPlayerCasting = true;
+	}
+	// プレイヤーが詠唱中でない
+	else
+	{
+		context.isPlayerCasting = false;
+	}
 	// 呪文が飛んできているか
 	context.isSpellComing = mIsSpellComing;
+	// 飛んできている呪文の形
+	context.shape = mComingSpellShape;
 	// 飛んできている呪文のスコア
 	context.comingSpellScore = mPriorityScore;
 

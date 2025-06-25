@@ -1,4 +1,5 @@
 #pragma once
+#include "SpellType.h"
 
 class CEnemyStateBase;
 
@@ -19,6 +20,7 @@ public:
 		float distanceToPlayer;	// プレイヤーまでの距離
 		bool isPlayerCasting;	// プレイヤーが詠唱しているか
 		bool isSpellComing;		// 呪文が飛んできているか
+		ESpellShapeType shape;	// 飛んできている呪文の形
 		float comingSpellScore;	// 飛んできている呪文のスコア
 	};
 
@@ -27,7 +29,7 @@ public:
 
 	// 待機のスコアを計算
 	float ScoreIdle(const EnemyContext& context);
-	// 詠唱のスコアを計算
+	// 詠唱(攻撃)のスコアを計算
 	float ScoreCast(const EnemyContext& context);
 	// 追跡のスコアを計算
 	float ScoreChase(const EnemyContext& context);
@@ -35,4 +37,9 @@ public:
 	float ScoreDodge(const EnemyContext& context);
 	// 逃走のスコアを計算
 	float ScoreRun(const EnemyContext& context);
+
+	// 使う攻撃呪文を決定する
+	ESpellShapeType ScoreAtkSpell(const EnemyContext& context);
+	// 使うサポート呪文を決定する
+	ESpellShapeType ScoreSpSpell(const EnemyContext& context);
 };

@@ -11,10 +11,10 @@ class CTextUI2D;
 class CCastSpellStr : public CSpellCaster
 {
 public:
-	// 文字列を追加
-	void AddStr(std::string str);
 	// 文字列を削除
 	void DeleteStr();
+	// 最新の文字列を取得
+	std::string GetNewStr() const;
 
 	// 基本詠唱
 	void BasicCastSpell(std::string str);
@@ -26,6 +26,8 @@ public:
 
 	// 指定した属性の文字列を取得
 	std::string GetElementStr(ESpellElementalType elemental);
+	// 指定した形の文字列を取得
+	std::string GetShapeStr(ESpellShapeType shape);
 
 protected:
 	// 詠唱の種類
@@ -60,4 +62,7 @@ protected:
 
 	// テキスト
 	CTextUI2D* mpSpellText;
+
+	// 文字列を追加
+	void AddStr(std::string str);
 };

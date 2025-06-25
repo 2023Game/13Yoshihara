@@ -105,6 +105,12 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	CPlayerBase::Collision(self, other, hit);
 }
 
+// プレイヤーが詠唱状態か
+bool CPlayer::IsCastState() const
+{
+	return mState == EState::eCast ? true : false;
+}
+
 // コライダ―を生成
 void CPlayer::CreateCol()
 {

@@ -124,6 +124,33 @@ std::string CCastSpellStr::GetElementStr(ESpellElementalType elemental)
 	return "error";
 }
 
+// 指定した形の文字列を取得
+std::string CCastSpellStr::GetShapeStr(ESpellShapeType shape)
+{
+	switch (shape)
+	{
+	case ESpellShapeType::eBall:
+		return "ball";
+		break;
+	case ESpellShapeType::eBolt:
+		return "bolt";
+		break;
+	case ESpellShapeType::eBreath:
+		return "breath";
+		break;
+	case ESpellShapeType::eTeleport:
+		return "teleport";
+		break;
+	case ESpellShapeType::eShield:
+		return "shield";
+		break;
+	case ESpellShapeType::eReflector:
+		return "reflector";
+		break;
+	}
+	return "error";
+}
+
 // 文字列を追加
 void CCastSpellStr::AddStr(std::string str)
 {
@@ -201,6 +228,15 @@ void CCastSpellStr::DeleteStr()
 	}
 }
 
+// 最新の文字列を取得
+std::string CCastSpellStr::GetNewStr() const
+{
+	// サイズが0なら空を返す
+	if (mSpellStr.size() == 0) return "";
+
+	return mSpellStr[mSpellStr.size() - 1];
+}
+
 // 更新
 void CCastSpellStr::Update()
 {
@@ -217,6 +253,7 @@ void CCastSpellStr::Update()
 
 	// 呪文詠唱クラスの更新
 	CSpellCaster::Update();
+
 #if _DEBUG
 	for (int i = 0; i < mSpellStr.size(); i++)
 	{

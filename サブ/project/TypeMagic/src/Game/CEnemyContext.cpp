@@ -15,11 +15,16 @@
 // 多いMPの閾値
 #define HIGH_MP_THRESHOLD 0.6f
 // 近いプレイヤーとの距離の閾値
-#define NEAR_PLAYER_DISTANCE 100.0f
+#define NEAR_PLAYER_DISTANCE 200.0f
 // 遠いプレイヤーとの距離の閾値
-#define FAR_PLAYER_DISTANCE 250.0f
-// スコアの加算量
+#define FAR_PLAYER_DISTANCE 350.0f
+
+// スコアの加算量（低）
+#define SCORE_LOW_AMOUNT 0.5f
+// スコアの加算量（基準）
 #define SCORE_AMOUNT 1.0f
+// スコアの加算量（高）
+#define SCORE_HIGH_AMOUNT 1.5f
 
 // インスタンス
 CEnemyContext* CEnemyContext::Instance()
@@ -35,35 +40,33 @@ float CEnemyContext::ScoreIdle(const EnemyContext& context)
     return 0.1f;
 }
 
-// 詠唱のスコアを計算
+// 詠唱（攻撃）のスコアを計算
 float CEnemyContext::ScoreCast(const EnemyContext& context)
 {
     float score = 0.0f;
+
     // HP残量が多ければ
     if (context.hpRatio > HIGH_HP_THRESHOLD)
-        score += SCORE_AMOUNT;  // 上昇
+        score += SCORE_AMOUNT;          // 上昇
 
     // HP残量がプレイヤーより多ければ
     if (context.hpRatio > context.hpRatioP)
-        score += SCORE_AMOUNT;  // 上昇
+        score += SCORE_AMOUNT;          // 上昇
 
     // MP残量が多ければ
     if (context.mpRatio > HIGH_MP_THRESHOLD)
-        score += SCORE_AMOUNT * 2;  // 上昇
+        score += SCORE_HIGH_AMOUNT;  // 上昇
     // MP残量が少なければ
     else if (context.mpRatio < LOW_MP_THRESHOLD)
-        score -= SCORE_AMOUNT * 2;  // 低下
+        score -= SCORE_HIGH_AMOUNT;  // 低下
 
     // プレイヤーのMP残量が少なければ
     if (context.mpRatioP < LOW_MP_THRESHOLD)
-        score += SCORE_AMOUNT;      // 上昇
+        score += SCORE_AMOUNT;          // 上昇
     
     // プレイヤーが近ければ
     if (context.distanceToPlayer < NEAR_PLAYER_DISTANCE)
-        score += SCORE_AMOUNT;  // 上昇
-    // 近くないなら
-    else
-        score -= SCORE_AMOUNT * 4;  // 低下
+        score += SCORE_AMOUNT;          // 上昇
     
     // プレイヤーが詠唱していなければ
     if (!context.isPlayerCasting)
@@ -99,9 +102,6 @@ float CEnemyContext::ScoreChase(const EnemyContext& context)
     // プレイヤーが近くなければ
     if (context.distanceToPlayer > NEAR_PLAYER_DISTANCE)
         score += SCORE_AMOUNT;  // 上昇
-    // 近いなら
-    else
-        score -= SCORE_AMOUNT * 4;  // 低下
 
     // プレイヤーが詠唱していなければ
     if (!context.isPlayerCasting)
@@ -134,13 +134,10 @@ float CEnemyContext::ScoreDodge(const EnemyContext& context)
     // プレイヤーが詠唱していれば
     if (context.isPlayerCasting)
         score += SCORE_AMOUNT;  // 上昇
-    // いなければ
-    else
-        score -= SCORE_AMOUNT;  // 低下
 
     // 呪文が飛んできているなら
     if (context.isSpellComing)
-        score += context.comingSpellScore * 2;  // 上昇
+        score += context.comingSpellScore * SCORE_HIGH_AMOUNT;  // 上昇
 
     return score;
 }
@@ -152,16 +149,10 @@ float CEnemyContext::ScoreRun(const EnemyContext& context)
     // HP残量が少なければ
     if (context.hpRatio < LOW_HP_THRESHOLD)
         score += SCORE_AMOUNT;  // 上昇
-    /// それ以外
-    else
-        score -= SCORE_AMOUNT;  // 低下
     
     // MP残量が少なければ
     if (context.mpRatio < LOW_MP_THRESHOLD)
-        score += SCORE_AMOUNT * 2;  // 上昇
-    /// それ以外
-    else
-        score -= SCORE_AMOUNT;  // 低下
+        score += SCORE_HIGH_AMOUNT;  // 上昇
 
     // プレイヤーが遠くなければ
     if (context.distanceToPlayer < FAR_PLAYER_DISTANCE)
@@ -173,9 +164,65 @@ float CEnemyContext::ScoreRun(const EnemyContext& context)
 
     // 呪文が飛んできているなら
     if (context.isSpellComing)
-        score += context.comingSpellScore;  // 上昇
+        score += context.comingSpellScore * SCORE_AMOUNT;  // 上昇
 
     return score;
+}
+
+// 使う攻撃呪文を決定する
+ESpellShapeType CEnemyContext::ScoreAtkSpell(const EnemyContext& context)
+{
+    // それぞれのスコア
+    float scoreBall = 0.0f;
+    float scoreBolt = 0.0f;
+    float scoreBreath = 0.0f;
+    // 一番高いスコア
+    float bestScore = 0.0f;
+    ESpellShapeType bestShape = ESpellShapeType::eError;
+
+    // プレイヤーが近いなら
+    if (context.distanceToPlayer < NEAR_PLAYER_DISTANCE)
+        scoreBreath += SCORE_AMOUNT;    // ブレス上昇
+    // プレイヤーが遠いなら
+    else if (context.distanceToPlayer > FAR_PLAYER_DISTANCE)
+        scoreBolt += SCORE_AMOUNT;      // ボルト上昇
+    // それ以外
+    else
+        scoreBall += SCORE_AMOUNT;      // ボール上昇
+
+    // 一番高いスコアをボールのスコアに設定
+    bestScore = scoreBall;
+    bestShape = ESpellShapeType::eBall;
+
+    // ボルトのスコアの方が高ければ設定
+    if (scoreBolt > bestScore)
+    {
+        bestScore = scoreBolt;
+        bestShape = ESpellShapeType::eBolt;
+    }
+    // ブレスのスコアの方が高ければ設定
+    if (scoreBreath > bestScore)
+    {
+        bestScore = scoreBreath;
+        bestShape = ESpellShapeType::eBreath;
+    }
+
+    return bestShape;
+}
+
+// 使うサポート呪文を決定する
+ESpellShapeType CEnemyContext::ScoreSpSpell(const EnemyContext& context)
+{
+    // TODO
+    float scoreTeleport = 0.0f;
+    float scoreShield = 0.0f;
+    float scoreReflector = 0.0f;
+    // 一番高いスコア
+    float bestScore = 0.0f;
+    ESpellShapeType bestShape = ESpellShapeType::eError;
+
+
+    return bestShape;
 }
 
 // 最適な行動を取得

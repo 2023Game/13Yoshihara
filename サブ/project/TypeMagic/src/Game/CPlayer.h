@@ -34,6 +34,9 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	// プレイヤーが詠唱状態か
+	bool IsCastState() const;
+
 private:
 	// コライダ―を生成
 	void CreateCol() override;

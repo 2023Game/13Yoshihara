@@ -20,13 +20,15 @@ public:
 	// 更新
 	void Update() override;
 
-	// メイン属性を設定
-	void SetMainElemental(ESpellElementalType elemental);
-	// メイン属性を取得
-	ESpellElementalType GetMainElemental() const;
+	// メイン属性の文字列を設定
+	void SetMainElementalStr(ESpellElementalType elemental);
+	// メイン属性の文字列を取得
+	std::string GetMainElementalStr() const;
 
-	// 詠唱する形を取得
-	ESpellShapeType GetCastShape() const;
+	// 詠唱する形の文字列を設定
+	void SetCastShapeStr(ESpellShapeType shape);
+	// 詠唱する形の文字列を取得
+	std::string GetCastShapeStr() const;
 
 	// 状態内のステップを設定
 	void SetStateStep(int step);
@@ -40,18 +42,19 @@ public:
 	float GetElapsedTime() const;
 
 	// 呪文が飛んできているかを設定
-	void SetSpellComing(bool enable, float score = 0.0f, CVector moveDir = CVector::zero);
+	void SetSpellComing(bool enable, ESpellShapeType shape = ESpellShapeType::eError, float score = 0.0f, CVector moveDir = CVector::zero);
 	// 飛んできている呪文の移動方向を取得
 	CVector GetComingSpellMoveDir() const;
+
+	// 最適な行動に変更する
+	void ChangeBestState();
+
+	// 状況を取得
+	CEnemyContext::EnemyContext GetContext();
 
 private:
 	// コライダーを生成
 	void CreateCol() override;
-
-	// 状況を取得
-	CEnemyContext::EnemyContext GetContext();
-	// 最適な行動に変更する
-	void ChangeBestState();
 
 	// 状態切り替え
 	void ChangeState(CEnemyStateBase* state);
@@ -66,15 +69,17 @@ private:
 	std::string GetStateStr(CEnemyStateBase* state) const;
 #endif
 
-	// メイン属性
-	ESpellElementalType mMainElemental;
-	// 詠唱する形
-	ESpellShapeType mCastShape;
+	// メイン属性の文字列
+	std::string mMainElementalStr;
+	// 詠唱する形の文字列
+	std::string mCastShapeStr;
 
 	// 飛んでくる呪文探知用
 	CCollider* mpSpellSearch;
 	// 呪文が飛んできているか
 	bool mIsSpellComing;
+	// 飛んできている呪文の形
+	ESpellShapeType mComingSpellShape;
 	// 呪文の回避優先度スコア
 	float mPriorityScore;
 	// 呪文の移動方向

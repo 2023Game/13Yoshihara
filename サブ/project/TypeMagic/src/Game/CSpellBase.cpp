@@ -162,7 +162,7 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 				// —Dæ“x‚ð‹‚ß‚é
 				float score = mSpellStatus.power / hitTime;
 				// ”ò‚ñ‚Å‚«‚Ä‚¢‚é
-				enemy->SetSpellComing(true, score, mMoveDir);
+				enemy->SetSpellComing(true, mSpellStatus.shape, score, mMoveDir);
 				return;
 			}
 
@@ -182,7 +182,7 @@ void CSpellBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 				// —Dæ“x‚ð‹‚ß‚é
 				float score = mSpellStatus.power / hitTime;
 				// ”ò‚ñ‚Å‚«‚Ä‚¢‚é
-				enemy->SetSpellComing(true, score, mMoveDir);
+				enemy->SetSpellComing(true, mSpellStatus.shape, score, mMoveDir);
 				return;
 			}
 		}
