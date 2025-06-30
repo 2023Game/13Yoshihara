@@ -157,6 +157,7 @@ void CPortalFragment::ChangeState(EState state)
 	mState = state;
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
+	mMoveSpeedY = 0.0f;
 }
 
 // ”ò‚Ñã‚ª‚è

@@ -49,12 +49,12 @@
 #define TORCH_POS_14 CVector(-180.0f,0.0f,-210.0f)
 
 // 草の座標
-#define GRASS_POS_1 CVector(-230.0f,0.0f,-280.0f)
-#define GRASS_POS_2 CVector(-460.0f,0.0f,25.0f)
-#define GRASS_POS_3 CVector(-370.0f,0.0f,-140.0f)
-#define GRASS_POS_4 CVector(-200.0f,0.0f,-160.0f)
-#define GRASS_POS_5 CVector(-5.0f,0.0f,-180.0f)
-#define GRASS_POS_6 CVector(20.0f,0.0f,-150.0f)
+#define GRASS_POS_1 CVector(-370.0f,0.0f,-140.0f)
+#define GRASS_POS_2 CVector(-200.0f,0.0f,-160.0f)
+#define GRASS_POS_3 CVector(-5.0f,0.0f,-180.0f)
+#define GRASS_POS_4 CVector(-460.0f,0.0f,25.0f)
+#define GRASS_POS_5 CVector(20.0f,0.0f,-150.0f)
+#define GRASS_POS_6 CVector(-230.0f,0.0f,-280.0f)
 
 // ツタの座標
 #define VINE_POS_1	CVector(-15.0f,0.0f,170.0f)
