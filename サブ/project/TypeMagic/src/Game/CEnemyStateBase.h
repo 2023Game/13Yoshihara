@@ -16,4 +16,6 @@ public:
 	virtual void End(CEnemy* enemy) = 0;
 	// –¼‘O‚ğæ“¾
 	virtual std::string GetName() const = 0;
+	// ô•¶‰r¥‚Ìˆ—
+	void Cast(CEnemy* enemy, bool atkSpell);
 };

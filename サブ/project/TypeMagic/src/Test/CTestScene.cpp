@@ -11,7 +11,6 @@
 #include "Maths.h"
 #include "CResourceManager.h"
 #include "CPlayer.h"
-#include "CWand.h"
 #include "CTestField.h"
 #include "CEnemy.h"
 
@@ -98,7 +97,7 @@ void CTestScene::Load()
 	player->Position(0.0f, 50.0f, 0.0f);
 
 	CEnemy* enemy = new CEnemy();
-	enemy->Position(0.0f, 50.0f, -50.0f);
+	enemy->Position(0.0f, 50.0f, -500.0f);
 
 	// それぞれの相手を設定
 	enemy->SetOpponent(player);
@@ -113,11 +112,11 @@ void CTestScene::Load()
 	);
 
 	// フィールドクラス生成
-	CTestField* field = new CTestField();
+	//CTestField* field = new CTestField();
 
 	//// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
+	//mainCamera->AddCollider(field->GetGroundCol());
+	//mainCamera->AddCollider(field->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
 	mainCamera->SetLockOnTarget(enemy);

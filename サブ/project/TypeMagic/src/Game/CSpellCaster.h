@@ -19,6 +19,9 @@ public:
 	bool CastStart(ESpellElementalType elemental,
 		ESpellShapeType shape);
 
+	// シールドを貼っているかを設定
+	void SetIsShield(bool enable);
+
 protected:
 	// コンストラクタ
 	CSpellCaster(CObjectBase* owner);
@@ -30,6 +33,9 @@ protected:
 
 	// 対戦相手
 	CObjectBase* mpOpponent;
+
+	// シールドを貼っているか
+	bool mIsShield;
 
 private:
 	// ボール呪文の詠唱

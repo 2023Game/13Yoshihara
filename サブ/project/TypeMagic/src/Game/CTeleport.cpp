@@ -135,12 +135,13 @@ void CTeleport::UpdateShooting()
 		CVector newPos = mpOwner->Position() + moveSpeed;
 
 		CHitInfo hit;
+		// TODO：フィールドを生成するならコメント解除
 		// フィールドと衝突しているなら
-		if (CFieldBase::Instance()->CollisionRay(mpOwner->Position(), newPos, &hit))
-		{
-			// 衝突位置を新しい座標にする
-			newPos = hit.cross;
-		}
+		//if (CFieldBase::Instance()->CollisionRay(mpOwner->Position(), newPos, &hit))
+		//{
+		//	// 衝突位置を新しい座標にする
+		//	newPos = hit.cross;
+		//}
 
 		// 持ち主の座標を変更
 		mpOwner->Position(newPos);

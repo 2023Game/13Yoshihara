@@ -20,6 +20,7 @@ CSpellCaster::CSpellCaster(CObjectBase* owner)
 	, mIsSpellCasting(false)
 	, mGenerateInterval(0.0f)
 	, mIdleTime(0.0f)
+	, mIsShield(false)
 {
 }
 
@@ -554,6 +555,12 @@ bool CSpellCaster::CastStart(ESpellElementalType elemental
 	mStep = 0;
 	mGenerateNum = 0;
 	mSpells.clear();
+}
+
+// ƒV[ƒ‹ƒh‚ğ“\‚Á‚Ä‚¢‚é‚©‚ğİ’è
+void CSpellCaster::SetIsShield(bool enable)
+{
+	mIsShield = enable;
 }
 
 // ‘Îí‘Šè‚ğİ’è

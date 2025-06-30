@@ -28,6 +28,8 @@ void CEnemyIdleState::Start(CEnemy* enemy)
 // 更新中の処理
 void CEnemyIdleState::Update(CEnemy* enemy)
 {
+	// 最適な行動に変更
+	enemy->ChangeBestState();
 }
 
 // 終了時の処理

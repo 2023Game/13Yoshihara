@@ -11,7 +11,6 @@
 #include "Maths.h"
 #include "CResourceManager.h"
 #include "CPlayer.h"
-#include "CWand.h"
 #include "CTutorialMap.h"
 
 //コンストラクタ

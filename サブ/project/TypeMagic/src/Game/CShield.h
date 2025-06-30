@@ -21,6 +21,9 @@ private:
 	// 発射中の更新
 	void UpdateShooting() override;
 
+	// 削除
+	void Kill() override;
+
 	// 現在の角度
 	float mCurrentAngle;
 	// 角度による座標

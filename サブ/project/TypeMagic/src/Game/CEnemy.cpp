@@ -36,6 +36,7 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	, mIsSpellComing(false)
 	, mPriorityScore(0.0f)
 	, mSpellMoveDir(CVector::zero)
+	, mSpellDist(0.0f)
 {
 	// メイン属性の文字列を設定
 	SetMainElementalStr(elemental);
@@ -60,13 +61,6 @@ CEnemy::~CEnemy()
 // 更新
 void CEnemy::Update()
 {
-	// 詠唱状態でなければ
-	if (mState != CEnemyCastState::Instance())
-	{
-		// 最適な行動に変更
-		ChangeBestState();
-	}
-
 	// プレイヤーの方向を向き続ける
 	CVector lookPos = CPlayer::Instance()->Position();
 	lookPos.Y(Position().Y());
@@ -104,6 +98,8 @@ void CEnemy::Update()
 	CDebugPrint::Print("EnemyScoreRun:%f\n", enemyContext->ScoreRun(context));
 	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("SpellComing:%s\n", mIsSpellComing ? "true" : "false");
+	CDebugPrint::Print("IsShield:%s\n", mIsShield ? "true" : "false");
+	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
 #endif
 
 	// 飛んできているかをリセット
@@ -165,7 +161,8 @@ float CEnemy::GetElapsedTime() const
 }
 
 // 呪文が飛んできているかを設定
-void CEnemy::SetSpellComing(bool enable, ESpellShapeType shape, float score, CVector moveDir)
+void CEnemy::SetSpellComing(bool enable, ESpellShapeType shape,
+	float score, CVector moveDir, float dist)
 {
 	// 飛んできているなら
 	if (enable)
@@ -179,6 +176,8 @@ void CEnemy::SetSpellComing(bool enable, ESpellShapeType shape, float score, CVe
 			mPriorityScore = score;
 			// 呪文の移動方向を設定
 			mSpellMoveDir = moveDir;
+			// 呪文との距離を設定
+			mSpellDist = dist;
 		}
 		// 二個目以降なら
 		else
@@ -192,6 +191,8 @@ void CEnemy::SetSpellComing(bool enable, ESpellShapeType shape, float score, CVe
 				mPriorityScore = score;
 				// 呪文の移動方向を設定
 				mSpellMoveDir = moveDir;
+				// 呪文との距離を設定
+				mSpellDist = dist;
 			}
 		}
 	}
@@ -246,6 +247,8 @@ CEnemyContext::EnemyContext CEnemy::GetContext()
 	context.mpRatioP = (float)player->GetMp() / (float)GetMaxMp();
 	// プレイヤーまでの距離を設定
 	context.distanceToPlayer = (player->Position() - Position()).Length();
+	// 呪文までの距離を設定
+	context.distanceToSpell = mSpellDist;
 
 	// プレイヤーが詠唱中か詠唱状態なら
 	if (player->IsCasting() || player->IsCastState())
@@ -264,6 +267,9 @@ CEnemyContext::EnemyContext CEnemy::GetContext()
 	context.shape = mComingSpellShape;
 	// 飛んできている呪文のスコア
 	context.comingSpellScore = mPriorityScore;
+
+	// シールドを貼っているか
+	context.isShield = mIsShield;
 
 	return context;
 }

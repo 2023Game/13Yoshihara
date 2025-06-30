@@ -28,7 +28,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
-	, CCastSpellStr(this, ECastType::eQuick, SPELLS)
+	, CCastSpellStr(this, ECastType::eBasic, SPELLS)
 	, mState(EState::eIdle)
 	, mIsAttacking(false)
 {
@@ -97,12 +97,6 @@ void CPlayer::Update()
 	CDebugPrint::Print("PlayerMp:%f\n", GetMp());
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 #endif
-}
-
-// Õ“Ëˆ—
-void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	CPlayerBase::Collision(self, other, hit);
 }
 
 // ƒvƒŒƒCƒ„[‚ª‰r¥ó‘Ô‚©

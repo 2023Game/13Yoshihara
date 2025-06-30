@@ -128,7 +128,6 @@
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
     <ClCompile Include="src\Game\CTutorialScene.cpp" />
-    <ClCompile Include="src\Game\CWand.cpp" />
     <ClCompile Include="src\Game\CWater.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
     <ClCompile Include="src\Game\CXCharacter.cpp" />
@@ -279,7 +278,6 @@
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
     <ClInclude Include="src\Game\CTutorialScene.h" />
-    <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWater.h" />
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />

@@ -283,6 +283,15 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 				}
 			}
 		}
+		// 衝突した相手が敵だった場合
+		else if (other->Layer() == ELayer::eEnemy)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
 	}
 }
 

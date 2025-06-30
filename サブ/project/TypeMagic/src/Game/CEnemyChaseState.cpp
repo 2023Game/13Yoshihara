@@ -29,8 +29,6 @@ void CEnemyChaseState::Start(CEnemy* enemy)
 // 更新中の処理
 void CEnemyChaseState::Update(CEnemy* enemy)
 {
-	// ボール魔法の届く距離
-	float dist = BALL_SPEED * BALL_DELETE_TIME;
 	// 相手への方向
 	CVector moveDir = enemy->GetOpponent()->Position() - enemy->Position();
 	moveDir.Normalize();
@@ -41,6 +39,9 @@ void CEnemyChaseState::Update(CEnemy* enemy)
 	CVector moveSpeed = enemy->GetMoveDir() * enemy->GetBaseMoveSpeed() * Times::DeltaTime();
 	// 移動を設定
 	enemy->SetMoveSpeed(moveSpeed);
+
+	// 最適な行動に変更
+	enemy->ChangeBestState();
 }
 
 // 終了時の処理

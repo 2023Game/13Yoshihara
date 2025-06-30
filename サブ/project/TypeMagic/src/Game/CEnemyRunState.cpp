@@ -29,8 +29,6 @@ void CEnemyRunState::Start(CEnemy* enemy)
 // 更新中の処理
 void CEnemyRunState::Update(CEnemy* enemy)
 {
-	// ボール魔法の届く距離
-	float dist = BALL_SPEED * BALL_DELETE_TIME;
 	// 自分への方向
 	CVector moveDir = enemy->Position() - enemy->GetOpponent()->Position();
 	moveDir.Normalize();
@@ -39,6 +37,9 @@ void CEnemyRunState::Update(CEnemy* enemy)
 	// 移動を設定
 	CVector moveSpeed = enemy->GetMoveDir() * enemy->GetBaseMoveSpeed() * Times::DeltaTime();
 	enemy->SetMoveSpeed(moveSpeed);
+
+	// 最適な行動に変更
+	enemy->ChangeBestState();
 }
 
 // 終了時の処理

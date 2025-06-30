@@ -469,9 +469,6 @@
     <ClCompile Include="src\Game\CTutorialMap.cpp">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CWand.cpp">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CTutorialScene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
@@ -905,9 +902,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CTutorialMap.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CWand.h">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\FadeType.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>

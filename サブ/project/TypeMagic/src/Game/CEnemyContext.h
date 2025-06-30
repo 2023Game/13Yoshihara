@@ -18,10 +18,12 @@ public:
 		float hpRatioP;			// プレイヤーのHPの割合
 		float mpRatioP;			// プレイヤーのMPの割合
 		float distanceToPlayer;	// プレイヤーまでの距離
+		float distanceToSpell;	// 飛んできてる呪文との距離
 		bool isPlayerCasting;	// プレイヤーが詠唱しているか
 		bool isSpellComing;		// 呪文が飛んできているか
 		ESpellShapeType shape;	// 飛んできている呪文の形
 		float comingSpellScore;	// 飛んできている呪文のスコア
+		bool isShield;			// シールドを張っているか
 	};
 
 	// 最適な行動を取得
@@ -42,4 +44,7 @@ public:
 	ESpellShapeType ScoreAtkSpell(const EnemyContext& context);
 	// 使うサポート呪文を決定する
 	ESpellShapeType ScoreSpSpell(const EnemyContext& context);
+
+	// 近いかどうか
+	bool IsNear(float dist);
 };

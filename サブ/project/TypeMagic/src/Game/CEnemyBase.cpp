@@ -142,7 +142,7 @@ void CEnemyBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 	// 本体コライダとの衝突判定
 	if (self == mpBodyCol)
 	{
-		// 衝突した相手がフィールドの場合
+		// 衝突した相手が地面の場合
 		if (other->Layer() == ELayer::eGround)
 		{
 			// 押し戻しベクトル
@@ -201,6 +201,15 @@ void CEnemyBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hi
 			// 押し戻しベクトル
 			CVector adjust = hit.adjust;
 			adjust.Y(0.0f);
+
+			// 押し戻しベクトルの分、座標を移動
+			Position(Position() + adjust * hit.weight);
+		}
+		// 衝突した相手がプレイヤーだった場合
+		else if (other->Layer() == ELayer::ePlayer)
+		{
+			// 押し戻しベクトル
+			CVector adjust = hit.adjust;
 
 			// 押し戻しベクトルの分、座標を移動
 			Position(Position() + adjust * hit.weight);

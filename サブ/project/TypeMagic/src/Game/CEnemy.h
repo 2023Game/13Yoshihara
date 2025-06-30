@@ -42,7 +42,7 @@ public:
 	float GetElapsedTime() const;
 
 	// ô•¶‚ª”ò‚ñ‚Å‚«‚Ä‚¢‚é‚©‚ğİ’è
-	void SetSpellComing(bool enable, ESpellShapeType shape = ESpellShapeType::eError, float score = 0.0f, CVector moveDir = CVector::zero);
+	void SetSpellComing(bool enable, ESpellShapeType shape = ESpellShapeType::eError, float score = 0.0f, CVector moveDir = CVector::zero, float dist = 0.0f);
 	// ”ò‚ñ‚Å‚«‚Ä‚¢‚éô•¶‚ÌˆÚ“®•ûŒü‚ğæ“¾
 	CVector GetComingSpellMoveDir() const;
 
@@ -84,4 +84,6 @@ private:
 	float mPriorityScore;
 	// ô•¶‚ÌˆÚ“®•ûŒü
 	CVector mSpellMoveDir;
+	// ”ò‚ñ‚Å‚«‚Ä‚¢‚éô•¶‚Æ‚Ì‹——£
+	float mSpellDist;
 };

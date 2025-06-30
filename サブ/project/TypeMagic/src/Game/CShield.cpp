@@ -1,4 +1,5 @@
 #include "CShield.h"
+#include "CSpellCaster.h"
 #include "CColliderRectangle.h"
 #include "Maths.h"
 #include <cmath>
@@ -44,6 +45,9 @@ CShield::CShield(ESpellElementalType elemental, CObjectBase* owner, CObjectBase*
 	ChangeState(EState::eShooting);
 	// 親についていく
 	SetParent(mpOwner);
+	// シールドを張っている
+	CSpellCaster* caster = dynamic_cast<CSpellCaster*>(mpOwner);
+	caster->SetIsShield(true);
 }
 
 // デストラクタ
@@ -54,6 +58,10 @@ CShield::~CShield()
 // 更新
 void CShield::Update()
 {
+	// シールドを張っている
+	CSpellCaster* caster = dynamic_cast<CSpellCaster*>(mpOwner);
+	caster->SetIsShield(true);
+
 	// 持ち主の方向を向く
 	LookAt(mpOwner->Position());
 
@@ -133,4 +141,14 @@ void CShield::UpdateShooting()
 
 	// 座標更新
 	Position(mpOwner->Position() + offsetPos);
+}
+
+// 削除
+void CShield::Kill()
+{
+	// 張っていない
+	CSpellCaster* caster = dynamic_cast<CSpellCaster*>(mpOwner);
+	caster->SetIsShield(false);
+	// 基底クラスの削除処理
+	CTask::Kill();
 }
