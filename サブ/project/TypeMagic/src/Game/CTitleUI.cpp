@@ -47,14 +47,14 @@ CTitleUI::CTitleUI()
 		false,
 		false
 	);
-	mpTitleLogo->SetText("Debt");
+	mpTitleLogo->SetText("TypeMagic");
 	mpTitleLogo->SetEnableOutline(true);
 	mpTitleLogo->SetOutlineColor(CColor(0.9f, 0.9f, 0.9f));
 
 	// タイトル画面の背景イメージを生成
 	mpTitleBg = new CImage
 	(
-		"UI/trash_game_result_bg.png",
+		"UI/title_bg.png",
 		ETaskPriority::eUI,
 		0,
 		ETaskPauseType::eDefault,

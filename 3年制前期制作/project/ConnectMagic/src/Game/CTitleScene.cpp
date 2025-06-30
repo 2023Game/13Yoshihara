@@ -52,7 +52,7 @@ void CTitleScene::Update()
 		// ゲーム開始ならば、ホームシーンを読み込む
 		if (mpTitleUI->IsStartGame())
 		{
-			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
+			CSceneManager::Instance()->LoadScene(EScene::eTutorial);
 		}
 		// ゲーム終了ならば、アプリを閉じる
 		else if (mpTitleUI->IsExitGame())
