@@ -4,7 +4,7 @@
 
 
 // コンストラクタ
-CGaugeUI2D::CGaugeUI2D(CObjectBase* owner, std::string gaugePath)
+CGaugeUI2D::CGaugeUI2D(CObjectBase* owner, std::string gaugePath, bool isRight, EGaugeType gaugeType)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 	, mpGaugeImg(nullptr)
@@ -12,6 +12,8 @@ CGaugeUI2D::CGaugeUI2D(CObjectBase* owner, std::string gaugePath)
 	, mMaxPoint(100)
 	, mCurrPoint(mMaxPoint)
 	, mPercent(1.0f)
+	, mIsRight(isRight)
+	, mGaugeType(gaugeType)
 {
 	// ゲージのイメージを読み込み
 	mpGaugeImg = new CImage
@@ -124,17 +126,33 @@ void CGaugeUI2D::Render()
 		barSize.X(barSize.X() * mPercent);
 		mpWhiteImg->SetSize(barSize);
 		// バーの座標を調整
-		CVector2 barPos = pos;
-		barPos.X(barPos.X() - mGaugeSize.X() * 0.5f);
-			//mGaugeSize - barSize;
-		mpWhiteImg->SetPos(barPos);
-		//CVector2 barPos = pos;
-		//barPos.X(barPos.X() - mGaugeSize.X() * 0.5f);
-		//mpWhiteImg->SetPos(barPos);
+		// 右から減少なら
+		if (mIsRight)
+		{
+			CVector2 barPos = pos;
+			barPos.X(barPos.X() - mGaugeSize.X() * 0.5f);
+			mpWhiteImg->SetPos(barPos);
+		}
+		// 左から減少なら
+		else
+		{
+			CVector2 barPos = pos;
+			barPos.X(barPos.X() - mGaugeSize.X() * 0.5f + (mGaugeSize.X() - barSize.X()));
+			mpWhiteImg->SetPos(barPos);
+		}
+		CColor barColor;
 		// バーの色を設定
-		CColor barColor = CColor::green;
-		if (mPercent <= 0.2f) barColor = CColor::red;
-		else if (mPercent <= 0.5f)barColor = CColor::yellow;
+		switch (mGaugeType)
+		{
+		case CGaugeUI2D::EGaugeType::eHpGauge:
+			barColor = CColor::green;
+			if (mPercent <= 0.2f) barColor = CColor::red;
+			else if (mPercent <= 0.5f)barColor = CColor::yellow;
+			break;
+		case CGaugeUI2D::EGaugeType::eMpGauge:
+			barColor = CColor::blue;
+			break;
+		}
 		mpWhiteImg->SetColor(barColor);
 		// バーを描画
 		mpWhiteImg->Render();
@@ -155,4 +173,10 @@ void CGaugeUI2D::Size(float rate)
 	mGaugeSize = mGaugeSize * rate;
 	CVector2 center = CVector2(-mGaugeSize.X() * 0.5f, 0.0f);
 	mpWhiteImg->SetCenter(center);
+}
+
+// サイズを取得
+CVector CGaugeUI2D::Size() const
+{
+	return mGaugeSize;
 }

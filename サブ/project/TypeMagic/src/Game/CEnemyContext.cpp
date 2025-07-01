@@ -130,6 +130,9 @@ float CEnemyContext::ScoreChase(const EnemyContext& context)
     else
         score -= SCORE_HIGH_AMOUNT; // 低下
 
+    // ブレス呪文を詠唱していたら
+    if (context.castShape == ESpellShapeType::eBreath)
+        score += SCORE_HIGH_AMOUNT; // 上昇
 
     return score;
 }
@@ -241,6 +244,10 @@ ESpellShapeType CEnemyContext::ScoreAtkSpell(const EnemyContext& context)
     else
         scoreBall += SCORE_AMOUNT;      // ボール上昇
 
+    // プレイヤーが詠唱していたら当てられそうなので
+    if (context.isPlayerCasting)
+        scoreBolt += SCORE_HIGH_AMOUNT;  // ボルト上昇
+
     // 一番高いスコアをボールのスコアに設定
     bestScore = scoreBall;
     bestShape = ESpellShapeType::eBall;
@@ -272,17 +279,17 @@ ESpellShapeType CEnemyContext::ScoreSpSpell(const EnemyContext& context)
     ESpellShapeType bestShape = ESpellShapeType::eError;
 
     // 飛んできているのがブレスなら
-    if (context.shape == ESpellShapeType::eBreath)
+    if (context.comingShape == ESpellShapeType::eBreath)
     {
         scoreTeleport += SCORE_AMOUNT;  // テレポート上昇
     }
     // ボルトなら
-    else if (context.shape == ESpellShapeType::eBolt)
+    else if (context.comingShape == ESpellShapeType::eBolt)
     {
         scoreReflector += SCORE_AMOUNT;     // リフレクター上昇
     }
     // ボールなら
-    else if (context.shape == ESpellShapeType::eBall)
+    else if (context.comingShape == ESpellShapeType::eBall)
     {
         scoreShield += SCORE_AMOUNT;    // シールド上昇
     }

@@ -6,14 +6,22 @@
 #include "CFade.h"
 #include "CBall.h"
 #include "CGameCamera2.h"
+#include "CGaugeUI2D.h"
 
 // 体の半径
 #define BODY_RADIUS 4.0f
 
 // 詠唱文字のオフセット座標
-#define SPELL_TEXT_UI_OFFSET_POS CVector(0.0f,WINDOW_HEIGHT * 0.1f, 0.0f)
+#define SPELL_TEXT_UI_OFFSET_POS CVector(0.0f,WINDOW_HEIGHT * 0.8f, 0.0f)
 
 #define SPELLS {"fire","water","wind","ball","bolt","breath","teleport","shield","reflector"}
+
+// ゲージのパス
+#define GAUGE_PATH "UI\\gauge.png"
+// ゲージの座標
+#define GAUGE_POS CVector(0.0f,0.0f,0.0f)
+// ゲージの大きさ
+#define GAUGE_SIZE 2.0f
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
@@ -28,7 +36,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
-	, CCastSpellStr(this, ECastType::eBasic, SPELLS)
+	, CCastSpellStr(this, ECastType::eBasic, SPELLS, SPELL_TEXT_UI_OFFSET_POS)
 	, mState(EState::eIdle)
 	, mIsAttacking(false)
 {
@@ -39,6 +47,20 @@ CPlayer::CPlayer()
 	// アニメーションとモデルの初期化
 	//InitAnimationModel("Player", &ANIM_DATA);
 
+	// HPゲージを設定
+	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, false, CGaugeUI2D::EGaugeType::eHpGauge);
+	mpHpGauge->Size(GAUGE_SIZE);
+	mpHpGauge->Position(GAUGE_POS);
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
+
+	// MPゲージを設定
+	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, false, CGaugeUI2D::EGaugeType::eMpGauge);
+	mpMpGauge->Size(GAUGE_SIZE);
+	mpMpGauge->Position(GAUGE_POS + CVector(0.0f, mpMpGauge->Size().Y(), 0.0f));
+	mpMpGauge->SetMaxPoint(GetMaxMp());
+	mpMpGauge->SetCurrPoint(GetMp());
+
 	// コライダ―を生成
 	CreateCol();
 }
@@ -46,6 +68,12 @@ CPlayer::CPlayer()
 // デストラクタ
 CPlayer::~CPlayer()
 {
+	// MPゲージが存在したら、一緒に削除する
+	if (mpMpGauge != nullptr)
+	{
+		mpMpGauge->SetOwner(nullptr);
+		mpMpGauge->Kill();
+	}
 }
 
 // 更新
@@ -89,10 +117,13 @@ void CPlayer::Update()
 	// 詠唱呪文指定クラスの更新
 	CCastSpellStr::Update();
 
+	// HPゲージを更新
+	mpHpGauge->SetCurrPoint(GetHp());
+	// MPゲージ
+	mpMpGauge->SetCurrPoint(GetMp());
+
 
 #if _DEBUG
-	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
-	CDebugPrint::Print("PlayerHit:%d\n", mHitCount);
 	CDebugPrint::Print("PlayerHp:%d\n", GetHp());
 	CDebugPrint::Print("PlayerMp:%f\n", GetMp());
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());

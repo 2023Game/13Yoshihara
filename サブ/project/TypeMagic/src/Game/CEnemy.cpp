@@ -7,6 +7,7 @@
 #include "CEnemyContext.h"
 #include "CEnemyIdleState.h"
 #include "CEnemyCastState.h"
+#include "CGaugeUI2D.h"
 
 // 体の半径
 #define BODY_RADIUS 4.0f
@@ -24,6 +25,13 @@
 
 // 逃げる距離の倍率
 #define RUN_DIST_RATIO 1.5f
+
+// ゲージのパス
+#define GAUGE_PATH "UI\\gauge.png"
+// ゲージの座標
+#define GAUGE_POS CVector(WINDOW_WIDTH * 1.0f,0.0f,0.0f)
+// ゲージの大きさ
+#define GAUGE_SIZE 2.0f
 
 // コンストラクタ
 CEnemy::CEnemy(ESpellElementalType elemental)
@@ -48,6 +56,20 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	// 移動方向を向かない
 	mIsMoveDir = false;
 
+	// HPゲージを設定
+	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eHpGauge);
+	mpHpGauge->Size(GAUGE_SIZE);
+	mpHpGauge->Position(GAUGE_POS - CVector(mpHpGauge->Size().X(), 0.0f, 0.0f));
+	mpHpGauge->SetMaxPoint(GetMaxHp());
+	mpHpGauge->SetCurrPoint(GetHp());
+
+	// MPゲージを設定
+	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eMpGauge);
+	mpMpGauge->Size(GAUGE_SIZE);
+	mpMpGauge->Position(GAUGE_POS - CVector(mpMpGauge->Size().X(), -mpMpGauge->Size().Y(), 0.0f));
+	mpHpGauge->SetMaxPoint(GetMaxMp());
+	mpHpGauge->SetCurrPoint(GetMp());
+
 	// コライダーを生成
 	CreateCol();
 }
@@ -56,6 +78,13 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 CEnemy::~CEnemy()
 {
 	SAFE_DELETE(mpSpellSearch);
+
+	// MPゲージが存在したら、一緒に削除する
+	if (mpMpGauge != nullptr)
+	{
+		mpMpGauge->SetOwner(nullptr);
+		mpMpGauge->Kill();
+	}
 }
 
 // 更新
@@ -81,8 +110,12 @@ void CEnemy::Update()
 	// 詠唱呪文指定クラスの更新
 	CCastSpellStr::Update();
 
+	// HPゲージの更新
+	mpHpGauge->SetCurrPoint(GetHp());
+	// MPゲージの更新
+	mpMpGauge->SetCurrPoint(GetMp());
+
 #if _DEBUG
-	CDebugPrint::Print("EnemyHit:%d\n", mHitCount);
 	CDebugPrint::Print("EnemyHp:%d\n", GetHp());
 	CDebugPrint::Print("EnemyMp:%f\n", GetMp());
 	// 状況を取得
@@ -98,8 +131,6 @@ void CEnemy::Update()
 	CDebugPrint::Print("EnemyScoreRun:%f\n", enemyContext->ScoreRun(context));
 	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("SpellComing:%s\n", mIsSpellComing ? "true" : "false");
-	CDebugPrint::Print("IsShield:%s\n", mIsShield ? "true" : "false");
-	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
 #endif
 
 	// 飛んできているかをリセット
@@ -264,12 +295,14 @@ CEnemyContext::EnemyContext CEnemy::GetContext()
 	// 呪文が飛んできているか
 	context.isSpellComing = mIsSpellComing;
 	// 飛んできている呪文の形
-	context.shape = mComingSpellShape;
+	context.comingShape = mComingSpellShape;
 	// 飛んできている呪文のスコア
 	context.comingSpellScore = mPriorityScore;
 
 	// シールドを貼っているか
 	context.isShield = mIsShield;
+	// 詠唱中の呪文
+	context.castShape = mSpellShape;
 
 	return context;
 }

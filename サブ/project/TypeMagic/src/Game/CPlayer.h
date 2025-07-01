@@ -98,4 +98,7 @@ private:
 
 	// UŒ‚’†‚©
 	bool mIsAttacking;
+
+	// MPƒQ[ƒW
+	CGaugeUI2D* mpMpGauge;
 };

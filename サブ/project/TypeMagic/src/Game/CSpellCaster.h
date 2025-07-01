@@ -18,6 +18,8 @@ public:
 	// 詠唱開始
 	bool CastStart(ESpellElementalType elemental,
 		ESpellShapeType shape);
+	// 詠唱終了
+	void CastEnd();
 
 	// シールドを貼っているかを設定
 	void SetIsShield(bool enable);
@@ -36,6 +38,9 @@ protected:
 
 	// シールドを貼っているか
 	bool mIsShield;
+
+	// 詠唱中の呪文の形
+	ESpellShapeType mSpellShape;
 
 private:
 	// ボール呪文の詠唱
@@ -63,8 +68,6 @@ private:
 
 	// 詠唱中の呪文の属性
 	ESpellElementalType mSpellElemental;
-	// 詠唱中の呪文の形
-	ESpellShapeType mSpellShape;
 
 	// 詠唱中か
 	bool mIsSpellCasting;

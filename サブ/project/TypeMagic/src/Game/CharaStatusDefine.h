@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_HP 50000				// Å‘å‘Ì—Í
+#define MAX_HP 10000				// Å‘å‘Ì—Í
 #define MAX_MP 5000				// Å‘åMP
 #define REGENE_MP 100.0f			// 1•b“–‚½‚è‚ÌMP‚ÌÄ¶‘¬“x
 #define MOVE_SPEED 2.0f * 60.0f	// ˆÚ“®‘¬“x

@@ -21,9 +21,10 @@ public:
 		float distanceToSpell;	// 飛んできてる呪文との距離
 		bool isPlayerCasting;	// プレイヤーが詠唱しているか
 		bool isSpellComing;		// 呪文が飛んできているか
-		ESpellShapeType shape;	// 飛んできている呪文の形
-		float comingSpellScore;	// 飛んできている呪文のスコア
-		bool isShield;			// シールドを張っているか
+		ESpellShapeType comingShape;	// 飛んできている呪文の形
+		float comingSpellScore;			// 飛んできている呪文のスコア
+		bool isShield;					// シールドを張っているか
+		ESpellShapeType castShape;		// 詠唱中の呪文の形
 	};
 
 	// 最適な行動を取得

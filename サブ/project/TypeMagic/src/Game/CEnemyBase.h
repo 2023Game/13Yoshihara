@@ -5,7 +5,7 @@
 
 // 視野範囲のデバッグ表示クラスの前宣言
 class CDebugFieldOfView;
-class CGaugeUI3D;
+class CGaugeUI2D;
 class CNavNode;
 /*
 エネミークラス
@@ -87,7 +87,7 @@ protected:
 	CObjectBase* mpDamageCauser;
 
 	// Hpゲージ
-	CGaugeUI3D* mpHpGauge;
+	CGaugeUI2D* mpHpGauge;
 
 	// TODO：テストモデル
 	CModel* mpTestModel;

@@ -14,7 +14,7 @@ CSpellCaster::CSpellCaster(CObjectBase* owner)
 	, mpOpponent(nullptr)
 	, mGenerateNum(0)
 	, mSpellElemental(ESpellElementalType::eNeutral)
-	, mSpellShape(ESpellShapeType::eBall)
+	, mSpellShape(ESpellShapeType::eError)
 	, mElapsedTime(0.0f)
 	, mStep(0)
 	, mIsSpellCasting(false)
@@ -130,7 +130,7 @@ void CSpellCaster::CastBall()
 
 	case 4:
 		// ârè•èIóπ
-		mIsSpellCasting = false;
+		CastEnd();
 		break;
 	}
 	
@@ -203,7 +203,7 @@ void CSpellCaster::CastBolt()
 
 		// ârè•èIóπ
 	case 4:
-		mIsSpellCasting = false;
+		CastEnd();
 		break;
 	}
 }
@@ -260,7 +260,7 @@ void CSpellCaster::CastBreath()
 
 		// ârè•èIóπ
 	case 2:
-		mIsSpellCasting = false;
+		CastEnd();
 		break;
 	}
 }
@@ -298,7 +298,7 @@ void CSpellCaster::CastTeleport()
 		// çÌèúÉtÉâÉOÇ™åoÇ¡ÇƒÇ¢ÇΩÇÁ
 		if (mSpells[0]->IsKill())
 		{
-			mIsSpellCasting = false;
+			CastEnd();
 		}
 		break;
 	}
@@ -345,7 +345,7 @@ void CSpellCaster::CastShield()
 
 	// ârè•èIóπ
 	case 2:
-		mIsSpellCasting = false;
+		CastEnd();
 		break;
 	}
 }
@@ -392,7 +392,7 @@ void CSpellCaster::CastReflector()
 
 	// ârè•èIóπ
 	case 2:
-		mIsSpellCasting = false;
+		CastEnd();
 		break;
 	}
 }
@@ -551,6 +551,19 @@ bool CSpellCaster::CastStart(ESpellElementalType elemental
 	mIsSpellCasting = true;
 	mSpellElemental = elemental;
 	mSpellShape = shape;
+	mElapsedTime = 0.0f;
+	mStep = 0;
+	mGenerateNum = 0;
+	mSpells.clear();
+}
+
+// ârè•èIóπ
+void CSpellCaster::CastEnd()
+{
+	// ârè•èIóπ
+	mIsSpellCasting = false;
+	mSpellElemental = ESpellElementalType::eError;
+	mSpellShape = ESpellShapeType::eError;
 	mElapsedTime = 0.0f;
 	mStep = 0;
 	mGenerateNum = 0;

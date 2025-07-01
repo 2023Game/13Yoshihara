@@ -86,4 +86,7 @@ private:
 	CVector mSpellMoveDir;
 	// ”ò‚ñ‚Å‚«‚Ä‚¢‚éô•¶‚Æ‚Ì‹——£
 	float mSpellDist;
+
+	// MPƒQ[ƒW
+	CGaugeUI2D* mpMpGauge;
 };
