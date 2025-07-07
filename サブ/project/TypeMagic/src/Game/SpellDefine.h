@@ -69,7 +69,7 @@
 #define NEUTRAL_USE_MP		0
 
 // ボール型
-#define BALL_POWER		200
+#define BALL_POWER		50
 #define BALL_SPEED		200.0f
 #define BALL_HP			200
 #define BALL_IDLE_TIME	0.1f
@@ -82,7 +82,7 @@
 #define BALL_OFFSET_POS_4 CVector(  0.0f, 5.0f,7.5f)
 #define BALL_OFFSET_POS_5 CVector(  0.0f,10.0f,7.5f)
 // 最大生成数
-#define BALL_MAX_GENERATE_NUM 5
+#define BALL_MAX_GENERATE_NUM 1
 // 追跡終了する距離
 #define BALL_CHASE_END_DIST 17.5f
 // 消滅するまでの時間
@@ -103,7 +103,7 @@
 #define BOLT_DELETE_TIME 2.0f
 
 // ブレス型
-#define BREATH_POWER		50
+#define BREATH_POWER		100
 #define BREATH_SPEED		300.0f
 #define BREATH_HP			1
 #define BREATH_IDLE_TIME	0.0f		// ブレスでは使用しない

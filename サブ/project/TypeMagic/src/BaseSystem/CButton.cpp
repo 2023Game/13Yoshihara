@@ -37,9 +37,10 @@ CButton::~CButton()
 void CButton::LoadButtonText(CFont* font, int fontSize, std::string text)
 {
 	mButtonTextSize = fontSize;
+	mButtonText = text;
 	mpText = new CText
 	(
-		nullptr, mButtonTextSize,
+		font, mButtonTextSize,
 		mPosition, mSize,
 		mButtonTextColor,
 		GetPriority(), GetSortOrder(),

@@ -7,7 +7,7 @@ enum class EScene
 
 	eTitle,			// タイトルシーン
 	eTutorial,		// チュートリアルシーン
-	eMap1,			// マップ1シーン
+	eSelect,		// 選択画面シーン
 
 	eBootMenu,	// 起動時メニュー
 	eColTest,	// 衝突判定テスト

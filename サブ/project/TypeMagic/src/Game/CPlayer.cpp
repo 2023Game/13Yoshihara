@@ -22,6 +22,8 @@
 #define GAUGE_POS CVector(0.0f,0.0f,0.0f)
 // ゲージの大きさ
 #define GAUGE_SIZE 2.0f
+// ゲージ同士の間隔
+#define GAUGE_DIST 10.0f
 
 // アニメーションのパス
 #define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
@@ -57,7 +59,7 @@ CPlayer::CPlayer()
 	// MPゲージを設定
 	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, false, CGaugeUI2D::EGaugeType::eMpGauge);
 	mpMpGauge->Size(GAUGE_SIZE);
-	mpMpGauge->Position(GAUGE_POS + CVector(0.0f, mpMpGauge->Size().Y(), 0.0f));
+	mpMpGauge->Position(GAUGE_POS + CVector(0.0f, mpMpGauge->Size().Y() + GAUGE_DIST, 0.0f));
 	mpMpGauge->SetMaxPoint(GetMaxMp());
 	mpMpGauge->SetCurrPoint(GetMp());
 

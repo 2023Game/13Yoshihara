@@ -32,6 +32,8 @@
 #define GAUGE_POS CVector(WINDOW_WIDTH * 1.0f,0.0f,0.0f)
 // ゲージの大きさ
 #define GAUGE_SIZE 2.0f
+// ゲージ同士の間隔
+#define GAUGE_DIST 10.0f
 
 // コンストラクタ
 CEnemy::CEnemy(ESpellElementalType elemental)
@@ -59,16 +61,16 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	// HPゲージを設定
 	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eHpGauge);
 	mpHpGauge->Size(GAUGE_SIZE);
-	mpHpGauge->Position(GAUGE_POS - CVector(mpHpGauge->Size().X(), 0.0f, 0.0f));
+	mpHpGauge->Position(GAUGE_POS + CVector(-mpHpGauge->Size().X(), 0.0f, 0.0f));
 	mpHpGauge->SetMaxPoint(GetMaxHp());
 	mpHpGauge->SetCurrPoint(GetHp());
 
 	// MPゲージを設定
 	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eMpGauge);
 	mpMpGauge->Size(GAUGE_SIZE);
-	mpMpGauge->Position(GAUGE_POS - CVector(mpMpGauge->Size().X(), -mpMpGauge->Size().Y(), 0.0f));
-	mpHpGauge->SetMaxPoint(GetMaxMp());
-	mpHpGauge->SetCurrPoint(GetMp());
+	mpMpGauge->Position(GAUGE_POS + CVector(-mpMpGauge->Size().X(), mpMpGauge->Size().Y() + GAUGE_DIST, 0.0f));
+	mpMpGauge->SetMaxPoint(GetMaxMp());
+	mpMpGauge->SetCurrPoint(GetMp());
 
 	// コライダーを生成
 	CreateCol();

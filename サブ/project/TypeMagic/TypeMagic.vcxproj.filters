@@ -547,6 +547,15 @@
     <ClCompile Include="src\Game\CEnemyStateBase.cpp">
       <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CSelectMenu.cpp">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSelectScene.cpp">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CScrollUIBase.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -992,6 +1001,15 @@
     </ClInclude>
     <ClInclude Include="src\Game\CEnemyRunState.h">
       <Filter>ソース ファイル\Game\Character\Enemy\State</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSelectMenu.h">
+      <Filter>ソース ファイル\Game\UI\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSelectScene.h">
+      <Filter>ソース ファイル\Game\Scene\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CScrollUIBase.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
