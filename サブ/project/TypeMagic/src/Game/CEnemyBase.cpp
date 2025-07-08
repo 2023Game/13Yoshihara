@@ -5,7 +5,7 @@
 #include "CFieldBase.h"
 #include "CNavNode.h"
 #include "CNavManager.h"
-#include "CGaugeUI2D.h"
+#include "CGaugeUI3D.h"
 
 // コンストラクタ
 CEnemyBase::CEnemyBase(float fovAngle, float fovLength,

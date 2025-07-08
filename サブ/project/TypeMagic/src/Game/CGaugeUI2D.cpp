@@ -144,12 +144,12 @@ void CGaugeUI2D::Render()
 		// ƒo[‚ÌF‚ğİ’è
 		switch (mGaugeType)
 		{
-		case CGaugeUI2D::EGaugeType::eHpGauge:
+		case EGaugeType::eHpGauge:
 			barColor = CColor::green;
 			if (mPercent <= 0.2f) barColor = CColor::red;
 			else if (mPercent <= 0.5f)barColor = CColor::yellow;
 			break;
-		case CGaugeUI2D::EGaugeType::eMpGauge:
+		case EGaugeType::eMpGauge:
 			barColor = CColor::blue;
 			break;
 		}

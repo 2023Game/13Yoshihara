@@ -2,6 +2,7 @@
 #include "CSceneBase.h"
 
 class CGameMenu;
+class CEnemyManager;
 
 // テストシーン
 class CTestScene :public CSceneBase
@@ -19,4 +20,6 @@ public:
 private:
 	// ゲームメニュー
 	CGameMenu* mpGameMenu;
+	// 敵の管理クラス
+	CEnemyManager* mpEnemyMgr;
 };

@@ -56,7 +56,9 @@ void CBridge::Pull(CVector pullDir, float opponentWeight)
 // 更新処理
 void CBridge::Update()
 {
+#if _DEBUG
 	CDebugPrint::Print("Bridge_Angle:%f\n", mCurrentAngle);
+#endif
 	// 傾く角度
 	float angle = GRAVITY_ROTATE_SPEED * Times::DeltaTime();
 	// 橋を重力で傾ける

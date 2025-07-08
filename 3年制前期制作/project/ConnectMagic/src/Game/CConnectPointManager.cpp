@@ -84,7 +84,9 @@ void CConnectPointManager::Update()
 	// Œq‚ª‚Á‚Ä‚¢‚éˆ—‚ğÀs
 	Connect();
 
+#if _DEBUG
 	CDebugPrint::Print("POINT:%d\n", mPoints.size());
+#endif
 }
 
 // •`‰æ

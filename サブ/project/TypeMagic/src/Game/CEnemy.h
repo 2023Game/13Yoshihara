@@ -56,6 +56,9 @@ private:
 	// コライダーを生成
 	void CreateCol() override;
 
+	// 死亡処理
+	void Death() override;
+
 	// 状態切り替え
 	void ChangeState(CEnemyStateBase* state);
 	CEnemyStateBase* mState;	// 敵の状態
@@ -88,5 +91,5 @@ private:
 	float mSpellDist;
 
 	// MPゲージ
-	CGaugeUI2D* mpMpGauge;
+	CGaugeUI3D* mpMpGauge;
 };

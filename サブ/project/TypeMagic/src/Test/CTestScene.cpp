@@ -13,6 +13,7 @@
 #include "CPlayer.h"
 #include "CTestField.h"
 #include "CEnemy.h"
+#include "CEnemyManager.h"
 
 //コンストラクタ
 CTestScene::CTestScene()
@@ -96,12 +97,8 @@ void CTestScene::Load()
 	CPlayer* player = new CPlayer();
 	player->Position(0.0f, 50.0f, 0.0f);
 
-	CEnemy* enemy = new CEnemy();
-	enemy->Position(0.0f, 50.0f, -500.0f);
-
-	// それぞれの相手を設定
-	enemy->SetOpponent(player);
-	player->SetOpponent(enemy);
+	// 敵の管理クラスを生成
+	mpEnemyMgr = new CEnemyManager();
 
 	// CGameCamera2
 	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);
@@ -119,7 +116,6 @@ void CTestScene::Load()
 	//mainCamera->AddCollider(field->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
-	mainCamera->SetLockOnTarget(enemy);
 
 	// ゲームメニューを作成
 	mpGameMenu = new CGameMenu();
@@ -144,4 +140,7 @@ void CTestScene::Update()
 			mpGameMenu->Close();
 		}
 	}
+
+	// 敵の管理クラスの更新
+	mpEnemyMgr->Update();
 }

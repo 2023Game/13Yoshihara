@@ -13,8 +13,6 @@ public:
 		eMpGauge,	// MPゲージ
 	};
 
-	// コンストラクタ
-
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>

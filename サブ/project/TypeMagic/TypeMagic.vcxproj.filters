@@ -556,6 +556,9 @@
     <ClCompile Include="src\Game\CScrollUIBase.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CEnemyManager.cpp">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1010,6 +1013,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CScrollUIBase.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CEnemyManager.h">
+      <Filter>ソース ファイル\Game\Character\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

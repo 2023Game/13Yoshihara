@@ -62,7 +62,7 @@ CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
 	, mState(EState::eIdle)
-	, mIsWand(false)
+	, mIsWand(true)
 	, mIsAttacking(false)
 	, mpPoint(nullptr)
 	, mpCenterTarget(nullptr)
@@ -91,9 +91,6 @@ CPlayer::CPlayer()
 	mpWand->Position(WAND_OFFSET_POS);
 	mpWand->Rotation(WAND_OFFSET_ROT);
 	mpWand->Scale(mpWand->Scale() * WAND_SCALE);
-	// 最初は非表示
-	mpWand->SetEnable(false);
-	mpWand->SetShow(false);
 
 	// ターゲットしている場所の画像
 	mpTargetPointImg = new CImage

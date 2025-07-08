@@ -7,8 +7,14 @@ class CImage3D;
 class CGaugeUI3D : public CObjectBase
 {
 public:
+	enum class EGaugeType
+	{
+		eHpGauge,	// HPゲージ
+		eMpGauge,	// MPゲージ
+	};
+
 	// コンストラクタ
-	CGaugeUI3D(CObjectBase* owner,std::string gaugePath);
+	CGaugeUI3D(CObjectBase* owner,std::string gaugePath, bool isRight, EGaugeType gaugeType);
 	// デストラクタ
 	virtual ~CGaugeUI3D();
 
@@ -40,4 +46,7 @@ protected:
 	int mMaxPoint;			// 最大値
 	int mCurrPoint;			// 現在値
 	float mPercent;			// ポイント残量の割合
+
+	bool mIsRight;	// 右から減っていく
+	EGaugeType mGaugeType;	// ゲージのタイプ
 };

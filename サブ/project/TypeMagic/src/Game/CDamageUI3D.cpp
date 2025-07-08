@@ -7,16 +7,6 @@
 // ダメージ表記の削除までの時間
 #define DAMAGE_TEXT_DELETE_TIME 1.0f
 
-// テキストの最小フォントサイズ
-#define TEXT_FONT_SIZE_MIN 8
-// テキストの最大フォントサイズ
-#define TEXT_FONT_SIZE_MAX 32
-
-// テキストサイズが最小になる距離
-#define TEXT_FONT_SIZE_MIN_DIST 500.0f
-// テキストサイズが最大になる距離
-#define TEXT_FONT_SIZE_MAX_DIST 50.0f
-
 // コンストラクタ
 CDamageUI3D::CDamageUI3D(CVector pos)
 	: CTextUI3D(RandPos(pos))
@@ -32,14 +22,6 @@ CDamageUI3D::~CDamageUI3D()
 // 更新
 void CDamageUI3D::Update()
 {
-
-	CCamera* camera = CCamera::CurrentCamera();
-	// 距離
-	float dist = CVector::Distance(mWorldPos, camera->Position());
-	// 距離によってサイズを求める
-	float size = Math::Lerp(TEXT_FONT_SIZE_MAX, TEXT_FONT_SIZE_MIN, (dist - TEXT_FONT_SIZE_MAX_DIST) / (TEXT_FONT_SIZE_MIN_DIST - TEXT_FONT_SIZE_MAX_DIST));
-	// フォントサイズを設定
-	SetFontSize(size);
 
 	CTextUI3D::Update();
 

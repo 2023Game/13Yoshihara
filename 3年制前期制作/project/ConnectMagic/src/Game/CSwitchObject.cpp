@@ -23,8 +23,11 @@ void CSwitchObject::Update()
 
 	std::string state = "Off";
 	if (mState == EState::eOn) state = "On";
+
+#if _DEBUG
 	CDebugPrint::Print("SwitchObjState:%s\n", state.c_str());
 	CDebugPrint::Print("RotY:%f\n", EulerAngles().Y());
+#endif
 }
 
 // Õ“Ëˆ—

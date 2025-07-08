@@ -22,6 +22,9 @@ public:
 	// ワールド座標からスクリーン座標を求めて座標を設定
 	void Position(const CVector& pos) override;
 
+	// ワールド座標を設定
+	void SetWorldPos(const CVector& pos);
+
 protected:
 	// ワールド座標
 	CVector mWorldPos;

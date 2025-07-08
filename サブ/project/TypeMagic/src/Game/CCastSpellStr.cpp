@@ -1,6 +1,8 @@
 #include "CCastSpellStr.h"
 #include "CTextUI2D.h"
+#include "CTextUI3D.h"
 #include <algorithm>
+#include "CPlayer.h"
 
 // コンストラクタ
 CCastSpellStr::CCastSpellStr(CObjectBase* owner, ECastType castType, 
@@ -9,14 +11,25 @@ CCastSpellStr::CCastSpellStr(CObjectBase* owner, ECastType castType,
 	, mCastType(castType)
 	, mQuickSpellStr(quickStr)
 {
-	// 呪文のテキストUIを生成
-	mpSpellText = new CTextUI2D();
-	// 文字の揃いの基準を設定
-	mpSpellText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
-	// 文字サイズを設定
-	mpSpellText->SetFontSize(textSize);
-	// 座標を設定
-	mpSpellText->Position(textOffsetPos);
+	// プレイヤーなら
+	if (owner == CPlayer::Instance())
+	{
+		// 呪文のテキストUIを生成
+		mpSpellText = new CTextUI2D();
+		// 文字の揃いの基準を設定
+		mpSpellText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
+		// 文字サイズを設定
+		mpSpellText->SetFontSize(textSize);
+		// 座標を設定
+		mpSpellText->Position(textOffsetPos);
+	}
+	else
+	{
+		// 呪文のテキストUIを生成
+		mpSpellText = new CTextUI3D(owner->Position());
+		// 文字サイズを設定
+		mpSpellText->SetFontSize(textSize);
+	}
 }
 
 // デストラクタ

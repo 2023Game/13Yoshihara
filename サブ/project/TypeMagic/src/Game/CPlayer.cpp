@@ -81,10 +81,14 @@ CPlayer::~CPlayer()
 // çXêV
 void CPlayer::Update()
 {
-	// ëäéËÇÃï˚Çå¸Ç´ë±ÇØÇÈ
-	CVector lookPos = mpOpponent->Position();
-	lookPos.Y(Position().Y());
-	LookAt(lookPos);
+	// ëäéËÇ™Ç¢ÇÍÇŒ
+	if (mpOpponent != nullptr)
+	{
+		// ëäéËÇÃï˚Çå¸Ç´ë±ÇØÇÈ
+		CVector lookPos = mpOpponent->Position();
+		lookPos.Y(Position().Y());
+		LookAt(lookPos);
+	}
 
 	// è≠ÇµÇ∏Ç¬å∏ë¨
 	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;

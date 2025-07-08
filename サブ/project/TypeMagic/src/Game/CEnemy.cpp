@@ -7,7 +7,9 @@
 #include "CEnemyContext.h"
 #include "CEnemyIdleState.h"
 #include "CEnemyCastState.h"
-#include "CGaugeUI2D.h"
+#include "CGaugeUI3D.h"
+#include "CEnemyManager.h"
+#include "CTextUI3D.h"
 
 // 体の半径
 #define BODY_RADIUS 4.0f
@@ -29,7 +31,7 @@
 // ゲージのパス
 #define GAUGE_PATH "UI\\gauge.png"
 // ゲージの座標
-#define GAUGE_POS CVector(WINDOW_WIDTH * 1.0f,0.0f,0.0f)
+#define GAUGE_POS CVector(0.0f,50.0f,0.0f)
 // ゲージの大きさ
 #define GAUGE_SIZE 2.0f
 // ゲージ同士の間隔
@@ -59,16 +61,16 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	mIsMoveDir = false;
 
 	// HPゲージを設定
-	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eHpGauge);
-	mpHpGauge->Size(GAUGE_SIZE);
-	mpHpGauge->Position(GAUGE_POS + CVector(-mpHpGauge->Size().X(), 0.0f, 0.0f));
+	mpHpGauge = new CGaugeUI3D(this, GAUGE_PATH, true, CGaugeUI3D::EGaugeType::eHpGauge);
+	mpHpGauge->SetShow(false);
+	mpHpGauge->Position(Position() + GAUGE_POS);
 	mpHpGauge->SetMaxPoint(GetMaxHp());
 	mpHpGauge->SetCurrPoint(GetHp());
 
 	// MPゲージを設定
-	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eMpGauge);
-	mpMpGauge->Size(GAUGE_SIZE);
-	mpMpGauge->Position(GAUGE_POS + CVector(-mpMpGauge->Size().X(), mpMpGauge->Size().Y() + GAUGE_DIST, 0.0f));
+	mpMpGauge = new CGaugeUI3D(this, GAUGE_PATH, true, CGaugeUI3D::EGaugeType::eMpGauge);
+	mpMpGauge->SetShow(false);
+	mpMpGauge->Position(Position() + GAUGE_POS + CVector(0.0f, -GAUGE_DIST, 0.0f));
 	mpMpGauge->SetMaxPoint(GetMaxMp());
 	mpMpGauge->SetCurrPoint(GetMp());
 
@@ -113,9 +115,20 @@ void CEnemy::Update()
 	CCastSpellStr::Update();
 
 	// HPゲージの更新
+	mpHpGauge->Position(Position() + GAUGE_POS);
+	mpHpGauge->SetShow(true);
 	mpHpGauge->SetCurrPoint(GetHp());
 	// MPゲージの更新
-	mpMpGauge->SetCurrPoint(GetMp());
+	mpMpGauge->Position(Position() + GAUGE_POS + CVector(0.0f, -GAUGE_DIST, 0.0f));
+	mpMpGauge->SetShow(true);
+	mpMpGauge->SetCurrPoint(GetMp());	
+	
+	// 詠唱文字列のテキストの更新
+	CTextUI3D* text3d = dynamic_cast<CTextUI3D*>(mpSpellText);
+	if (text3d != nullptr)
+	{
+		text3d->SetWorldPos(Position());
+	}
 
 #if _DEBUG
 	CDebugPrint::Print("EnemyHp:%d\n", GetHp());
@@ -261,6 +274,13 @@ void CEnemy::CreateCol()
 	);
 	// 攻撃とだけ衝突
 	mpSpellSearch->SetCollisionLayers({ ELayer::eAttackCol });
+}
+
+// 死亡処理
+void CEnemy::Death()
+{
+	// 削除
+	CEnemyManager::Instance()->DeleteEnemy(this);
 }
 
 // 状況を取得

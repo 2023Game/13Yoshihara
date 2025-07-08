@@ -89,6 +89,7 @@
     <ClCompile Include="src\Game\CEnemyChaseState.cpp" />
     <ClCompile Include="src\Game\CEnemyDodgeState.cpp" />
     <ClCompile Include="src\Game\CEnemyIdleState.cpp" />
+    <ClCompile Include="src\Game\CEnemyManager.cpp" />
     <ClCompile Include="src\Game\CEnemyRunState.cpp" />
     <ClCompile Include="src\Game\CEnemyStateBase.cpp" />
     <ClCompile Include="src\Game\CEnemyStatus.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="src\Game\CEnemyContext.h" />
     <ClInclude Include="src\Game\CEnemyDodgeState.h" />
     <ClInclude Include="src\Game\CEnemyIdleState.h" />
+    <ClInclude Include="src\Game\CEnemyManager.h" />
     <ClInclude Include="src\Game\CEnemyRunState.h" />
     <ClInclude Include="src\Game\CEnemyStateBase.h" />
     <ClInclude Include="src\Game\CEnemyStatus.h" />

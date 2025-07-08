@@ -4,10 +4,10 @@
 #include "CImage3D.h"
 #include "Maths.h"
 
-#define WORLD_UNIT_PER_PIXEL 32.0f
+#define WORLD_UNIT_PER_PIXEL 8.0f
 
 // コンストラクタ
-CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath)
+CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath, bool isRight, EGaugeType gaugeType)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI3D, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 	, mpGaugeImg(nullptr)
@@ -15,6 +15,8 @@ CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath)
 	, mMaxPoint(100)
 	, mCurrPoint(mMaxPoint)
 	, mPercent(1.0f)
+	, mIsRight(isRight)
+	, mGaugeType(gaugeType)
 {
 	// ゲージのイメージを読み込み
 	mpGaugeImg = new CImage3D
@@ -39,6 +41,7 @@ CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath)
 		false, false
 	);
 	mpWhiteImg->SetWorldUnitPerPixel(WORLD_UNIT_PER_PIXEL);
+	mpWhiteImg->SetDepthMask(false);
 }
 
 // デストラクタ
@@ -131,11 +134,29 @@ void CGaugeUI3D::Render()
 		mpWhiteImg->SetSize(barSize);
 		// バーの座標を調整
 		CVector2 barPos = mGaugeSize - barSize;
-		mpWhiteImg->SetOffsetPos(-barPos);
+		// 右から減少なら
+		if (mIsRight)
+		{
+			mpWhiteImg->SetOffsetPos(-barPos);
+		}
+		// 左から減少なら
+		else
+		{
+			mpWhiteImg->SetOffsetPos(barPos);
+		}
+		CColor barColor;
 		// バーの色を設定
-		CColor barColor = CColor::green;
-		if (mPercent <= 0.2f) barColor = CColor::red;
-		else if (mPercent <= 0.5f)barColor = CColor::yellow;
+		switch (mGaugeType)
+		{
+		case EGaugeType::eHpGauge:
+			barColor = CColor::green;
+			if (mPercent <= 0.2f) barColor = CColor::red;
+			else if (mPercent <= 0.5f)barColor = CColor::yellow;
+			break;
+		case EGaugeType::eMpGauge:
+			barColor = CColor::blue;
+			break;
+		}
 		mpWhiteImg->SetColor(barColor);
 		// バーを描画
 		mpWhiteImg->Render();

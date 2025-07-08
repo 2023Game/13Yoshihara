@@ -36,6 +36,9 @@ protected:
 	// 対戦相手
 	CObjectBase* mpOpponent;
 
+	// このクラスの持ち主
+	CObjectBase* mpOwner;
+
 	// シールドを貼っているか
 	bool mIsShield;
 
@@ -88,7 +91,4 @@ private:
 
 	// 生成回数
 	int mGenerateNum;
-
-	// このクラスの持ち主
-	CObjectBase* mpOwner;
 };
