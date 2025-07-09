@@ -2,14 +2,14 @@
 
 #define GAME_TITLE "ConnectMagic"	//ゲームタイトル
 
-#define WINDOW_WIDTH 1920 * 0.8f		//ウィンドウの幅
-#define WINDOW_HEIGHT 1080 * 0.8f		//ウィンドウの高さ
+#define WINDOW_WIDTH 1920 //* 0.8f		//ウィンドウの幅
+#define WINDOW_HEIGHT 1080 //* 0.8f		//ウィンドウの高さ
 
 #define CAMERA_FOVY 60.0f		//カメラの画角
 #define CAMERA_ZNEAR 1.0f		//カメラの描画最短距離
 #define CAMERA_ZFAR 10000.0f		//カメラの描画最長距離
 
-//#define FULL_SCREEN	//フルスクリーンにする場合は定義する
+#define FULL_SCREEN	//フルスクリーンにする場合は定義する
 
 //配列のサイズ取得をマクロ化
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
