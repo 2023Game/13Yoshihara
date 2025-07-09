@@ -46,6 +46,8 @@ protected:
 
 	// XV
 	void Update();
+	// •`‰æ
+	void Render();
 
 	// ¬•¶š‚É•ÏŠ·
 	std::string ToLower(const std::string& str);

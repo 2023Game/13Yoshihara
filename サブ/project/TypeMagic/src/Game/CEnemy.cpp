@@ -17,7 +17,7 @@
 #define SEARCH_RADIUS 100.0f
 
 // 詠唱文字のオフセット座標
-#define SPELL_TEXT_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.4f, WINDOW_HEIGHT * 0.4f, 0.0f)
+#define SPELL_TEXT_UI_OFFSET_POS CVector(30.0f, 30.0f, 0.0f)
 
 // 詠唱文字のサイズ
 #define SPELL_TEXT_SIZE 32
@@ -35,7 +35,7 @@
 // ゲージの大きさ
 #define GAUGE_SIZE 2.0f
 // ゲージ同士の間隔
-#define GAUGE_DIST 10.0f
+#define GAUGE_DIST 7.5f
 
 // コンストラクタ
 CEnemy::CEnemy(ESpellElementalType elemental)
@@ -74,6 +74,9 @@ CEnemy::CEnemy(ESpellElementalType elemental)
 	mpMpGauge->SetMaxPoint(GetMaxMp());
 	mpMpGauge->SetCurrPoint(GetMp());
 
+	// 呪文の文字列テキストの持ち主を設定
+	mpSpellText->SetOwner(this);
+
 	// コライダーを生成
 	CreateCol();
 }
@@ -99,7 +102,7 @@ void CEnemy::Update()
 	lookPos.Y(Position().Y());
 	LookAt(lookPos);
 
-	// 少しずつ減速
+	// 徐々に減速
 	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;
 
 	// nullでなければ更新
@@ -127,29 +130,45 @@ void CEnemy::Update()
 	CTextUI3D* text3d = dynamic_cast<CTextUI3D*>(mpSpellText);
 	if (text3d != nullptr)
 	{
-		text3d->SetWorldPos(Position());
+		text3d->SetWorldPos(Position() + VectorX() * SPELL_TEXT_UI_OFFSET_POS.X() +
+			CVector(0.0f,
+				SPELL_TEXT_UI_OFFSET_POS.Y(),
+				SPELL_TEXT_UI_OFFSET_POS.Z()));
 	}
 
 #if _DEBUG
-	CDebugPrint::Print("EnemyHp:%d\n", GetHp());
-	CDebugPrint::Print("EnemyMp:%f\n", GetMp());
-	// 状況を取得
-	CEnemyContext::EnemyContext context = GetContext();
-	// スコア評価クラス
-	CEnemyContext* enemyContext = CEnemyContext::Instance();
+	//CDebugPrint::Print("EnemyHp:%d\n", GetHp());
+	//CDebugPrint::Print("EnemyMp:%f\n", GetMp());
+	//// 状況を取得
+	//CEnemyContext::EnemyContext context = GetContext();
+	//// スコア評価クラス
+	//CEnemyContext* enemyContext = CEnemyContext::Instance();
 
-	CDebugPrint::Print("EnemyMpRatio:%f\n", context.mpRatio);
-	CDebugPrint::Print("EnemyScoreIdle:%f\n", enemyContext->ScoreIdle(context));
-	CDebugPrint::Print("EnemyScoreCast:%f\n", enemyContext->ScoreCast(context));
-	CDebugPrint::Print("EnemyScoreChase:%f\n", enemyContext->ScoreChase(context));
-	CDebugPrint::Print("EnemyScoreDodge:%f\n", enemyContext->ScoreDodge(context));
-	CDebugPrint::Print("EnemyScoreRun:%f\n", enemyContext->ScoreRun(context));
-	CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
-	CDebugPrint::Print("SpellComing:%s\n", mIsSpellComing ? "true" : "false");
+	//CDebugPrint::Print("EnemyMpRatio:%f\n", context.mpRatio);
+	//CDebugPrint::Print("EnemyScoreIdle:%f\n", enemyContext->ScoreIdle(context));
+	//CDebugPrint::Print("EnemyScoreCast:%f\n", enemyContext->ScoreCast(context));
+	//CDebugPrint::Print("EnemyScoreChase:%f\n", enemyContext->ScoreChase(context));
+	//CDebugPrint::Print("EnemyScoreDodge:%f\n", enemyContext->ScoreDodge(context));
+	//CDebugPrint::Print("EnemyScoreRun:%f\n", enemyContext->ScoreRun(context));
+	//CDebugPrint::Print("EnemyState:%s\n", GetStateStr(mState).c_str());
+	//CDebugPrint::Print("SpellComing:%s\n", mIsSpellComing ? "true" : "false");
 #endif
 
 	// 飛んできているかをリセット
 	SetSpellComing(false);
+}
+
+// オブジェクト削除処理
+void CEnemy::DeleteObject(CObjectBase* obj)
+{
+	CEnemyBase::DeleteObject(obj);
+
+	// 削除されたのが呪文のテキストなら
+	// ポインタを空にする
+	if (obj == mpSpellText)
+	{
+		mpSpellText = nullptr;
+	}
 }
 
 // メイン属性の文字列を設定

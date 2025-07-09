@@ -20,6 +20,9 @@ public:
 	// 更新
 	void Update() override;
 
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
+
 	// メイン属性の文字列を設定
 	void SetMainElementalStr(ESpellElementalType elemental);
 	// メイン属性の文字列を取得

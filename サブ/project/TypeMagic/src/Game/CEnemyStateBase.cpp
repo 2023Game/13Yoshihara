@@ -11,6 +11,11 @@ void CEnemyStateBase::Start(CEnemy* enemy)
 	enemy->SetElapsedTime(0.0f);
 }
 
+// I—¹‚Ìˆ—
+void CEnemyStateBase::End(CEnemy* enemy)
+{
+}
+
 // ô•¶‰r¥‚Ìˆ—
 void CEnemyStateBase::Cast(CEnemy* enemy, bool atkSpell)
 {	

@@ -16,6 +16,7 @@ CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 	, mIsBlink(false)
 	, mStateStep(0)
 	, mElapsedTime(0.0f)
+	, mpOwner(nullptr)
 {
 	// フォントデータを生成
 	mpFont = new CFont(fontPath);
@@ -42,6 +43,11 @@ CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)
 // デストラクタ
 CTextUI2D::~CTextUI2D()
 {
+	// 持ち主に削除されたことを伝える
+	if (mpOwner != nullptr)
+	{
+		mpOwner->DeleteObject(this);
+	}
 }
 
 // 更新
@@ -168,4 +174,10 @@ void CTextUI2D::Blink()
 		}
 		break;
 	}
+}
+
+// 持ち主を設定
+void CTextUI2D::SetOwner(CObjectBase* owner)
+{
+	mpOwner = owner;
 }

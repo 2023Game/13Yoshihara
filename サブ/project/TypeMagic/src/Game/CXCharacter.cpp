@@ -244,9 +244,12 @@ void CXCharacter::Update()
 	CCharaBase::Update();
 	//アニメーションを更新する
 	Update(Matrix());
+
+#if _DEBUG
 	CDebugPrint::Print("AnimationIndex:%d\n", mAnimationIndex);
 	CDebugPrint::Print("BlendIndex:%d\n", mBlendIndex);
 	CDebugPrint::Print("ElapsedBlend:%f\n", mElapsedBlend);
+#endif
 }
 
 /*

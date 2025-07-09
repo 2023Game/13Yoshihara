@@ -68,6 +68,8 @@ void CEnemyDodgeState::End(CEnemy* enemy)
 {
 	// 文字列が残っていたら詠唱して削除
 	enemy->CastSpell();
+	// 基底クラスの終了時の処理
+	CEnemyStateBase::End(enemy);
 }
 
 // 名前を取得

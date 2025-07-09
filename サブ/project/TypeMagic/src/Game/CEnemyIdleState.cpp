@@ -35,6 +35,8 @@ void CEnemyIdleState::Update(CEnemy* enemy)
 // 終了時の処理
 void CEnemyIdleState::End(CEnemy* enemy)
 {
+	// 基底クラスの終了時の処理
+	CEnemyStateBase::End(enemy);
 }
 
 // 名前を取得

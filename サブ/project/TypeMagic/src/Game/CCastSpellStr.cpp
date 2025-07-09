@@ -18,23 +18,28 @@ CCastSpellStr::CCastSpellStr(CObjectBase* owner, ECastType castType,
 		mpSpellText = new CTextUI2D();
 		// 文字の揃いの基準を設定
 		mpSpellText->SetFontAligment(FTGL::TextAlignment::ALIGN_CENTER);
-		// 文字サイズを設定
-		mpSpellText->SetFontSize(textSize);
 		// 座標を設定
 		mpSpellText->Position(textOffsetPos);
+		// 持ち主を設定
 	}
 	else
 	{
 		// 呪文のテキストUIを生成
 		mpSpellText = new CTextUI3D(owner->Position());
-		// 文字サイズを設定
-		mpSpellText->SetFontSize(textSize);
 	}
+	// 文字サイズを設定
+	mpSpellText->SetFontSize(textSize);
 }
 
 // デストラクタ
 CCastSpellStr::~CCastSpellStr()
 {
+	// 呪文のテキストが空でないなら
+	if (mpSpellText != nullptr)
+	{
+		mpSpellText->SetOwner(nullptr);
+		mpSpellText->Kill();
+	}
 }
 
 // 詠唱文字列から呪文を詠唱

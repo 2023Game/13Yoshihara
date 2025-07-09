@@ -68,13 +68,25 @@ void CGameCamera2::Update()
 	// 追従ターゲットだけなら
 	else if (mFollowTargetTf != nullptr)
 	{
+		// ロックオンターゲットから追従ターゲットへの方向
+		CVector dir = mFollowTargetTf->Position() - CVector::zero;
+		dir.Normalize();
+
 		// 注視点は追従ターゲット
 		mAt = mFollowTargetTf->Position() + mFollowOffsetPos;
-		// 視点は追従ターゲットの後方にずらした座標
-		CVector eye = mAt + (-mFollowTargetTf->VectorZ() * EYE_OFFSET_POS_Z);
+		// 視点は注視点をdir方向にずらした座標
+		CVector eye = mAt + dir * EYE_OFFSET_POS_Z;
 		// 補間した値を設定
 		mTargetEye = CVector::Lerp(mEye, eye, 0.1f);
 		mEye = mTargetEye;
+
+		//// 注視点は追従ターゲット
+		//mAt = mFollowTargetTf->Position() + mFollowOffsetPos;
+		//// 視点は追従ターゲットの後方にずらした座標
+		//CVector eye = mAt + (-mFollowTargetTf->VectorZ() * EYE_OFFSET_POS_Z);
+		//// 補間した値を設定
+		//mTargetEye = CVector::Lerp(mEye, eye, 0.1f);
+		//mEye = mTargetEye;
 	}
 
 #if _DEBUG
@@ -101,5 +113,11 @@ void CGameCamera2::SetRotateAngle(CVector angle)
 void CGameCamera2::SetLockOnTarget(CTransform* target)
 {
 	mpLockOnTarget = target;
+}
+
+// ロックオンターゲットを取得
+CTransform* CGameCamera2::GetLockOnTarget() const
+{
+	return mpLockOnTarget;
 }
 

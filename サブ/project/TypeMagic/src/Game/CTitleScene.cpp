@@ -31,7 +31,7 @@ void CTitleScene::Load()
 	//リソースの読み込みやクラスの生成を行う
 
 	// タイトルBGMを再生
-	CBGMManager::Instance()->Play(EBGMType::eTitle);	
+	//CBGMManager::Instance()->Play(EBGMType::eTitle);	
 
 	CCamera* mainCamera = new CCamera
 	(
@@ -52,7 +52,7 @@ void CTitleScene::Update()
 		// ゲーム開始ならば、ホームシーンを読み込む
 		if (mpTitleUI->IsStartGame())
 		{
-			CSceneManager::Instance()->LoadScene(EScene::eSelect);
+			CSceneManager::Instance()->LoadScene(EScene::eGameTest);
 		}
 		// ゲーム終了ならば、アプリを閉じる
 		else if (mpTitleUI->IsExitGame())

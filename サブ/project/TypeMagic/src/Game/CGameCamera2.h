@@ -27,6 +27,8 @@ public:
 
 	// ロックオンターゲットを設定
 	void SetLockOnTarget(CTransform* target);
+	// ロックオンターゲットを取得
+	CTransform* GetLockOnTarget() const;
 
 private:
 	CVector mFollowDefaultEyeVec;

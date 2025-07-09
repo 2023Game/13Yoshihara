@@ -16,6 +16,9 @@ CSpellBase::CSpellBase(ESpellElementalType elemental, ESpellShapeType shape,
 	, mMoveDir(CVector::zero)
 	, mDeleteTime(deleteTime)
 	, mpSpellCol(nullptr)
+	, mState(EState::eIdle)
+	, mStateStep(0)
+	, mElapsedTime(0.0f)
 {
 	// e‚É‚Â‚¢‚Ä‚¢‚­
 	SetParent(owner);

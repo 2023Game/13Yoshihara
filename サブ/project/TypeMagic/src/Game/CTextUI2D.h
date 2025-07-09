@@ -51,6 +51,9 @@ public:
 	// 点滅する処理
 	void Blink();
 
+	// 持ち主を設定
+	void SetOwner(CObjectBase* owner);
+
 protected:
 	CFont* mpFont;	// フォント
 	CText* mpText;	// 文字列描画用
@@ -62,4 +65,7 @@ protected:
 
 	int mStateStep;		// 状態内でのステップ管理用
 	float mElapsedTime;	// 経過時間計測用
+
+	// 持ち主
+	CObjectBase* mpOwner;
 };

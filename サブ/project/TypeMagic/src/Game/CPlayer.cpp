@@ -7,6 +7,8 @@
 #include "CBall.h"
 #include "CGameCamera2.h"
 #include "CGaugeUI2D.h"
+#include "CTextUI2D.h"
+#include "CEnemyManager.h"
 
 // 体の半径
 #define BODY_RADIUS 4.0f
@@ -14,7 +16,7 @@
 // 詠唱文字のオフセット座標
 #define SPELL_TEXT_UI_OFFSET_POS CVector(0.0f,WINDOW_HEIGHT * 0.8f, 0.0f)
 
-#define SPELLS {"fire","water","wind","ball","bolt","breath","teleport","shield","reflector"}
+#define SPELLS {"fire","thunder","wind","ball","bolt","breath","teleport","shield","reflector"}
 
 // ゲージのパス
 #define GAUGE_PATH "UI\\gauge.png"
@@ -38,7 +40,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 CPlayer::CPlayer()
 	: CPlayerBase()
 	, CPlayerStatus()
-	, CCastSpellStr(this, ECastType::eBasic, SPELLS, SPELL_TEXT_UI_OFFSET_POS)
+	, CCastSpellStr(this, ECastType::eQuick, SPELLS, SPELL_TEXT_UI_OFFSET_POS)
 	, mState(EState::eIdle)
 	, mIsAttacking(false)
 {
@@ -50,18 +52,21 @@ CPlayer::CPlayer()
 	//InitAnimationModel("Player", &ANIM_DATA);
 
 	// HPゲージを設定
-	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, false, CGaugeUI2D::EGaugeType::eHpGauge);
+	mpHpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eHpGauge);
 	mpHpGauge->Size(GAUGE_SIZE);
 	mpHpGauge->Position(GAUGE_POS);
 	mpHpGauge->SetMaxPoint(GetMaxHp());
 	mpHpGauge->SetCurrPoint(GetHp());
 
 	// MPゲージを設定
-	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, false, CGaugeUI2D::EGaugeType::eMpGauge);
+	mpMpGauge = new CGaugeUI2D(this, GAUGE_PATH, true, CGaugeUI2D::EGaugeType::eMpGauge);
 	mpMpGauge->Size(GAUGE_SIZE);
 	mpMpGauge->Position(GAUGE_POS + CVector(0.0f, mpMpGauge->Size().Y() + GAUGE_DIST, 0.0f));
 	mpMpGauge->SetMaxPoint(GetMaxMp());
 	mpMpGauge->SetCurrPoint(GetMp());
+
+	// 呪文の文字列テキストの持ち主を設定
+	mpSpellText->SetOwner(this);
 
 	// コライダ―を生成
 	CreateCol();
@@ -90,7 +95,7 @@ void CPlayer::Update()
 		LookAt(lookPos);
 	}
 
-	// 少しずつ減速
+	// 徐々に減速
 	mMoveSpeed -= mMoveSpeed * DECREASE_MOVE_SPEED;
 
 	// 待機中は、移動処理を行う
@@ -140,6 +145,19 @@ void CPlayer::Update()
 bool CPlayer::IsCastState() const
 {
 	return mState == EState::eCast ? true : false;
+}
+
+// オブジェクト削除処理
+void CPlayer::DeleteObject(CObjectBase* obj)
+{
+	CPlayerBase::DeleteObject(obj);
+
+	// 削除されたのが呪文のテキストなら
+	// ポインタを空にする
+	if (obj == mpSpellText)
+	{
+		mpSpellText = nullptr;
+	}
 }
 
 // コライダ―を生成
@@ -368,3 +386,27 @@ std::string CPlayer::GetStateStr(EState state) const
 	return "エラー";
 }
 #endif
+
+// 指定方向で一番角度が近い敵をロックオンターゲットに設定
+void CPlayer::ChangeLockOnTarget(EDirection dir)
+{
+	// ターゲット候補を取得
+	std::vector<CEnemy*> targets = CEnemyManager::Instance()->GetTargets();
+
+	switch (dir)
+	{
+		// 上方向
+	case CPlayer::EDirection::eUp:
+
+		break;
+		// 下方向
+	case CPlayer::EDirection::eDown:
+		break;
+		// 左方向
+	case CPlayer::EDirection::eLeft:
+		break;
+		// 右方向
+	case CPlayer::EDirection::eRight:
+		break;
+	}
+}

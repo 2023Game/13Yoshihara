@@ -24,10 +24,13 @@ public:
 	~CPlayer();
 
 	// 更新
-	void Update();
+	void Update() override;
 
 	// プレイヤーが詠唱状態か
 	bool IsCastState() const;
+
+	// オブジェクト削除処理
+	void DeleteObject(CObjectBase* obj) override;
 
 private:
 	// コライダ―を生成
@@ -101,4 +104,15 @@ private:
 
 	// MPゲージ
 	CGaugeUI2D* mpMpGauge;
+
+	// 方向
+	enum class EDirection
+	{
+		eUp,
+		eDown,
+		eLeft,
+		eRight,
+	};
+	// 指定方向で一番角度が近い敵をロックオンターゲットに設定
+	void ChangeLockOnTarget(EDirection dir);
 };
