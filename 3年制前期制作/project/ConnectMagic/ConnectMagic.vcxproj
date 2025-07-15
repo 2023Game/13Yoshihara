@@ -102,11 +102,12 @@
     <ClCompile Include="src\Game\CItemBase.cpp" />
     <ClCompile Include="src\Game\CItemDrop.cpp" />
     <ClCompile Include="src\Game\CMap1Scene.cpp" />
+    <ClCompile Include="src\Game\CMap3Scene.cpp" />
     <ClCompile Include="src\Game\CPortalFragment.cpp" />
     <ClCompile Include="src\Game\CTorch.cpp" />
-    <ClCompile Include="src\Game\CTutorialMap.cpp" />
+    <ClCompile Include="src\Game\CMap2.cpp" />
     <ClCompile Include="src\Game\CMap1.cpp" />
-    <ClCompile Include="src\Game\CMap_3.cpp" />
+    <ClCompile Include="src\Game\CMap3.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CPortal.cpp" />
@@ -137,7 +138,7 @@
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
-    <ClCompile Include="src\Game\CTutorialScene.cpp" />
+    <ClCompile Include="src\Game\CMap2Scene.cpp" />
     <ClCompile Include="src\Game\CUpgradeItem.cpp" />
     <ClCompile Include="src\Game\CWand.cpp" />
     <ClCompile Include="src\Game\CWater.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="src\Game\CBridge.h" />
     <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
+    <ClInclude Include="src\Game\CMap3Scene.h" />
     <ClInclude Include="src\Game\ConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
     <ClInclude Include="src\Game\CConnectPointManager.h" />
@@ -264,9 +266,9 @@
     <ClInclude Include="src\Game\CMap1Scene.h" />
     <ClInclude Include="src\Game\CPortalFragment.h" />
     <ClInclude Include="src\Game\CTorch.h" />
-    <ClInclude Include="src\Game\CTutorialMap.h" />
+    <ClInclude Include="src\Game\CMap2.h" />
     <ClInclude Include="src\Game\CMap1.h" />
-    <ClInclude Include="src\Game\CMap_3.h" />
+    <ClInclude Include="src\Game\CMap3.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CPortal.h" />
@@ -297,7 +299,7 @@
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
-    <ClInclude Include="src\Game\CTutorialScene.h" />
+    <ClInclude Include="src\Game\CMap2Scene.h" />
     <ClInclude Include="src\Game\CUpgradeItem.h" />
     <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWater.h" />

@@ -1,5 +1,7 @@
 #include "CBridge.h"
 #include "CColliderMesh.h"
+#include "CConnectPointManager.h"
+#include "CPlayer.h"
 
 // 重量
 #define WEIGHT 1.0f
@@ -8,7 +10,7 @@
 #define TARGET_OFFSET_POS CVector(0.0f,50.0f,0.0f)
 
 // 回転速度
-#define ROTATE_SPEED 5.0f
+#define ROTATE_SPEED 1.0f
 #define GRAVITY_ROTATE_SPEED 180.0f
 
 // 傾ける最大の角度
@@ -44,13 +46,19 @@ CBridge::~CBridge()
 // 引っ張る処理
 void CBridge::Connect(CVector wandPointPos)
 {
-	// 相手が動かないオブジェクトじゃなければ処理しない
-	//if (opponentWeight != 1.0f) return;
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// カメラの方向
+	CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
+	// 新しい座標を求める
+	CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
+	
+	CVector pullDir = newPos - Position();
+
 	// 傾く角度
 	float angle = ROTATE_SPEED * Times::DeltaTime();
 
 	// 橋を傾ける
-	//RotateBridge(angle, pullDir);
+	RotateBridge(angle, pullDir);
 }
 
 // 更新処理

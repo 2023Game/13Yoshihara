@@ -1,4 +1,4 @@
-#include "CTutorialMap.h"
+#include "CMap2.h"
 #include "CSwitch.h"
 #include "CDoor.h"
 #include "CBox.h"
@@ -41,24 +41,24 @@
 #define RESPAWN_RADIUS	25.0f
 
 // コンストラクタ
-CTutorialMap::CTutorialMap()
+CMap2::CMap2()
 	: CFieldBase()
 {
-	mpModel = CResourceManager::Get<CModel>("TutorialMap");
+	mpModel = CResourceManager::Get<CModel>("Map2");
 
 	// オブジェクトを生成
 	CreateFieldObjects();
 	// コライダ―を生成
-	CreateCol("TutorialMap_Ground_Col", "TutorialMap_Wall_Col", "");
+	CreateCol("Map2_Ground_Col", "Map2_Wall_Col", "");
 }
 
 // デストラクタ
-CTutorialMap::~CTutorialMap()
+CMap2::~CMap2()
 {
 }
 
 // フィールドのオブジェクトを生成
-void CTutorialMap::CreateFieldObjects()
+void CMap2::CreateFieldObjects()
 {
 	// ドアを生成
 	CDoor* door = new CDoor(CVector::zero);

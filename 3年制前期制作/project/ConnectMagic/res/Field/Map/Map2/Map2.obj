@@ -1,6 +1,6 @@
 # Blender 4.1.0
 # www.blender.org
-mtllib TutorialMap.mtl
+mtllib Map2.mtl
 o Block_Ground
 v -25.000000 -54.999996 -155.000000
 v -25.000000 -4.999996 -155.000000

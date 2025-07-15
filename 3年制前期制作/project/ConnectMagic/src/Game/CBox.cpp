@@ -17,13 +17,16 @@
 // コライダーの半径
 #define RADIUS 2.4f
 
+// スケールの倍率
+#define SCALE 2.0f
+
 // コンストラクタ
 CBox::CBox()
 	: CConnectObject(WEIGHT)
 {
 	mpModel = CResourceManager::Get<CModel>("Box");
 
-	Scale(Scale() * 2.0f);
+	Scale(Scale() * SCALE);
 
 	// コライダーを生成
 	CreateCol();

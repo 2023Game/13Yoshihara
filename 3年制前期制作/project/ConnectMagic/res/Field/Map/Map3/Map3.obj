@@ -1,6 +1,6 @@
 # Blender 4.1.0
 # www.blender.org
-mtllib Map_1.mtl
+mtllib Map3.mtl
 o Bridge_Frame
 v -288.000000 55.000004 262.999969
 v -288.000000 0.000011 263.000000

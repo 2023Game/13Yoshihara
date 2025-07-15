@@ -481,15 +481,6 @@
     <ClCompile Include="src\Test\CTestField.cpp">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTutorialMap.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CMap1.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CMap_3.cpp">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CGearBaseStatus.cpp">
       <Filter>ソース ファイル\Game\Weapon\Status</Filter>
     </ClCompile>
@@ -529,9 +520,6 @@
     <ClCompile Include="src\Game\CRespawnArea.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CTutorialScene.cpp">
-      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CPortal.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
@@ -543,9 +531,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CBridge.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CMap1Scene.cpp">
-      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CWaterShader.cpp">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
@@ -585,6 +570,24 @@
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CNavNode.cpp">
       <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap3.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap1.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap2.cpp">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap1Scene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap2Scene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CMap3Scene.cpp">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -948,13 +951,7 @@
     <ClInclude Include="src\Test\CTestField.h">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTutorialMap.h">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CMap1.h">
-      <Filter>ソース ファイル\Game\Field\Map</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CMap_3.h">
+    <ClInclude Include="src\Game\CMap3.h">
       <Filter>ソース ファイル\Game\Field\Map</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CGearBaseStatus.h">
@@ -1002,9 +999,6 @@
     <ClInclude Include="src\Game\FadeType.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CTutorialScene.h">
-      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CPortal.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
@@ -1016,9 +1010,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CBridge.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CMap1Scene.h">
-      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CWaterShader.h">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
@@ -1061,6 +1052,21 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CNavNode.h">
       <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap2.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap1.h">
+      <Filter>ソース ファイル\Game\Field\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap1Scene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap2Scene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CMap3Scene.h">
+      <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

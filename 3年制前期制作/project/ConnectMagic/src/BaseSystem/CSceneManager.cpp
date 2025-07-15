@@ -1,8 +1,9 @@
 #include "CSceneManager.h"
 #include "CFade.h"
 #include "CTitleScene.h"
-#include "CTutorialScene.h"
 #include "CMap1Scene.h"
+#include "CMap2Scene.h"
+#include "CMap3Scene.h"
 #include "CTaskManager.h"
 
 #include "Test/CBootMenuScene.h"
@@ -109,10 +110,12 @@ void CSceneManager::ChangeNextScene()
 	{
 		//タイトルシーン
 		case EScene::eTitle:		mpScene = new CTitleScene();			break;
-		// チュートリアルシーン
-		case EScene::eTutorial:		mpScene = new CTutorialScene();			break;
 		// マップ1シーン
 		case EScene::eMap1:			mpScene = new CMap1Scene();				break;
+		// マップ2シーン
+		case EScene::eMap2:			mpScene = new CMap2Scene();				break;
+		// マップ3シーン
+		case EScene::eMap3:			mpScene = new CMap3Scene();				break;
 		//起動時メニュー
 		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト

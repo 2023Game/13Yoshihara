@@ -1,4 +1,4 @@
-#include "CTutorialScene.h"
+#include "CMap3Scene.h"
 #include "CSceneManager.h"
 #include "CGameCamera.h"
 #include "CGameCamera2.h"
@@ -12,23 +12,23 @@
 #include "CResourceManager.h"
 #include "CPlayer.h"
 #include "CWand.h"
-#include "CTutorialMap.h"
+#include "CMap3.h"
 #include "CConnectPointManager.h"
 
-//コンストラクタ
-CTutorialScene::CTutorialScene()
-	: CSceneBase(EScene::eTutorial)
+// コンストラクタ
+CMap3Scene::CMap3Scene()
+	: CSceneBase(EScene::eMap3)
 	, mpGameMenu(nullptr)
 {
 }
 
-//デストラクタ
-CTutorialScene::~CTutorialScene()
+// デストラクタ
+CMap3Scene::~CMap3Scene()
 {
 }
 
-//シーン読み込み
-void CTutorialScene::Load()
+// シーン読み込み
+void CMap3Scene::Load()
 {
 	// ゲーム画面はカーソル非表示
 	CInput::ShowCursor(false);
@@ -41,18 +41,23 @@ void CTutorialScene::Load()
 	// CModelX
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
-	CResourceManager::Load<CModel>("TutorialMap",	"Field\\Map\\TutorialMap\\TutorialMap.obj");
+	CResourceManager::Load<CModel>("Map3",			"Field\\Map\\Map3\\Map3.obj");
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
 	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
 	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
 	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
+	CResourceManager::Load<CModel>("Torch",			"Field\\Torch\\Torch.obj");
+	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
+	CResourceManager::Load<CModel>("CampFire",		"Field\\CampFire\\CampFire.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("TutorialMap_Ground_Col",	"Field\\Map\\TutorialMap\\Col\\TutorialMap_Ground_Col.obj");
-	CResourceManager::Load<CModel>("TutorialMap_Wall_Col",		"Field\\Map\\TutorialMap\\Col\\TutorialMap_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Door_Col",					"Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col",					"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("Map3_Ground_Col",	"Field\\Map\\Map3\\Col\\Map3_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Map3_Wall_Col",		"Field\\Map\\Map3\\Col\\Map3_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Door_Col",			"Field\\Door\\Col\\Door_Col.obj");
+	CResourceManager::Load<CModel>("Box_Col",			"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("Bridge_Col",		"Field\\Bridge\\Col\\Bridge_Col.obj");
+	CResourceManager::Load<CModel>("CampFire_Col",		"Field\\CampFire\\Col\\CampFire_Col.obj");
 	/*
 	効果音
 	*/
@@ -68,14 +73,6 @@ void CTutorialScene::Load()
 	// プレイヤー生成
 	CPlayer* player = new CPlayer();
 
-	// CGameCameraのテスト
-	//CGameCamera* mainCamera = new CGameCamera
-	//(
-	//	//CVector(5.0f, -15.0f, 180.0f),
-	//	CVector(0.0f, 50.0f, 75.0f),
-	//	player->Position()
-	//);
-	// 
 	// CGameCamera2のテスト
 	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);
 	CGameCamera2* mainCamera = new CGameCamera2
@@ -83,17 +80,19 @@ void CTutorialScene::Load()
 		atPos + CVector(0.0f, 0.0f, 20.0f),
 		atPos
 	);
+	// カメラの位置を反対へ
+	mainCamera->SetRotateAngle(CVector(0.0f, 180.0f, 0.0f));
 
 	// フィールドクラス生成
-	CTutorialMap* field = new CTutorialMap();
+	mpField = new CMap3();
 
 	// 衝突判定するコライダーを追加
-	pointMgr->AddCollider(field->GetGroundCol());
-	pointMgr->AddCollider(field->GetWallCol());
+	pointMgr->AddCollider(mpField->GetGroundCol());
+	pointMgr->AddCollider(mpField->GetWallCol());
 
 	//// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
+	mainCamera->AddCollider(mpField->GetGroundCol());
+	mainCamera->AddCollider(mpField->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
 
@@ -101,8 +100,8 @@ void CTutorialScene::Load()
 	mpGameMenu = new CGameMenu();
 }
 
-//シーンの更新処理
-void CTutorialScene::Update()
+// シーンの更新処理
+void CMap3Scene::Update()
 {
 #if _DEBUG
 	if (CInput::PushKey('H'))

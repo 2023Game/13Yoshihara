@@ -4,13 +4,13 @@
 class CGameMenu;
 
 // チュートリアルシーン
-class CTutorialScene : public CSceneBase
+class CMap2Scene : public CSceneBase
 {
 public:
 	// コンストラクタ
-	CTutorialScene();
+	CMap2Scene();
 	// デストラクタ
-	~CTutorialScene();
+	~CMap2Scene();
 
 	// シーン読み込み
 	void Load() override;
