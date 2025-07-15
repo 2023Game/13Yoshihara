@@ -36,20 +36,8 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-	// 引っ張られた時の処理
-
-	/// <summary>
-	/// 引っ張られたときの処理
-	/// </summary>
-	/// <param name="pullDir">引っ張られる方向</param>
-	/// <param name="opponentWeight">相手の重さ</param>
-	virtual void Pull(CVector pullDir, float opponentWeight);
-
-	/// <summary>
-	/// 繋がったときの処理
-	/// </summary>
-	/// <param name="other">相手</param>
-	virtual void Connect(CConnectObject* other);
+	// 繋がったときの処理
+	virtual void Connect(CVector wandPointPos);
 
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);

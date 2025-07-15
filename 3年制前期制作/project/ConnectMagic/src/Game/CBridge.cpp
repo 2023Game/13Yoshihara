@@ -42,7 +42,7 @@ CBridge::~CBridge()
 }
 
 // 引っ張る処理
-void CBridge::Pull(CVector pullDir, float opponentWeight)
+void CBridge::Connect(CVector wandPointPos)
 {
 	// 相手が動かないオブジェクトじゃなければ処理しない
 	//if (opponentWeight != 1.0f) return;
@@ -50,7 +50,7 @@ void CBridge::Pull(CVector pullDir, float opponentWeight)
 	float angle = ROTATE_SPEED * Times::DeltaTime();
 
 	// 橋を傾ける
-	RotateBridge(angle, pullDir);
+	//RotateBridge(angle, pullDir);
 }
 
 // 更新処理

@@ -38,7 +38,7 @@ void CConnectTarget::Render()
 }
 
 // 接続部がついているオブジェクトを取得
-CConnectObject* CConnectTarget::GetConnectObj()
+CConnectObject* CConnectTarget::GetConnectObj() const
 {
 	return mpConnectObj;
 }

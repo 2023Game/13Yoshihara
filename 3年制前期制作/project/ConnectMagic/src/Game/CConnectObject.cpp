@@ -2,8 +2,12 @@
 #include "CConnectTarget.h"
 #include "CModel.h"
 #include "CConnectPointManager.h"
+#include "CPlayer.h"
 
 #define THRESHOLD 0.1f
+
+// 移動前後のレイが衝突したときのマージン
+#define MARGIN 50.0f
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
@@ -25,12 +29,12 @@ CConnectObject::~CConnectObject()
 {
 	// 接続部管理クラス
 	auto* pointMgr = CConnectPointManager::Instance();
-	// 自身についている接続部があれば削除
-	pointMgr->DeleteConnectPoint(this);
 
 	// 全てのターゲットを削除
 	for (int i = 0; i < mTargets.size(); i++)
 	{
+		// 接続されていれば解除
+		pointMgr->DisableConnect(mTargets[i]);
 		mTargets[i]->SetConnectObj(nullptr);
 		mTargets[i]->Kill();
 	}
@@ -165,37 +169,17 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 	}
 }
 
-// 引っ張られた時の処理
-void CConnectObject::Pull(CVector pullDir, float opponentWeight)
-{
-	// 自身が動かない重さの場合処理しない
-	if (mWeight == 1.0f) return;
-	// 移動速度
-	CVector moveSpeed = CVector::zero;
-	// 相手が動かない重さなら
-	if (opponentWeight == 1.0f)
-	{
-		// 引っ張る力はそのまま
-		moveSpeed = pullDir * PULL_POWER * Times::DeltaTime();
-	}
-	// それ以外なら
-	else
-	{
-		// 自分と相手の重さの総量
-		float totalWeight = mWeight + opponentWeight;
-		// 総量に対する相手の重さで引っ張る力を決める
-		moveSpeed = pullDir * (opponentWeight / totalWeight * PULL_POWER) * Times::DeltaTime();
-	}
-
-	// 移動速度を設定する
-	mMoveSpeedY = moveSpeed.Y();
-	moveSpeed.Y(0.0f);
-	mMoveSpeed = moveSpeed;
-}
-
 // 繋がったときの処理
-void CConnectObject::Connect(CConnectObject* other)
+void CConnectObject::Connect(CVector wandPointPos)
 {
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// カメラの方向
+	CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
+	// 新しい座標を求める
+	CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
+	newPos.Y(Position().Y());
+	newPos = CVector::Lerp(Position(), newPos, 0.1f);
+	Position(newPos);
 }
 
 // 接続ターゲットの作成

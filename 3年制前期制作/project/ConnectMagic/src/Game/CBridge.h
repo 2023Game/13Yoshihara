@@ -10,11 +10,11 @@ public:
 	// デストラクタ
 	~CBridge();
 
-	// 引っ張る処理
-	void Pull(CVector pullDir, float opponentWeight) override;
-
 	// 更新処理
 	void Update() override;
+
+	// 繋がったときの処理
+	void Connect(CVector wandPointPos) override;
 
 	// 指定角度に設定
 	void SetAngle(float angle);

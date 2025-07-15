@@ -23,8 +23,6 @@ public:
 	void Render();
 
 	// 引っ張る処理を実行
-	void Pull();
-	// 繋がっている処理を実行
 	void Connect();
 
 	/// <summary>
@@ -35,6 +33,15 @@ public:
 	bool Ray(CVector& hitPos);
 
 	/// <summary>
+	/// 2点を繋いだレイと設定されているコライダーとの衝突判定を行う
+	/// </summary>
+	/// <param name="start">始まりの点</param>
+	/// <param name="end">終わりの点</param>
+	/// <param name="hit">衝突情報</param>
+	/// <returns></returns>
+	bool Ray(const CVector& start, const CVector& end, CHitInfo* hit);
+
+	/// <summary>
 	/// 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
 	/// </summary>
 	/// <param name="targetPos">ターゲットの座標</param>
@@ -42,10 +49,14 @@ public:
 	bool RayTarget(CVector targetPos);
 
 	/// <summary>
-	/// 接続部同士を繋いだレイと設定されているコライダーとの衝突判定を行い
-	/// 衝突していたら削除する
+	/// 接続部と繋いだレイと設定されているコライダーとの衝突判定を行い
+	/// 衝突していたら無効
 	/// </summary>
 	void RayPoint();
+
+	// 接続部との距離が最大値より遠いか
+	// 最小値より近ければ接続を無効にする
+	void FarOrNearDist();
 
 	// 衝突判定を行うコライダーをリストに追加
 	void AddCollider(CCollider* col);
@@ -54,29 +65,14 @@ public:
 	// 衝突判定を行うコライダーをリセット
 	void ResetCollider();
 
-	// 接続部を生成
-	void CreateConnectPoint(CConnectTarget* connectTarget);
+	// 接続を有効
+	void EnableConnect(CConnectTarget* connectTarget);
 
-	// 指定のオブジェクトが親の接続部を削除
-	void DeleteConnectPoint(CConnectObject* obj);
-
-	/// <summary>
-	/// 接続部を削除
-	/// </summary>
-	/// <param name="num">削除する要素番号</param>
-	void DeleteConnectPoint(int num);
-
-	/// <summary>
-	/// 接続部をペアで削除
-	/// </summary>
-	/// <param name="num">削除する要素番号</param>
-	void DeleteConnectPointPair(int num);
-
-	// 最後の要素を消去する
-	void DeleteLastConnectPoint();
+	// 接続を無効
+	void DisableConnect(CConnectTarget* connectTarget);
 
 	// 杖の接続部の有効無効を設定
-	void SetWandConnect(bool isOnOff);
+	void SetWandConnect(bool isOnOff, CConnectTarget* target);
 	// 杖が接続されているか
 	bool GetWandConnect();
 
@@ -86,31 +82,24 @@ public:
 	CConnectTarget* GetConnectWandTarget();
 
 	// 杖が接続している接続部とプレイヤーの距離を設定
-	void SetWandConnectDistance();
+	void SetConnectDistance();
 	// 杖が接続している接続部とプレイヤーの距離を取得
-	float GetWandConnectDistance();
+	float GetConnectDistance();
 
-	/// <summary>
-	/// 杖が接続している接続部とプレイヤーの距離を設定
-	/// ターザン用
-	/// </summary>
-	/// <param name="sign">符号</param>
-	void SetWandConnectDistance(int sign);
+	// 現在の杖が接続している接続部とプレイヤーの距離を取得
+	float GetNowConnectDistance();
 
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
-
-	// 強化アイテムの獲得数を増加
-	void AddUpgradeItemNum();
 
 private:
 	// インスタンス
 	static CConnectPointManager* spInstance;
 
-	// 接続部のリスト
-	std::vector<CConnectPoint*> mPoints;
+	// 接続先の接続部
+	CConnectPoint* mpConnectPoint;
 	// 杖用の接続部
-	CConnectPoint* mpPoint;
+	CConnectPoint* mpWandPoint;
 	// 杖と接続中のターゲット
 	CConnectTarget* mpConnectWandTarget;
 
@@ -121,20 +110,5 @@ private:
 	void WandPos();
 
 	// 杖が接続している接続部とプレイヤーの距離
-	float mWandConnectDistance;
-
-	// 接続できる最大距離
-	float mConnectMaxDist;
-
-	// 接続できる数の最大値
-	int mConnectMaxNum;
-
-	// 強化アイテム獲得数
-	int mUpgradeItemNum;
-
-	// 接続できる距離を増加
-	void AddConnectMaxDist();
-
-	// 接続できる数を増加
-	void AddConnectMaxNum();
+	float mConnectDistance;
 };

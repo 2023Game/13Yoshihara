@@ -62,10 +62,6 @@ void CUpgradeItem::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 // 取得時の処理
 void CUpgradeItem::GetItem()
 {
-	// 接続部管理クラスを取得
-	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// 強化アイテムの獲得数を増加
-	pointMgr->AddUpgradeItemNum();
 }
 
 // 更新

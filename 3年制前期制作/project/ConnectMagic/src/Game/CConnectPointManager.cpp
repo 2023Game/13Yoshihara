@@ -8,14 +8,9 @@
 #include "Maths.h"
 
 // レイを伸ばせる距離の最大の初期値
-#define DEFAULT_RAY_MAX_DISTANCE 100.0f
+#define RAY_MAX_DISTANCE 100.0f
 // レイを縮めれる距離の最小
 #define RAY_MIN_DISTANCE 15.0f
-
-// 伸ばせる距離の強化値
-#define RAY_MAX_UPGRADE_SCALE 10.0f
-// 接続できる最大数の増加に必要な強化アイテムの数
-#define CONNECT_UPGRADE_NUM 10
 
 // ターザンの最短距離
 #define TARZAN_MIN_DISTANCE 30.0f
@@ -50,19 +45,22 @@ CConnectPointManager* CConnectPointManager::Instance()
 // コンストラクタ
 CConnectPointManager::CConnectPointManager()
 	: CTask(ETaskPriority::eNone, 0, ETaskPauseType::eGame)
-	, mConnectMaxNum(DEFAULT_CONNECT_NUM)
 	, mpConnectWandTarget(nullptr)
-	, mWandConnectDistance(0.0f)
-	, mConnectMaxDist(DEFAULT_RAY_MAX_DISTANCE)
-	, mUpgradeItemNum(0)
+	, mConnectDistance(0.0f)
 {
 	// 杖用の接続部分のビルボード
-	mpPoint = new CConnectPoint(nullptr);
+	mpWandPoint = new CConnectPoint(nullptr);
 	// 最初は非表示
-	mpPoint->SetEnable(false);
-	mpPoint->SetShow(false);
+	mpWandPoint->SetEnable(false);
+	mpWandPoint->SetShow(false);
 	// スケール調整
-	mpPoint->Scale(mpPoint->Scale() * POINT_SCALE);
+	mpWandPoint->Scale(mpWandPoint->Scale() * POINT_SCALE);
+
+	// 接続先の接続部のビルボード
+	mpConnectPoint = new CConnectPoint(nullptr);
+	// 最初は無効
+	mpConnectPoint->SetEnable(false);
+	mpConnectPoint->SetShow(false);
 }
 
 // デストラクタ
@@ -78,157 +76,42 @@ void CConnectPointManager::Update()
 	// 杖の先の座標を求める
 	WandPos();
 
-	// 接続部同士を繋いだ線が何かに衝突したら削除
+	// 接続部と繋いだ線が何かに衝突したら無効
 	RayPoint();
 
-	// 繋がっている処理を実行
+	// 接続部との距離が最大値より遠いか
+	// 最小値より近ければ接続を無効にする
+	FarOrNearDist();
+
+	// 繋がっている処理
 	Connect();
 
 #if _DEBUG
-	CDebugPrint::Print("POINT:%d\n", mPoints.size());
+	CDebugPrint::Print("ConnectDist:%f\n", mConnectDistance);
 #endif
 }
 
 // 描画
 void CConnectPointManager::Render()
 {
-	// レイの開始と終了地点
-	CVector rayStart;
-	CVector rayEnd;
-	for (int i = 0; i < mPoints.size(); i += 2)
-	{
-		// 接続部同士で繋がっているか
-		bool isPoints = false;
-		// iの次の要素番号が要素範囲内なら
-		// 接続部同士を線で繋げる
-		if (i + 1 < mPoints.size())
-		{
-			// 接続部がついているオブジェクトが同じなら
-			if (mPoints[i]->GetConnectObj() == mPoints[i + 1]->GetConnectObj())
-			{
-				// ペアで削除
-				DeleteConnectPointPair(i);
-				// 1セット戻す
-				i -= 2;
-				// 次へ
-				continue;
-			}
-			rayStart = mPoints[i]->Position();
-			rayEnd = mPoints[i + 1]->Position();
-			isPoints = true;
-		}
-		// セットになっていない接続部を杖につなげる
-		else
-		{
-			// 杖の接続部の座標
-			rayStart = mpPoint->Position();
-			// 接続部の座標
-			rayEnd = mPoints[i]->Position();
-
-		}
-
-		// 接続部同士の距離
-		float distance = (rayEnd - rayStart).Length();
-		// 最大距離より遠いなら
-		if (distance > mConnectMaxDist)
-		{
-			// 接続削除
-			DeleteConnectPointPair(i);
-			// 接続部同士なら
-			if (isPoints)
-			{
-				// 1セット戻す
-				i -= 2;
-			}
-			// 杖とつながっているなら
-			else
-			{
-				// 杖の接続部を無効
-				SetWandConnect(false);
-			}
-			// 次へ
-			continue;
-		}
-
-		// 黄線を描画
-		Primitive::DrawLine
-		(
-			rayStart, rayEnd,
-			CColor::yellow,
-			5.0f
-		);
-	}
-}
-
-// 引っ張る処理を実行
-void CConnectPointManager::Pull()
-{
-	for (int i = 0; i < mPoints.size(); i += 2)
-	{
-		// iの次の要素番号が要素範囲内なら
-		// セットになっている接続部
-		if (i + 1 < mPoints.size())
-		{
-			// 接続部がついているオブジェクト
-			CConnectObject* connectObj1 = mPoints[i]->GetConnectObj();
-			CConnectObject* connectObj2 = mPoints[i + 1]->GetConnectObj();
-
-			// 引っ張られる方向を求める
-			CVector pullDir = mPoints[i + 1]->Position() - mPoints[i]->Position();
-			// 長さが最小未満なら次へ
-			if (pullDir.Length() < RAY_MIN_DISTANCE) continue;
-			// 正規化
-			pullDir.Normalize();
-			// 引っ張る
-			connectObj1->Pull(pullDir, connectObj2->GetWeight());
-
-			// 引っ張られる方向を求める
-			pullDir = mPoints[i]->Position() - mPoints[i + 1]->Position();
-			// 正規化
-			pullDir.Normalize();
-			// 引っ張る
-			connectObj2->Pull(pullDir, connectObj1->GetWeight());
-		}
-		// セットになっていない接続部
-		else
-		{
-			// 引っ張られる方向を求める
-			// 接続部から杖の方向
-			CVector pullDir = mpPoint->Position() - mPoints[i]->Position();
-			// 長さが最小未満なら次へ
-			if (pullDir.Length() < RAY_MIN_DISTANCE) continue;
-			// 正規化
-			pullDir.Normalize();
-			// 接続部がついているオブジェクト
-			CConnectObject* connectObj = mPoints[i]->GetConnectObj();
-			// 引っ張る
-			connectObj->Pull(pullDir, WAND_WEIGHT);
-		}
-	}
+	// 杖が接続されていなければ処理しない
+	if (!GetWandConnect()) return;
+	// 黄線を描画
+	Primitive::DrawLine
+	(
+		mpWandPoint->Position(), mpConnectPoint->Position(),
+		CColor::yellow,
+		5.0f
+	);
 }
 
 // 繋がっている処理を実行
 void CConnectPointManager::Connect()
 {
-	for (int i = 0; i < mPoints.size(); i += 2)
-	{
-		// iの次の要素番号が要素範囲内なら
-		// セットになっている接続部
-		if (i + 1 < mPoints.size())
-		{
-			// 接続部がついているオブジェクト
-			CConnectObject* connectObj1 = mPoints[i]->GetConnectObj();
-			CConnectObject* connectObj2 = mPoints[i + 1]->GetConnectObj();
-
-			// どちらかが空なら処理しない
-			if (connectObj1 == nullptr || connectObj2 == nullptr) return;
-			// 繋げる
-			connectObj1->Connect(connectObj2);
-
-			// 繋げる
-			connectObj2->Connect(connectObj1);
-		}
-	}
+	// 杖が接続されていないなら処理しない
+	if (!GetWandConnect()) return;
+	
+	mpConnectPoint->GetConnectObj()->Connect(mpWandPoint->Position());
 }
 
 // 設定されているコライダーと衝突判定を行う
@@ -242,7 +125,7 @@ bool CConnectPointManager::Ray(CVector& hitPos)
 	dir.Normalize();
 	// レイの開始と終了地点
 	CVector rayStart = camera->GetEye();
-	CVector rayEnd = rayStart + dir * mConnectMaxDist;
+	CVector rayEnd = rayStart + dir * RAY_MAX_DISTANCE;
 	float nearDist = 0.0f;
 	bool isHit = false;
 	// 設定されているコライダーを順番に調べる
@@ -271,6 +154,12 @@ bool CConnectPointManager::Ray(CVector& hitPos)
 	}
 
 	return isHit;
+}
+
+// 2点を繋いだレイと設定されているコライダーとの衝突判定を行う
+bool CConnectPointManager::Ray(const CVector& start, const CVector& end, CHitInfo* hit)
+{
+	return false;
 }
 
 // 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
@@ -316,48 +205,45 @@ bool CConnectPointManager::RayTarget(CVector targetPos)
 	return false;
 }
 
-// 接続部同士を繋いだレイと設定されているコライダーとの衝突判定を行い
-// 衝突していたら削除する
+// 接続部と繋いだレイと設定されているコライダーとの衝突判定を行い
+// 衝突していたら接続解除
 void CConnectPointManager::RayPoint()
 {
-
 	CHitInfo hit;
 	// レイの開始と終了地点
-	CVector rayStart;
-	CVector rayEnd;
-	for (int i = 0; i < mPoints.size(); i += 2)
+	CVector rayStart = mpWandPoint->Position();
+	CVector rayEnd = mpConnectPoint->Position();
+
+	// 設定されているコライダーを順番に調べる
+	for (CCollider* c : mColliders)
 	{
-		// 接続部同士で繋がっているか
-		bool isPoints = false;
-		// iの次の要素番号が要素範囲内なら
-		// 接続部二つを開始と終了地点に設定
-		if (i + 1 < mPoints.size())
+		// レイとコライダーの衝突判定を行う
+		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
 		{
-			rayStart = mPoints[i]->Position();
-			rayEnd = mPoints[i + 1]->Position();
-			// 接続部同士で繋がっている
-			isPoints = true;
+			// 接続を無効
+			DisableConnect(GetConnectWandTarget());
 		}
-		// セットになっていない場合、接続部と杖の接続部を設定
-		else
-		{
-			// 杖の接続部の座標
-			rayStart = mpPoint->Position();
-			// 接続部の座標
-			rayEnd = mPoints[i]->Position();
+	}
+}
 
-		}
+// 接続部との距離が最大値より遠いか
+// 最小値より近ければ接続を無効にする
+void CConnectPointManager::FarOrNearDist()
+{
+	// 杖が接続されていないなら処理しない
+	if (!GetWandConnect()) return;
 
-		// 設定されているコライダーを順番に調べる
-		for (CCollider* c : mColliders)
-		{
-			// レイとコライダーの衝突判定を行う
-			if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-			{
-				// ペア削除
-				DeleteConnectPointPair(i);
-			}
-		}
+	// 最大距離より遠いなら
+	if (GetNowConnectDistance() > RAY_MAX_DISTANCE)
+	{
+		// 接続を無効
+		DisableConnect(GetConnectWandTarget());
+	}
+	// 最小距離より近いなら
+	else if (GetNowConnectDistance() < RAY_MIN_DISTANCE)
+	{
+		// 接続を無効
+		DisableConnect(GetConnectWandTarget());
 	}
 }
 
@@ -379,151 +265,58 @@ void CConnectPointManager::ResetCollider()
 	mColliders.clear();
 }
 
-// 接続部を生成
-void CConnectPointManager::CreateConnectPoint(CConnectTarget* connectTarget)
+// 接続部を有効
+void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 {
-	// 接続している数が最大値と同じ場合
-	// 最古の接続部を削除する
-	if (mConnectMaxNum == mPoints.size())
-	{
-		// 削除
-		DeleteConnectPointPair(0);
-	}
-	// 接続部を生成
-	CConnectPoint* point = new CConnectPoint(connectTarget->GetConnectObj());
 	// 座標を設定
-	point->Position(connectTarget->Position());
+	mpConnectPoint->Position(connectTarget->Position());
 	// 親子設定
-	point->SetParent(connectTarget);
-	// リストに追加
-	mPoints.push_back(point);
+	mpConnectPoint->SetParent(connectTarget);
+	// 接続オブジェクトを設定
+	mpConnectPoint->SetConnectObj(connectTarget->GetConnectObj());
 
-	// 接続数が奇数なら
-	if (mPoints.size() % 2 == 1)
-	{
-		// 杖に接続
-		SetWandConnect(true);
-		// 杖と接続中のターゲットを設定
-		SetConnectWandTarget(connectTarget);
-	}
-	// 偶数なら
-	else
-	{
-		// 杖の接続解除
-		SetWandConnect(false);
-		// 生成した接続部と一つ前の接続部をペアに設定
-		int num = mPoints.size() - 2;
-		point->SetPair(mPoints[num]);
-		mPoints[num]->SetPair(point);
-	}
+	// 杖に接続
+	SetWandConnect(true, connectTarget);
+
+	// 接続部を有効
+	mpConnectPoint->SetEnable(true);
+	mpConnectPoint->SetShow(true); 
+	
+	// 接続部との距離を設定
+	SetConnectDistance();
 }
 
-// 指定のオブジェクトが親の接続部を削除
-void CConnectPointManager::DeleteConnectPoint(CConnectObject* obj)
+// 接続を無効
+void CConnectPointManager::DisableConnect(CConnectTarget* connectTarget)
 {
-	// 削除する番号
-	std::vector<int> deleteNum;
-	// 後ろからチェック
-	for (int i = mPoints.size() - 1; i >= 0; i--)
-	{
-		// 一致したら
-		if (mPoints[i]->GetConnectObj() == obj)
-		{
-			// 削除する番号に追加
-			deleteNum.push_back(i);
-		}
-	}
+	// 接続中のターゲットでないなら処理しない
+	if (GetConnectWandTarget() != connectTarget) return;
 
-	// ペアで削除
-	for (int num : deleteNum)
-	{
-		DeleteConnectPointPair(num);
-	}
-}
+	// 杖の接続解除
+	SetWandConnect(false, nullptr);
 
-// 接続部を削除
-void CConnectPointManager::DeleteConnectPoint(int num)
-{
-	// サイズが0かnumが範囲外なら処理しない
-	if (mPoints.size() == 0 || mPoints.size() <= num) return;
-	// 一時保存
-	CConnectPoint* point = mPoints[num];
-	// 要素から除外
-	mPoints.erase(mPoints.begin() + num);
-	// 削除
-	point->Kill();
-}
-
-// 接続部をペアで削除
-void CConnectPointManager::DeleteConnectPointPair(int num)
-{
-	// サイズが0かnumが範囲外なら処理しない
-	if (mPoints.size() == 0 || mPoints.size() <= num) return;
-
-	// 接続部
-	CConnectPoint* point1 = mPoints[num];
-	CConnectPoint* point2 = point1->GetPair();
-
-	// ペアがnullptrじゃなければ
-	if (point2 != nullptr)
-	{
-		// 配列から取り除く
-		mPoints.erase(
-			std::remove_if(
-				mPoints.begin(), mPoints.end(),
-				[&](CConnectPoint* deletePoint)
-				{return deletePoint == point1 || deletePoint == point2; }
-			),
-			mPoints.end()
-		);
-		// 削除
-		point1->Kill();
-		point2->Kill();
-	}
-	// ペアがnullptrなら
-	else
-	{
-		// 一つだけ削除
-		DeleteConnectPoint(num);
-		// 杖の接続を解除
-		SetWandConnect(false);
-	}
-}
-
-// 最後の要素を消去する
-void CConnectPointManager::DeleteLastConnectPoint()
-{	
-	// サイズが0なら処理しない
-	if (mPoints.size() == 0) return;
-	// 一時保存
-	CConnectPoint* point = mPoints[mPoints.size() - 1];
-	// 要素から除外
-	mPoints.pop_back();
-	// 削除
-	point->Kill();
+	// 接続部を無効
+	mpConnectPoint->SetEnable(false);
+	mpConnectPoint->SetShow(false);
 }
 
 // 杖の接続部の有効無効を設定
-void CConnectPointManager::SetWandConnect(bool isOnOff)
+void CConnectPointManager::SetWandConnect(bool isOnOff, CConnectTarget* target)
 {
-	mpPoint->SetEnable(isOnOff);
-	mpPoint->SetShow(isOnOff);
+	mpWandPoint->SetEnable(isOnOff);
+	mpWandPoint->SetShow(isOnOff);
 
-	// 接続解除するとき
-	if (!isOnOff)
-	{
-		// 杖と接続中のターゲットを解除
-		SetConnectWandTarget(nullptr);
-	}
+	// 杖と接続中のターゲットを設定
+	SetConnectWandTarget(target);
 }
 
 // 杖が接続されているか
 bool CConnectPointManager::GetWandConnect()
 {
-	if (mpPoint == nullptr)
+	if (mpWandPoint == nullptr)
 		return false;
 
-	return mpPoint->IsShow();
+	return mpWandPoint->IsShow();
 }
 
 // 杖と接続中のターゲットを設定
@@ -539,7 +332,7 @@ CConnectTarget* CConnectPointManager::GetConnectWandTarget()
 }
 
 // 杖が接続している接続部とプレイヤーの距離を設定
-void CConnectPointManager::SetWandConnectDistance()
+void CConnectPointManager::SetConnectDistance()
 {
 	// 杖が接続されているなら
 	if (GetWandConnect())
@@ -547,37 +340,37 @@ void CConnectPointManager::SetWandConnectDistance()
 		// プレイヤーの座標
 		CVector rayStart = CPlayer::Instance()->Position();
 		// 杖と繋がっている接続部の座標
-		CVector rayEnd = mPoints[mPoints.size() - 1]->Position();
+		CVector rayEnd = mpConnectPoint->Position();
 		// 2点の距離
 		float distance = (rayEnd - rayStart).Length();
 		// 杖が接続している接続部とプレイヤーの距離を設定
-		mWandConnectDistance = distance;
+		mConnectDistance = distance;
 	}
 	// いないなら
 	else
 	{
 		// 不整値を設定
-		mWandConnectDistance = -1.0f;
+		mConnectDistance = -1.0f;
 	}
 }
 
 // 杖が接続している接続部とプレイヤーの距離を取得
-float CConnectPointManager::GetWandConnectDistance()
-{
-	return mWandConnectDistance;
+float CConnectPointManager::GetConnectDistance()
+{				
+	return mConnectDistance;
 }
 
-// 杖が接続している接続部とプレイヤーの距離を設定
-void CConnectPointManager::SetWandConnectDistance(int sign)
+// 現在の杖が接続している接続部とプレイヤーの距離を取得
+float CConnectPointManager::GetNowConnectDistance()
 {
-	mWandConnectDistance += sign * PULL_POWER / 2 *Times::DeltaTime();
+	// プレイヤーの座標
+	CVector rayStart = CPlayer::Instance()->Position();
+	// 杖と繋がっている接続部の座標
+	CVector rayEnd = mpConnectPoint->Position();
+	// 2点の距離
+	float distance = (rayEnd - rayStart).Length();
 
-	// ターザンの最短距離より短いなら
-	if (mWandConnectDistance < TARZAN_MIN_DISTANCE)
-	{
-		// 最短距離に設定
-		mWandConnectDistance = TARZAN_MIN_DISTANCE;
-	}
+	return distance;
 }
 
 // 杖と接続しているオブジェクトが空中の接続オブジェクトか
@@ -601,40 +394,6 @@ bool CConnectPointManager::IsWandConnectAirObject()
 	return false;
 }
 
-// 接続できる距離を増加
-void CConnectPointManager::AddConnectMaxDist()
-{
-	mConnectMaxDist += RAY_MAX_UPGRADE_SCALE;
-}
-
-// 接続できる数を増加
-void CConnectPointManager::AddConnectMaxNum()
-{
-	mConnectMaxNum++;
-}
-
-// 強化アイテムの獲得数を増加
-void CConnectPointManager::AddUpgradeItemNum()
-{
-	mUpgradeItemNum++;
-
-	// 接続できる距離を増加
-	AddConnectMaxDist();
-
-	// 接続できる最大数の増加に必要な数なら
-	if (mUpgradeItemNum % CONNECT_UPGRADE_NUM == 0)
-	{
-		// 接続できる数の増加
-		AddConnectMaxNum();
-	}
-	// 獲得が1つ目だった場合
-	else if (mUpgradeItemNum == 1)
-	{
-		// 接続できる数の増加
-		AddConnectMaxNum();
-	}
-}
-
 // 杖の先の接続部の位置を特定
 void CConnectPointManager::WandPos()
 {
@@ -651,7 +410,7 @@ void CConnectPointManager::WandPos()
 			offsetPos += wand->Matrix().VectorX() * POINT_OFFSET_POSX;
 			offsetPos += wand->Matrix().VectorY() * POINT_OFFSET_POSY;
 			offsetPos += wand->Matrix().VectorZ() * POINT_OFFSET_POSZ;
-			mpPoint->Position(offsetPos);
+			mpWandPoint->Position(offsetPos);
 		}
 	}
 }

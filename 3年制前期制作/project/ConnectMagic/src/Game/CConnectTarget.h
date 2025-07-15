@@ -15,7 +15,7 @@ public:
 	void Render() override;
 
 	// 接続部がついているオブジェクトを取得
-	CConnectObject* GetConnectObj();
+	CConnectObject* GetConnectObj() const;
 	// 接続部がついているオブジェクトを設定
 	void SetConnectObj(CConnectObject* obj);
 

@@ -16,18 +16,11 @@ public:
 	void Update() override;
 
 	// 接続部がついているオブジェクトを取得する
-	CConnectObject* GetConnectObj();
-
-	// ペアの接続部を設定
-	void SetPair(CConnectPoint* pair);
-
-	// ペアの接続部を取得
-	CConnectPoint* GetPair() const;
+	CConnectObject* GetConnectObj() const;
+	// 接続部がついているオブジェクトを設定
+	void SetConnectObj(CConnectObject* obj);
 
 private:
 	// 接続部がついているオブジェクト
 	CConnectObject* mpConnectObj;
-
-	// ペアの接続部
-	CConnectPoint* mpPair;
 };

@@ -103,9 +103,6 @@ private:
 		eDamageStart,	// 被弾開始
 		eDamage,		// 被弾ノックバック
 		eDamageEnd,		// 被弾終了
-		eJumpStart,		// ジャンプ開始
-		eJump,			// ジャンプ
-		eJumpEnd,		// ジャンプ終了
 		eAttackStart,	// 攻撃開始
 		eAttack,		// 攻撃
 		eAttackEnd,		// 攻撃終了
@@ -126,12 +123,6 @@ private:
 	void UpdateDamage();
 	// 被弾終了
 	void UpdateDamageEnd();
-	// ジャンプ開始
-	void UpdateJumpStart();
-	// ジャンプ中
-	void UpdateJump();
-	// ジャンプ終了
-	void UpdateJumpEnd();
 	// 攻撃開始
 	void UpdateAttackStart();
 	// 攻撃中
@@ -170,7 +161,7 @@ private:
 	bool mIsAttacking;
 
 	CWand* mpWand;			// 杖
-	CConnectPoint* mpPoint;	// 接続部
+	CConnectPoint* mpWandPoint;	// 接続部
 
 	// 射程内にあるコネクトオブジェクトのリスト
 	std::list<CConnectObject*> mConnectObjs;

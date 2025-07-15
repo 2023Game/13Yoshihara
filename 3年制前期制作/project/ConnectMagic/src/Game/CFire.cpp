@@ -47,24 +47,24 @@ CFire::~CFire()
 }
 
 // 繋がったときの処理
-void CFire::Connect(CConnectObject* other)
+void CFire::Connect(CVector wandPointPos)
 {
-	// 炎の接続オブジェクトなら
-	if (other->GetConnectObjTag() == EConnectObjTag::eFire)
-	{
-		// 炎のクラスを取得
-		CFire* fire = dynamic_cast<CFire*>(other);
-		
-		// 相手の炎がついているなら
-		if (fire->GetFire())
-		{
-			if (!mIsFire)
-			{
-				// 自分の炎を付ける
-				SetFire(true);
-			}
-		}
-	}
+	//// 炎の接続オブジェクトなら
+	//if (other->GetConnectObjTag() == EConnectObjTag::eFire)
+	//{
+	//	// 炎のクラスを取得
+	//	CFire* fire = dynamic_cast<CFire*>(other);
+	//	
+	//	// 相手の炎がついているなら
+	//	if (fire->GetFire())
+	//	{
+	//		if (!mIsFire)
+	//		{
+	//			// 自分の炎を付ける
+	//			SetFire(true);
+	//		}
+	//	}
+	//}
 }
 
 // 炎がついているかを設定

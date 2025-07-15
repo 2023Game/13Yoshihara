@@ -133,10 +133,10 @@ void CPortalFragment::Collision(CCollider* self, CCollider* other, const CHitInf
 			SetGravity(false);
 			// コライダを無効
 			SetEnableCol(false);
-			// 接続ターゲットを削除
-			CConnectPointManager::Instance()->DeleteConnectPoint(this);
 			for (CConnectTarget* target : mTargets)
 			{
+				// 接続されていれば解除
+				CConnectPointManager::Instance()->DisableConnect(target);
 				target->SetConnectObj(nullptr);
 				target->Kill();
 			}
