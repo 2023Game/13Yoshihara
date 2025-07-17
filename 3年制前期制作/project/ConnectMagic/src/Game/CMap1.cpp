@@ -17,16 +17,16 @@
 #define ITEM_POS_3	CVector(-270.0f,0.0f,90.0f)
 
 // 箱の座標
-#define BOX_POS_1 CVector(-65.0f,100.0f,85.0f)
-#define BOX_POS_2 CVector(-85.0f,20.0f,85.0f)
-#define BOX_POS_3 CVector(-65.0f,60.0f,185.0f)
+#define BOX_POS_1 CVector(-125.0f,100.0f,85.0f)
+#define BOX_POS_2 CVector(61.5f,0.0f,413.0f)
+#define BOX_POS_3 CVector(161.5f,0.0f,523.0f)
 // でかい箱の座標
-#define BIG_BOX_POS CVector(127.5,0.0f,128.0f)
+#define BIG_BOX_POS CVector(177.5,0.0f,128.0f)
 // デカい箱のスケール倍率
 #define BIG_BOX_SCALE 9.0f
 
 // 下がる壁の座標
-#define DOWN_WALL_POS CVector(66.5f,0.0f,128.0f)
+#define DOWN_WALL_POS CVector(116.5f,0.0f,128.0f)
 // スイッチの座標
 #define SWITCH_POS CVector(-70.0f,0.0f,50.0f)
 
@@ -37,7 +37,7 @@ CMap1::CMap1()
 	mpModel = CResourceManager::Get<CModel>("Map1");
 
 	// コライダーを生成
-	CreateCol("Map1", "", "");
+	CreateCol("Map1_Ground_Col", "Map1_Wall_Col", "");
 
 	// フィールドオブジェクトを生成
 	CreateFieldObjects();

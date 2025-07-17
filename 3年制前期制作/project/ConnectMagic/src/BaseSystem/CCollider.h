@@ -601,6 +601,17 @@ public:
 	/// <param name="n">四角形の法線</param>
 	/// <returns>trueならば、四角形の内側にある</returns>
 	static bool IsInsideRectangle(const CVector& p, const CVector& r0, const CVector& r1, const CVector& r2, const CVector& r3, const CVector& n);
+	
+	/// <summary>
+	/// 指定した点と三角形の最近接点を計算
+	/// </summary>
+	/// <param name="p"></param>
+	/// <param name="t0"></param>
+	/// <param name="t1"></param>
+	/// <param name="t2"></param>
+	/// <returns></returns>
+	static CVector ClosestPointOnTriangle(const CVector& p, const CVector& t0, const CVector& t1, const CVector& t2);
+
 
 	/// <summary>
 	/// 衝突判定

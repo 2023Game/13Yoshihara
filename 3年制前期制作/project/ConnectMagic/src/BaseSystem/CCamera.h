@@ -139,8 +139,8 @@ public:
 	/// <param name="ratio"></param>
 	void SetHitColliderRatio(float ratio);
 
-	// 更新
-	void Update() override;
+	// 後更新
+	void LateUpdate() override;
 
 	// 削除
 	void Kill() override;
