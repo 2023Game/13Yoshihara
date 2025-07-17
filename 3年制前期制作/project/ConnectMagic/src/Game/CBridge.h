@@ -14,7 +14,7 @@ public:
 	void Update() override;
 
 	// Œq‚ª‚Á‚½‚Æ‚«‚Ìˆ—
-	void Connect(CVector wandPointPos) override;
+	void Connect(CVector wandPointPos, CVector targetPointPos) override;
 
 	// w’èŠp“x‚Éİ’è
 	void SetAngle(float angle);

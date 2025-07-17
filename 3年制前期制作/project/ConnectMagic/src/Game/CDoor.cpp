@@ -27,13 +27,6 @@ CDoor::CDoor(CVector rot)
 // デストラクタ
 CDoor::~CDoor()
 {
-	SAFE_DELETE(mpCol);
-}
-
-// 描画
-void CDoor::Render()
-{
-	mpModel->Render(Matrix());
 }
 
 // コライダーを生成

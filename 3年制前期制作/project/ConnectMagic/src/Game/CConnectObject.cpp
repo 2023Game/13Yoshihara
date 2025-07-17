@@ -170,14 +170,20 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 }
 
 // 繋がったときの処理
-void CConnectObject::Connect(CVector wandPointPos)
+void CConnectObject::Connect(CVector wandPointPos, CVector targetPointPos)
 {
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 	// カメラの方向
 	CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
+	// オブジェクトからターゲットポイントへのベクトル
+	CVector vec = targetPointPos - Position();
 	// 新しい座標を求める
 	CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
+	// 今のままだとターゲットポイントとの座標の差分ずれるので
+	// 差を消す
+	newPos = newPos - vec;
 	newPos.Y(Position().Y());
+	// 線形補間で、いきなりワープしないようにする
 	newPos = CVector::Lerp(Position(), newPos, 0.1f);
 	Position(newPos);
 }

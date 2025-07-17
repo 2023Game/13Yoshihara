@@ -37,7 +37,7 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	// 繋がったときの処理
-	virtual void Connect(CVector wandPointPos);
+	virtual void Connect(CVector wandPointPos, CVector targetPointPos);
 
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);

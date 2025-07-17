@@ -21,23 +21,29 @@
 #define SCALE 2.0f
 
 // コンストラクタ
-CBox::CBox()
+CBox::CBox(float scaleRatio)
 	: CConnectObject(WEIGHT)
 {
 	mpModel = CResourceManager::Get<CModel>("Box");
 
-	Scale(Scale() * SCALE);
+	Scale(Scale() * SCALE * scaleRatio);
 
 	// コライダーを生成
 	CreateCol();
 
-	// 接続ターゲットを生成
-	CreateTarget(TARGET_POS_1);
-	CreateTarget(TARGET_POS_2);
-	CreateTarget(TARGET_POS_3);
-	CreateTarget(TARGET_POS_4);
-	CreateTarget(TARGET_POS_5);
-	CreateTarget(TARGET_POS_6);
+	std::vector<CVector> targetPosList = { TARGET_POS_1,TARGET_POS_2,TARGET_POS_3,TARGET_POS_4,TARGET_POS_5,TARGET_POS_6 };
+	for (int i = 0; i < targetPosList.size(); i++)
+	{
+		CVector pos = targetPosList[i] * scaleRatio;
+		// 1つ目でなければ
+		if (i != 0)
+		{
+			// 元のY座標に設定
+			pos.Y(targetPosList[i].Y());
+		}
+		// 接続ターゲットを生成
+		CreateTarget(pos);
+	}
 }
 
 // デストラクタ

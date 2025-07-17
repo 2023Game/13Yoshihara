@@ -1,16 +1,14 @@
 #pragma once
 #include "CSwitchObject.h"
 
-class CModel;
-
-// スイッチで作用するドア
-class CDoor : public CSwitchObject
+// 下がっていく壁
+class CDownWall : public CSwitchObject
 {
 public:
 	// コンストラクタ
-	CDoor(CVector rot);
+	CDownWall(CVector defaultPos);
 	// デストラクタ
-	~CDoor();
+	~CDownWall();
 
 private:
 	// コライダーを生成
@@ -21,5 +19,6 @@ private:
 	// 作用している時の処理
 	void UpdateOn() override;
 
-	CVector mDefaultRotation;	// 初期の回転
+	// デフォルトのY座標
+	float mDefaultPosY;
 };

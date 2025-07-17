@@ -1,4 +1,5 @@
 #include "CSwitchObject.h"
+#include "CModel.h"
 
 // コンストラクタ
 CSwitchObject::CSwitchObject(ETaskPriority prio, int sortOrder, ETaskPauseType pause)
@@ -10,6 +11,7 @@ CSwitchObject::CSwitchObject(ETaskPriority prio, int sortOrder, ETaskPauseType p
 // デストラクタ
 CSwitchObject::~CSwitchObject()
 {
+	SAFE_DELETE(mpCol);
 }
 
 // 更新
@@ -28,6 +30,12 @@ void CSwitchObject::Update()
 	CDebugPrint::Print("SwitchObjState:%s\n", state.c_str());
 	CDebugPrint::Print("RotY:%f\n", EulerAngles().Y());
 #endif
+}
+
+// 描画
+void CSwitchObject::Render()
+{
+	mpModel->Render(Matrix());
 }
 
 // 衝突処理

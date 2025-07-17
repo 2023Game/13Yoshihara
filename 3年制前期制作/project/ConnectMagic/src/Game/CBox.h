@@ -5,7 +5,7 @@ class CBox : public CConnectObject
 {
 public:
 	// コンストラクタ
-	CBox();
+	CBox(float scaleRatio = 1.0f);
 	// デストラクタ
 	~CBox();
 

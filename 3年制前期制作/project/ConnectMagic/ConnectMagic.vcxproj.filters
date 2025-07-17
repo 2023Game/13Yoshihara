@@ -589,6 +589,9 @@
     <ClCompile Include="src\Game\CMap3Scene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CDownWall.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1067,6 +1070,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CMap3Scene.h">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CDownWall.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -111,7 +111,7 @@ void CConnectPointManager::Connect()
 	// 杖が接続されていないなら処理しない
 	if (!GetWandConnect()) return;
 	
-	mpConnectPoint->GetConnectObj()->Connect(mpWandPoint->Position());
+	mpConnectPoint->GetConnectObj()->Connect(mpWandPoint->Position(), mpConnectPoint->Position());
 }
 
 // 設定されているコライダーと衝突判定を行う

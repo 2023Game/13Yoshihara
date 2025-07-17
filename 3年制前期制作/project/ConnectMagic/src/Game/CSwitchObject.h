@@ -1,6 +1,8 @@
 #pragma once
 #include "CObjectBase.h"
 
+class CModel;
+
 // スイッチで作用するオブジェクトのベースクラス
 class CSwitchObject : public CObjectBase
 {
@@ -14,6 +16,8 @@ public:
 
 	// 更新
 	void Update() override;
+	// 描画
+	void Render() override;
 
 	/// <summary>
 	/// 衝突処理
@@ -41,4 +45,8 @@ protected:
 	virtual void UpdateOff();
 	// 作用している時の処理
 	virtual void UpdateOn();
+
+	CModel* mpModel;
+
+	CCollider* mpCol;
 };

@@ -51,6 +51,7 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("Torch",			"Field\\Torch\\Torch.obj");
 	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
 	CResourceManager::Load<CModel>("CampFire",		"Field\\CampFire\\CampFire.obj");
+	CResourceManager::Load<CModel>("DownWall",		"Field\\DownWall\\DownWall.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TestField_Ground_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
 	CResourceManager::Load<CModel>("TestField_Wall_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
