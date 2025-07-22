@@ -26,9 +26,14 @@
 #define BIG_BOX_SCALE 9.0f
 
 // 下がる壁の座標
-#define DOWN_WALL_POS CVector(116.5f,0.0f,128.0f)
+#define DOWN_WALL_POS_1 CVector(116.5f,0.0f,128.0f)
+#define DOWN_WALL_POS_2 CVector(-225.5f,0.0f,468.0f)
 // スイッチの座標
 #define SWITCH_POS CVector(-70.0f,0.0f,50.0f)
+// 3連スイッチの座標
+#define SWITCHS_POS_1 CVector(-150.0f,0.0f,518.0f)
+#define SWITCHS_POS_2 CVector(-150.0f,0.0f,468.0f)
+#define SWITCHS_POS_3 CVector(-150.0f,0.0f,418.0f)
 
 // コンストラクタ
 CMap1::CMap1()
@@ -69,13 +74,33 @@ void CMap1::CreateFieldObjects()
 	// 座標を設定
 	bigBox->Position(BIG_BOX_POS);
 
-	// 下がる壁を生成
-	CDownWall* downWall = new CDownWall(DOWN_WALL_POS);
 
 	// スイッチを生成
-	CSwitch* switchObj = new CSwitch(SWITCH_POS);
-	// 作用するオブジェクトに下がる壁を設定
-	switchObj->SetActionObj(downWall);
+	std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
+
+	// 下がる壁を生成
+	CDownWall* downWall = new CDownWall(DOWN_WALL_POS_1, switchs);
+
+	int size = switchs.size();
+	for (int i = 0; i < size; i++)
+	{
+		// 作用するオブジェクトに下がる壁を設定
+		switchs[i]->SetActionObj(downWall);
+	}
+
+	// スイッチを生成
+	switchs =
+	{ new CSwitch(SWITCHS_POS_1), new CSwitch(SWITCHS_POS_2), new CSwitch(SWITCHS_POS_3) };
+
+	// 下がる壁を生成
+	downWall = new CDownWall(DOWN_WALL_POS_2, switchs);
+
+	size = switchs.size();
+	for (int i = 0; i < size; i++)
+	{
+		// 作用するオブジェクトに下がる壁を設定
+		switchs[i]->SetActionObj(downWall);
+	}
 }
 
 // 経路探索用のノードを生成

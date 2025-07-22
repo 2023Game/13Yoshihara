@@ -18,6 +18,8 @@ public:
 
 	// 作用するオブジェクトにオンオフを知らせる
 	void SetOnOff(bool isOnOff);
+	// スイッチが作動中かを取得
+	bool GetOnOff() const;
 
 	// スイッチのフレームを取得
 	CSwitchFrame* GetFrame();
@@ -29,4 +31,7 @@ private:
 	CSwitchButton* mpButton;// ボタン
 
 	CSwitchObject* mpActionObject;	// 作用するオブジェクト
+
+	// スイッチが作動しているか
+	bool mIsOn;
 };

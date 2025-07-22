@@ -42,6 +42,7 @@ void CColliderRectangle::Get(
 	*v3 = mWV[3];
 }
 
+#if _DEBUG
 // コライダ―描画
 void CColliderRectangle::Render()
 {
@@ -83,9 +84,10 @@ void CColliderRectangle::Render()
 	// 描画前の行列に戻す
 	glPopMatrix();
 }
+#endif
 
 // コライダ―の情報を更新
-void CColliderRectangle::UpdateCol()
+void CColliderRectangle::UpdateCol(bool isInit)
 {
 	// 行列を反映した各頂点の座標を計算
 	CMatrix m = Matrix();

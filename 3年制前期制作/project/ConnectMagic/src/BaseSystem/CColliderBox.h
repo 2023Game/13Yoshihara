@@ -37,7 +37,7 @@ public:
 
 protected:
 	// コライダ―の情報を更新
-	void UpdateCol() override;
+	void UpdateCol(bool isInit = false) override;
 
 private:
 	// 四角形コライダの配列作成

@@ -28,7 +28,7 @@ public:
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	// オンオフを切り替える
-	void SetOnOff(bool isOnOff);
+	virtual void SetOnOff(bool isOnOff);
 
 protected:
 	// オンオフの状態

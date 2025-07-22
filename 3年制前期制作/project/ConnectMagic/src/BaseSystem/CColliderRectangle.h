@@ -46,11 +46,15 @@ public:
 	void Get(CVector* v0, CVector* v1,
 		CVector* v2, CVector* v3) const;
 
-	// コライダ―描画
+#if _DEBUG
+	// コライダー描画
 	void Render() override;
+#endif
+
 protected:
-	// コライダ―の情報を更新
-	void UpdateCol() override;
+	// コライダーの情報を更新
+	void UpdateCol(bool isInit = false) override;
+
 private:
 	CVector mV[4];	// 四角形の頂点の配列
 	CVector mWV[4];	// 四角形の頂点のワールド座標

@@ -343,6 +343,11 @@ void CPlayer::ActionInput()
 			}
 		}
 	}
+
+	if (CInput::Key('G'))
+	{
+		mIsGravity = !mIsGravity;
+	}
 }
 
 // ë“ã@èÛë‘

@@ -8,9 +8,11 @@
 #define MAX_MOVE_DIST 125.0f
 
 // コンストラクタ
-CDownWall::CDownWall(CVector defaultPos)
+CDownWall::CDownWall(CVector defaultPos, std::vector<CSwitch*> switchs)
 	: CSwitchObject(ETaskPriority::eDefault, 0, ETaskPauseType::eGame)
 	, mDefaultPosY(defaultPos.Y())
+	, mSwitchs(switchs)
+	, mOnSwitchNum(0)
 {
 	mpModel = CResourceManager::Get<CModel>("DownWall");
 
@@ -23,6 +25,34 @@ CDownWall::CDownWall(CVector defaultPos)
 // デストラクタ
 CDownWall::~CDownWall()
 {
+}
+
+// オンオフを切り替える
+void CDownWall::SetOnOff(bool isOnOff)
+{
+	// オンならオンのスイッチ数を増やす
+	if (isOnOff)
+	{
+		mOnSwitchNum++;
+	}
+	// オフならオンのスイッチ数を減らす
+	else
+	{
+		mOnSwitchNum--;
+	}
+
+	// オンになったスイッチの数とスイッチの総数が一致したら
+	if (mSwitchs.size() == mOnSwitchNum)
+	{
+		// オンにする
+		CSwitchObject::SetOnOff(true);
+	}
+	// 一致してないなら
+	else
+	{
+		// オフにする
+		CSwitchObject::SetOnOff(false);
+	}
 }
 
 // コライダーを生成

@@ -1,21 +1,22 @@
 #include "CBox.h"
 #include "CColliderMesh.h"
 #include "CColliderSphere.h"
+#include "CColliderCapsule.h"
 #include "CConnectPointManager.h"
 
 // 接続ターゲットの座標
 #define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
 #define TARGET_POS_2 CVector( 0.0f, 0.0f, 0.0f)
-#define TARGET_POS_3 CVector( 5.0f, 5.0f, 0.0f)
-#define TARGET_POS_4 CVector(-5.0f, 5.0f, 0.0f)
-#define TARGET_POS_5 CVector( 0.0f, 5.0f, 5.0f)
-#define TARGET_POS_6 CVector( 0.0f, 5.0f,-5.0f)
+#define TARGET_POS_3 CVector( 6.0f, 5.0f, 0.0f)
+#define TARGET_POS_4 CVector(-6.0f, 5.0f, 0.0f)
+#define TARGET_POS_5 CVector( 0.0f, 5.0f, 6.0f)
+#define TARGET_POS_6 CVector( 0.0f, 5.0f,-6.0f)
 
 // 箱の重さ
 #define WEIGHT 0.1f
 
 // コライダーの半径
-#define RADIUS 2.4f
+#define RADIUS 5.0f
 
 // スケールの倍率
 #define SCALE 2.0f
@@ -56,9 +57,11 @@ CBox::~CBox()
 void CBox::CreateCol()
 {
 	// フィールドやオブジェクトと衝突判定をするコライダー
-	mpCol = new CColliderSphere
+	mpCol = new CColliderCapsule
 	(
 		this, ELayer::eObject,
+		CVector::zero,
+		CVector(0.0f,1.0f,0.0f),
 		RADIUS
 	);
 	// 座標を調整

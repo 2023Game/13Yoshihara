@@ -6,6 +6,7 @@
 // コンストラクタ
 CSwitch::CSwitch(CVector pos)
 	: mpActionObject(nullptr)
+	, mIsOn(false)
 {
 	mpFrame = new CSwitchFrame(pos, this);
 	mpButton = new CSwitchButton(pos, this);
@@ -26,9 +27,18 @@ void CSwitch::SetActionObj(CSwitchObject* obj)
 void CSwitch::SetOnOff(bool isOnOff)
 {
 	if (mpActionObject == nullptr) return;
+	// 同じなら処理しない
+	if (mIsOn == isOnOff) return;
+	mIsOn = isOnOff;
 
 	// オンオフを切り替える
 	mpActionObject->SetOnOff(isOnOff);
+}
+
+// スイッチが作動中かを取得
+bool CSwitch::GetOnOff() const
+{
+	return mIsOn;
 }
 
 // スイッチのフレームを取得
