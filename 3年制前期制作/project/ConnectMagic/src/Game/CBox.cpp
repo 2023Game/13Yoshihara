@@ -16,7 +16,7 @@
 #define WEIGHT 0.1f
 
 // コライダーの半径
-#define RADIUS 5.0f
+#define RADIUS 2.4f
 
 // スケールの倍率
 #define SCALE 2.0f
@@ -57,11 +57,9 @@ CBox::~CBox()
 void CBox::CreateCol()
 {
 	// フィールドやオブジェクトと衝突判定をするコライダー
-	mpCol = new CColliderCapsule
+	mpCol = new CColliderSphere
 	(
 		this, ELayer::eObject,
-		CVector::zero,
-		CVector(0.0f,1.0f,0.0f),
 		RADIUS
 	);
 	// 座標を調整

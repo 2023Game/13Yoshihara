@@ -34,6 +34,12 @@ ETag CObjectBase::Tag() const
 	return mTag;
 }
 
+// オブジェクトタグを設定
+void CObjectBase::SetTag(ETag tag)
+{
+	mTag = tag;
+}
+
 // 衝突判定を行うか設定
 void CObjectBase::SetEnableCol(bool isEnable)
 {

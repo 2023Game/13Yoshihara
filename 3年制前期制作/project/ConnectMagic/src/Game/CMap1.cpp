@@ -4,7 +4,6 @@
 #include "CUpgradeItem.h"
 #include "Maths.h"
 #include "CSwitch.h"
-#include "CDownWall.h"
 
 // 水面の座標
 #define WATER_POS CVector(-250.0f,-10.0f,50.0f)
@@ -75,32 +74,32 @@ void CMap1::CreateFieldObjects()
 	bigBox->Position(BIG_BOX_POS);
 
 
-	// スイッチを生成
-	std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
+	//// スイッチを生成
+	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
 
-	// 下がる壁を生成
-	CDownWall* downWall = new CDownWall(DOWN_WALL_POS_1, switchs);
+	//// 下がる壁を生成
+	//CDownWall* downWall = new CDownWall(DOWN_WALL_POS_1, switchs);
 
-	int size = switchs.size();
-	for (int i = 0; i < size; i++)
-	{
-		// 作用するオブジェクトに下がる壁を設定
-		switchs[i]->SetActionObj(downWall);
-	}
+	//int size = switchs.size();
+	//for (int i = 0; i < size; i++)
+	//{
+	//	// 作用するオブジェクトに下がる壁を設定
+	//	switchs[i]->SetActionObj(downWall);
+	//}
 
-	// スイッチを生成
-	switchs =
-	{ new CSwitch(SWITCHS_POS_1), new CSwitch(SWITCHS_POS_2), new CSwitch(SWITCHS_POS_3) };
+	//// スイッチを生成
+	//switchs =
+	//{ new CSwitch(SWITCHS_POS_1), new CSwitch(SWITCHS_POS_2), new CSwitch(SWITCHS_POS_3) };
 
-	// 下がる壁を生成
-	downWall = new CDownWall(DOWN_WALL_POS_2, switchs);
+	//// 下がる壁を生成
+	//downWall = new CDownWall(DOWN_WALL_POS_2, switchs);
 
-	size = switchs.size();
-	for (int i = 0; i < size; i++)
-	{
-		// 作用するオブジェクトに下がる壁を設定
-		switchs[i]->SetActionObj(downWall);
-	}
+	//size = switchs.size();
+	//for (int i = 0; i < size; i++)
+	//{
+	//	// 作用するオブジェクトに下がる壁を設定
+	//	switchs[i]->SetActionObj(downWall);
+	//}
 }
 
 // 経路探索用のノードを生成

@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
 
+class CSwitch;
 class CModel;
 
 // スイッチで作用するオブジェクトのベースクラス
@@ -10,7 +11,7 @@ public:
 	// コンストラクタ
 	CSwitchObject(ETaskPriority prio = ETaskPriority::eDefault,
 		int sortOrder = 0,
-		ETaskPauseType pause = ETaskPauseType::eDefault);
+		ETaskPauseType pause = ETaskPauseType::eGame);
 	// デストラクタ
 	virtual ~CSwitchObject();
 
@@ -29,6 +30,9 @@ public:
 
 	// オンオフを切り替える
 	virtual void SetOnOff(bool isOnOff);
+
+	// 作用するスイッチを設定する
+	void SetSwitchs(std::vector<CSwitch*> switchs);
 
 protected:
 	// オンオフの状態
@@ -49,4 +53,9 @@ protected:
 	CModel* mpModel;
 
 	CCollider* mpCol;
+
+	// 作用するスイッチ
+	std::vector<CSwitch*> mSwitchs;
+	// オンのスイッチの数
+	int mOnSwitchNum;
 };

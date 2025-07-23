@@ -33,6 +33,8 @@ public:
 
 	// オブジェクトタグを取得
 	ETag Tag() const;
+	// オブジェクトタグを設定
+	void SetTag(ETag tag);
 
 	// 衝突判定を行うか設定
 	void SetEnableCol(bool isEnable);

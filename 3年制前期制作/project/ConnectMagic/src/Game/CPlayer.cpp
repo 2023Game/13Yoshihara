@@ -16,7 +16,7 @@
 #define BODY_HEIGHT 15.0f
 
 // 探知コライダの半径
-#define SEARCH_RADIUS 100.0f
+#define SEARCH_RADIUS 50.0f
 
 // 杖のオフセット座標と回転とスケール
 #define WAND_OFFSET_POS CVector(-90.0f,8.0f,4.0f)
@@ -344,10 +344,12 @@ void CPlayer::ActionInput()
 		}
 	}
 
-	if (CInput::Key('G'))
+#if _DEBUG
+	if (CInput::PushKey('G'))
 	{
 		mIsGravity = !mIsGravity;
 	}
+#endif
 }
 
 // 待機状態

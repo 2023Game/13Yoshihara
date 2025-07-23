@@ -5,6 +5,7 @@
 CSwitchObject::CSwitchObject(ETaskPriority prio, int sortOrder, ETaskPauseType pause)
 	: CObjectBase(ETag::eSwitchObject, prio, 0, pause)
 	, mState(EState::eOff)
+	, mOnSwitchNum(0)
 {
 }
 
@@ -46,14 +47,35 @@ void CSwitchObject::Collision(CCollider* self, CCollider* other, const CHitInfo&
 // オンオフを切り替える
 void CSwitchObject::SetOnOff(bool isOnOff)
 {
+	// オンならオンのスイッチ数を増やす
 	if (isOnOff)
 	{
-		ChangeState(EState::eOn);
+		mOnSwitchNum++;
 	}
+	// オフならオンのスイッチ数を減らす
 	else
 	{
+		mOnSwitchNum--;
+	}
+
+	// オンになったスイッチの数とスイッチの総数が一致したら
+	if (mSwitchs.size() == mOnSwitchNum)
+	{
+		// オンにする
+		ChangeState(EState::eOn);
+	}
+	// 一致してないなら
+	else
+	{
+		// オフにする
 		ChangeState(EState::eOff);
 	}
+}
+
+// 作用するスイッチを設定する
+void CSwitchObject::SetSwitchs(std::vector<CSwitch*> switchs)
+{
+	mSwitchs = switchs;
 }
 
 // 作用していない時の処理

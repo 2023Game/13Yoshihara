@@ -143,6 +143,9 @@
     <Filter Include="ソース ファイル\BaseSystem\Navigation">
       <UniqueIdentifier>{f65178ff-9f6b-4c8a-a8db-e655071d2554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game\Field\Room">
+      <UniqueIdentifier>{b8705340-45e8-41b5-a21b-6e3ae3419b53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -589,7 +592,19 @@
     <ClCompile Include="src\Game\CMap3Scene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDownWall.cpp">
+    <ClCompile Include="src\Game\CRoom1.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CRoomManager.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CRoomBase.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchMoveFloor.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchMoveWall.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1071,7 +1086,19 @@
     <ClInclude Include="src\Game\CMap3Scene.h">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDownWall.h">
+    <ClInclude Include="src\Game\CRoom1.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRoomManager.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRoomBase.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchMoveFloor.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchMoveWall.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClInclude>
   </ItemGroup>
