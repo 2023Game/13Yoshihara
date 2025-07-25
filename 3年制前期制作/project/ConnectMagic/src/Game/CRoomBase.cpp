@@ -3,6 +3,7 @@
 // コンストラクタ
 CRoomBase::CRoomBase(float roomLength)
 	: CFieldBase()
+	, mRoomLength(roomLength)
 {
 }
 
@@ -12,7 +13,7 @@ CRoomBase::~CRoomBase()
 }
 
 // 部屋の長さを取得
-float CRoomBase::SetRoomLength() const
+float CRoomBase::GetRoomLength() const
 {
 	return mRoomLength;
 }

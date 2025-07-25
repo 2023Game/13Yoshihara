@@ -607,6 +607,9 @@
     <ClCompile Include="src\Game\CSwitchMoveWall.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CConnectRoom.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1100,6 +1103,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CSwitchMoveWall.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CConnectRoom.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

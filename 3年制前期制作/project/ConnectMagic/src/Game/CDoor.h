@@ -8,7 +8,7 @@ class CDoor : public CSwitchObject
 {
 public:
 	// コンストラクタ
-	CDoor(CVector rot);
+	CDoor(const CVector& rot);
 	// デストラクタ
 	~CDoor();
 

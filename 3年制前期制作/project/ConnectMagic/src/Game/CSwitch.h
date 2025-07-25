@@ -26,6 +26,9 @@ public:
 	// スイッチのボタンを取得
 	CSwitchButton* GetButton();
 
+	// スイッチを削除
+	void DeleteSwitch();
+
 private:
 	CSwitchFrame* mpFrame;	// フレーム
 	CSwitchButton* mpButton;// ボタン

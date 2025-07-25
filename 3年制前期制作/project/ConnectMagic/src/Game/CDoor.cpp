@@ -11,7 +11,7 @@
 #define THRESHOLD 1.0f
 
 // コンストラクタ
-CDoor::CDoor(CVector rot)
+CDoor::CDoor(const CVector& rot)
 	: CSwitchObject()
 	, mDefaultRotation(rot)
 {

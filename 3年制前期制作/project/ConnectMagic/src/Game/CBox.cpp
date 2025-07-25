@@ -21,9 +21,15 @@
 // スケールの倍率
 #define SCALE 2.0f
 
+// 水に当たって返ってくるまでの時間
+#define RETURN_TIME 0.5f
+
 // コンストラクタ
-CBox::CBox(float scaleRatio)
+CBox::CBox(CVector defaultPos, float scaleRatio)
 	: CConnectObject(WEIGHT)
+	, mDefaultPos(defaultPos)
+	, mIsRespawn(false)
+	, mElapsedTime(0.0f)
 {
 	mpModel = CResourceManager::Get<CModel>("Box");
 
@@ -45,12 +51,51 @@ CBox::CBox(float scaleRatio)
 		// 接続ターゲットを生成
 		CreateTarget(pos);
 	}
+
+	Position(defaultPos);
 }
 
 // デストラクタ
 CBox::~CBox()
 {
 	SAFE_DELETE(mpCharaCol);
+}
+
+// 衝突処理
+void CBox::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+{
+	CConnectObject::Collision(self, other, hit);
+
+	if (mpCol == self)
+	{
+		// 相手が水なら
+		if (other->Layer() == ELayer::eWater)
+		{
+			mIsRespawn = true;
+		}
+	}
+}
+
+// 更新
+void CBox::Update()
+{
+	// リスポーンするなら
+	if (mIsRespawn)
+	{
+		// 時間を経過
+		mElapsedTime += Times::DeltaTime();
+		if (mElapsedTime >= RETURN_TIME)
+		{
+			// リスポーン無効
+			mIsRespawn = false;
+			// 経過時間リセット
+			mElapsedTime = 0.0f;
+			// 初期座標に戻す
+			Position(mDefaultPos);
+		}
+	}
+
+	CConnectObject::Update();
 }
 
 // コライダーを生成
@@ -64,9 +109,10 @@ void CBox::CreateCol()
 	);
 	// 座標を調整
 	mpCol->Position(Position() + CVector(0.0f, RADIUS / 2, 0.0f));
-	// フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチと衝突判定
+	// フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチ、水と衝突判定
 	mpCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall,
-		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch });
+		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch,
+		ELayer::eWater});
 
 	// キャラと衝突判定をするコライダー
 	mpCharaCol = new CColliderMesh

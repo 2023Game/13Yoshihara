@@ -35,6 +35,8 @@ public:
 protected:
 	// フィールドのオブジェクトを生成
 	virtual void CreateFieldObjects() = 0;
+	// フィールドのオブジェクトを削除
+	virtual void DeleteFieldObjects();
 	// 経路探索用のノードを作成
 	virtual void CreateNavNodes();
 	// コライダ―を生成する

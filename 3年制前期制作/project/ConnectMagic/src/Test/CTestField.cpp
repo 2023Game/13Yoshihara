@@ -13,8 +13,10 @@
 #include "CWater.h"
 #include "CPortalFragment.h"
 #include "CFragmentMergeArea.h"
+#include "CConnectRoom.h"
 #include "CRoom1.h"
 #include "CSwitchMoveFloor.h"
+
 
 // ポータルの設定
 #define PORTAL_POS	CVector(100.0f, 10.0f, -100.0f)
@@ -88,7 +90,8 @@ CTestField::~CTestField()
 // フィールドのオブジェクトを生成
 void CTestField::CreateFieldObjects()
 {
-	CRoom1* room1 = new CRoom1(CVector(0.0f, 0.0f, 700.0f));
+	//CRoom1* room1 = new CRoom1(CVector(0.0f, 0.0f, 700.0f));
+	CConnectRoom* connectRoom = new CConnectRoom(CVector(0.0f, 0.0f, 700.0f));
 
 	// 欠片の合成場所
 	CFragmentMergeArea* mergeArea = new CFragmentMergeArea(PORTAL_FRAGMENT_NUM);
@@ -109,8 +112,7 @@ void CTestField::CreateFieldObjects()
 	water->Position(WATER_POS);
 
 	// 箱を生成
-	CBox* box = new CBox();
-	box->Position(BOX_POS);
+	CBox* box = new CBox(BOX_POS);
 
 	// 橋を生成
 	CBridge* bridge = new CBridge();
@@ -168,17 +170,17 @@ void CTestField::CreateFieldObjects()
 	new CRespawnArea(RESPAWN_POS_1, RESPAWN_RADIUS);
 	new CRespawnArea(RESPAWN_POS_2, RESPAWN_RADIUS);
 
-	// スイッチを生成
-	std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
-	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	// 下がる壁を生成
-	CSwitchMoveFloor* moveFloor = new CSwitchMoveFloor(model, model, 
-		CVector(50.0f, 10.0f, 0.0f), CVector(0.0f, -50.0f, 0.0f), 2.0f);
-	moveFloor->SetSwitchs(switchs);
-	int size = switchs.size();
-	for (int i = 0; i < size; i++)
-	{
-		// 作用するオブジェクトに下がる壁を設定
-		switchs[i]->SetActionObj(moveFloor);
-	}
+	//// スイッチを生成
+	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
+	//CModel* model = CResourceManager::Get<CModel>("MoveObject");
+	//// 下がる壁を生成
+	//CSwitchMoveFloor* moveFloor = new CSwitchMoveFloor(model, model, 
+	//	CVector(50.0f, 10.0f, 0.0f), CVector(2.0f,1.0f,1.0f), CVector(0.0f, -50.0f, 0.0f), 2.0f);
+	//moveFloor->SetSwitchs(switchs);
+	//int size = switchs.size();
+	//for (int i = 0; i < size; i++)
+	//{
+	//	// 作用するオブジェクトに下がる壁を設定
+	//	switchs[i]->SetActionObj(moveFloor);
+	//}
 }

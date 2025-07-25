@@ -11,7 +11,7 @@ public:
 	~CRoomBase();
 
 	// •”‰®‚Ì’·‚³‚ðŽæ“¾
-	float SetRoomLength() const;
+	float GetRoomLength() const;
 
 private:
 	// •”‰®‚Ì’·‚³

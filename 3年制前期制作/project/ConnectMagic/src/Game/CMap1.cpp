@@ -56,23 +56,14 @@ CMap1::~CMap1()
 void CMap1::CreateFieldObjects()
 {
 	// 箱を生成
-	CBox* box = new CBox();
-	// 座標を設定
-	box->Position(BOX_POS_1);
+	CBox* box = new CBox(BOX_POS_1);
 	// 箱を生成
-	box = new CBox();
-	// 座標を設定
-	box->Position(BOX_POS_2);
+	box = new CBox(BOX_POS_2);
 	// 箱を生成
-	box = new CBox();
-	// 座標を設定
-	box->Position(BOX_POS_3);
+	box = new CBox(BOX_POS_3);
 
 	// デカい箱を生成
-	CBox* bigBox = new CBox(BIG_BOX_SCALE);
-	// 座標を設定
-	bigBox->Position(BIG_BOX_POS);
-
+	CBox* bigBox = new CBox(BIG_BOX_POS, BIG_BOX_SCALE);
 
 	//// スイッチを生成
 	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };

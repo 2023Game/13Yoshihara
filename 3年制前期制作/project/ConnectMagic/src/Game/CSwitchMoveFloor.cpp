@@ -3,7 +3,7 @@
 
 // コンストラクタ
 CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* colModel,
-	CVector& pos, CVector& move, float moveTime)
+	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: CSwitchObject()
 	, mDefaultPos(pos)
 	, mMoveVec(move)
@@ -15,6 +15,7 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* colModel,
 	mpCol = new CColliderMesh(this, ELayer::eGround, colModel, true);
 
 	Position(mDefaultPos);
+	Scale(scale);
 }
 
 // デストラクタ

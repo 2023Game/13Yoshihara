@@ -85,6 +85,7 @@
     <ClCompile Include="src\Game\CConnectObject.cpp" />
     <ClCompile Include="src\Game\CConnectPoint.cpp" />
     <ClCompile Include="src\Game\CConnectPointManager.cpp" />
+    <ClCompile Include="src\Game\CConnectRoom.cpp" />
     <ClCompile Include="src\Game\CConnectTarget.cpp" />
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp" />
     <ClCompile Include="src\Game\CDoor.cpp" />
@@ -247,6 +248,7 @@
     <ClInclude Include="src\Game\CBridge.h" />
     <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
+    <ClInclude Include="src\Game\CConnectRoom.h" />
     <ClInclude Include="src\Game\CMap3Scene.h" />
     <ClInclude Include="src\Game\ConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />

@@ -7,8 +7,9 @@ class CSwitchMoveWall : public CSwitchObject
 public:
 	// コンストラクタ
 	CSwitchMoveWall(CModel* model, CModel* colModel,
-		CVector& pos,
-		CVector& move,
+		const CVector& pos,
+		const CVector& scale,
+		const CVector& move,
 		float moveTime);
 	// デストラクタ
 	~CSwitchMoveWall();

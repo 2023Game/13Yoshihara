@@ -52,6 +52,7 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("Bridge",		"Field\\Bridge\\Bridge.obj");
 	CResourceManager::Load<CModel>("CampFire",		"Field\\CampFire\\CampFire.obj");
 	CResourceManager::Load<CModel>("DownWall",		"Field\\DownWall\\DownWall.obj");
+	CResourceManager::Load<CModel>("ConnectRoom",	"Field\\Room\\ConnectRoom\\ConnectRoom.obj");
 	CResourceManager::Load<CModel>("Room1",			"Field\\Room\\Room1\\Room1.obj");
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
 	// 当たり判定用のコリジョンモデル
@@ -61,6 +62,8 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("Box_Col",				"Field\\Box\\Col\\Box_Col.obj");
 	CResourceManager::Load<CModel>("Bridge_Col",			"Field\\Bridge\\Col\\Bridge_Col.obj");
 	CResourceManager::Load<CModel>("CampFire_Col",			"Field\\CampFire\\Col\\CampFire_Col.obj");
+	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col","Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
+	CResourceManager::Load<CModel>("ConnectRoom_Wall_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Room1_Ground_Col",		"Field\\Room\\Room1\\Col\\Room1_Ground_Col.obj");
 	CResourceManager::Load<CModel>("Room1_Wall_Col",		"Field\\Room\\Room1\\Col\\Room1_Wall_Col.obj");
 	/*

@@ -52,3 +52,10 @@ CSwitchButton* CSwitch::GetButton()
 {
 	return mpButton;
 }
+
+// スイッチを削除
+void CSwitch::DeleteSwitch()
+{
+	mpButton->Kill();
+	mpFrame->Kill();
+}

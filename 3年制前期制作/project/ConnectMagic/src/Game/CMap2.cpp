@@ -71,9 +71,7 @@ void CMap2::CreateFieldObjects()
 	doorSwitch->SetActionObj(door);
 
 	// 箱を生成
-	CBox* box = new CBox();
-	// 箱の位置調整
-	box->Position(BOX_POS);
+	CBox* box = new CBox(BOX_POS);
 
 	// 空中の接続オブジェクトを生成
 	CAirConnectObj* airConnectObj = new CAirConnectObj();

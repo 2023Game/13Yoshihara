@@ -2,6 +2,7 @@
 #include "CWater.h"
 #include "CMaterial.h"
 #include "CColliderRectangle.h"
+#include "CConnectPointManager.h"
 
 // 頂点
 #define VERT_POS_1 -1.0f, 0.0f, -1.0f
@@ -160,6 +161,9 @@ void CWater::CreateCol()
 		CVector(VERT_POS_4),
 		true
 	);
-	// プレイヤーとだけ衝突判定
-	mpCol->SetCollisionLayers({ ELayer::ePlayer });
+	// プレイヤーとオブジェクトとだけ衝突判定
+	mpCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eObject });
+
+	CConnectPointManager::Instance()->AddCollider(mpCol);
+	CCamera::CurrentCamera()->AddCollider(mpCol);
 }
