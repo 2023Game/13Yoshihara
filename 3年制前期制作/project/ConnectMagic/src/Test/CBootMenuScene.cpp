@@ -13,6 +13,7 @@ CBootMenuScene::CBootMenuScene()
 	{
 		{ "■メイン",		EScene::eNone },
 		{ "タイトル画面",	EScene::eTitle},
+		{ "ゲーム",			EScene::eGame},
 		{ "マップ1",		EScene::eMap1},
 		{ "マップ2",		EScene::eMap2},
 		{ "マップ3",		EScene::eMap3},

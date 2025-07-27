@@ -91,7 +91,7 @@ void CMap1Scene::Load()
 	pointMgr->AddCollider(mpField->GetGroundCol());
 	pointMgr->AddCollider(mpField->GetWallCol());
 
-	//// 衝突判定するコライダ―を追加
+	// 衝突判定するコライダ―を追加
 	mainCamera->AddCollider(mpField->GetGroundCol());
 	mainCamera->AddCollider(mpField->GetWallCol());
 	mainCamera->AddCollider(mpField->GetObjCol());
