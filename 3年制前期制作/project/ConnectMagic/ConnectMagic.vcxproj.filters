@@ -613,6 +613,12 @@
     <ClCompile Include="src\Game\CGameScene.cpp">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CRoom2.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CLastRoom.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1112,6 +1118,12 @@
     </ClInclude>
     <ClInclude Include="src\Game\CGameScene.h">
       <Filter>ソース ファイル\Game\Scene\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRoom2.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CLastRoom.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

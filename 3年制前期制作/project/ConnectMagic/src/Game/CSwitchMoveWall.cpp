@@ -3,7 +3,7 @@
 #include "Maths.h"
 
 // コンストラクタ
-CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* colModel,
+CSwitchMoveWall::CSwitchMoveWall(CModel* model,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: mDefaultPos(pos)
 	, mMoveVec(move)
@@ -12,8 +12,10 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* colModel,
 {
 	mpModel = model;
 
-	mpCol = new CColliderMesh(this, ELayer::eWall, colModel, true);
+	// コライダーを生成
+	CreateCol();
 
+	// 初期座標を設定
 	Position(mDefaultPos);
 	Scale(scale);
 }
@@ -21,6 +23,12 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* colModel,
 // デストラクタ
 CSwitchMoveWall::~CSwitchMoveWall()
 {
+}
+
+// コライダーを生成
+void CSwitchMoveWall::CreateCol()
+{
+	mpCol = new CColliderMesh(this, ELayer::eWall, mpModel, true);
 }
 
 // 作用していない時の処理
@@ -39,6 +47,8 @@ void CSwitchMoveWall::UpdateOff()
 	{
 		// 経過時間は0
 		mElapsedTime = 0.0f;
+		// 座標を更新
+		Move();
 	}
 }
 
@@ -58,6 +68,8 @@ void CSwitchMoveWall::UpdateOn()
 	{
 		// 経過時間の値を移動時間にする
 		mElapsedTime = mMoveTime;
+		// 座標を更新
+		Move();
 	}
 }
 

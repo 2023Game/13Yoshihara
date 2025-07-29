@@ -2,7 +2,7 @@
 #include "CColliderMesh.h"
 
 // コンストラクタ
-CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* colModel,
+CSwitchMoveFloor::CSwitchMoveFloor(CModel* model,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: CSwitchObject()
 	, mDefaultPos(pos)
@@ -12,8 +12,13 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* colModel,
 {
 	mpModel = model;
 
-	mpCol = new CColliderMesh(this, ELayer::eGround, colModel, true);
+	// タグを乗ることが出来るオブジェクトに設定
+	SetTag(ETag::eRideableObject);
 
+	// コライダーを生成
+	CreateCol();
+
+	// 初期座標の設定
 	Position(mDefaultPos);
 	Scale(scale);
 }
@@ -21,6 +26,12 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* colModel,
 // デストラクタ
 CSwitchMoveFloor::~CSwitchMoveFloor()
 {
+}
+
+// コライダーを生成
+void CSwitchMoveFloor::CreateCol()
+{
+	mpCol = new CColliderMesh(this, ELayer::eGround, mpModel, true);
 }
 
 // 作用していない時の処理

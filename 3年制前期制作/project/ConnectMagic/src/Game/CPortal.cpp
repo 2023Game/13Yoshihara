@@ -54,6 +54,7 @@ void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 現在のシーンから次のシーンを決定
 			switch (CurrentScene)
 			{
+			case EScene::eGame:		NextScene = EScene::eGame;	break;
 			case EScene::eMap1:		NextScene = EScene::eMap2;  break;
 			case EScene::eMap2:		NextScene = EScene::eMap3;	break;
 			case EScene::eMap3:		NextScene = EScene::eMap1;	break;

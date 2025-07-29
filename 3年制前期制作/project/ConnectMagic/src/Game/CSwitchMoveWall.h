@@ -6,7 +6,7 @@ class CSwitchMoveWall : public CSwitchObject
 {
 public:
 	// コンストラクタ
-	CSwitchMoveWall(CModel* model, CModel* colModel,
+	CSwitchMoveWall(CModel* model,
 		const CVector& pos,
 		const CVector& scale,
 		const CVector& move,
@@ -15,6 +15,9 @@ public:
 	~CSwitchMoveWall();
 
 private:
+	// コライダーを生成
+	void CreateCol() override;
+
 	// 作用していない時の処理
 	void UpdateOff() override;
 	// 作用している時の処理

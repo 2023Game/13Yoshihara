@@ -1,6 +1,8 @@
 #include "CRoomManager.h"
 #include "CConnectRoom.h"
 #include "CRoom1.h"
+#include "CRoom2.h"
+#include "CLastRoom.h"
 
 CRoomManager* CRoomManager::spInstance = nullptr;
 
@@ -35,10 +37,52 @@ std::vector<CRoomBase*> CRoomManager::GetRooms() const
 // 部屋を作成
 void CRoomManager::CreateRoom()
 {
-	CRoomBase* room = new CRoom1(CVector::zero);
-	CConnectRoom* connectRoom =
-		new CConnectRoom(room->Position() + CVector(0.0f, 0.0f, -room->GetRoomLength()));
+	int i = 1;
+	CRoomBase* room;					// 部屋
+	CVector pos = CVector::zero;		// 前の部屋を生成した座標
+	CVector offsetPos = CVector::zero;	// 今の部屋のオフセット座標
 
-	mRooms.push_back(room);
-	mRooms.push_back(connectRoom);
+	while (true)
+	{
+		// 部屋を生成
+		switch (i)
+		{
+			// 部屋1
+		case 1:
+			room = new CRoom1(pos + offsetPos);
+			break;
+			// 部屋2
+		case 2:
+			room = new CRoom2(pos + offsetPos);
+			break;
+			// 部屋3
+		case 3:
+
+			break;
+			// 全ての部屋の生成が終了した
+		default:
+			// 最後の部屋を生成
+			room = new CLastRoom(pos + offsetPos);
+			return;
+			break;
+		}
+		// 座標を更新
+		pos = room->Position();
+		// オフセット座標を更新
+		offsetPos = CVector(0.0f, 0.0f, -room->GetRoomLength());
+		// リストに追加
+		mRooms.push_back(room);
+
+		// 部屋と部屋の接続用の部屋を生成
+		room = new CConnectRoom(pos + offsetPos);
+		// 座標を更新
+		pos = room->Position();
+		// オフセット座標を更新
+		offsetPos = CVector(0.0f, 0.0f, -room->GetRoomLength());
+		// リストに追加
+		mRooms.push_back(room);
+
+		// 次へ
+		i++;
+	}
 }

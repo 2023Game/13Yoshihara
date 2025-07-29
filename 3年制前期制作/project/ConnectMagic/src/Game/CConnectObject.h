@@ -75,4 +75,6 @@ protected:
 
 	// 接続オブジェクトのタグ
 	EConnectObjTag mConnectObjTag;
+
+	CTransform* mpRideObject;
 };

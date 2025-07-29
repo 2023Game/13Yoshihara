@@ -26,11 +26,6 @@ void CSwitchObject::Update()
 
 	std::string state = "Off";
 	if (mState == EState::eOn) state = "On";
-
-#if _DEBUG
-	CDebugPrint::Print("SwitchObjState:%s\n", state.c_str());
-	CDebugPrint::Print("RotY:%f\n", EulerAngles().Y());
-#endif
 }
 
 // 描画
@@ -47,6 +42,22 @@ void CSwitchObject::Collision(CCollider* self, CCollider* other, const CHitInfo&
 // オンオフを切り替える
 void CSwitchObject::SetOnOff(bool isOnOff)
 {
+	// スイッチが設定されていない時は引数に依存する
+	if (mSwitchs.size() == 0)
+	{
+		if (isOnOff)
+		{
+			// オンにする
+			ChangeState(EState::eOn);
+		}
+		else
+		{
+			// オフにする
+			ChangeState(EState::eOff);
+		}
+		return;
+	}
+
 	// オンならオンのスイッチ数を増やす
 	if (isOnOff)
 	{

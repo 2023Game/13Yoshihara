@@ -19,7 +19,12 @@ public:
 	// 前の部屋を設定
 	void SetPreRoom(CRoomBase* room);
 
+	// 衝突処理
+	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
+
 private:
+	// コライダーの生成
+	void CreateCol() override;
 	// フィールドオブジェクトを生成
 	void CreateFieldObjects() override;
 	// フィールドオブジェクトを削除
@@ -28,7 +33,6 @@ private:
 	// オブジェクト
 	CBox* mpBox;
 	CSwitch* mpNextSwitch;
-	CSwitch* mpPreSwitch;
 	CSwitchMoveWall* mpNextWall;
 	CSwitchMoveWall* mpPreWall;
 
@@ -36,4 +40,7 @@ private:
 	CRoomBase* mpNextRoom;
 	// 前の部屋
 	CRoomBase* mpPreRoom;
+
+	// 前の部屋に繋がる扉が閉じるフラグ用のコライダー
+	CCollider* mpCloseCol;
 };

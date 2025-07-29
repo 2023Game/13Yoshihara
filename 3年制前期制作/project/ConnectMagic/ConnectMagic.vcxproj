@@ -103,10 +103,12 @@
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CItemBase.cpp" />
     <ClCompile Include="src\Game\CItemDrop.cpp" />
+    <ClCompile Include="src\Game\CLastRoom.cpp" />
     <ClCompile Include="src\Game\CMap1Scene.cpp" />
     <ClCompile Include="src\Game\CMap3Scene.cpp" />
     <ClCompile Include="src\Game\CPortalFragment.cpp" />
     <ClCompile Include="src\Game\CRoom1.cpp" />
+    <ClCompile Include="src\Game\CRoom2.cpp" />
     <ClCompile Include="src\Game\CRoomBase.cpp" />
     <ClCompile Include="src\Game\CRoomManager.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveFloor.cpp" />
@@ -251,6 +253,7 @@
     <ClInclude Include="src\Game\CConnectObject.h" />
     <ClInclude Include="src\Game\CConnectRoom.h" />
     <ClInclude Include="src\Game\CGameScene.h" />
+    <ClInclude Include="src\Game\CLastRoom.h" />
     <ClInclude Include="src\Game\CMap3Scene.h" />
     <ClInclude Include="src\Game\ConnectObjectTag.h" />
     <ClInclude Include="src\Game\CConnectPoint.h" />
@@ -265,6 +268,7 @@
     <ClInclude Include="src\Game\CFire.h" />
     <ClInclude Include="src\Game\CFragmentMergeArea.h" />
     <ClInclude Include="src\Game\CRoom1.h" />
+    <ClInclude Include="src\Game\CRoom2.h" />
     <ClInclude Include="src\Game\CRoomBase.h" />
     <ClInclude Include="src\Game\CRoomManager.h" />
     <ClInclude Include="src\Game\CSwitchMoveFloor.h" />

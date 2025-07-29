@@ -21,6 +21,7 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mIsGravity(true)
 	, mConnectObjTag(EConnectObjTag::eBox)
 	, mIsGrounded(false)
+	, mpRideObject(nullptr)
 {
 }
 
@@ -63,6 +64,9 @@ void CConnectObject::DeleteObject(CObjectBase* obj)
 // çXêV
 void CConnectObject::Update()
 {
+	SetParent(mpRideObject);
+	mpRideObject = nullptr;
+
 	if (mIsGravity)
 	{
 		mMoveSpeedY -= GRAVITY;

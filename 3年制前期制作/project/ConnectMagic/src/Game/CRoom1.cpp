@@ -5,12 +5,13 @@
 #include "CWater.h"
 #include "CRespawnArea.h"
 
+// 部屋の長さ
+#define ROOM_LENGTH 170.0f
+
 // 箱の座標
 #define BOX_OFFSET_POS CVector(25.0f, 20.0f, -70.0f)
 // スイッチの座標
 #define SWITCH_OFFSET_POS CVector(25.0f, 0.0f, -35.0f)
-// 部屋の長さ
-#define ROOM_LENGTH 170.0f
 
 // 動く床のオフセット座標
 #define MOVE_FLOOR_OFFSET_POS	CVector(-60.0f, -10.0f, -50.0f)
@@ -61,7 +62,7 @@ void CRoom1::CreateFieldObjects()
 	mpSwitch = new CSwitch(Position()+ SWITCH_OFFSET_POS);
 	// 動く床を生成
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveFloor = new CSwitchMoveFloor(model, model,
+	mpMoveFloor = new CSwitchMoveFloor(model,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,

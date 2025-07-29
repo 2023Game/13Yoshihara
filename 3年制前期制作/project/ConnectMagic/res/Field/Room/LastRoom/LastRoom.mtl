@@ -1,7 +1,7 @@
 # Blender 4.1.0 MTL File: 'Room.blend'
 # www.blender.org
 
-newmtl Field
+newmtl Field.003
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.250000 0.250000 0.250000
@@ -11,7 +11,7 @@ Ni 1.500000
 d 1.000000
 illum 2
 
-newmtl Field.001
+newmtl Field.004
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.250000 0.250000 0.250000

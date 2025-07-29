@@ -68,6 +68,16 @@ void CBox::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 
 	if (mpCol == self)
 	{
+		// 相手が地面なら
+		if (other->Layer() == ELayer::eGround)
+		{
+			// 乗ることが出来るオブジェクトなら
+			if (other->Tag() == ETag::eRideableObject)
+			{
+				// 乗っているオブジェクトに設定する
+				mpRideObject = other->Owner();
+			}
+		}
 		// 相手が水なら
 		if (other->Layer() == ELayer::eWater)
 		{
