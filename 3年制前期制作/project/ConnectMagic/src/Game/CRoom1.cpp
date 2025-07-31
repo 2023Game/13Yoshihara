@@ -9,7 +9,7 @@
 #define ROOM_LENGTH 170.0f
 
 // 箱の座標
-#define BOX_OFFSET_POS CVector(25.0f, 20.0f, -70.0f)
+#define BOX_OFFSET_POS CVector(25.0f, 0.0f, -150.0f)
 // スイッチの座標
 #define SWITCH_OFFSET_POS CVector(25.0f, 0.0f, -35.0f)
 

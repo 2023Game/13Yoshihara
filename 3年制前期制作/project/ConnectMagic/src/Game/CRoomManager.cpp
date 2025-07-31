@@ -2,6 +2,9 @@
 #include "CConnectRoom.h"
 #include "CRoom1.h"
 #include "CRoom2.h"
+#include "CRoom3.h"
+#include "CRoom4.h"
+#include "CRoom5.h"
 #include "CLastRoom.h"
 
 CRoomManager* CRoomManager::spInstance = nullptr;
@@ -57,7 +60,15 @@ void CRoomManager::CreateRoom()
 			break;
 			// •”‰®3
 		case 3:
-
+			room = new CRoom3(pos + offsetPos);
+			break;
+			// •”‰®4
+		case 4:
+			room = new CRoom4(pos + offsetPos);
+			break;
+			// •”‰®5
+		case 5:
+			room = new CRoom5(pos + offsetPos);
 			break;
 			// ‘S‚Ä‚Ì•”‰®‚Ì¶¬‚ªI—¹‚µ‚½
 		default:

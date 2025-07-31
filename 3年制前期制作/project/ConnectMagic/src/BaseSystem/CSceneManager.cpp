@@ -5,6 +5,7 @@
 #include "CMap1Scene.h"
 #include "CMap2Scene.h"
 #include "CMap3Scene.h"
+#include "CGameClearScene.h"
 #include "CTaskManager.h"
 
 #include "Test/CBootMenuScene.h"
@@ -119,6 +120,8 @@ void CSceneManager::ChangeNextScene()
 		case EScene::eMap2:			mpScene = new CMap2Scene();				break;
 		// マップ3シーン
 		case EScene::eMap3:			mpScene = new CMap3Scene();				break;
+		// クリアシーン
+		case EScene::eClear:		mpScene = new CGameClearScene();		break;
 		//起動時メニュー
 		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
 		//衝突判定テスト

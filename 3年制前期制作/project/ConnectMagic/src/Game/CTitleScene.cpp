@@ -49,10 +49,10 @@ void CTitleScene::Update()
 	// タイトル画面が
 	if (mpTitleUI->IsEnd())
 	{
-		// ゲーム開始ならば、マップ1シーンを読み込む
+		// ゲーム開始ならば、ゲームのシーンを読み込む
 		if (mpTitleUI->IsStartGame())
 		{
-			CSceneManager::Instance()->LoadScene(EScene::eMap1);
+			CSceneManager::Instance()->LoadScene(EScene::eGame);
 		}
 		// ゲーム終了ならば、アプリを閉じる
 		else if (mpTitleUI->IsExitGame())

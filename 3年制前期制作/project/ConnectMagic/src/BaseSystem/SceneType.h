@@ -10,6 +10,7 @@ enum class EScene
 	eMap1,			// マップ1シーン
 	eMap2,			// マップ2シーン
 	eMap3,			// マップ3シーン
+	eClear,			// クリアシーン
 
 	eBootMenu,	// 起動時メニュー
 	eColTest,	// 衝突判定テスト

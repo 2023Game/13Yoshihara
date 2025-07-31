@@ -45,7 +45,10 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("ConnectRoom",	"Field\\Room\\ConnectRoom\\ConnectRoom.obj");
 	CResourceManager::Load<CModel>("Room1",			"Field\\Room\\Room1\\Room1.obj");
 	CResourceManager::Load<CModel>("Room2",			"Field\\Room\\Room2\\Room2.obj");
-	CResourceManager::Load<CModel>("LastRoom", "Field\\Room\\LastRoom\\LastRoom.obj");
+	CResourceManager::Load<CModel>("Room3",			"Field\\Room\\Room3\\Room3.obj");
+	CResourceManager::Load<CModel>("Room4",			"Field\\Room\\Room4\\Room4.obj");
+	CResourceManager::Load<CModel>("Room5",			"Field\\Room\\Room5\\Room5.obj");
+	CResourceManager::Load<CModel>("LastRoom",		"Field\\Room\\LastRoom\\LastRoom.obj");
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("Box_Col",					"Field\\Box\\Col\\Box_Col.obj");
@@ -55,8 +58,14 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("Room1_Wall_Col",			"Field\\Room\\Room1\\Col\\Room1_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Room2_Ground_Col",			"Field\\Room\\Room2\\Col\\Room2_Ground_Col.obj");
 	CResourceManager::Load<CModel>("Room2_Wall_Col",			"Field\\Room\\Room2\\Col\\Room2_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Room3_Ground_Col",			"Field\\Room\\Room3\\Col\\Room3_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Room3_Wall_Col",			"Field\\Room\\Room3\\Col\\Room3_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Room4_Ground_Col",			"Field\\Room\\Room4\\Col\\Room4_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Room4_Wall_Col",			"Field\\Room\\Room4\\Col\\Room4_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Room5_Ground_Col",			"Field\\Room\\Room5\\Col\\Room5_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Room5_Wall_Col",			"Field\\Room\\Room5\\Col\\Room5_Wall_Col.obj");
 	CResourceManager::Load<CModel>("LastRoom_Ground_Col",		"Field\\Room\\LastRoom\\Col\\LastRoom_Ground_Col.obj");
-	CResourceManager::Load<CModel>("LastRoom_Wall_Col",			"Field\\Room\\LastRoom\\LastRoom_Wall_Col.obj");
+	CResourceManager::Load<CModel>("LastRoom_Wall_Col",			"Field\\Room\\LastRoom\\Col\\LastRoom_Wall_Col.obj");
 	/*
 	効果音
 	*/

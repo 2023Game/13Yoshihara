@@ -28,12 +28,12 @@ void CConnectTarget::Render()
 {
 	// ターゲット部分のデバッグ表示
 #if _DEBUG
-	Primitive::DrawWireBox
-	(
-		Position(),
-		Scale(),
-		CColor::red
-	);
+	//Primitive::DrawWireBox
+	//(
+	//	Position(),
+	//	Scale(),
+	//	CColor::red
+	//);
 #endif
 }
 

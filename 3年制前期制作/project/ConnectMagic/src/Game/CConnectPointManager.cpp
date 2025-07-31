@@ -7,10 +7,8 @@
 #include "CConnectTarget.h"
 #include "Maths.h"
 
-// レイを伸ばせる距離の最大の初期値
+// レイを伸ばせる距離の最大
 #define RAY_MAX_DISTANCE 100.0f
-// レイを縮めれる距離の最小
-#define RAY_MIN_DISTANCE 15.0f
 
 // ターザンの最短距離
 #define TARZAN_MIN_DISTANCE 30.0f
@@ -22,9 +20,6 @@
 
 // 接続部のスケール
 #define POINT_SCALE 0.5f
-
-// 接続できる最大数の初期値
-#define DEFAULT_CONNECT_NUM 1
 
 // 杖の重量
 #define WAND_WEIGHT 0.5f
@@ -79,9 +74,8 @@ void CConnectPointManager::Update()
 	// 接続部と繋いだ線が何かに衝突したら無効
 	RayPoint();
 
-	// 接続部との距離が最大値より遠いか
-	// 最小値より近ければ接続を無効にする
-	FarOrNearDist();
+	// 接続部との距離が最大値より遠ければ接続を無効にする
+	FarDist();
 
 	// 繋がっている処理
 	Connect();
@@ -112,54 +106,6 @@ void CConnectPointManager::Connect()
 	if (!GetWandConnect()) return;
 	
 	mpConnectPoint->GetConnectObj()->Connect(mpWandPoint->Position(), mpConnectPoint->Position());
-}
-
-// 設定されているコライダーと衝突判定を行う
-bool CConnectPointManager::Ray(CVector& hitPos)
-{
-	CHitInfo hit;
-	// カメラを取得
-	CCamera* camera = CCamera::CurrentCamera();
-	// 視点から注視点への方向
-	CVector dir = camera->GetEyeVec();
-	dir.Normalize();
-	// レイの開始と終了地点
-	CVector rayStart = camera->GetEye();
-	CVector rayEnd = rayStart + dir * RAY_MAX_DISTANCE;
-	float nearDist = 0.0f;
-	bool isHit = false;
-	// 設定されているコライダーを順番に調べる
-	for (CCollider* c : mColliders)
-	{
-		// レイとコライダーの衝突判定を行う
-		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-		{
-			// 交点が不整値でなければ、
-			if (hit.cross.LengthSqr() != 0.0f)
-			{
-				// 衝突位置までの距離で一番近い距離を求める
-				if (!isHit)
-				{
-					nearDist = hit.dist;
-					hitPos = hit.cross;
-				}
-				else if (nearDist > hit.dist)
-				{
-					nearDist = hit.dist;
-					hitPos = hit.cross;
-				}
-				isHit = true;
-			}
-		}
-	}
-
-	return isHit;
-}
-
-// 2点を繋いだレイと設定されているコライダーとの衝突判定を行う
-bool CConnectPointManager::Ray(const CVector& start, const CVector& end, CHitInfo* hit)
-{
-	return false;
 }
 
 // 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
@@ -226,21 +172,14 @@ void CConnectPointManager::RayPoint()
 	}
 }
 
-// 接続部との距離が最大値より遠いか
-// 最小値より近ければ接続を無効にする
-void CConnectPointManager::FarOrNearDist()
+// 接続部との距離が最大値より遠ければ接続を無効にする
+void CConnectPointManager::FarDist()
 {
 	// 杖が接続されていないなら処理しない
 	if (!GetWandConnect()) return;
 
 	// 最大距離より遠いなら
 	if (GetNowConnectDistance() > RAY_MAX_DISTANCE)
-	{
-		// 接続を無効
-		DisableConnect(GetConnectWandTarget());
-	}
-	// 最小距離より近いなら
-	else if (GetNowConnectDistance() < RAY_MIN_DISTANCE)
 	{
 		// 接続を無効
 		DisableConnect(GetConnectWandTarget());

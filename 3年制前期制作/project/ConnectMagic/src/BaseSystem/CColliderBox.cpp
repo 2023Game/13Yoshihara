@@ -63,6 +63,7 @@ const std::vector<SRVertexData>& CColliderBox::Get() const
 	return mVertices;
 }
 
+#if _DEBUG
 // コライダ―描画
 void CColliderBox::Render()
 {
@@ -107,6 +108,7 @@ void CColliderBox::Render()
 	// 描画前の行列に戻す
 	glPopMatrix();
 }
+#endif
 
 // コライダ―の情報を更新
 void CColliderBox::UpdateCol(bool isInit)

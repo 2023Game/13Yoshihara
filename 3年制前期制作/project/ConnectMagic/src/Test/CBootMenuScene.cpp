@@ -17,6 +17,7 @@ CBootMenuScene::CBootMenuScene()
 		{ "マップ1",		EScene::eMap1},
 		{ "マップ2",		EScene::eMap2},
 		{ "マップ3",		EScene::eMap3},
+		{ "クリア",			EScene::eClear},
 		{ "",				EScene::eNone },
 		{ "■デバッグ",		EScene::eNone },
 		{ "衝突判定テスト", EScene::eColTest},

@@ -1,5 +1,4 @@
 #include "CConnectRoom.h"
-#include "CBox.h"
 #include "CSwitch.h"
 #include "CSwitchMoveWall.h"
 #include "CColliderSphere.h"
@@ -24,7 +23,7 @@
 // 閉じるフラグ用のコライダーの半径
 #define COL_RADIUS 15.0f
 // コライダーの位置
-#define COL_POS CVector(0.0f,0.0f,-40.0f)
+#define COL_POS CVector(0.0f,0.0f,-45.0f)
 
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)
@@ -44,6 +43,7 @@ CConnectRoom::CConnectRoom(const CVector& pos)
 // デストラクタ
 CConnectRoom::~CConnectRoom()
 {
+	SAFE_DELETE(mpCloseCol);
 }
 
 // 次の部屋を設定
@@ -94,9 +94,6 @@ void CConnectRoom::CreateCol()
 // フィールドオブジェクトを生成
 void CConnectRoom::CreateFieldObjects()
 {
-	// 箱を生成
-	mpBox = new CBox(Position() + BOX_OFFSET_POS);
-
 	// スイッチを生成
 	mpNextSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS_NEXT);
 	// 動く壁を生成
@@ -122,7 +119,6 @@ void CConnectRoom::CreateFieldObjects()
 // フィールドオブジェクトを削除
 void CConnectRoom::DeleteFieldObjects()
 {
-	mpBox->Kill();
 	mpNextSwitch->DeleteSwitch();
 	SAFE_DELETE(mpNextSwitch);
 	mpNextWall->Kill();

@@ -95,6 +95,8 @@
     <ClCompile Include="src\Game\CFieldBase.cpp" />
     <ClCompile Include="src\Game\CFire.cpp" />
     <ClCompile Include="src\Game\CFragmentMergeArea.cpp" />
+    <ClCompile Include="src\Game\CGameClearScene.cpp" />
+    <ClCompile Include="src\Game\CGameClearUI.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
     <ClCompile Include="src\Game\CGearBaseStatus.cpp" />
@@ -109,6 +111,9 @@
     <ClCompile Include="src\Game\CPortalFragment.cpp" />
     <ClCompile Include="src\Game\CRoom1.cpp" />
     <ClCompile Include="src\Game\CRoom2.cpp" />
+    <ClCompile Include="src\Game\CRoom3.cpp" />
+    <ClCompile Include="src\Game\CRoom4.cpp" />
+    <ClCompile Include="src\Game\CRoom5.cpp" />
     <ClCompile Include="src\Game\CRoomBase.cpp" />
     <ClCompile Include="src\Game\CRoomManager.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveFloor.cpp" />
@@ -141,7 +146,7 @@
     <ClCompile Include="src\Game\CGameMenuBase.cpp" />
     <ClCompile Include="src\Game\CImage.cpp" />
     <ClCompile Include="src\Game\CInteractObject.cpp" />
-    <ClCompile Include="src\Game\CMoveFloor.cpp" />
+    <ClCompile Include="src\Game\CMoveObj.cpp" />
     <ClCompile Include="src\Game\CPlayerBase.cpp" />
     <ClCompile Include="src\Game\CRideabeObject.cpp" />
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
@@ -252,6 +257,8 @@
     <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
     <ClInclude Include="src\Game\CConnectRoom.h" />
+    <ClInclude Include="src\Game\CGameClearScene.h" />
+    <ClInclude Include="src\Game\CGameClearUI.h" />
     <ClInclude Include="src\Game\CGameScene.h" />
     <ClInclude Include="src\Game\CLastRoom.h" />
     <ClInclude Include="src\Game\CMap3Scene.h" />
@@ -269,6 +276,9 @@
     <ClInclude Include="src\Game\CFragmentMergeArea.h" />
     <ClInclude Include="src\Game\CRoom1.h" />
     <ClInclude Include="src\Game\CRoom2.h" />
+    <ClInclude Include="src\Game\CRoom3.h" />
+    <ClInclude Include="src\Game\CRoom4.h" />
+    <ClInclude Include="src\Game\CRoom5.h" />
     <ClInclude Include="src\Game\CRoomBase.h" />
     <ClInclude Include="src\Game\CRoomManager.h" />
     <ClInclude Include="src\Game\CSwitchMoveFloor.h" />
@@ -311,7 +321,7 @@
     <ClInclude Include="src\Game\CGameMenuBase.h" />
     <ClInclude Include="src\Game\CImage.h" />
     <ClInclude Include="src\Game\CInteractObject.h" />
-    <ClInclude Include="src\Game\CMoveFloor.h" />
+    <ClInclude Include="src\Game\CMoveObj.h" />
     <ClInclude Include="src\Game\CPlayerBase.h" />
     <ClInclude Include="src\Game\CRideableObject.h" />
     <ClInclude Include="src\Game\CRotateFloor.h" />

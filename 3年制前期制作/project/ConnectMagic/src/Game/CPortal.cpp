@@ -1,5 +1,6 @@
 #include "CPortal.h"
 #include "CSceneManager.h"
+#include "CConnectPointManager.h"
 #include "CColliderSphere.h"
 
 // 回転速度
@@ -54,12 +55,14 @@ void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 現在のシーンから次のシーンを決定
 			switch (CurrentScene)
 			{
-			case EScene::eGame:		NextScene = EScene::eGame;	break;
+			case EScene::eGame:		NextScene = EScene::eClear;	break;
 			case EScene::eMap1:		NextScene = EScene::eMap2;  break;
 			case EScene::eMap2:		NextScene = EScene::eMap3;	break;
 			case EScene::eMap3:		NextScene = EScene::eMap1;	break;
 			case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
 			}
+			// 衝突判定を行うコライダーをリセット
+			CConnectPointManager::Instance()->ResetCollider();
 
 			// 次のステージへ
 			CSceneManager::Instance()->LoadScene(NextScene);

@@ -2,9 +2,7 @@
 #include "CRoomBase.h"
 
 class CBox;
-class CSwitch;
-class CSwitchMoveWall;
-class CMoveFloor;
+class CMoveObj;
 class CWater;
 class CRespawnArea;
 
@@ -25,9 +23,7 @@ private:
 
 	// オブジェクト
 	CBox* mpBox;
-	CSwitch* mpSwitch;
-	CSwitchMoveWall* mpMoveWall;
-	CMoveFloor* mpMoveFloor;
+	CMoveObj* mpMoveFloor;
 	CWater* mpWater;
 	CRespawnArea* mpRespawnArea;
 };

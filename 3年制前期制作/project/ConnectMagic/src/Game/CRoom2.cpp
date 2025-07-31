@@ -1,36 +1,24 @@
 #include "CRoom2.h"
 #include "CBox.h"
 #include "CSwitch.h"
-#include "CSwitchMoveWall.h"
-#include "CMoveFloor.h"
+#include "CMoveObj.h"
 #include "CWater.h"
 #include "CRespawnArea.h"
 
 // 部屋の長さ
-#define ROOM_LENGTH 220.0f
+#define ROOM_LENGTH 160.0f
 
 // 箱の座標
-#define BOX_OFFSET_POS		CVector(30.0f,0.0f,-110.0f)
-// スイッチの座標
-#define SWITCH_OFFSET_POS	CVector(-30.0f,0.0f,-110.0f)
-
-// 動く壁のオフセット座標
-#define MOVE_WALL_OFFSET_POS	CVector(-5.0f,0.0f,-150.0f)
-// 動く壁のスケール
-#define MOVE_WALL_SCALE			CVector(9.0f,4.0f,1.0f)
-// 動く壁の移動
-#define MOVE_WALL_MOVE			CVector(-65.0f,0.0f,0.0f)
-// 動く壁の移動時間
-#define MOVE_WALL_MOVE_TIME		1.0f
+#define BOX_OFFSET_POS		CVector(30.0f,0.0f,-20.0f)
 
 // 動く床のオフセット座標
-#define MOVE_FLOOR_OFFSET_POS	CVector(0.0f,-10.0f,-90.0f)
+#define MOVE_FLOOR_OFFSET_POS	CVector(0.0f,-10.0f,-40.0f)
 // 動く床のスケール
 #define MOVE_FLOOR_SCALE		CVector(4.0f,1.0f,4.0f)
 // 動く床の移動
-#define MOVE_FLOOR_MOVE			CVector(0.0f,0.0f,50.0f)
+#define MOVE_FLOOR_MOVE			CVector(0.0f,0.0f,-40.0f)
 // 動く床の移動時間
-#define MOVE_FLOOR_MOVE_TIME	10.0f
+#define MOVE_FLOOR_MOVE_TIME	2.5f
 
 // 水のオフセット座標
 #define WATER_OFFSET_POS	CVector(0.0f,-5.0f,-85.0f)
@@ -68,26 +56,14 @@ void CRoom2::CreateFieldObjects()
 	// 箱を生成
 	mpBox = new CBox(Position() + BOX_OFFSET_POS);
 
-	// スイッチを生成
-	mpSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS);
-	// 動く壁を生成
-	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveWall = new CSwitchMoveWall(model,
-		Position() + MOVE_WALL_OFFSET_POS,
-		MOVE_WALL_SCALE,
-		MOVE_WALL_MOVE,
-		MOVE_WALL_MOVE_TIME);
-	// 作用するスイッチに設定
-	mpMoveWall->SetSwitchs({ mpSwitch });
-	// 作用するオブジェクトに設定
-	mpSwitch->SetActionObj(mpMoveWall);
-
 	// 動く床を生成
-	mpMoveFloor = new CMoveFloor(model,
+	CModel* model = CResourceManager::Get<CModel>("MoveObject");
+	mpMoveFloor = new CMoveObj(model,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,
-		MOVE_FLOOR_MOVE_TIME);
+		MOVE_FLOOR_MOVE_TIME,
+		ELayer::eGround);
 
 	// 水を生成
 	mpWater = new CWater(WATER_SCALE);
@@ -102,9 +78,6 @@ void CRoom2::CreateFieldObjects()
 void CRoom2::DeleteFieldObjects()
 {
 	mpBox->Kill();
-	mpSwitch->DeleteSwitch();
-	SAFE_DELETE(mpSwitch);
-	mpMoveWall->Kill();
 	mpMoveFloor->Kill();
 	mpWater->Kill();
 	mpRespawnArea->Kill();

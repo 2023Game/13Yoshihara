@@ -13,6 +13,8 @@ public:
 	// デストラクタ
 	~CGameClearUI();
 
+	// タイトルへ戻るか
+	bool IsReturnTitle() const;
 	// ゲームを終了するか
 	bool IsExitGame() const;
 
@@ -22,6 +24,8 @@ public:
 	void Render() override;
 
 private:
+	// [タイトルへ]クリック時のコールバック関数
+	void OnClickTitle();
 	// [終了]クリック時のコールバック関数
 	void OnClickQuit();
 };

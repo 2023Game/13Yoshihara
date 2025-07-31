@@ -1,7 +1,6 @@
 #pragma once
 #include "CRoomBase.h"
 
-class CBox;
 class CSwitch;
 class CSwitchMoveWall;
 
@@ -31,7 +30,6 @@ private:
 	void DeleteFieldObjects() override;
 
 	// オブジェクト
-	CBox* mpBox;
 	CSwitch* mpNextSwitch;
 	CSwitchMoveWall* mpNextWall;
 	CSwitchMoveWall* mpPreWall;

@@ -58,7 +58,6 @@ CBox::CBox(CVector defaultPos, float scaleRatio)
 // デストラクタ
 CBox::~CBox()
 {
-	SAFE_DELETE(mpCharaCol);
 }
 
 // 衝突処理
@@ -119,23 +118,15 @@ void CBox::CreateCol()
 	);
 	// 座標を調整
 	mpCol->Position(Position() + CVector(0.0f, RADIUS / 2, 0.0f));
-	// フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチ、水と衝突判定
-	mpCol->SetCollisionLayers({ ELayer::eGround, ELayer::eWall,
+	// プレイヤー、敵、フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチ、水と衝突判定
+	mpCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
+		ELayer::eGround, ELayer::eWall,
 		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch,
 		ELayer::eWater});
 
-	// キャラと衝突判定をするコライダー
-	mpCharaCol = new CColliderMesh
-	(
-		this, ELayer::eObject,
-		CResourceManager::Get<CModel>("Box_Col")
-	);
-	// プレイヤー、敵、オブジェクトと衝突判定
-	mpCharaCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eEnemy, ELayer::eObject });
-
 	// 接続部の管理クラスの衝突判定するコライダーに追加
-	CConnectPointManager::Instance()->AddCollider(mpCharaCol);
+	CConnectPointManager::Instance()->AddCollider(mpCol);
 
 	// カメラの衝突判定するコライダーに追加
-	CCamera::CurrentCamera()->AddCollider(mpCharaCol);
+	CCamera::CurrentCamera()->AddCollider(mpCol);
 }

@@ -26,22 +26,6 @@ public:
 	void Connect();
 
 	/// <summary>
-	/// 視点からのレイと設定されているコライダーとの衝突判定を行う
-	/// </summary>
-	/// <param name="hitPos">衝突した一番近い位置</param>
-	/// <returns>衝突したか</returns>
-	bool Ray(CVector& hitPos);
-
-	/// <summary>
-	/// 2点を繋いだレイと設定されているコライダーとの衝突判定を行う
-	/// </summary>
-	/// <param name="start">始まりの点</param>
-	/// <param name="end">終わりの点</param>
-	/// <param name="hit">衝突情報</param>
-	/// <returns></returns>
-	bool Ray(const CVector& start, const CVector& end, CHitInfo* hit);
-
-	/// <summary>
 	/// 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
 	/// </summary>
 	/// <param name="targetPos">ターゲットの座標</param>
@@ -54,9 +38,8 @@ public:
 	/// </summary>
 	void RayPoint();
 
-	// 接続部との距離が最大値より遠いか
-	// 最小値より近ければ接続を無効にする
-	void FarOrNearDist();
+	// 接続部との距離が最大値より遠ければ接続を無効にする
+	void FarDist();
 
 	// 衝突判定を行うコライダーをリストに追加
 	void AddCollider(CCollider* col);

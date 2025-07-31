@@ -32,8 +32,10 @@ public:
 	// 四角形コライダの配列を取得
 	const std::vector<SRVertexData>& Get() const;
 
+#if _DEBUG
 	//コライダ―描画
 	void Render() override;
+#endif
 
 protected:
 	// コライダ―の情報を更新
