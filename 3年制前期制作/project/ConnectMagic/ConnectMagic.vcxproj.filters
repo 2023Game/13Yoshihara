@@ -634,6 +634,9 @@
     <ClCompile Include="src\Game\CRoom5.cpp">
       <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CShield.cpp">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1154,6 +1157,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\CRoom5.h">
       <Filter>ソース ファイル\Game\Field\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CShield.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

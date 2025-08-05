@@ -116,6 +116,7 @@
     <ClCompile Include="src\Game\CRoom5.cpp" />
     <ClCompile Include="src\Game\CRoomBase.cpp" />
     <ClCompile Include="src\Game\CRoomManager.cpp" />
+    <ClCompile Include="src\Game\CShield.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveFloor.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveWall.cpp" />
     <ClCompile Include="src\Game\CTorch.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="src\Game\CRoom5.h" />
     <ClInclude Include="src\Game\CRoomBase.h" />
     <ClInclude Include="src\Game\CRoomManager.h" />
+    <ClInclude Include="src\Game\CShield.h" />
     <ClInclude Include="src\Game\CSwitchMoveFloor.h" />
     <ClInclude Include="src\Game\CSwitchMoveWall.h" />
     <ClInclude Include="src\Game\FragmentType.h" />

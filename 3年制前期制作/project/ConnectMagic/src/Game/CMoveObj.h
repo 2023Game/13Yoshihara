@@ -6,7 +6,7 @@
 class CMoveObj : public CRideableObject
 {
 public:
-	CMoveObj(CModel* model, 
+	CMoveObj(CModel* model, CModel* col,
 		const CVector& pos,
 		const CVector& scale,
 		const CVector& move,
@@ -19,7 +19,10 @@ public:
 
 private:
 	CModel* mpModel;
+	// 本体コライダ―
 	CColliderMesh* mpColliderMesh;
+	// プレイヤーが挟まれた時用のコライダー
+	CColliderMesh* mpCrushedCol;
 
 	CVector mDefaultPos;
 	CVector mMoveVec;

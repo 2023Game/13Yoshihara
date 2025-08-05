@@ -218,7 +218,7 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 	if (self == mpBodyCol)
 	{
 		// 水の場合
-		if (other->Layer() == ELayer::eWater)
+		if (other->Layer() == ELayer::eCrushed)
 		{
 			// 帰還状態へ
 			ChangeState(EState::eReturn);
@@ -263,10 +263,10 @@ void CPlayer::CreateCol()
 		BODY_RADIUS
 	);
 	// フィールド,壁、オブジェクト、
-	// スイッチ、ポータル、リスポーン地点、水、アイテムとだけ衝突
+	// スイッチ、ポータル、リスポーン地点、リスポーンさせられるObj、アイテムとだけ衝突
 	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
 		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal,
-		ELayer::eRespawnArea,ELayer::eWater,ELayer::eItem});
+		ELayer::eRespawnArea,ELayer::eCrushed,ELayer::eItem});
 
 	// コネクトオブジェクトの探知用コライダ
 	mpSearchConnectObjCol = new CColliderSphere

@@ -73,7 +73,8 @@ void CRoom5::CreateFieldObjects()
 
 	// 動く床を生成
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveFloor = new CMoveObj(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpMoveFloor = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,
@@ -83,7 +84,7 @@ void CRoom5::CreateFieldObjects()
 	// スイッチを生成
 	mpSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS);
 	// 動く壁を生成
-	mpMoveWall = new CSwitchMoveWall(model,
+	mpMoveWall = new CSwitchMoveWall(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS,
 		MOVE_WALL_SCALE,
 		MOVE_WALL_MOVE,

@@ -6,7 +6,7 @@ class CSwitchMoveWall : public CSwitchObject
 {
 public:
 	// コンストラクタ
-	CSwitchMoveWall(CModel* model,
+	CSwitchMoveWall(CModel* model, CModel* col,
 		const CVector& pos,
 		const CVector& scale,
 		const CVector& move,
@@ -17,6 +17,8 @@ public:
 private:
 	// コライダーを生成
 	void CreateCol() override;
+	// プレイヤーが挟まれた時用のコライダー
+	CColliderMesh* mpCrushedCol;
 
 	// 作用していない時の処理
 	void UpdateOff() override;

@@ -154,7 +154,7 @@ void CWater::Render()
 void CWater::CreateCol()
 {
 	mpCol = new CColliderRectangle(
-		this, ELayer::eWater,
+		this, ELayer::eCrushed,
 		CVector(VERT_POS_1),
 		CVector(VERT_POS_2),
 		CVector(VERT_POS_3),

@@ -78,7 +78,7 @@ void CBox::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			}
 		}
 		// 相手が水なら
-		if (other->Layer() == ELayer::eWater)
+		if (other->Layer() == ELayer::eCrushed)
 		{
 			mIsRespawn = true;
 		}
@@ -122,7 +122,7 @@ void CBox::CreateCol()
 	mpCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
 		ELayer::eGround, ELayer::eWall,
 		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch,
-		ELayer::eWater});
+		ELayer::eCrushed});
 
 	// 接続部の管理クラスの衝突判定するコライダーに追加
 	CConnectPointManager::Instance()->AddCollider(mpCol);

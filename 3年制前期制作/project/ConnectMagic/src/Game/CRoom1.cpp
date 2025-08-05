@@ -62,7 +62,8 @@ void CRoom1::CreateFieldObjects()
 	mpSwitch = new CSwitch(Position()+ SWITCH_OFFSET_POS);
 	// ìÆÇ≠è∞Çê∂ê¨
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveFloor = new CSwitchMoveFloor(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpMoveFloor = new CSwitchMoveFloor(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,

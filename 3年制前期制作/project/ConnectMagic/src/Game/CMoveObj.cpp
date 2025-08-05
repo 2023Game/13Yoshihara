@@ -1,10 +1,11 @@
 #include "CMoveObj.h"
 #include "Maths.h"
+#include "CConnectPointManager.h"
 
 // 一時停止の時間
 #define STOP_TIME 0.5f
 
-CMoveObj::CMoveObj(CModel* model, 
+CMoveObj::CMoveObj(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale,
 	const CVector& move, float moveTime,
 	ELayer layer)
@@ -16,7 +17,21 @@ CMoveObj::CMoveObj(CModel* model,
 	, mState(EMoveState::eStop)
 	, mPreState(EMoveState::eBack)
 {
+	// 本体のコライダー
 	mpColliderMesh = new CColliderMesh(this, layer, mpModel, true);
+	// プレイヤーが挟まれた時用のコライダー
+	mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
+	// プレイヤーとだけ衝突
+	mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+
+	// 接続部の管理クラス
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// コライダーを追加
+	pointMgr->AddCollider(mpColliderMesh);
+	// 現在のカメラ
+	CCamera* camera = CCamera::CurrentCamera();
+	// コライダーを追加
+	camera->AddCollider(mpColliderMesh);
 
 	Position(mDefaultPos);
 	Scale(scale);

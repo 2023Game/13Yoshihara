@@ -67,7 +67,8 @@ void CRoom4::CreateFieldObjects()
 
 	// ìÆÇ≠è∞Çê∂ê¨
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveFloor = new CMoveObj(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpMoveFloor = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,
@@ -75,7 +76,7 @@ void CRoom4::CreateFieldObjects()
 		ELayer::eGround);
 
 	// ìÆÇ≠ï«Çê∂ê¨
-	mpMoveWall= new CMoveObj(model,
+	mpMoveWall= new CMoveObj(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS,
 		MOVE_WALL_SCALE,
 		MOVE_WALL_MOVE,

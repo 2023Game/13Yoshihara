@@ -1,9 +1,10 @@
 #include "CSwitchMoveWall.h"
 #include "CColliderMesh.h"
 #include "Maths.h"
+#include "CConnectPointManager.h"
 
 // コンストラクタ
-CSwitchMoveWall::CSwitchMoveWall(CModel* model,
+CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: mDefaultPos(pos)
 	, mMoveVec(move)
@@ -14,6 +15,10 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model,
 
 	// コライダーを生成
 	CreateCol();
+	// プレイヤーが挟まれた時用のコライダー
+	mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
+	// プレイヤーとだけ衝突
+	mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
 
 	// 初期座標を設定
 	Position(mDefaultPos);
@@ -29,6 +34,15 @@ CSwitchMoveWall::~CSwitchMoveWall()
 void CSwitchMoveWall::CreateCol()
 {
 	mpCol = new CColliderMesh(this, ELayer::eWall, mpModel, true);
+
+	// 接続部の管理クラス
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// コライダーを追加
+	pointMgr->AddCollider(mpCol);
+	// 現在のカメラ
+	CCamera* camera = CCamera::CurrentCamera();
+	// コライダーを追加
+	camera->AddCollider(mpCol);
 }
 
 // 作用していない時の処理

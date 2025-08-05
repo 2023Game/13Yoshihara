@@ -13,7 +13,7 @@ enum class ELayer
 	ePortal,		// ポータル
 	eRespawnArea,	// リスポーン地点
 	eFragmentMergeArea,	// 欠片を合成する場所
-	eWater,			// 水
+	eCrushed,			// プレイヤーがリスポーンさせられるオブジェクト
 	
 	eInteractObj,	// 調べるオブジェクト
 	eInteractSearch,// 調べるオブジェクト探知用

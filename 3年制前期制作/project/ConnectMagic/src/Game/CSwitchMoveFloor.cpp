@@ -1,11 +1,12 @@
 #include "CSwitchMoveFloor.h"
 #include "CColliderMesh.h"
+#include "CConnectPointManager.h"
 
 // 一時停止の時間
 #define STOP_TIME 0.5f
 
 // コンストラクタ
-CSwitchMoveFloor::CSwitchMoveFloor(CModel* model,
+CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: CSwitchObject()
 	, mDefaultPos(pos)
@@ -22,6 +23,10 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model,
 
 	// コライダーを生成
 	CreateCol();
+	// プレイヤーが挟まれた時用のコライダー
+	mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
+	// プレイヤーとだけ衝突
+	mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
 
 	// 初期座標の設定
 	Position(mDefaultPos);
@@ -36,7 +41,17 @@ CSwitchMoveFloor::~CSwitchMoveFloor()
 // コライダーを生成
 void CSwitchMoveFloor::CreateCol()
 {
+	// 本体のコライダー
 	mpCol = new CColliderMesh(this, ELayer::eGround, mpModel, true);
+
+	// 接続部の管理クラス
+	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+	// コライダーを追加
+	pointMgr->AddCollider(mpCol);
+	// 現在のカメラ
+	CCamera* camera = CCamera::CurrentCamera();
+	// コライダーを追加
+	camera->AddCollider(mpCol);
 }
 
 // 作用している時の処理

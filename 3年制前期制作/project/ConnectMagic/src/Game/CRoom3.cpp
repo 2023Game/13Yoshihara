@@ -80,12 +80,13 @@ void CRoom3::CreateFieldObjects()
 
 	// スイッチで動く床を生成
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpSwitchMoveFloor1 = new CSwitchMoveFloor(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpSwitchMoveFloor1 = new CSwitchMoveFloor(model, colModel,
 		Position() + SWITCH_MOVE_FLOOR_OFFSET_POS1,
 		MOVE_FLOOR_SCALE,
 		SWITCH_MOVE_FLOOR_MOVE1,
 		MOVE_FLOOR_MOVE_TIME);
-	mpSwitchMoveFloor2 = new CSwitchMoveFloor(model,
+	mpSwitchMoveFloor2 = new CSwitchMoveFloor(model, colModel,
 		Position() + SWITCH_MOVE_FLOOR_OFFSET_POS2,
 		MOVE_FLOOR_SCALE,
 		SWITCH_MOVE_FLOOR_MOVE2,
@@ -96,19 +97,19 @@ void CRoom3::CreateFieldObjects()
 	mpSwitchMoveFloor2->SetSwitchs({ mpSwitch2 });
 
 	// 動く床を生成
-	mpMoveFloor1 = new CMoveObj(model,
+	mpMoveFloor1 = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS1,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE1,
 		MOVE_FLOOR_MOVE_TIME,
 		ELayer::eGround);
-	mpMoveFloor2 = new CMoveObj(model,
+	mpMoveFloor2 = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS2,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE2,
 		MOVE_FLOOR_MOVE_TIME,
 		ELayer::eGround);
-	mpMoveFloor3 = new CMoveObj(model,
+	mpMoveFloor3 = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS3,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE3,

@@ -66,6 +66,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("Room5_Wall_Col",			"Field\\Room\\Room5\\Col\\Room5_Wall_Col.obj");
 	CResourceManager::Load<CModel>("LastRoom_Ground_Col",		"Field\\Room\\LastRoom\\Col\\LastRoom_Ground_Col.obj");
 	CResourceManager::Load<CModel>("LastRoom_Wall_Col",			"Field\\Room\\LastRoom\\Col\\LastRoom_Wall_Col.obj");
+	CResourceManager::Load<CModel>("MoveObject_Col",			"Field\\MoveObject\\Col\\MoveObject_Col.obj");
 	/*
 	Œø‰Ê‰¹
 	*/

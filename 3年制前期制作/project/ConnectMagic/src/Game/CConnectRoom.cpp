@@ -98,12 +98,13 @@ void CConnectRoom::CreateFieldObjects()
 	mpNextSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS_NEXT);
 	// ìÆÇ≠ï«Çê∂ê¨
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpNextWall = new CSwitchMoveWall(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpNextWall = new CSwitchMoveWall(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS_NEXT, 
 		MOVE_WALL_SCALE, 
 		MOVE_WALL_MOVE,
 		MOVE_WALL_MOVE_TIME);
-	mpPreWall = new CSwitchMoveWall(model,
+	mpPreWall = new CSwitchMoveWall(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS_PRE,
 		MOVE_WALL_SCALE,
 		MOVE_WALL_MOVE,

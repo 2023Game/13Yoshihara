@@ -58,7 +58,8 @@ void CRoom2::CreateFieldObjects()
 
 	// ìÆÇ≠è∞Çê∂ê¨
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
-	mpMoveFloor = new CMoveObj(model,
+	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");
+	mpMoveFloor = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE,
