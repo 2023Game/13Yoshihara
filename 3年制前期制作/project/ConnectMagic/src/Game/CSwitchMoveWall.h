@@ -10,7 +10,7 @@ public:
 		const CVector& pos,
 		const CVector& scale,
 		const CVector& move,
-		float moveTime);
+		float moveTime, bool isCrushed = false);
 	// デストラクタ
 	~CSwitchMoveWall();
 

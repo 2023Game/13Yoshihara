@@ -74,6 +74,8 @@ void CRoomManager::CreateRoom()
 		default:
 			// ÅŒã‚Ì•”‰®‚ğ¶¬
 			room = new CLastRoom(pos + offsetPos);
+			// ƒŠƒXƒg‚É’Ç‰Á
+			mRooms.push_back(room);
 			return;
 			break;
 		}

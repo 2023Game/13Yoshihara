@@ -7,7 +7,7 @@
 
 // コンストラクタ
 CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
-	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
+	const CVector& pos, const CVector& scale, const CVector& move, float moveTime, bool isCrushed)
 	: CSwitchObject()
 	, mDefaultPos(pos)
 	, mMoveVec(move)
@@ -15,6 +15,7 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	, mElapsedTime(0.0f)
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
+	, mpCrushedCol(nullptr)
 {
 	mpModel = model;
 
@@ -23,10 +24,14 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 
 	// コライダーを生成
 	CreateCol();
-	// プレイヤーが挟まれた時用のコライダー
-	mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
-	// プレイヤーとだけ衝突
-	mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+	// プレイヤーを壊すなら
+	if (isCrushed)
+	{
+		// プレイヤーが挟まれた時用のコライダー
+		mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
+		// プレイヤーとだけ衝突
+		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+	}
 
 	// 初期座標の設定
 	Position(mDefaultPos);
@@ -36,6 +41,7 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 // デストラクタ
 CSwitchMoveFloor::~CSwitchMoveFloor()
 {
+	SAFE_DELETE(mpCrushedCol);
 }
 
 // コライダーを生成

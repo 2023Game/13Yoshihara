@@ -8,7 +8,7 @@
 CMoveObj::CMoveObj(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale,
 	const CVector& move, float moveTime,
-	ELayer layer)
+	ELayer layer, bool isCrushed)
 	: mpModel(model)
 	, mDefaultPos(pos)
 	, mMoveVec(move)
@@ -16,13 +16,18 @@ CMoveObj::CMoveObj(CModel* model, CModel* col,
 	, mElapsedTime(0.0f)
 	, mState(EMoveState::eStop)
 	, mPreState(EMoveState::eBack)
+	, mpCrushedCol(nullptr)
 {
 	// 本体のコライダー
 	mpColliderMesh = new CColliderMesh(this, layer, mpModel, true);
-	// プレイヤーが挟まれた時用のコライダー
-	mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
-	// プレイヤーとだけ衝突
-	mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+	// プレイヤーを壊すなら
+	if (isCrushed)
+	{
+		// プレイヤーが挟まれた時用のコライダー
+		mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
+		// プレイヤーとだけ衝突
+		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+	}
 
 	// 接続部の管理クラス
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
@@ -39,11 +44,8 @@ CMoveObj::CMoveObj(CModel* model, CModel* col,
 
 CMoveObj::~CMoveObj()
 {
-	if (mpColliderMesh != nullptr)
-	{
-		delete mpColliderMesh;
-		mpColliderMesh = nullptr;
-	}
+	SAFE_DELETE(mpColliderMesh);
+	SAFE_DELETE(mpCrushedCol);
 }
 
 void CMoveObj::Update()

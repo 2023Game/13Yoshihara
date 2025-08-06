@@ -6,11 +6,11 @@
 
 // 接続ターゲットの座標
 #define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
-#define TARGET_POS_2 CVector( 0.0f, 0.0f, 0.0f)
-#define TARGET_POS_3 CVector( 6.0f, 5.0f, 0.0f)
-#define TARGET_POS_4 CVector(-6.0f, 5.0f, 0.0f)
-#define TARGET_POS_5 CVector( 0.0f, 5.0f, 6.0f)
-#define TARGET_POS_6 CVector( 0.0f, 5.0f,-6.0f)
+//#define TARGET_POS_2 CVector( 0.0f, 0.0f, 0.0f)
+//#define TARGET_POS_3 CVector( 6.0f, 5.0f, 0.0f)
+//#define TARGET_POS_4 CVector(-6.0f, 5.0f, 0.0f)
+//#define TARGET_POS_5 CVector( 0.0f, 5.0f, 6.0f)
+//#define TARGET_POS_6 CVector( 0.0f, 5.0f,-6.0f)
 
 // 箱の重さ
 #define WEIGHT 0.1f
@@ -38,19 +38,22 @@ CBox::CBox(CVector defaultPos, float scaleRatio)
 	// コライダーを生成
 	CreateCol();
 
-	std::vector<CVector> targetPosList = { TARGET_POS_1,TARGET_POS_2,TARGET_POS_3,TARGET_POS_4,TARGET_POS_5,TARGET_POS_6 };
-	for (int i = 0; i < targetPosList.size(); i++)
-	{
-		CVector pos = targetPosList[i] * scaleRatio;
-		// 1つ目でなければ
-		if (i != 0)
-		{
-			// 元のY座標に設定
-			pos.Y(targetPosList[i].Y());
-		}
-		// 接続ターゲットを生成
-		CreateTarget(pos);
-	}
+	//std::vector<CVector> targetPosList = { TARGET_POS_1,TARGET_POS_2,TARGET_POS_3,TARGET_POS_4,TARGET_POS_5,TARGET_POS_6 };
+	//for (int i = 0; i < targetPosList.size(); i++)
+	//{
+	//	CVector pos = targetPosList[i] * scaleRatio;
+	//	// 1つ目でなければ
+	//	if (i != 0)
+	//	{
+	//		// 元のY座標に設定
+	//		pos.Y(targetPosList[i].Y());
+	//	}
+	//	// 接続ターゲットを生成
+	//	CreateTarget(pos);
+	//}
+	
+	// 接続ターゲットを生成
+	CreateTarget(TARGET_POS_1);
 
 	Position(defaultPos);
 }
@@ -126,7 +129,4 @@ void CBox::CreateCol()
 
 	// 接続部の管理クラスの衝突判定するコライダーに追加
 	CConnectPointManager::Instance()->AddCollider(mpCol);
-
-	// カメラの衝突判定するコライダーに追加
-	CCamera::CurrentCamera()->AddCollider(mpCol);
 }

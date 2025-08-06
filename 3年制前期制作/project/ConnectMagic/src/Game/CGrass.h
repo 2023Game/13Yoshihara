@@ -32,6 +32,8 @@ public:
 private:
 	// コライダーを生成
 	void CreateCol() override;
+	// ツタ用のコライダー
+	CCollider* mpVineCol;
 
 	// 燃えたときの処理
 	void Burning() override;
@@ -47,7 +49,4 @@ private:
 
 	// 草の種類
 	EGrassType mGrassType;
-
-	// ツタ用のコライダー
-	CCollider* mpVineCol;
 };

@@ -6,6 +6,8 @@ CConnectPoint::CConnectPoint(CConnectObject* connectObj)
 	: CBillBoardImage("Effect/ConnectPoint.png", ETag::eConnectPoint, ETaskPauseType::eGame)
 	, mpConnectObj(connectObj)
 {
+	// 優先度を設定
+	SetPriority(ETaskPriority::eConnectPoint);
 }
 
 // デストラクタ

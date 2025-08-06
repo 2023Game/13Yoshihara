@@ -9,7 +9,7 @@ CColliderMesh::CColliderMesh(CObjectBase* owner, ELayer layer, CModel* model,
 	, mDivZ(std::max(divZ, 1))
 {
 	// メッシュコライダーはデフォルトで非表示
-	SetShow(false);
+	//SetShow(false);
 
 	Set(model);
 	UpdateCol(true);

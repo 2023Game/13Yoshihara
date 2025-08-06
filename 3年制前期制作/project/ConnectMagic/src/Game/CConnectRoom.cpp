@@ -2,6 +2,7 @@
 #include "CSwitch.h"
 #include "CSwitchMoveWall.h"
 #include "CColliderSphere.h"
+#include "CShield.h"
 
 // 箱のオフセット座標
 #define BOX_OFFSET_POS CVector(25.0f,0.0f,-40.0f)
@@ -24,6 +25,9 @@
 #define COL_RADIUS 15.0f
 // コライダーの位置
 #define COL_POS CVector(0.0f,0.0f,-45.0f)
+
+// シールドのオフセット座標
+#define SHIELD_OFFSET_POS CVector(0.0f,0.0f,-75.0f)
 
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)
@@ -103,18 +107,22 @@ void CConnectRoom::CreateFieldObjects()
 		Position() + MOVE_WALL_OFFSET_POS_NEXT, 
 		MOVE_WALL_SCALE, 
 		MOVE_WALL_MOVE,
-		MOVE_WALL_MOVE_TIME);
+		MOVE_WALL_MOVE_TIME, true);
 	mpPreWall = new CSwitchMoveWall(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS_PRE,
 		MOVE_WALL_SCALE,
 		MOVE_WALL_MOVE,
-		MOVE_WALL_MOVE_TIME);
+		MOVE_WALL_MOVE_TIME, true);
 	// 最初から開いている
 	mpPreWall->SetOnOff(true);
 	// 作用するスイッチに設定
 	mpNextWall->SetSwitchs({ mpNextSwitch });
 	// 作用するオブジェクトに設定
 	mpNextSwitch->SetActionObj(mpNextWall);
+
+	// シールドを生成
+	mpShield = new CShield();
+	mpShield->Position(Position() + SHIELD_OFFSET_POS);
 }
 
 // フィールドオブジェクトを削除

@@ -3,6 +3,7 @@
 
 class CSwitch;
 class CSwitchMoveWall;
+class CShield;
 
 // 部屋と部屋を繋げる部屋
 class CConnectRoom : public CRoomBase
@@ -41,4 +42,7 @@ private:
 
 	// 前の部屋に繋がる扉が閉じるフラグ用のコライダー
 	CCollider* mpCloseCol;
+
+	// オブジェクトを通さないシールド
+	CShield* mpShield;
 };
