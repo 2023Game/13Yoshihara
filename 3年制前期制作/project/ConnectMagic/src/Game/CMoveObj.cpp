@@ -54,13 +54,13 @@ void CMoveObj::Update()
 
 	switch (mState)
 	{
-	case CMoveObj::EMoveState::eStop:
+	case EMoveState::eStop:
 		UpdateStop();
 		break;
-	case CMoveObj::EMoveState::eGo:
+	case EMoveState::eGo:
 		UpdateGo();
 		break;
-	case CMoveObj::EMoveState::eBack:
+	case EMoveState::eBack:
 		UpdateBack();
 		break;
 	}
@@ -81,6 +81,42 @@ void CMoveObj::ChangeState(EMoveState state)
 	// 状態を変更
 	mState = state;
 	mElapsedTime = 0.0f;
+}
+
+// 状態を設定
+void CMoveObj::SetState(EMoveState state)
+{
+	mState = state;
+}
+
+// 状態を取得
+EMoveState CMoveObj::GetState() const
+{
+	return mState;
+}
+
+// 前回の状態を設定
+void CMoveObj::SetPreState(EMoveState state)
+{
+	mPreState = state;
+}
+
+// 前回の状態を取得
+EMoveState CMoveObj::GetPreState() const
+{
+	return mPreState;
+}
+
+// 経過時間を設定
+void CMoveObj::SetElapsedTime(float time)
+{
+	mElapsedTime = time;
+}
+
+// 経過時間を取得
+float CMoveObj::GetElapsedTime() const
+{
+	return mElapsedTime;
 }
 
 // 止まっているときの更新

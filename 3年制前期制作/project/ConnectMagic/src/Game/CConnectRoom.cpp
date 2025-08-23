@@ -3,6 +3,7 @@
 #include "CSwitchMoveWall.h"
 #include "CColliderSphere.h"
 #include "CShield.h"
+#include "CRoomManager.h"
 
 // 箱のオフセット座標
 #define BOX_OFFSET_POS CVector(25.0f,0.0f,-40.0f)
@@ -32,6 +33,8 @@
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)
 	: CRoomBase(ROOM_LENGTH)
+	, mpNextRoom(nullptr)
+	, mpPreRoom(nullptr)
 {
 	mpModel = CResourceManager::Get<CModel>("ConnectRoom");
 	// 座標を設定
@@ -80,6 +83,39 @@ void CConnectRoom::Collision(CCollider* self, CCollider* other, const CHitInfo& 
 	}
 }
 
+// 部屋の有効無効を設定
+void CConnectRoom::SetEnableRoom(bool enable)
+{
+	CRoomBase::SetEnableRoom(enable);
+	mpNextSwitch->SetEnableSwitch(enable);
+}
+
+// 更新
+void CConnectRoom::Update()
+{
+	// 次が無効かつ
+	// 壁が開いているなら
+	if (!mpNextRoom->IsEnable() &&
+		mpNextWall->IsOpen())
+	{
+		// 部屋管理クラス
+		CRoomManager* roomMgr = CRoomManager::Instance();
+		// 部屋を有効
+		roomMgr->RoomOn();
+	}
+
+	// 前が有効かつ
+	// 壁が開いていないなら
+	if (mpPreRoom->IsEnable() &&
+		!mpPreWall->IsOpen())
+	{
+		// 部屋管理クラス
+		CRoomManager* roomMgr = CRoomManager::Instance();
+		// 部屋を無効
+		roomMgr->RoomOff();
+	}
+}
+
 // コライダーの生成
 void CConnectRoom::CreateCol()
 {
@@ -114,24 +150,18 @@ void CConnectRoom::CreateFieldObjects()
 		MOVE_WALL_MOVE,
 		MOVE_WALL_MOVE_TIME, true);
 	// 最初から開いている
-	mpPreWall->SetOnOff(true);
+	mpPreWall->SetIsOpen(true);
 	// 作用するスイッチに設定
 	mpNextWall->SetSwitchs({ mpNextSwitch });
 	// 作用するオブジェクトに設定
 	mpNextSwitch->SetActionObj(mpNextWall);
+	// リストに追加
+	mObjs.push_back(mpNextWall);
+	mObjs.push_back(mpPreWall);
 
 	// シールドを生成
 	mpShield = new CShield();
 	mpShield->Position(Position() + SHIELD_OFFSET_POS);
-}
-
-// フィールドオブジェクトを削除
-void CConnectRoom::DeleteFieldObjects()
-{
-	mpNextSwitch->DeleteSwitch();
-	SAFE_DELETE(mpNextSwitch);
-	mpNextWall->Kill();
-	mpPreWall->Kill();
-	mpNextRoom = nullptr;
-	mpPreRoom = nullptr;
+	// リストに追加
+	mObjs.push_back(mpShield);
 }

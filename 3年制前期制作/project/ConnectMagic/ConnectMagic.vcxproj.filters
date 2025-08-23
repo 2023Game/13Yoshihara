@@ -637,6 +637,9 @@
     <ClCompile Include="src\Game\CShield.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CSaveManager.cpp">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1159,6 +1162,15 @@
       <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CShield.h">
+      <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSaveManager.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\SaveData.h">
+      <Filter>ソース ファイル\Game\System</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\MoveState.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
   </ItemGroup>

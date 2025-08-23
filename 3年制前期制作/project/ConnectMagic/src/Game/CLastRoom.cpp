@@ -31,4 +31,6 @@ void CLastRoom::CreateFieldObjects()
 	mpPortal = new CPortal();
 	// À•W‚ðÝ’è
 	mpPortal->Position(Position() + PORTAL_OFFSET_POS);
+	// ƒŠƒXƒg‚É’Ç‰Á
+	mObjs.push_back(mpPortal);
 }

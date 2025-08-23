@@ -11,6 +11,7 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 	, mMoveTime(moveTime)
 	, mElapsedTime(0.0f)
 	, mpCrushedCol(nullptr)
+	, mIsOpen(false)
 {
 	mpModel = model;
 
@@ -34,6 +35,20 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 CSwitchMoveWall::~CSwitchMoveWall()
 {
 	SAFE_DELETE(mpCrushedCol);
+}
+
+// 開いているか
+bool CSwitchMoveWall::IsOpen() const
+{
+	return mIsOpen;
+}
+
+// 開いているかを設定
+void CSwitchMoveWall::SetIsOpen(bool enable)
+{
+	mIsOpen = enable;
+	// オンオフを切り替える
+	SetOnOff(enable);
 }
 
 // コライダーを生成
@@ -65,6 +80,8 @@ void CSwitchMoveWall::UpdateOff()
 	// 経過時間が0以下なら
 	if (mElapsedTime <= 0.0f)
 	{
+		// 開いていない
+		mIsOpen = false;
 		// 経過時間は0
 		mElapsedTime = 0.0f;
 		// 座標を更新
@@ -77,6 +94,9 @@ void CSwitchMoveWall::UpdateOn()
 {
 	// 移動時間が経過していたら処理しない
 	if (mElapsedTime == mMoveTime) return;
+
+	// 開いている
+	mIsOpen = true;
 
 	// 移動処理
 	Move();

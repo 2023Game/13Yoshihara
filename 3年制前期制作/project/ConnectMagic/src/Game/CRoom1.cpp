@@ -4,6 +4,7 @@
 #include "CSwitchMoveFloor.h"
 #include "CWater.h"
 #include "CRespawnArea.h"
+#include "CSaveManager.h"
 
 // 部屋の長さ
 #define ROOM_LENGTH 170.0f
@@ -52,11 +53,32 @@ CRoom1::~CRoom1()
 {
 }
 
+// 部屋の有効無効を設定
+void CRoom1::SetEnableRoom(bool enable)
+{
+	CRoomBase::SetEnableRoom(enable);
+	mpSwitch->SetEnableSwitch(enable);
+
+	// 有効時のみ
+	if (enable) {
+		// 箱のフラグを変更
+		mpBox->SetEnable(enable);
+		// 保存管理クラス
+		CSaveManager* saveMgr = CSaveManager::Instance();
+		// 箱を追加
+		saveMgr->AddBox(mpBox);
+		// 移動床を追加
+		saveMgr->AddMoveFloor(mpMoveFloor);
+	}
+}
+
 // フィールドオブジェクトを生成
 void CRoom1::CreateFieldObjects()
 {
 	// 箱を生成
 	mpBox = new CBox(Position() + BOX_OFFSET_POS);
+	// 最初は無効
+	mpBox->SetEnable(false);
 
 	// スイッチを生成
 	mpSwitch = new CSwitch(Position()+ SWITCH_OFFSET_POS);
@@ -72,23 +94,18 @@ void CRoom1::CreateFieldObjects()
 	mpMoveFloor->SetSwitchs({ mpSwitch });
 	// 作用するオブジェクトに設定
 	mpSwitch->SetActionObj(mpMoveFloor);
+	// リストに追加
+	mObjs.push_back(mpMoveFloor);
 
 	// 水を生成
 	mpWater = new CWater(WATER_SCALE);
 	// 座標を設定
 	mpWater->Position(Position() + WATER_OFFSET_POS);
+	// リストに追加
+	mObjs.push_back(mpWater);
 
 	// リスポーン地点
 	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
-}
-
-// フィールドオブジェクトを削除
-void CRoom1::DeleteFieldObjects()
-{
-	mpBox->Kill();
-	mpSwitch->DeleteSwitch();
-	SAFE_DELETE(mpSwitch);
-	mpMoveFloor->Kill();
-	mpWater->Kill();
-	mpRespawnArea->Kill();
+	// リストに追加
+	mObjs.push_back(mpRespawnArea);
 }

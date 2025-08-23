@@ -10,6 +10,8 @@
 #include "CImage.h"
 #include "CFade.h"
 #include "Maths.h"
+#include "CSaveManager.h"
+#include "CTaskManager.h"
 
 // 体の半径と高さ
 #define BODY_RADIUS 2.5f
@@ -220,8 +222,10 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 水の場合
 		if (other->Layer() == ELayer::eCrushed)
 		{
-			// 帰還状態へ
-			ChangeState(EState::eReturn);
+			// 保存管理クラスをロード状態へ
+			CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
+			// ポーズ
+			CTaskManager::Instance()->Pause(PAUSE_GAME);
 			return;
 		}
 	}

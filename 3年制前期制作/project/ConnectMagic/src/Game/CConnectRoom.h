@@ -22,13 +22,17 @@ public:
 	// 衝突処理
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
+	// 部屋の有効無効を設定
+	void SetEnableRoom(bool enable) override;
+
+	// 更新
+	void Update() override;
+
 private:
 	// コライダーの生成
 	void CreateCol() override;
 	// フィールドオブジェクトを生成
 	void CreateFieldObjects() override;
-	// フィールドオブジェクトを削除
-	void DeleteFieldObjects() override;
 
 	// オブジェクト
 	CSwitch* mpNextSwitch;

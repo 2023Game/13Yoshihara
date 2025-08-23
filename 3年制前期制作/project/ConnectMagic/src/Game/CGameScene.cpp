@@ -8,6 +8,7 @@
 #include "CInput.h"
 #include "CPlayer.h"
 #include "CRoomBase.h"
+#include "CSaveManager.h"
 
 // プレイヤーのスタート地点
 #define PLAYER_POS		CVector(0.0f,0.0f,-30.0f)
@@ -93,6 +94,8 @@ void CGameScene::Load()
 	// カメラの位置を反対へ
 	//mainCamera->SetRotateAngle(CVector(0.0f, 180.0f, 0.0f));
 
+	// 保存管理クラスを作成
+	new CSaveManager();
 	// 部屋管理クラスを生成
 	mpRoomMgr = new CRoomManager();
 

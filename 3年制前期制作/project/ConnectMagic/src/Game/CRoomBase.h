@@ -13,7 +13,12 @@ public:
 	// 部屋の長さを取得
 	float GetRoomLength() const;
 
-private:
+	// 部屋の有効無効を切り替える
+	virtual void SetEnableRoom(bool enable);
+
+protected:
 	// 部屋の長さ
 	float mRoomLength;
+	// オブジェクトのリスト
+	std::vector<CObjectBase*> mObjs;
 };

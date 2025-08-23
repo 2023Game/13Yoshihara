@@ -14,6 +14,11 @@ public:
 	// デストラクタ
 	~CSwitchMoveWall();
 
+	// 開いているか
+	bool IsOpen() const;
+	// 開いているかを設定
+	void SetIsOpen(bool enable);
+
 private:
 	// コライダーを生成
 	void CreateCol() override;
@@ -32,4 +37,7 @@ private:
 	CVector mMoveVec;		// 移動ベクトル
 	float mMoveTime;		// 移動時間
 	float mElapsedTime;		// 経過時間
+
+	// 開いているか
+	bool mIsOpen;
 };

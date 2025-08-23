@@ -15,11 +15,12 @@ public:
 	// デストラクタ
 	~CRoom4();
 
+	// 部屋の有効無効を設定
+	void SetEnableRoom(bool enable) override;
+
 private:
 	// フィールドオブジェクトを生成
 	void CreateFieldObjects() override;
-	// フィールドオブジェクトを削除
-	void DeleteFieldObjects() override;
 
 	// オブジェクト
 	CBox* mpBox;

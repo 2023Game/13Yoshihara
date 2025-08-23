@@ -5,6 +5,7 @@
 #include "CMoveObj.h"
 #include "CWater.h"
 #include "CRespawnArea.h"
+#include "CSaveManager.h"
 
 // 部屋の長さ
 #define ROOM_LENGTH 240.0f
@@ -67,12 +68,41 @@ CRoom3::~CRoom3()
 {
 }
 
+// 部屋の有効無効を設定
+void CRoom3::SetEnableRoom(bool enable)
+{
+	CRoomBase::SetEnableRoom(enable);
+	mpSwitch1->SetEnableSwitch(enable);
+	mpSwitch2->SetEnableSwitch(enable);
+
+	// 有効時のみ
+	if (enable) {
+		// 箱のフラグを変更
+		mpBox1->SetEnable(enable);
+		mpBox2->SetEnable(enable);
+		// 保存管理クラス
+		CSaveManager* saveMgr = CSaveManager::Instance();
+		// 箱を追加
+		saveMgr->AddBox(mpBox1);
+		saveMgr->AddBox(mpBox2);
+		// 移動床を追加
+		saveMgr->AddMoveFloor(mpSwitchMoveFloor1);
+		saveMgr->AddMoveFloor(mpSwitchMoveFloor2);
+		saveMgr->AddMoveObj(mpMoveFloor1);
+		saveMgr->AddMoveObj(mpMoveFloor2);
+		saveMgr->AddMoveObj(mpMoveFloor3);
+	}
+}
+
 // フィールドオブジェクトを生成
 void CRoom3::CreateFieldObjects()
 {
 	// 箱を生成
 	mpBox1 = new CBox(Position() + BOX_OFFSET_POS1);
 	mpBox2 = new CBox(Position() + BOX_OFFSET_POS2);
+	// 最初は無効
+	mpBox1->SetEnable(false);
+	mpBox2->SetEnable(false);
 
 	// スイッチを生成
 	mpSwitch1 = new CSwitch(Position() + SWITCH_OFFSET_POS1);
@@ -91,6 +121,10 @@ void CRoom3::CreateFieldObjects()
 		MOVE_FLOOR_SCALE,
 		SWITCH_MOVE_FLOOR_MOVE2,
 		MOVE_FLOOR_MOVE_TIME);
+	// リストに追加
+	mObjs.push_back(mpSwitchMoveFloor1);
+	mObjs.push_back(mpSwitchMoveFloor2);
+	// スイッチを設定
 	mpSwitch1->SetActionObj(mpSwitchMoveFloor1);
 	mpSwitch2->SetActionObj(mpSwitchMoveFloor2);
 	mpSwitchMoveFloor1->SetSwitchs({ mpSwitch1 });
@@ -115,17 +149,20 @@ void CRoom3::CreateFieldObjects()
 		MOVE_FLOOR_MOVE3,
 		MOVE_FLOOR_MOVE_TIME,
 		ELayer::eGround);
+	// リストに追加
+	mObjs.push_back(mpMoveFloor1);
+	mObjs.push_back(mpMoveFloor2);
+	mObjs.push_back(mpMoveFloor3);
 
 	// 水を生成
 	mpWater = new CWater(WATER_SCALE);
 	// 座標を設定
 	mpWater->Position(Position() + WATER_OFFSET_POS);
+	// リストに追加
+	mObjs.push_back(mpWater);
 
 	// リスポーン地点
 	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
-}
-
-// フィールドオブジェクトを削除
-void CRoom3::DeleteFieldObjects()
-{
+	// リストに追加
+	mObjs.push_back(mpRespawnArea);
 }

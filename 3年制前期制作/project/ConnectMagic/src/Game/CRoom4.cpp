@@ -4,6 +4,7 @@
 #include "CMoveObj.h"
 #include "CWater.h"
 #include "CRespawnArea.h"
+#include "CSaveManager.h"
 
 // 部屋の長さ
 #define ROOM_LENGTH 240.0f
@@ -59,11 +60,31 @@ CRoom4::~CRoom4()
 {
 }
 
+// 部屋の有効無効を設定
+void CRoom4::SetEnableRoom(bool enable)
+{
+	CRoomBase::SetEnableRoom(enable);
+
+	// 有効時のみ
+	if (enable) {
+		// 箱のフラグを変更
+		mpBox->SetEnable(enable);
+		// 保存管理クラス
+		CSaveManager* saveMgr = CSaveManager::Instance();
+		// 箱を追加
+		saveMgr->AddBox(mpBox);
+		// 移動床を追加
+		saveMgr->AddMoveObj(mpMoveFloor);
+	}
+}
+
 // フィールドオブジェクトを生成
 void CRoom4::CreateFieldObjects()
 {
 	// 箱を生成
 	mpBox = new CBox(Position() + BOX_OFFSET_POS);
+	// 最初は無効
+	mpBox->SetEnable(false);
 
 	// 動く床を生成
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
@@ -74,6 +95,8 @@ void CRoom4::CreateFieldObjects()
 		MOVE_FLOOR_MOVE,
 		MOVE_FLOOR_MOVE_TIME,
 		ELayer::eGround);
+	// リストに追加
+	mObjs.push_back(mpMoveFloor);
 
 	// 動く壁を生成
 	mpMoveWall= new CMoveObj(model, colModel,
@@ -82,21 +105,18 @@ void CRoom4::CreateFieldObjects()
 		MOVE_WALL_MOVE,
 		MOVE_WALL_MOVE_TIME,
 		ELayer::eWall);
+	// リストに追加
+	mObjs.push_back(mpMoveWall);
 
 	// 水を生成
 	mpWater = new CWater(WATER_SCALE);
 	// 座標を設定
 	mpWater->Position(Position() + WATER_OFFSET_POS);
+	// リストに追加
+	mObjs.push_back(mpWater);
 
 	// リスポーン地点
 	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
-}
-
-// フィールドオブジェクトを削除
-void CRoom4::DeleteFieldObjects()
-{
-	mpBox->Kill();
-	mpMoveFloor->Kill();
-	mpWater->Kill();
-	mpRespawnArea->Kill();
+	// リストに追加
+	mObjs.push_back(mpRespawnArea);
 }

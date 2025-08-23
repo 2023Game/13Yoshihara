@@ -1,10 +1,24 @@
 #pragma once
 #include "CSwitchObject.h"
+#include "MoveState.h"
 
 // スイッチで動く床
 class CSwitchMoveFloor : public CSwitchObject
 {
 public:
+	// 状態を設定
+	void SetState(EMoveState state);
+	// 状態を取得
+	EMoveState GetState() const;
+	// 前回の状態を設定
+	void SetPreState(EMoveState state);
+	// 前回の状態を取得
+	EMoveState GetPreState() const;
+	// 経過時間を設定
+	void SetElapsedTime(float time);
+	// 経過時間を取得
+	float GetElapsedTime() const;
+
 	// コンストラクタ
 	CSwitchMoveFloor(CModel* model, CModel* col,
 		const CVector& pos, 
@@ -27,12 +41,6 @@ private:
 	CVector mMoveVec;		// 移動ベクトル
 	float mMoveTime;		// 移動時間
 
-	enum class EMoveState
-	{
-		eStop,	// 止まっている
-		eGo,	// 進んでいる
-		eBack,	// 戻っている
-	};
 	// 状態を変更
 	void ChangeMoveState(EMoveState state);
 	EMoveState mMoveState;		// 移動状態

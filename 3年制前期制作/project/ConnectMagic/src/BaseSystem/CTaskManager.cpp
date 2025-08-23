@@ -318,8 +318,8 @@ void CTaskManager::Render3d()
 {
 	for (CTask* task : m3dTasks)
 	{
-		// 表示フラグがオンならば、
-		if (task->IsShow())
+		// 表示フラグがオンかつ有効ならば、
+		if (task->IsShow() && task->IsEnable())
 		{
 			// タスクを描画
 			task->Render();
@@ -332,8 +332,8 @@ void CTaskManager::Render2d()
 {
 	for (CTask* task : m2dTasks)
 	{
-		// 表示フラグがオンならば、
-		if (task->IsShow())
+		// 表示フラグがオンかつ有効ならば、
+		if (task->IsShow() && task->IsEnable())
 		{
 			// タスクを描画
 			task->Render();

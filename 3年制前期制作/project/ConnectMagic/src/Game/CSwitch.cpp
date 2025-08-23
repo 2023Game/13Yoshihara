@@ -53,9 +53,9 @@ CSwitchButton* CSwitch::GetButton()
 	return mpButton;
 }
 
-// スイッチを削除
-void CSwitch::DeleteSwitch()
+// スイッチの有効無効を切り替え
+void CSwitch::SetEnableSwitch(bool enable)
 {
-	mpButton->Kill();
-	mpFrame->Kill();
+	mpFrame->SetEnable(enable);
+	mpButton->SetEnable(enable);
 }

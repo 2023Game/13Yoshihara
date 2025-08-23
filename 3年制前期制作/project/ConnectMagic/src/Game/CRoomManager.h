@@ -19,6 +19,11 @@ public:
 	// 部屋のリストを取得
 	std::vector<CRoomBase*> GetRooms() const;
 
+	// 部屋を有効
+	void RoomOn();
+	// 部屋を無効
+	void RoomOff();
+
 private:
 	// インスタンス
 	static CRoomManager* spInstance;
@@ -28,4 +33,9 @@ private:
 
 	// 部屋のリスト
 	std::vector<CRoomBase*> mRooms;
+
+	// 有効にする部屋の番号
+	int mOnNum;
+	// 無効にする部屋の番号
+	int mOffNum;
 };

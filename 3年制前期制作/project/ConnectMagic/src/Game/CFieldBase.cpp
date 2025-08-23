@@ -91,11 +91,6 @@ CCollider* CFieldBase::GetObjCol()
 	return mpObjectColliderMesh;
 }
 
-// フィールドのオブジェクトを削除
-void CFieldBase::DeleteFieldObjects()
-{
-}
-
 // 経路探索用のノードを作成
 void CFieldBase::CreateNavNodes()
 {

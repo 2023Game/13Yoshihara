@@ -116,6 +116,7 @@
     <ClCompile Include="src\Game\CRoom5.cpp" />
     <ClCompile Include="src\Game\CRoomBase.cpp" />
     <ClCompile Include="src\Game\CRoomManager.cpp" />
+    <ClCompile Include="src\Game\CSaveManager.cpp" />
     <ClCompile Include="src\Game\CShield.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveFloor.cpp" />
     <ClCompile Include="src\Game\CSwitchMoveWall.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="src\Game\CRoom5.h" />
     <ClInclude Include="src\Game\CRoomBase.h" />
     <ClInclude Include="src\Game\CRoomManager.h" />
+    <ClInclude Include="src\Game\CSaveManager.h" />
     <ClInclude Include="src\Game\CShield.h" />
     <ClInclude Include="src\Game\CSwitchMoveFloor.h" />
     <ClInclude Include="src\Game\CSwitchMoveWall.h" />
@@ -336,6 +338,8 @@
     <ClInclude Include="src\Game\CWeapon.h" />
     <ClInclude Include="src\Game\CXCharacter.h" />
     <ClInclude Include="src\Game\FadeType.h" />
+    <ClInclude Include="src\Game\MoveState.h" />
+    <ClInclude Include="src\Game\SaveData.h" />
     <ClInclude Include="src\Test\CBootMenuScene.h" />
     <ClInclude Include="src\Test\CColBase.h" />
     <ClInclude Include="src\Test\CColBox.h" />

@@ -26,8 +26,8 @@ public:
 	// スイッチのボタンを取得
 	CSwitchButton* GetButton();
 
-	// スイッチを削除
-	void DeleteSwitch();
+	// スイッチの有効無効を切り替え
+	void SetEnableSwitch(bool enable);
 
 private:
 	CSwitchFrame* mpFrame;	// フレーム
