@@ -2,6 +2,7 @@
 #include "CColliderSphere.h"
 #include "CSwitch.h"
 #include "CModel.h"
+#include "CBox.h"
 
 // 下がる距離
 #define PUSH_POS_Y 0.5f
@@ -11,11 +12,12 @@
 #define COL_RADIUS 5.0f
 
 // コンストラクタ
-CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner)
+CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)
 	: CObjectBase(ETag::eSwitch, ETaskPriority::eDefault, 0, ETaskPauseType::eGame)
 	, mState(EState::eDefault)
 	, mDefaultY(pos.Y())
 	, mpOwner(owner)
+	, mIsAttach(isAttach)
 {
 	mpModel = CResourceManager::Get<CModel>("SwitchButton");
 	// 座標を設定
@@ -69,6 +71,22 @@ void CSwitchButton::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	if (self == mpPushCol)
 	{
 		ChangeState(EState::ePush);
+
+		// 箱を貼り付ける
+		if (mIsAttach)
+		{
+			// 箱なら
+			CBox* box = dynamic_cast<CBox*>(other->Owner());
+			if (box)
+			{
+				// 箱を貼り付ける
+				CVector pos = Position();
+				pos.Y(box->Position().Y());
+				box->Position(pos);
+				// 箱が張り付いている
+				box->SetIsAttach(true);
+			}
+		}
 	}
 }
 

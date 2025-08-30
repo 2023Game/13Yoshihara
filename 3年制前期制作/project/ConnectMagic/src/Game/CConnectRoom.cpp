@@ -135,7 +135,7 @@ void CConnectRoom::CreateCol()
 void CConnectRoom::CreateFieldObjects()
 {
 	// スイッチを生成
-	mpNextSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS_NEXT);
+	mpNextSwitch = new CSwitch(Position() + SWITCH_OFFSET_POS_NEXT, true);
 	// 動く壁を生成
 	CModel* model = CResourceManager::Get<CModel>("MoveObject");
 	CModel* colModel = CResourceManager::Get<CModel>("MoveObject_Col");

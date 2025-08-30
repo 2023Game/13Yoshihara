@@ -6,6 +6,7 @@
 #include "CRoom4.h"
 #include "CRoom5.h"
 #include "CLastRoom.h"
+#include "CSaveManager.h"
 
 CRoomManager* CRoomManager::spInstance = nullptr;
 
@@ -59,7 +60,7 @@ void CRoomManager::RoomOff()
 {
 	// 処理回数
 	int num = 2;
-	// 初回なら1回だけ
+	// 初回なら1回だけw
 	if (mOffNum == 0) num = 1;
 
 	// 部屋を無効
@@ -72,6 +73,9 @@ void CRoomManager::RoomOff()
 		mRooms[mOffNum]->SetEnableRoom(false);
 		mOffNum++;
 	}
+
+	// 全てのデータを削除
+	CSaveManager::Instance()->AllDelete();
 }
 
 // 部屋を作成
@@ -118,6 +122,13 @@ void CRoomManager::CreateRoom()
 			mRooms.push_back(room);
 			// 無効
 			room->SetEnableRoom(false);
+
+			// 接続部屋があるなら
+			if (connectRoom != nullptr)
+			{
+				// 次の部屋を設定
+				connectRoom->SetNextRoom(room);
+			}
 			return;
 			break;
 		}

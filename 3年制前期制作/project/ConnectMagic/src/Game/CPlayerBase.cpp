@@ -442,3 +442,12 @@ void CPlayerBase::SetGameEnd(bool isEnd)
 {
 	mIsGameEnd = isEnd;
 }
+
+// アニメーションを時間を指定して設定
+void CPlayerBase::ChangeAnimationTime(int type, float time)
+{
+	// アニメーションの設定
+	ChangeAnimation(type);
+	// 時間の設定
+	SetAnimationFrame(time);
+}

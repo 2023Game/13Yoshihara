@@ -19,6 +19,24 @@ class CImage;
 class CPlayer : public CPlayerBase ,  public CPlayerStatus
 {
 public:
+	// プレイヤーの状態
+	enum class EState
+	{
+		eIdle,			// 待機
+		eMove,			// 移動
+		eDamageStart,	// 被弾開始
+		eDamage,		// 被弾ノックバック
+		eDamageEnd,		// 被弾終了
+		eAttackStart,	// 攻撃開始
+		eAttack,		// 攻撃
+		eAttackEnd,		// 攻撃終了
+		eTarzanStart,	// ターザン開始
+		eTarzan,		// ターザン中
+		eTarzanEnd,		// ターザン終了
+		eReturn,		// 帰還
+		eDeath,			// 死亡
+	};
+
 	// コンストラクタ
 	CPlayer();
 	// デストラクタ
@@ -54,6 +72,9 @@ public:
 
 	// リスポーン地点を設定
 	void SetRespawnPos(CVector respawnPos);
+
+	// 状態切り替え
+	void ChangeState(EState state);
 
 private:
 	// コライダ―を生成
@@ -95,24 +116,6 @@ private:
 		Num
 	};
 
-	// プレイヤーの状態
-	enum class EState
-	{
-		eIdle,			// 待機
-		eMove,			// 移動
-		eDamageStart,	// 被弾開始
-		eDamage,		// 被弾ノックバック
-		eDamageEnd,		// 被弾終了
-		eAttackStart,	// 攻撃開始
-		eAttack,		// 攻撃
-		eAttackEnd,		// 攻撃終了
-		eTarzanStart,	// ターザン開始
-		eTarzan,		// ターザン中
-		eTarzanEnd,		// ターザン終了
-		eReturn,		// 帰還
-		eDeath,			// 死亡
-	};
-
 	// 待機状態
 	void UpdateIdle();
 	// 移動処理
@@ -142,8 +145,6 @@ private:
 	// 死亡
 	void Death() override;
 
-	// 状態切り替え
-	void ChangeState(EState state);
 	EState mState;	// プレイヤーの状態
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用

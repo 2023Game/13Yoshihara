@@ -20,7 +20,7 @@
 #define RETURN_TIME 0.5f
 
 // 削除されるY座標
-#define DELETE_POS_Y -20.0f
+#define DELETE_POS_Y -50.0f
 
 // コンストラクタ
 CBox::CBox(CVector defaultPos, float scaleRatio)
@@ -94,10 +94,24 @@ void CBox::Update()
 	// 削除される座標以下なら
 	if (Position().Y() <= DELETE_POS_Y)
 	{
-		Kill();
+		SetEnable(false);
 	}
 
 	CConnectObject::Update();
+	// 箱が張り付いていない
+	SetIsAttach(false);
+}
+
+// 箱がスイッチに張り付いているかを設定
+void CBox::SetIsAttach(bool enable)
+{
+	mIsAttach = enable;
+}
+
+// 箱がスイッチに張り付いているか
+bool CBox::GetIsAttach() const
+{
+	return mIsAttach;
 }
 
 // コライダーを生成

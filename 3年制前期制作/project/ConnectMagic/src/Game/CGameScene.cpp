@@ -40,7 +40,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
+	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Weight.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
 	CResourceManager::Load<CModel>("ConnectRoom",	"Field\\Room\\ConnectRoom\\ConnectRoom.obj");
@@ -52,7 +52,6 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("LastRoom",		"Field\\Room\\LastRoom\\LastRoom.obj");
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("Box_Col",					"Field\\Box\\Col\\Box_Col.obj");
 	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
 	CResourceManager::Load<CModel>("ConnectRoom_Wall_Col",		"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Room1_Ground_Col",			"Field\\Room\\Room1\\Col\\Room1_Ground_Col.obj");

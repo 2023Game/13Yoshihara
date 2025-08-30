@@ -121,3 +121,51 @@ void CSwitchMoveWall::Move()
 	// 座標を求める
 	Position(mDefaultPos + mMoveVec * per);
 }
+
+// 状態を変更
+void CSwitchMoveWall::ChangeMoveState(EMoveState state)
+{
+	if (mMoveState == state) return;
+
+	// 一つ前の状態を更新
+	mPreMoveState = mMoveState;
+	// 状態を変更
+	mMoveState = state;
+	mElapsedTime = 0.0f;
+}
+
+// 状態を設定
+void CSwitchMoveWall::SetState(EMoveState state)
+{
+	mMoveState = state;
+}
+
+// 状態を取得
+EMoveState CSwitchMoveWall::GetState() const
+{
+	return mMoveState;
+}
+
+// 前回の状態を設定
+void CSwitchMoveWall::SetPreState(EMoveState state)
+{
+	mPreMoveState = state;
+}
+
+// 前回の状態を取得
+EMoveState CSwitchMoveWall::GetPreState() const
+{
+	return mPreMoveState;
+}
+
+// 経過時間を設定
+void CSwitchMoveWall::SetElapsedTime(float time)
+{
+	mElapsedTime = time;
+}
+
+// 経過時間を取得
+float CSwitchMoveWall::GetElapsedTime() const
+{
+	return mElapsedTime;
+}

@@ -207,6 +207,9 @@ void CConnectPointManager::ResetCollider()
 // 接続部を有効
 void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 {
+	// ターゲットが空なら処理しない
+	if (connectTarget == nullptr) return;
+
 	// 座標を設定
 	mpConnectPoint->Position(connectTarget->Position());
 	// 親子設定

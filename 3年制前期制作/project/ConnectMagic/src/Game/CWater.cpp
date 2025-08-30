@@ -12,7 +12,8 @@
 
 // コンストラクタ
 CWater::CWater(CVector scale)
-	: mVAO(0)
+	: CObjectBase(ETag::eField,ETaskPriority::eBackground,0,ETaskPauseType::eGame)
+	, mVAO(0)
 	, mVBO(0)
 	, mNormalMapTex(0)
 	, mTime(0.0f)

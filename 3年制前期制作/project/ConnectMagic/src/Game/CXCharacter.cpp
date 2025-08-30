@@ -311,3 +311,12 @@ float CXCharacter::GetAnimationSpeed() const
 {
 	return mAnimationSpeed;
 }
+
+// アニメーションの再生フレームを設定する
+void CXCharacter::SetAnimationFrame(float frame)
+{
+	auto& animSet = mpModel->AnimationSet();
+	CAnimationSet* currAnim = animSet[mAnimationIndex];
+	mAnimationFrame = frame;
+	currAnim->Time(mAnimationFrame);
+}

@@ -54,11 +54,6 @@ public:
 	// 接続を無効
 	void DisableConnect(CConnectTarget* connectTarget);
 
-	// 杖の接続部の有効無効を設定
-	void SetWandConnect(bool isOnOff, CConnectTarget* target);
-	// 杖が接続されているか
-	bool GetWandConnect();
-
 	// 杖と接続中のターゲットを設定
 	void SetConnectWandTarget(CConnectTarget* connectTarget);
 	// 杖と接続中のターゲットを取得
@@ -69,13 +64,18 @@ public:
 	// 杖が接続している接続部とプレイヤーの距離を取得
 	float GetConnectDistance();
 
-	// 現在の杖が接続している接続部とプレイヤーの距離を取得
-	float GetNowConnectDistance();
-
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
 
 private:
+	// 杖の接続部の有効無効を設定
+	void SetWandConnect(bool isOnOff, CConnectTarget* target);
+	// 杖が接続されているか
+	bool GetWandConnect();
+
+	// 現在の杖が接続している接続部とプレイヤーの距離を取得
+	float GetNowConnectDistance();
+
 	// インスタンス
 	static CConnectPointManager* spInstance;
 

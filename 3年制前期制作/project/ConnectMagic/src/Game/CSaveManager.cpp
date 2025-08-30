@@ -3,11 +3,13 @@
 #include "CBox.h"
 #include "CMoveObj.h"
 #include "CSwitchMoveFloor.h"
+#include "CSwitchMoveWall.h"
 #include "CTaskManager.h"
 #include "CInput.h"
+#include "CConnectPointManager.h"
 
 // 保存するフレーム数
-#define SAVE_FRAMES 120
+#define SAVE_FRAMES 600
 
 // インスタンス
 CSaveManager* CSaveManager::spInstance = nullptr;
@@ -24,6 +26,10 @@ CSaveManager::CSaveManager()
 	, mState(EState::eSave)
 {
 	spInstance = this;
+
+	// 巻き戻しUI
+	mpRewindUI = new CRewindUI();
+	mpRewindUI->SetEnable(false);
 }
 
 // デストラクタ
@@ -36,24 +42,34 @@ void CSaveManager::Update()
 {
 	switch (mState)
 	{
-	case CSaveManager::EState::eSave:
 		// セーブ
+	case CSaveManager::EState::eSave:
 		Save();
 		break;
+
+		// ロード
 	case CSaveManager::EState::eLoad:
 
-		if (CInput::Key(VK_RBUTTON)) {
+		if (CInput::Key(VK_LBUTTON)) {
+			// テキスト非表示
+			mpRewindUI->SetTextEnable(false);
+			// 画像の色を青に設定
+			mpRewindUI->SetImgColor(CColor::blue);
 			CTaskManager::Instance()->Pause(PAUSE_GAME);
 			// ロード
 			Load();
 			CTaskManager::Instance()->UnPause(PAUSE_GAME);
 		}
 		// キーを離したら
-		else if (CInput::PullKey(VK_RBUTTON)) {
+		// データが空になったら
+		if (CInput::PullKey(VK_LBUTTON) || mData.empty()) {
 			// ロード終了
 			ChangeState(EState::eSave);
 			// ポーズ解除
 			CTaskManager::Instance()->UnPause(PAUSE_GAME);
+			// プレイヤーを待機状態に戻す
+			CPlayer* player = dynamic_cast<CPlayer*>(CPlayer::Instance());
+			player->ChangeState(CPlayer::EState::eIdle);
 		}
 		break;
 	}
@@ -73,6 +89,12 @@ void CSaveManager::Save()
 	data.player.pos = player->Position();
 	// 方向
 	data.player.vec = player->EulerAngles();
+	// 接続しているターゲット
+	data.player.target = CConnectPointManager::Instance()->GetConnectWandTarget();
+	// アニメーション番号
+	data.player.animationType = player->AnimationIndex();
+	// アニメーションの再生時間
+	data.player.animationFrame = player->GetAnimationFrame();
 
 	// 箱を取得
 	for (CBox* box : mBox) {
@@ -94,6 +116,14 @@ void CSaveManager::Save()
 		data.moveFloor.emplace_back(floor->Position(),
 			floor->GetState(), floor->GetPreState(),
 			floor->GetElapsedTime(), floor);
+	}
+
+	// 壁を取得
+	for (CSwitchMoveWall* wall: mMoveWall) {
+		// リストに追加
+		data.moveWall.emplace_back(wall->Position(),
+			wall->GetState(), wall->GetPreState(),
+			wall->GetElapsedTime(), wall);
 	}
 
 	// データのリストに追加
@@ -144,6 +174,10 @@ void CSaveManager::Load()
 		player->Position(playerData.pos);
 		// 方向をロード
 		player->Rotation(playerData.vec);
+		// 接続を有効
+		CConnectPointManager::Instance()->EnableConnect(playerData.target);
+		// アニメーション設定
+		player->ChangeAnimationTime(playerData.animationType, playerData.animationFrame);
 	}
 
 	CBox* box = nullptr;
@@ -191,6 +225,24 @@ void CSaveManager::Load()
 			moveFloor->SetPreState(floorData.preState);
 			// 経過時間をロード
 			moveFloor->SetElapsedTime(floorData.elapsedTime);
+		}
+	}
+
+	CSwitchMoveWall* moveWall = nullptr;
+	for (auto& wallData : data.moveWall)
+	{
+		// 壁を取得
+		moveWall = wallData.moveWall;
+		if (moveWall)
+		{
+			// 座標をロード
+			moveWall->Position(wallData.pos);
+			// 状態をロード
+			moveWall->SetState(wallData.state);
+			// 前の状態をロード
+			moveWall->SetPreState(wallData.preState);
+			// 経過時間をロード
+			moveWall->SetElapsedTime(wallData.elapsedTime);
 		}
 	}
 
@@ -243,11 +295,35 @@ void CSaveManager::DeleteMoveFloor(CSwitchMoveFloor* floor)
 	);
 }
 
+// 保存するスイッチで移動する壁に追加
+void CSaveManager::AddMoveWall(CSwitchMoveWall* wall)
+{
+	mMoveWall.push_back(wall);
+}
+
+// 保存するスイッチで移動する壁から削除
+void CSaveManager::DeleteMoveFloor(CSwitchMoveWall* wall)
+{
+	mMoveWall.erase(
+		std::remove(mMoveWall.begin(), mMoveWall.end(), wall),
+		mMoveWall.end()
+	);
+}
+
 // 状態切り替え
 void CSaveManager::ChangeState(EState state)
 {
 	// 同じなら処理しない
 	if (mState == state) return;
+
+	if (state == EState::eLoad) {
+		mpRewindUI->SetEnable(true);
+		mpRewindUI->SetTextEnable(true);
+		mpRewindUI->SetImgColor(CColor::red);
+	}
+	else {
+		mpRewindUI->SetEnable(false);
+	}
 
 	mState = state;
 }

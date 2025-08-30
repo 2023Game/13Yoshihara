@@ -226,6 +226,8 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
 			// ƒ|[ƒY
 			CTaskManager::Instance()->Pause(PAUSE_GAME);
+			// €–Só‘Ô‚É‚·‚é
+			ChangeState(EState::eDeath);
 			return;
 		}
 	}

@@ -5,42 +5,6 @@
 // 一時停止の時間
 #define STOP_TIME 0.5f
 
-// 状態を設定
-void CSwitchMoveFloor::SetState(EMoveState state)
-{
-	mMoveState = state;
-}
-
-// 状態を取得
-EMoveState CSwitchMoveFloor::GetState() const
-{
-	return mMoveState;
-}
-
-// 前回の状態を設定
-void CSwitchMoveFloor::SetPreState(EMoveState state)
-{
-	mPreMoveState = state;
-}
-
-// 前回の状態を取得
-EMoveState CSwitchMoveFloor::GetPreState() const
-{
-	return mPreMoveState;
-}
-
-// 経過時間を設定
-void CSwitchMoveFloor::SetElapsedTime(float time)
-{
-	mElapsedTime = time;
-}
-
-// 経過時間を取得
-float CSwitchMoveFloor::GetElapsedTime() const
-{
-	return mElapsedTime;
-}
-
 // コンストラクタ
 CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime, bool isCrushed)
@@ -172,4 +136,40 @@ void CSwitchMoveFloor::UpdateBack()
 	{
 		ChangeMoveState(EMoveState::eStop);
 	}
+}
+
+// 状態を設定
+void CSwitchMoveFloor::SetState(EMoveState state)
+{
+	mMoveState = state;
+}
+
+// 状態を取得
+EMoveState CSwitchMoveFloor::GetState() const
+{
+	return mMoveState;
+}
+
+// 前回の状態を設定
+void CSwitchMoveFloor::SetPreState(EMoveState state)
+{
+	mPreMoveState = state;
+}
+
+// 前回の状態を取得
+EMoveState CSwitchMoveFloor::GetPreState() const
+{
+	return mPreMoveState;
+}
+
+// 経過時間を設定
+void CSwitchMoveFloor::SetElapsedTime(float time)
+{
+	mElapsedTime = time;
+}
+
+// 経過時間を取得
+float CSwitchMoveFloor::GetElapsedTime() const
+{
+	return mElapsedTime;
 }

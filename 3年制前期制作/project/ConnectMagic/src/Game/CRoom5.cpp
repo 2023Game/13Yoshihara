@@ -71,18 +71,39 @@ void CRoom5::SetEnableRoom(bool enable)
 	CRoomBase::SetEnableRoom(enable);
 	mpSwitch->SetEnableSwitch(enable);
 
+	// 保存管理クラス
+	CSaveManager* saveMgr = CSaveManager::Instance();
 	// 有効時のみ
 	if (enable) {
 		// 箱のフラグを変更
 		mpBox1->SetEnable(enable);
 		mpBox2->SetEnable(enable);
-		// 保存管理クラス
-		CSaveManager* saveMgr = CSaveManager::Instance();
 		// 箱を追加
 		saveMgr->AddBox(mpBox1);
 		saveMgr->AddBox(mpBox2);
 		// 移動床を追加
 		saveMgr->AddMoveObj(mpMoveFloor);
+	}
+	// 無効時
+	else
+	{
+		// 箱がスイッチに張り付いていないなら
+		if (!mpBox1->GetIsAttach())
+		{
+			// 箱のフラグを変更
+			mpBox1->SetEnable(enable);
+		}
+		// 箱がスイッチに張り付いていないなら
+		if (!mpBox2->GetIsAttach())
+		{
+			// 箱のフラグを変更
+			mpBox2->SetEnable(enable);
+		}
+		// 箱を削除
+		saveMgr->DeleteBox(mpBox1);
+		saveMgr->DeleteBox(mpBox2);
+		// 移動床を削除
+		saveMgr->DeleteMoveObj(mpMoveFloor);
 	}
 }
 

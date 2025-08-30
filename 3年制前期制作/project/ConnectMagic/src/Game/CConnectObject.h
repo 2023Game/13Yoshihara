@@ -16,7 +16,7 @@ public:
 	CConnectObject(float weight = 0.0f, 
 		ETaskPriority prio = ETaskPriority::eDefault,
 		int sortOrder = 0,
-		ETaskPauseType pause = ETaskPauseType::eDefault);
+		ETaskPauseType pause = ETaskPauseType::eGame);
 	// デストラクタ
 	~CConnectObject();
 

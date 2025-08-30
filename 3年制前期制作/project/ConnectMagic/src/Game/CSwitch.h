@@ -9,7 +9,7 @@ class CSwitch
 {
 public:
 	// コンストラクタ
-	CSwitch(CVector pos);
+	CSwitch(CVector pos, bool isAttach = false);
 	// デストラクタ
 	~CSwitch();
 

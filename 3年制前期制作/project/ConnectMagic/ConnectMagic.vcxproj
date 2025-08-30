@@ -109,6 +109,7 @@
     <ClCompile Include="src\Game\CMap1Scene.cpp" />
     <ClCompile Include="src\Game\CMap3Scene.cpp" />
     <ClCompile Include="src\Game\CPortalFragment.cpp" />
+    <ClCompile Include="src\Game\CRewindUI.cpp" />
     <ClCompile Include="src\Game\CRoom1.cpp" />
     <ClCompile Include="src\Game\CRoom2.cpp" />
     <ClCompile Include="src\Game\CRoom3.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="src\Game\CFieldBase.h" />
     <ClInclude Include="src\Game\CFire.h" />
     <ClInclude Include="src\Game\CFragmentMergeArea.h" />
+    <ClInclude Include="src\Game\CRewindUI.h" />
     <ClInclude Include="src\Game\CRoom1.h" />
     <ClInclude Include="src\Game\CRoom2.h" />
     <ClInclude Include="src\Game\CRoom3.h" />

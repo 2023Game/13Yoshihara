@@ -8,7 +8,7 @@ class CGaugeUI2D : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CGaugeUI2D(CObjectBase* owner, std::string gaugePath);
+	CGaugeUI2D(CObjectBase* owner, std::string gaugePath, bool addTaskList = true);
 	// デストラクタ
 	virtual ~CGaugeUI2D();
 

@@ -9,7 +9,7 @@ class CSwitchButton : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CSwitchButton(CVector pos, CSwitch* owner);
+	CSwitchButton(CVector pos, CSwitch* owner, bool isAttach);
 	// デストラクタ
 	~CSwitchButton();
 
@@ -51,4 +51,7 @@ private:
 	CSwitch* mpOwner;	// 持ち主
 
 	CModel* mpModel;
+
+	// スイッチにBoxが張り付くか
+	bool mIsAttach;
 };

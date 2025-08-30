@@ -44,6 +44,8 @@ public:
 
 	// 再生中のアニメーションフレームを取得
 	float GetAnimationFrame() const;
+	// アニメーションの再生フレームを設定する
+	void SetAnimationFrame(float frame);
 	// 再生中のアニメーションの進行度を取得
 	float GetAnimationFrameRatio() const;
 

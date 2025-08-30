@@ -4,12 +4,12 @@
 #include "CSwitchObject.h"
 
 // コンストラクタ
-CSwitch::CSwitch(CVector pos)
+CSwitch::CSwitch(CVector pos, bool isAttach)
 	: mpActionObject(nullptr)
 	, mIsOn(false)
 {
 	mpFrame = new CSwitchFrame(pos, this);
-	mpButton = new CSwitchButton(pos, this);
+	mpButton = new CSwitchButton(pos, this, isAttach);
 }
 
 // コンストラクタ

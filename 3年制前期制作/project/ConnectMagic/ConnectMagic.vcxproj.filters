@@ -640,6 +640,9 @@
     <ClCompile Include="src\Game\CSaveManager.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
+    <ClCompile Include="src\Game\CRewindUI.cpp">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1172,6 +1175,9 @@
     </ClInclude>
     <ClInclude Include="src\Game\MoveState.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRewindUI.h">
+      <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

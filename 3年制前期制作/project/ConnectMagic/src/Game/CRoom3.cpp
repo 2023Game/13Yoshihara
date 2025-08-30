@@ -75,13 +75,13 @@ void CRoom3::SetEnableRoom(bool enable)
 	mpSwitch1->SetEnableSwitch(enable);
 	mpSwitch2->SetEnableSwitch(enable);
 
+	// 保存管理クラス
+	CSaveManager* saveMgr = CSaveManager::Instance();
 	// 有効時のみ
 	if (enable) {
 		// 箱のフラグを変更
 		mpBox1->SetEnable(enable);
 		mpBox2->SetEnable(enable);
-		// 保存管理クラス
-		CSaveManager* saveMgr = CSaveManager::Instance();
 		// 箱を追加
 		saveMgr->AddBox(mpBox1);
 		saveMgr->AddBox(mpBox2);
@@ -91,6 +91,31 @@ void CRoom3::SetEnableRoom(bool enable)
 		saveMgr->AddMoveObj(mpMoveFloor1);
 		saveMgr->AddMoveObj(mpMoveFloor2);
 		saveMgr->AddMoveObj(mpMoveFloor3);
+	}
+	// 無効時
+	else
+	{
+		// 箱がスイッチに張り付いていないなら
+		if (!mpBox1->GetIsAttach())
+		{
+			// 箱のフラグを変更
+			mpBox1->SetEnable(enable);
+		}
+		// 箱がスイッチに張り付いていないなら
+		if (!mpBox2->GetIsAttach())
+		{
+			// 箱のフラグを変更
+			mpBox2->SetEnable(enable);
+		}
+		// 箱を削除
+		saveMgr->DeleteBox(mpBox1);
+		saveMgr->DeleteBox(mpBox2);
+		// 移動床を削除
+		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor1);
+		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor2);
+		saveMgr->DeleteMoveObj(mpMoveFloor1);
+		saveMgr->DeleteMoveObj(mpMoveFloor2);
+		saveMgr->DeleteMoveObj(mpMoveFloor3);
 	}
 }
 

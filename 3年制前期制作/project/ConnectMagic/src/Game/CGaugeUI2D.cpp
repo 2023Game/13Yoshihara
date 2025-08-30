@@ -4,8 +4,8 @@
 
 
 // コンストラクタ
-CGaugeUI2D::CGaugeUI2D(CObjectBase* owner, std::string gaugePath)
-	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame)
+CGaugeUI2D::CGaugeUI2D(CObjectBase* owner, std::string gaugePath, bool addTaskList)
+	: CObjectBase(ETag::eUI, ETaskPriority::eUI, 0, ETaskPauseType::eGame, false, addTaskList)
 	, mpOwner(owner)
 	, mpGaugeImg(nullptr)
 	, mpWhiteImg(nullptr)

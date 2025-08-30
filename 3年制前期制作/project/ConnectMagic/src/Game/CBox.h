@@ -20,6 +20,11 @@ public:
 	// 更新
 	void Update() override;
 
+	// 箱がスイッチに張り付いているかを設定
+	void SetIsAttach(bool enable);
+	// 箱がスイッチに張り付いているか
+	bool GetIsAttach() const;
+
 private:
 	// コライダーを生成
 	void CreateCol() override;
@@ -30,4 +35,7 @@ private:
 	bool mIsRespawn;
 	// 経過時間
 	float mElapsedTime;
+
+	// 箱がスイッチに張り付いているか
+	bool mIsAttach;
 };

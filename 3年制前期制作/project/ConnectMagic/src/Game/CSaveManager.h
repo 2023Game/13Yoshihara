@@ -1,6 +1,7 @@
 #pragma once
 #include "SaveData.h"
 #include <deque>
+#include "CRewindUI.h"
 
 // 保存の管理クラス
 class CSaveManager : CTask
@@ -46,6 +47,11 @@ public:
 	// 保存するスイッチで移動する床から削除
 	void DeleteMoveFloor(CSwitchMoveFloor* floor);
 
+	// 保存するスイッチで移動する壁に追加
+	void AddMoveWall(CSwitchMoveWall* wall);
+	// 保存するスイッチで移動する壁から削除
+	void DeleteMoveFloor(CSwitchMoveWall* wall);
+
 	// 保存管理クラスの状態
 	enum class EState
 	{
@@ -61,6 +67,8 @@ private:
 
 	EState mState;	// 状態
 
+	// 巻き戻しUI
+	CRewindUI* mpRewindUI;
 
 	// 保存データ
 	// deque：前後への追加と削除が多いときに使う
@@ -72,4 +80,6 @@ private:
 	std::vector<CMoveObj*> mMoveObj;
 	// 保存するスイッチで移動する床
 	std::vector<CSwitchMoveFloor*> mMoveFloor;
+	// 保存するスイッチで移動する壁
+	std::vector<CSwitchMoveWall*> mMoveWall;
 };

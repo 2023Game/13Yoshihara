@@ -45,6 +45,9 @@ public:
 	// 死亡によってゲームが終了するかを設定する
 	void SetGameEnd(bool isEnd);
 
+	// アニメーションを時間を指定して設定
+	void ChangeAnimationTime(int type, float time);
+
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);
