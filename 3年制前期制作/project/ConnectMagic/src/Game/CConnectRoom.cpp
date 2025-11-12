@@ -5,8 +5,8 @@
 #include "CShield.h"
 #include "CRoomManager.h"
 
-// 箱のオフセット座標
-#define BOX_OFFSET_POS CVector(25.0f,0.0f,-40.0f)
+// 重りのオフセット座標
+#define WEIGHT_OFFSET_POS CVector(25.0f,0.0f,-40.0f)
 // スイッチのオフセット座標
 #define SWITCH_OFFSET_POS_NEXT	CVector(-25.0f,0.0f,-40.0f)
 // 部屋の長さ
@@ -93,26 +93,32 @@ void CConnectRoom::SetEnableRoom(bool enable)
 // 更新
 void CConnectRoom::Update()
 {
-	// 次が無効かつ
-	// 壁が開いているなら
-	if (!mpNextRoom->IsEnable() &&
-		mpNextWall->IsOpen())
+	if (mpNextRoom)
 	{
-		// 部屋管理クラス
-		CRoomManager* roomMgr = CRoomManager::Instance();
-		// 部屋を有効
-		roomMgr->RoomOn();
+		// 次が無効かつ
+		// 壁が開いているなら
+		if (!mpNextRoom->IsEnable() &&
+			mpNextWall->IsOpen())
+		{
+			// 部屋管理クラス
+			CRoomManager* roomMgr = CRoomManager::Instance();
+			// 部屋を有効
+			roomMgr->RoomOn();
+		}
 	}
 
-	// 前が有効かつ
-	// 壁が開いていないなら
-	if (mpPreRoom->IsEnable() &&
-		!mpPreWall->IsOpen())
+	if (mpPreRoom)
 	{
-		// 部屋管理クラス
-		CRoomManager* roomMgr = CRoomManager::Instance();
-		// 部屋を無効
-		roomMgr->RoomOff();
+		// 前が有効かつ
+		// 壁が開いていないなら
+		if (mpPreRoom->IsEnable() &&
+			!mpPreWall->IsOpen())
+		{
+			// 部屋管理クラス
+			CRoomManager* roomMgr = CRoomManager::Instance();
+			// 部屋を無効
+			roomMgr->RoomOff();
+		}
 	}
 }
 

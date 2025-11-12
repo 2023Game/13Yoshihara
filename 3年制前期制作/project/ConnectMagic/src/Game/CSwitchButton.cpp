@@ -2,7 +2,7 @@
 #include "CColliderSphere.h"
 #include "CSwitch.h"
 #include "CModel.h"
-#include "CBox.h"
+#include "CWeight.h"
 
 // 下がる距離
 #define PUSH_POS_Y 0.5f
@@ -72,19 +72,19 @@ void CSwitchButton::Collision(CCollider* self, CCollider* other, const CHitInfo&
 	{
 		ChangeState(EState::ePush);
 
-		// 箱を貼り付ける
+		// 重りを貼り付ける
 		if (mIsAttach)
 		{
-			// 箱なら
-			CBox* box = dynamic_cast<CBox*>(other->Owner());
-			if (box)
+			// 重りなら
+			CWeight* weight = dynamic_cast<CWeight*>(other->Owner());
+			if (weight)
 			{
-				// 箱を貼り付ける
+				// 重りを貼り付ける
 				CVector pos = Position();
-				pos.Y(box->Position().Y());
-				box->Position(pos);
-				// 箱が張り付いている
-				box->SetIsAttach(true);
+				pos.Y(weight->Position().Y());
+				weight->Position(pos);
+				// 重りが張り付いている
+				weight->SetIsAttach(true);
 			}
 		}
 	}

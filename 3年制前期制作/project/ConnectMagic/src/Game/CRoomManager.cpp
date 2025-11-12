@@ -5,6 +5,7 @@
 #include "CRoom3.h"
 #include "CRoom4.h"
 #include "CRoom5.h"
+#include "CRoom6.h"
 #include "CLastRoom.h"
 #include "CSaveManager.h"
 
@@ -98,21 +99,24 @@ void CRoomManager::CreateRoom()
 			// —LŒø
 			room->SetEnableRoom(true);
 			break;
-			// •”‰®2
+		//	// •”‰®2
+		//case 2:
+		//	room = new CRoom2(pos + offsetPos);
+		//	break;
+		//	// •”‰®3
+		//case 3:
+		//	room = new CRoom3(pos + offsetPos);
+		//	break;
+		//	// •”‰®4
+		//case 4:
+		//	room = new CRoom4(pos + offsetPos);
+		//	break;
+		//	// •”‰®5
+		//case 5:
+		//	room = new CRoom5(pos + offsetPos);
+		//	break;
 		case 2:
-			room = new CRoom2(pos + offsetPos);
-			break;
-			// •”‰®3
-		case 3:
-			room = new CRoom3(pos + offsetPos);
-			break;
-			// •”‰®4
-		case 4:
-			room = new CRoom4(pos + offsetPos);
-			break;
-			// •”‰®5
-		case 5:
-			room = new CRoom5(pos + offsetPos);
+			room = new CRoom6(pos + offsetPos);
 			break;
 			// ‘S‚Ä‚Ì•”‰®‚Ì¶¬‚ªI—¹‚µ‚½
 		default:

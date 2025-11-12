@@ -28,7 +28,7 @@ void CConnectTarget::Render()
 {
 	// ターゲット部分のデバッグ表示
 #if _DEBUG
-	//Primitive::DrawWireBox
+	//Primitive::DrawWireweight
 	//(
 	//	Position(),
 	//	Scale(),

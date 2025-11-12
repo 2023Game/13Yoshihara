@@ -514,7 +514,7 @@
     <ClCompile Include="src\Game\CDoor.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CBox.cpp">
+    <ClCompile Include="src\Game\CWeight.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CAirConnectObj.cpp">
@@ -642,6 +642,21 @@
     </ClCompile>
     <ClCompile Include="src\Game\CRewindUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CCrystal.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchMoveAirObj.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchPushWall.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSwitchShield.cpp">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CRoom6.cpp">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1038,7 +1053,7 @@
     <ClInclude Include="src\Game\CDoor.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CBox.h">
+    <ClInclude Include="src\Game\CWeight.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CAirConnectObj.h">
@@ -1178,6 +1193,21 @@
     </ClInclude>
     <ClInclude Include="src\Game\CRewindUI.h">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CCrystal.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject\Switch</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchMoveAirObj.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchPushWall.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSwitchShield.h">
+      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CRoom6.h">
+      <Filter>ソース ファイル\Game\Field\Room</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

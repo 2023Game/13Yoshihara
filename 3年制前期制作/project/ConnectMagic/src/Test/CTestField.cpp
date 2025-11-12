@@ -1,7 +1,7 @@
 #include "CTestField.h"
 #include "CSwitch.h"
 #include "CDoor.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CAirConnectObj.h"
 #include "CPortal.h"
 #include "CRespawnArea.h"
@@ -16,7 +16,7 @@
 #include "CConnectRoom.h"
 #include "CRoom1.h"
 #include "CSwitchMoveFloor.h"
-
+#include "CSwitchMoveAirObj.h"
 
 // ポータルの設定
 #define PORTAL_POS	CVector(100.0f, 10.0f, -100.0f)
@@ -45,8 +45,8 @@
 // 橋の回転
 #define BRIDGE_ROT_2 CVector(0.0f,180.0f,0.0f)
 
-// 箱の座標
-#define BOX_POS CVector(0.0f,0.0f,-25.0f)
+// 重りの座標
+#define WEIGHT_POS CVector(0.0f,0.0f,-25.0f)
 
 // 水の座標
 #define WATER_POS CVector(300.0f,1.0f,0.0f)
@@ -111,8 +111,12 @@ void CTestField::CreateFieldObjects()
 	CWater* water = new CWater(CVector(100.0f,1.0f,100.0f));
 	water->Position(WATER_POS);
 
-	// 箱を生成
-	CBox* box = new CBox(BOX_POS);
+	// 重りを生成
+	CWeight* weight = new CWeight(WEIGHT_POS);
+
+	// 空中オブジェクトを生成
+	CAirConnectObj* air = new CAirConnectObj();
+	air->Position(0.0f, 40.0f, 0.0f);
 
 	// 橋を生成
 	CBridge* bridge = new CBridge();
@@ -169,6 +173,14 @@ void CTestField::CreateFieldObjects()
 	// リスポーン地点を生成
 	new CRespawnArea(RESPAWN_POS_1, RESPAWN_RADIUS);
 	new CRespawnArea(RESPAWN_POS_2, RESPAWN_RADIUS);
+
+	CSwitch* crystal = new CSwitch(CVector(20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
+	crystal->SetOnOff(true);
+	crystal = new CSwitch(CVector(-20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
+
+	CSwitchMoveAirObj* switchAirObj =
+		new CSwitchMoveAirObj(CVector(40.0f, 40.0f, 0.0f), { CVector(40.0f, 40.0f, 0.0f), CVector(80.0f,40.0f,0.0f) });
+	crystal->SetActionObj(switchAirObj);
 
 	//// スイッチを生成
 	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };

@@ -1,5 +1,6 @@
 #include "CAirConnectObj.h"
 #include "CColliderSphere.h"
+#include "CInput.h"
 
 // 接続ターゲットの座標
 #define TARGET_POS CVector(2.5f,0.0f,0.0f)
@@ -19,6 +20,8 @@ CAirConnectObj::CAirConnectObj()
 
 	mpModel = CResourceManager::Get<CModel>("AirConnectObj");
 
+	SetGravity(false);
+
 	// コライダーを生成
 	CreateCol();
 
@@ -28,6 +31,11 @@ CAirConnectObj::CAirConnectObj()
 
 // デストラクタ
 CAirConnectObj::~CAirConnectObj()
+{
+}
+
+// つながった時の処理
+void CAirConnectObj::Connect(CConnectPoint* otherPoint, bool isWand)
 {
 }
 

@@ -291,7 +291,7 @@ void CNavNode::Render()
 	}
 
 	// ノード座標に四角形を描画
-	Primitive::DrawWireBox
+	Primitive::DrawWireweight
 	(
 		GetOffsetPos(),
 		CVector::one,

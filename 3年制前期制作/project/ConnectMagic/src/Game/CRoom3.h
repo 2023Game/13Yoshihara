@@ -1,7 +1,7 @@
 #pragma once
 #include "CRoomBase.h"
 
-class CBox;
+class CWeight;
 class CSwitch;
 class CSwitchMoveFloor;
 class CMoveObj;
@@ -25,8 +25,8 @@ private:
 	void CreateFieldObjects() override;
 
 	// オブジェクト
-	CBox* mpBox1;
-	CBox* mpBox2;
+	CWeight* mpWeight1;
+	CWeight* mpWeight2;
 	CSwitch* mpSwitch1;
 	CSwitch* mpSwitch2;
 	CSwitchMoveFloor* mpSwitchMoveFloor1;

@@ -32,10 +32,10 @@ public:
 	// データをロード
 	void Load();
 
-	// 保存する箱に追加
-	void AddBox(CBox* box);
-	// 保存する箱から削除
-	void DeleteBox(CBox* box);
+	// 保存する重りに追加
+	void AddWeight(CWeight* weight);
+	// 保存する重りから削除
+	void DeleteWeight(CWeight* weight);
 
 	// 保存する移動オブジェクトに追加
 	void AddMoveObj(CMoveObj* obj);
@@ -74,8 +74,8 @@ private:
 	// deque：前後への追加と削除が多いときに使う
 	std::deque<GameData> mData;
 
-	// 保存する箱
-	std::vector<CBox*> mBox;
+	// 保存する重り
+	std::vector<CWeight*> mWeights;
 	// 保存する移動オブジェクト
 	std::vector<CMoveObj*> mMoveObj;
 	// 保存するスイッチで移動する床

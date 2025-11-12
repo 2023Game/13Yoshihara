@@ -145,13 +145,6 @@ void CPlayer::TakeDamage(int damage, CObjectBase* causer)
 // 更新
 void CPlayer::Update()
 {
-	// 場外へ落ちたら
-	if (Position().Y() < MAX_UNDER_POS)
-	{
-		// 帰還状態へ
-		ChangeState(EState::eReturn);
-	}
-
 	// 待機中、ターザン開始は、移動処理を行う
 	if (mState == EState::eIdle ||
 		mState == EState::eTarzanStart)
@@ -159,8 +152,19 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
-	// キー入力
-	ActionInput();
+	// 帰還状態と死亡状態以外なら
+	if (mState != EState::eReturn && mState != EState::eDeath)
+	{
+		// キー入力
+		ActionInput();
+	}
+
+	// 場外へ落ちたら
+	if (Position().Y() < MAX_UNDER_POS)
+	{
+		// 帰還状態へ
+		ChangeState(EState::eReturn);
+	}
 
 	switch (mState)
 	{
@@ -293,43 +297,33 @@ void CPlayer::ActionInput()
 		// 左クリックで攻撃へ
 		if (CInput::PushKey(VK_LBUTTON))
 		{
-			// ターザン終了状態なら
-			if (mState != EState::eTarzanEnd)
+			// 視点の中心に近いターゲットがあるなら
+			if (mpCenterTarget != nullptr)
 			{
-				// 攻撃開始へ
-				ChangeState(EState::eAttackStart);
-			}
-			else
-			{			
-				// 視点の中心に近いターゲットがあるなら
-				if (mpCenterTarget != nullptr)
+				// 接続部の管理クラス
+				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+				// 接続オブジェクトのタグが空中なら
+				if (mpCenterTarget->GetConnectObj()->GetConnectObjTag() == EConnectObjTag::eAir)
 				{
-					// 接続部の管理クラス
-					CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-					// 接続オブジェクトのタグが空中なら
-					if (mpCenterTarget->GetConnectObj()->GetConnectObjTag() == EConnectObjTag::eAir)
-					{
-						// 接続部を有効
-						connectPointMgr->EnableConnect(mpCenterTarget);
-						// ターザン中状態へ
-						ChangeState(EState::eTarzan);
-					}
-					// そうでないなら
-					else
-					{
-						// 攻撃開始へ
-						ChangeState(EState::eAttackStart);
-					}
+					// 接続部を有効
+					connectPointMgr->EnableConnect(mpCenterTarget);
+					// ターザン中状態へ
+					ChangeState(EState::eTarzan);
+				}
+				// 空中でないなら
+				else
+				{
+					// 攻撃開始へ
+					ChangeState(EState::eAttackStart);
 				}
 			}
 		}
-		// 左クリックが押されていないなら
-		if (!CInput::Key(VK_LBUTTON))
+		if (CInput::PullKey(VK_LBUTTON))
 		{
 			// 接続部管理クラス
 			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-			// 杖の接続を解除
-			connectPointMgr->DisableConnect(connectPointMgr->GetConnectWandTarget());
+			// 待機状態へ
+			ChangeState(EState::eIdle);
 
 			// ターザン状態なら
 			if (mState == EState::eTarzanStart ||
@@ -339,13 +333,41 @@ void CPlayer::ActionInput()
 				mIsGravity = true;
 				// ターザン終了状態へ
 				ChangeState(EState::eTarzanEnd);
+				// 杖の接続を解除
+				connectPointMgr->DisableConnect(connectPointMgr->GetConnectWandTarget());
 			}
-			// 攻撃状態
-			else if (mState == EState::eAttackStart ||
-				mState == EState::eAttack)
+			else
+			{				
+				// 視点の中心に近いターゲットがあるかつ
+				// 今つながっているものと違うなら
+				if (mpCenterTarget != nullptr &&
+					mpCenterTarget != connectPointMgr->GetConnectWandTarget())
+				{
+					// 攻撃開始へ
+					ChangeState(EState::eAttackStart);
+				}
+				else
+				{
+					// 杖の接続を解除
+					connectPointMgr->DisableConnect(connectPointMgr->GetConnectWandTarget());
+				}
+			}
+		}
+		// 左クリックが押されていないなら
+		else if (!CInput::Key(VK_LBUTTON))
+		{
+			// 重力オン
+			mIsGravity = true;
+			// 攻撃中でないなら
+			if (mState != EState::eAttackStart &&
+				mState != EState::eAttack)
 			{
-				// 攻撃終了へ
-				ChangeState(EState::eAttackEnd);
+				// 接続部管理クラス
+				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+				// 待機状態へ
+				ChangeState(EState::eIdle);
+				// 杖の接続を解除
+				connectPointMgr->DisableConnect(connectPointMgr->GetConnectWandTarget());
 			}
 		}
 	}

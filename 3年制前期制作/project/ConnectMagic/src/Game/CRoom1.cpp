@@ -1,5 +1,5 @@
 #include "CRoom1.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CSwitch.h"
 #include "CSwitchMoveFloor.h"
 #include "CWater.h"
@@ -9,8 +9,8 @@
 // 部屋の長さ
 #define ROOM_LENGTH 170.0f
 
-// 箱の座標
-#define BOX_OFFSET_POS CVector(25.0f, 0.0f, -150.0f)
+// 重りの座標
+#define WEIGHT_OFFSET_POS CVector(25.0f, 0.0f, -150.0f)
 // スイッチの座標
 #define SWITCH_OFFSET_POS CVector(25.0f, 0.0f, -35.0f)
 
@@ -63,24 +63,24 @@ void CRoom1::SetEnableRoom(bool enable)
 	CSaveManager* saveMgr = CSaveManager::Instance();
 	// 有効時のみ
 	if (enable) {
-		// 箱のフラグを変更
-		mpBox->SetEnable(enable);
-		// 箱を追加
-		saveMgr->AddBox(mpBox);
+		// 重りのフラグを変更
+		mpWeight->SetEnable(enable);
+		// 重りを追加
+		saveMgr->AddWeight(mpWeight);
 		// 移動床を追加
 		saveMgr->AddMoveFloor(mpMoveFloor);
 	}
 	// 無効時
 	else
 	{
-		// 箱がスイッチに張り付いていないなら
-		if (!mpBox->GetIsAttach())
+		// 重りがスイッチに張り付いていないなら
+		if (!mpWeight->GetIsAttach())
 		{
-			// 箱のフラグを変更
-			mpBox->SetEnable(enable);
+			// 重りのフラグを変更
+			mpWeight->SetEnable(enable);
 		}
-		// 箱を削除
-		saveMgr->DeleteBox(mpBox);
+		// 重りを削除
+		saveMgr->DeleteWeight(mpWeight);
 		// 移動床を削除
 		saveMgr->DeleteMoveFloor(mpMoveFloor);
 	}
@@ -89,10 +89,10 @@ void CRoom1::SetEnableRoom(bool enable)
 // フィールドオブジェクトを生成
 void CRoom1::CreateFieldObjects()
 {
-	// 箱を生成
-	mpBox = new CBox(Position() + BOX_OFFSET_POS);
+	// 重りを生成
+	mpWeight = new CWeight(Position() + WEIGHT_OFFSET_POS);
 	// 最初は無効
-	mpBox->SetEnable(false);
+	mpWeight->SetEnable(false);
 
 	// スイッチを生成
 	mpSwitch = new CSwitch(Position()+ SWITCH_OFFSET_POS);

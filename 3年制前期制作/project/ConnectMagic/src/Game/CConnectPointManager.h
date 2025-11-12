@@ -59,9 +59,9 @@ public:
 	// 杖と接続中のターゲットを取得
 	CConnectTarget* GetConnectWandTarget();
 
-	// 杖が接続している接続部とプレイヤーの距離を設定
+	// 接続しているもの同士の距離を設定
 	void SetConnectDistance();
-	// 杖が接続している接続部とプレイヤーの距離を取得
+	// 接続しているもの同士の距離を取得
 	float GetConnectDistance();
 
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
@@ -80,7 +80,8 @@ private:
 	static CConnectPointManager* spInstance;
 
 	// 接続先の接続部
-	CConnectPoint* mpConnectPoint;
+	CConnectPoint* mpConnectPoint1;
+	CConnectPoint* mpConnectPoint2;
 	// 杖用の接続部
 	CConnectPoint* mpWandPoint;
 	// 杖と接続中のターゲット

@@ -386,7 +386,7 @@ void Primitive::DrawSector(const CMatrix& m, float startAngle, float endAngle,
 }
 
 // ボックスの頂点データ
-CVector boxVtx[8] =
+CVector weightVtx[8] =
 {
 	CVector(0.5f, -0.5f, -0.5f),
 	CVector(0.5f, -0.5f,  0.5f),
@@ -400,7 +400,7 @@ CVector boxVtx[8] =
 };
 
 // ボックス描画用のインデックスデータ
-int boxIdx[24] =
+int weightIdx[24] =
 {
 	0, 1, 2, 3,
 	4, 5, 6, 7,
@@ -411,7 +411,7 @@ int boxIdx[24] =
 };
 
 // ワイヤーボックス描画用のインデックスデータ
-int boxWireIdx[24] =
+int weightWireIdx[24] =
 {
 	0, 1, 1, 2, 2, 3, 3, 0,
 	4, 5, 5, 6, 6, 7, 7, 4,
@@ -420,7 +420,7 @@ int boxWireIdx[24] =
 
 
 // ボックスを描画
-void Primitive::DrawBox(const CVector& center, const CVector& size, const CColor& color, EBlend blend)
+void Primitive::Drawweight(const CVector& center, const CVector& size, const CColor& color, EBlend blend)
 {
 	// 現在の行列を退避しておく
 	glPushMatrix();
@@ -445,8 +445,8 @@ void Primitive::DrawBox(const CVector& center, const CVector& size, const CColor
 	// 扇形を描画
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_INDEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, boxVtx);
-	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, boxIdx);
+	glVertexPointer(3, GL_FLOAT, 0, weightVtx);
+	glDrawElements(GL_QUADS, 24, GL_UNSIGNED_INT, weightIdx);
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -460,7 +460,7 @@ void Primitive::DrawBox(const CVector& center, const CVector& size, const CColor
 }
 
 // ワイヤーフレームのボックスを描画
-void Primitive::DrawWireBox(const CVector& center, const CVector& size, const CColor& color, EBlend blend)
+void Primitive::DrawWireweight(const CVector& center, const CVector& size, const CColor& color, EBlend blend)
 {
 	// 現在の行列を退避しておく
 	glPushMatrix();
@@ -485,8 +485,8 @@ void Primitive::DrawWireBox(const CVector& center, const CVector& size, const CC
 	// 扇形を描画
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_INDEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, boxVtx);
-	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, boxWireIdx);
+	glVertexPointer(3, GL_FLOAT, 0, weightVtx);
+	glDrawElements(GL_LINES, 24, GL_UNSIGNED_INT, weightWireIdx);
 	glDisableClientState(GL_INDEX_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 

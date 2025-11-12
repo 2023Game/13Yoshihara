@@ -3,11 +3,18 @@
 #include "CModel.h"
 #include "CConnectPointManager.h"
 #include "CPlayer.h"
+#include "CConnectPoint.h"
+#include "CWand.h"
 
 #define THRESHOLD 0.1f
 
 // 移動前後のレイが衝突したときのマージン
 #define MARGIN 50.0f
+
+// 減速する速度
+#define DECREASE_SPEED 1.0f
+// 加速する速度
+#define INCREASE_SPEED 0.5f
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
@@ -19,9 +26,12 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
 	, mIsGravity(true)
-	, mConnectObjTag(EConnectObjTag::eBox)
+	, mConnectObjTag(EConnectObjTag::eWeight)
 	, mIsGrounded(false)
 	, mpRideObject(nullptr)
+	, mPreOtherPointPos(CVector::zero)
+	, mIsConnectAir(false)
+	, mIsMove(true)
 {
 }
 
@@ -72,7 +82,10 @@ void CConnectObject::Update()
 		mMoveSpeedY -= GRAVITY;
 	}
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-	mMoveSpeed = CVector::zero;
+	if (!mIsConnectAir)
+	{
+		mMoveSpeed = CVector::zero;
+	}
 
 	// 移動
 	Position(Position() + moveSpeed);
@@ -174,22 +187,116 @@ void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo
 }
 
 // 繋がったときの処理
-void CConnectObject::Connect(CVector wandPointPos, CVector targetPointPos)
+void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 {
+	// 接続部管理クラス
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// カメラの方向
-	CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
-	// オブジェクトからターゲットポイントへのベクトル
-	CVector vec = targetPointPos - Position();
-	// 新しい座標を求める
-	CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
-	// 今のままだとターゲットポイントとの座標の差分ずれるので
-	// 差を消す
-	newPos = newPos - vec;
-	newPos.Y(Position().Y());
-	// 線形補間で、いきなりワープしないようにする
-	newPos = CVector::Lerp(Position(), newPos, 0.1f);
-	Position(newPos);
+
+	// 空中か
+	bool isAir = false;
+	// 杖じゃないなら
+	if (!isWand)
+	{
+		CConnectObject* otherObj = otherPoint->GetConnectObj();
+		// 相手が空中OBJならtrue
+		if (otherObj->GetConnectObjTag() == EConnectObjTag::eAir)
+		{
+			isAir = true;
+		}
+	}
+
+	if (isAir)
+	{
+		CConnectObject* otherObj = otherPoint->GetConnectObj();
+		CVector selfPos = Position();
+		CVector otherPos = otherObj->Position();
+
+		mIsConnectAir = true;
+		// 相手から自身への方向
+		CVector dir = selfPos - otherPos;
+		dir.Normalize();
+
+		// 重力の方向
+		CVector gravity = CVector(0.0f, -GRAVITY, 0.0f);
+		// 線を引っ張る重力を除外
+		gravity = gravity - dir * gravity.Dot(dir);
+
+		// 移動
+		CVector moveDir = otherPos - mPreOtherPointPos;
+		float moveDist = moveDir.Length();
+
+		if (moveDist > 0.0001f)
+		{
+			// 移動を線の垂直面に投影
+			moveDir = dir.Cross(moveDir.Cross(dir));
+			moveDir.Normalize();
+
+			// 移動速度
+			mMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
+		}
+		// 重力を加える
+		// 振り切る時の減速と戻る時の加速のため
+		mMoveSpeed += gravity;
+
+		// 少しずつ減速していく
+		mMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
+
+		// 線方向の速度を削除
+		// ターゲットの真下での急な減速を防ぐため
+		mMoveSpeed -= dir * mMoveSpeed.Dot(dir);
+		// 座標に追加
+		selfPos += mMoveSpeed;
+
+		// 新しいプレイヤー座標への方向
+		dir = selfPos - otherPos;
+		dir.Normalize();
+		// プレイヤーの座標を線から一定の距離に保つ
+		selfPos = otherPos +
+			dir * pointMgr->GetConnectDistance();
+
+		// 座標を設定
+		Position(selfPos);
+
+		// 相手の接続部の座標を前回座標に保存
+		mPreOtherPointPos = otherPos;
+	}
+	else if (isWand && mIsMove)
+	{
+		// カメラの方向
+		CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
+		// オブジェクトからターゲットポイントへのベクトル
+		//CVector vec = selfPos - Position();
+		// 新しい座標を求める
+		CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
+		// 今のままだとターゲットポイントとの座標の差分ずれるので
+		// 差を消す
+		//newPos = newPos - vec;
+		newPos.Y(Position().Y());
+		// 線形補間で、いきなりワープしないようにする
+		newPos = CVector::Lerp(Position(), newPos, 0.1f);
+		Position(newPos);
+	}
+}
+
+// 繋げた瞬間の処理
+void CConnectObject::JustConnect(CVector otherPointPos)
+{
+	// 重りなら重力オフ
+	if (mConnectObjTag == EConnectObjTag::eWeight)
+	{
+		SetGravity(false);
+	}
+	mPreOtherPointPos = otherPointPos;
+}
+
+// 接続解除の処理
+void CConnectObject::Disconnect()
+{
+	if (mConnectObjTag == EConnectObjTag::eWeight)
+	{
+		SetGravity(true);
+		mIsConnectAir = false;
+	}
 }
 
 // 接続ターゲットの作成
@@ -233,4 +340,10 @@ void CConnectObject::SetConnectObjTag(EConnectObjTag tag)
 EConnectObjTag CConnectObject::GetConnectObjTag()
 {
 	return mConnectObjTag;
+}
+
+// 接続したときに移動の処理をするかを設定
+void CConnectObject::SetMove(bool enable)
+{
+	mIsMove = enable;
 }

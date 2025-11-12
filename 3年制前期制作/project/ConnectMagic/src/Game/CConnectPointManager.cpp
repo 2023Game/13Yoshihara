@@ -52,10 +52,15 @@ CConnectPointManager::CConnectPointManager()
 	mpWandPoint->Scale(mpWandPoint->Scale() * POINT_SCALE);
 
 	// 接続先の接続部のビルボード
-	mpConnectPoint = new CConnectPoint(nullptr);
+	mpConnectPoint1 = new CConnectPoint(nullptr);
 	// 最初は無効
-	mpConnectPoint->SetEnable(false);
-	mpConnectPoint->SetShow(false);
+	mpConnectPoint1->SetEnable(false);
+	mpConnectPoint1->SetShow(false);
+	// 接続先の接続部のビルボード
+	mpConnectPoint2 = new CConnectPoint(nullptr);
+	// 最初は無効
+	mpConnectPoint2->SetEnable(false);
+	mpConnectPoint2->SetShow(false);
 }
 
 // デストラクタ
@@ -88,24 +93,51 @@ void CConnectPointManager::Update()
 // 描画
 void CConnectPointManager::Render()
 {
-	// 杖が接続されていなければ処理しない
-	if (!GetWandConnect()) return;
-	// 黄線を描画
-	Primitive::DrawLine
-	(
-		mpWandPoint->Position(), mpConnectPoint->Position(),
-		CColor::yellow,
-		5.0f
-	);
+	// 杖が接続されていれば
+	if (GetWandConnect())
+	{
+		// 黄線を描画
+		Primitive::DrawLine
+		(
+			mpWandPoint->Position(), mpConnectPoint1->Position(),
+			CColor::yellow,
+			5.0f
+		);
+	}
+	// 杖が接続されてないかつ接続部1，2が有効
+	else if (mpConnectPoint1->IsEnable() &&
+		mpConnectPoint2->IsEnable())
+	{
+		// 黄線を描画
+		Primitive::DrawLine
+		(
+			mpConnectPoint1->Position(), mpConnectPoint2->Position(),
+			CColor::yellow,
+			5.0f
+		);
+	}
 }
 
 // 繋がっている処理を実行
 void CConnectPointManager::Connect()
-{
-	// 杖が接続されていないなら処理しない
-	if (!GetWandConnect()) return;
-	
-	mpConnectPoint->GetConnectObj()->Connect(mpWandPoint->Position(), mpConnectPoint->Position());
+{	
+	// 杖が接続されていれば
+	if (GetWandConnect())
+	{
+		mpConnectPoint1->GetConnectObj()->Connect(mpWandPoint, true);
+	}
+	// 杖が接続されてないかつ接続部1，2が有効
+	else if (mpConnectPoint1->IsEnable() &&
+		mpConnectPoint2->IsEnable())
+	{
+		// オブジェクト
+		CConnectObject* obj1 = mpConnectPoint1->GetConnectObj();
+		CConnectObject* obj2 = mpConnectPoint2->GetConnectObj();
+		// 接続中の処理を実行
+		obj1->Connect(mpConnectPoint2, false);
+		// 接続中の処理を実行
+		obj2->Connect(mpConnectPoint1, false);
+	}
 }
 
 // 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
@@ -158,7 +190,7 @@ void CConnectPointManager::RayPoint()
 	CHitInfo hit;
 	// レイの開始と終了地点
 	CVector rayStart = mpWandPoint->Position();
-	CVector rayEnd = mpConnectPoint->Position();
+	CVector rayEnd = mpConnectPoint1->Position();
 
 	// 設定されているコライダーを順番に調べる
 	for (CCollider* c : mColliders)
@@ -210,22 +242,80 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 	// ターゲットが空なら処理しない
 	if (connectTarget == nullptr) return;
 
-	// 座標を設定
-	mpConnectPoint->Position(connectTarget->Position());
-	// 親子設定
-	mpConnectPoint->SetParent(connectTarget);
-	// 接続オブジェクトを設定
-	mpConnectPoint->SetConnectObj(connectTarget->GetConnectObj());
+	// 1つ目の接続が無効なら
+	if (!mpConnectPoint1->IsEnable())
+	{
+		// 座標を設定
+		mpConnectPoint1->Position(connectTarget->Position());
+		// 親子設定
+		mpConnectPoint1->SetParent(connectTarget);
+		// 接続オブジェクトを設定
+		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
+		// 接続した瞬間の処理
+		mpConnectPoint1->GetConnectObj()->JustConnect(CVector::zero);
 
-	// 杖に接続
-	SetWandConnect(true, connectTarget);
+		// 杖に接続
+		SetWandConnect(true, connectTarget);
 
-	// 接続部を有効
-	mpConnectPoint->SetEnable(true);
-	mpConnectPoint->SetShow(true); 
-	
-	// 接続部との距離を設定
-	SetConnectDistance();
+		// 接続部を有効
+		mpConnectPoint1->SetEnable(true);
+		mpConnectPoint1->SetShow(true);
+
+		// 接続部との距離を設定
+		SetConnectDistance();
+	}
+	// 1つ目だけが有効なら
+	else if (mpConnectPoint1->IsEnable() &&
+		!mpConnectPoint2->IsEnable())
+	{
+		// 座標を設定
+		mpConnectPoint2->Position(connectTarget->Position());
+		// 親子設定
+		mpConnectPoint2->SetParent(connectTarget);
+		// 接続オブジェクトを設定
+		mpConnectPoint2->SetConnectObj(connectTarget->GetConnectObj());
+		// 接続した瞬間の処理
+		mpConnectPoint1->GetConnectObj()->JustConnect(mpConnectPoint2->Position());
+		mpConnectPoint2->GetConnectObj()->JustConnect(mpConnectPoint2->Position());
+
+		// 杖の接続を解除
+		SetWandConnect(false, nullptr);
+
+		// 接続部を有効
+		mpConnectPoint2->SetEnable(true);
+		mpConnectPoint2->SetShow(true);
+
+		// 接続部との距離を設定
+		SetConnectDistance();
+	}
+	// 2つとも有効なら
+	else
+	{
+		// 切断
+		CConnectObject* obj1 = mpConnectPoint1->GetConnectObj();
+		if (obj1) obj1->Disconnect();
+		CConnectObject* obj2 = mpConnectPoint2->GetConnectObj();
+		if (obj2) obj2->Disconnect();
+		// 無効
+		mpConnectPoint2->SetEnable(false);
+		mpConnectPoint2->SetShow(false);
+
+		// 1番を更新して杖と接続
+		// 座標を設定
+		mpConnectPoint1->Position(connectTarget->Position());
+		// 親子設定
+		mpConnectPoint1->SetParent(connectTarget);
+		// 接続オブジェクトを設定
+		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
+		// 接続した瞬間の処理
+		mpConnectPoint1->GetConnectObj()->JustConnect(CVector::zero);
+
+		// 杖に接続
+		SetWandConnect(true, connectTarget);
+
+		// 接続部との距離を設定
+		SetConnectDistance();
+	}
 }
 
 // 接続を無効
@@ -233,13 +323,22 @@ void CConnectPointManager::DisableConnect(CConnectTarget* connectTarget)
 {
 	// 接続中のターゲットでないなら処理しない
 	if (GetConnectWandTarget() != connectTarget) return;
+	// 杖が接続されていないなら処理しない
+	if (!GetWandConnect()) return;
 
 	// 杖の接続解除
 	SetWandConnect(false, nullptr);
 
 	// 接続部を無効
-	mpConnectPoint->SetEnable(false);
-	mpConnectPoint->SetShow(false);
+	mpConnectPoint1->SetEnable(false);
+	mpConnectPoint1->SetShow(false);
+	mpConnectPoint2->SetEnable(false);
+	mpConnectPoint2->SetShow(false);
+	// 切断処理
+	CConnectObject* obj1 = mpConnectPoint1->GetConnectObj();
+	if (obj1) obj1->Disconnect();
+	CConnectObject* obj2 = mpConnectPoint2->GetConnectObj();
+	if (obj2) obj2->Disconnect();
 }
 
 // 杖の接続部の有効無効を設定
@@ -273,7 +372,7 @@ CConnectTarget* CConnectPointManager::GetConnectWandTarget()
 	return mpConnectWandTarget;
 }
 
-// 杖が接続している接続部とプレイヤーの距離を設定
+// 接続しているもの同士の距離を設定
 void CConnectPointManager::SetConnectDistance()
 {
 	// 杖が接続されているなら
@@ -282,13 +381,25 @@ void CConnectPointManager::SetConnectDistance()
 		// プレイヤーの座標
 		CVector rayStart = CPlayer::Instance()->Position();
 		// 杖と繋がっている接続部の座標
-		CVector rayEnd = mpConnectPoint->Position();
+		CVector rayEnd = mpConnectPoint1->Position();
 		// 2点の距離
 		float distance = (rayEnd - rayStart).Length();
 		// 杖が接続している接続部とプレイヤーの距離を設定
 		mConnectDistance = distance;
 	}
-	// いないなら
+	// いないかつ2つの接続部が有効なら
+	else if (mpConnectPoint1->IsEnable() &&
+		mpConnectPoint2->IsEnable())
+	{
+		// 接続部1の座標
+		CVector rayStart = mpConnectPoint1->Position();
+		// 接続部2の座標
+		CVector rayEnd = mpConnectPoint2->Position();
+		// 2点の距離
+		float distance = (rayEnd - rayStart).Length();
+		// 距離を設定
+		mConnectDistance = distance;
+	}
 	else
 	{
 		// 不整値を設定
@@ -296,7 +407,7 @@ void CConnectPointManager::SetConnectDistance()
 	}
 }
 
-// 杖が接続している接続部とプレイヤーの距離を取得
+// 接続しているもの同士の距離を取得
 float CConnectPointManager::GetConnectDistance()
 {				
 	return mConnectDistance;
@@ -308,7 +419,7 @@ float CConnectPointManager::GetNowConnectDistance()
 	// プレイヤーの座標
 	CVector rayStart = CPlayer::Instance()->Position();
 	// 杖と繋がっている接続部の座標
-	CVector rayEnd = mpConnectPoint->Position();
+	CVector rayEnd = mpConnectPoint1->Position();
 	// 2点の距離
 	float distance = (rayEnd - rayStart).Length();
 

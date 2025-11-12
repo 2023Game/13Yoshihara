@@ -30,7 +30,7 @@ public:
 	~CFire();
 
 	// Œq‚ª‚Á‚½‚Æ‚«‚Ìˆ—
-	void Connect(CVector wandPointPos, CVector targetPointPos) override;
+	void Connect(CConnectPoint* otherPoint, bool isWand) override;
 
 	// ‰Š‚ª‚Â‚¢‚Ä‚¢‚é‚©‚ğİ’è
 	void SetFire(bool isEnable);

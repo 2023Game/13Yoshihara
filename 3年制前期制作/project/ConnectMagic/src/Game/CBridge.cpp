@@ -44,7 +44,7 @@ CBridge::~CBridge()
 }
 
 // ˆø‚Á’£‚éˆ—
-void CBridge::Connect(CVector wandPointPos, CVector targetPointPos)
+void CBridge::Connect(CConnectPoint* otherPoint, bool isWand)
 {
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 	// ƒJƒƒ‰‚Ì•ûŒü

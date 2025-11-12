@@ -1,6 +1,6 @@
 #include "CMap1.h"
 #include "CWater.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CUpgradeItem.h"
 #include "Maths.h"
 #include "CSwitch.h"
@@ -15,14 +15,14 @@
 #define ITEM_POS_2	CVector(0.0f,0.0f,270.0f)
 #define ITEM_POS_3	CVector(-270.0f,0.0f,90.0f)
 
-// 箱の座標
-#define BOX_POS_1 CVector(-125.0f,100.0f,85.0f)
-#define BOX_POS_2 CVector(61.5f,0.0f,413.0f)
-#define BOX_POS_3 CVector(161.5f,0.0f,523.0f)
-// でかい箱の座標
-#define BIG_BOX_POS CVector(177.5,0.0f,128.0f)
-// デカい箱のスケール倍率
-#define BIG_BOX_SCALE 9.0f
+// 重りの座標
+#define weight_POS_1 CVector(-125.0f,100.0f,85.0f)
+#define weight_POS_2 CVector(61.5f,0.0f,413.0f)
+#define weight_POS_3 CVector(161.5f,0.0f,523.0f)
+// でかい重りの座標
+#define BIG_weight_POS CVector(177.5,0.0f,128.0f)
+// デカい重りのスケール倍率
+#define BIG_weight_SCALE 9.0f
 
 // 下がる壁の座標
 #define DOWN_WALL_POS_1 CVector(116.5f,0.0f,128.0f)
@@ -55,15 +55,15 @@ CMap1::~CMap1()
 // フィールドオブジェクトを生成
 void CMap1::CreateFieldObjects()
 {
-	// 箱を生成
-	CBox* box = new CBox(BOX_POS_1);
-	// 箱を生成
-	box = new CBox(BOX_POS_2);
-	// 箱を生成
-	box = new CBox(BOX_POS_3);
+	// 重りを生成
+	CWeight* weight = new CWeight(weight_POS_1);
+	// 重りを生成
+	weight = new CWeight(weight_POS_2);
+	// 重りを生成
+	weight = new CWeight(weight_POS_3);
 
-	// デカい箱を生成
-	CBox* bigBox = new CBox(BIG_BOX_POS, BIG_BOX_SCALE);
+	// デカい重りを生成
+	CWeight* bigweight = new CWeight(BIG_weight_POS, BIG_weight_SCALE);
 
 	//// スイッチを生成
 	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };

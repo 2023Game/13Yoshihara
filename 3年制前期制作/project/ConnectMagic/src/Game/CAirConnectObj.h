@@ -10,6 +10,9 @@ public:
 	// デストラクタ
 	~CAirConnectObj();
 
+	// つながった時の処理
+	void Connect(CConnectPoint* otherPoint, bool isWand) override;
+
 private:
 	// コライダーを生成
 	void CreateCol() override;

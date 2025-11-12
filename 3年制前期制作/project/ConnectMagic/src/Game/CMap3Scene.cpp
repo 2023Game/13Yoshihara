@@ -43,7 +43,7 @@ void CMap3Scene::Load()
 	// CModel
 	CResourceManager::Load<CModel>("Map3",			"Field\\Map\\Map3\\Map3.obj");
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
+	CResourceManager::Load<CModel>("weight",			"Field\\weight\\weight.obj");
 	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
@@ -55,7 +55,7 @@ void CMap3Scene::Load()
 	CResourceManager::Load<CModel>("Map3_Ground_Col",	"Field\\Map\\Map3\\Col\\Map3_Ground_Col.obj");
 	CResourceManager::Load<CModel>("Map3_Wall_Col",		"Field\\Map\\Map3\\Col\\Map3_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Door_Col",			"Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col",			"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("weight_Col",			"Field\\weight\\Col\\weight_Col.obj");
 	CResourceManager::Load<CModel>("Bridge_Col",		"Field\\Bridge\\Col\\Bridge_Col.obj");
 	CResourceManager::Load<CModel>("CampFire_Col",		"Field\\CampFire\\Col\\CampFire_Col.obj");
 	/*

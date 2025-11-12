@@ -107,7 +107,7 @@ namespace Primitive
 	/// <param name="size">各軸のサイズ</param>
 	/// <param name="color">ボックスの色</param>
 	/// <param name="blend">ブレンドタイプ</param>
-	void DrawBox(const CVector& center, const CVector& size,
+	void Drawweight(const CVector& center, const CVector& size,
 		const CColor& color, EBlend blend = EBlend::eAlpha);
 
 	/// <summary>
@@ -117,6 +117,6 @@ namespace Primitive
 	/// <param name="size">各軸のサイズ</param>
 	/// <param name="color">ボックスの色</param>
 	/// <param name="blend">ブレンドタイプ</param>
-	void DrawWireBox(const CVector& center, const CVector& size,
+	void DrawWireweight(const CVector& center, const CVector& size,
 		const CColor& color, EBlend blend = EBlend::eAlpha);
 };

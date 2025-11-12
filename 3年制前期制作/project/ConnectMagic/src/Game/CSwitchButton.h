@@ -52,6 +52,6 @@ private:
 
 	CModel* mpModel;
 
-	// スイッチにBoxが張り付くか
+	// スイッチにweightが張り付くか
 	bool mIsAttach;
 };

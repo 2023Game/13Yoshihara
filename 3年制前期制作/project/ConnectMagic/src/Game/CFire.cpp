@@ -47,7 +47,7 @@ CFire::~CFire()
 }
 
 // 繋がったときの処理
-void CFire::Connect(CVector wandPointPos, CVector targetPointPos)
+void CFire::Connect(CConnectPoint* otherPoint, bool isWand)
 {
 	//// 炎の接続オブジェクトなら
 	//if (other->GetConnectObjTag() == EConnectObjTag::eFire)

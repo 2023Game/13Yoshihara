@@ -1,7 +1,7 @@
 #include "CMap2.h"
 #include "CSwitch.h"
 #include "CDoor.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CAirConnectObj.h"
 #include "CPortal.h"
 #include "CRespawnArea.h"
@@ -10,8 +10,8 @@
 #define SWITCH_POS	CVector(15.0f,0.0f,15.0f)
 // ドアの座標
 #define DOOR_POS	CVector(8.5f,0.0f,-42.5f)
-// 箱の座標
-#define BOX_POS		CVector(-25.0f,0.0f,-25.0f)
+// 重りの座標
+#define WEIGHT_POS		CVector(-25.0f,0.0f,-25.0f)
 
 // 空中の接続オブジェクトの座標
 #define AIR_POS_1	CVector( -2.5f, 30.0f, -90.0f)
@@ -70,8 +70,8 @@ void CMap2::CreateFieldObjects()
 	// ドアをスイッチの作用オブジェクトに設定
 	doorSwitch->SetActionObj(door);
 
-	// 箱を生成
-	CBox* box = new CBox(BOX_POS);
+	// 重りを生成
+	CWeight* weight = new CWeight(WEIGHT_POS);
 
 	// 空中の接続オブジェクトを生成
 	CAirConnectObj* airConnectObj = new CAirConnectObj();

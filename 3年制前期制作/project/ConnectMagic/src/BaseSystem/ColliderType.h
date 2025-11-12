@@ -9,5 +9,5 @@ enum class EColliderType
 	eCapsule,	// カプセルコライダー
 	eMesh,		// メッシュコライダー
 	eRectangle,	// 四角形コライダー
-	eBox,		// ボックスコライダ―
+	eWeight,		// ボックスコライダ―
 };

@@ -1,5 +1,5 @@
 #include "CRoom3.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CSwitch.h"
 #include "CSwitchMoveFloor.h"
 #include "CMoveObj.h"
@@ -10,9 +10,9 @@
 // 部屋の長さ
 #define ROOM_LENGTH 240.0f
 
-// 箱の座標
-#define BOX_OFFSET_POS1	CVector(160.0f,60.0f,-220.0f)
-#define BOX_OFFSET_POS2	CVector(80.0f,0.0f,-100.0f)
+// 重りの座標
+#define weight_OFFSET_POS1	CVector(160.0f,60.0f,-220.0f)
+#define weight_OFFSET_POS2	CVector(80.0f,0.0f,-100.0f)
 
 // スイッチの座標
 #define SWITCH_OFFSET_POS1	CVector(10.0f,0.0f,-30.0f)
@@ -79,12 +79,12 @@ void CRoom3::SetEnableRoom(bool enable)
 	CSaveManager* saveMgr = CSaveManager::Instance();
 	// 有効時のみ
 	if (enable) {
-		// 箱のフラグを変更
-		mpBox1->SetEnable(enable);
-		mpBox2->SetEnable(enable);
-		// 箱を追加
-		saveMgr->AddBox(mpBox1);
-		saveMgr->AddBox(mpBox2);
+		// 重りのフラグを変更
+		mpWeight1->SetEnable(enable);
+		mpWeight2->SetEnable(enable);
+		// 重りを追加
+		saveMgr->AddWeight(mpWeight1);
+		saveMgr->AddWeight(mpWeight2);
 		// 移動床を追加
 		saveMgr->AddMoveFloor(mpSwitchMoveFloor1);
 		saveMgr->AddMoveFloor(mpSwitchMoveFloor2);
@@ -95,21 +95,21 @@ void CRoom3::SetEnableRoom(bool enable)
 	// 無効時
 	else
 	{
-		// 箱がスイッチに張り付いていないなら
-		if (!mpBox1->GetIsAttach())
+		// 重りがスイッチに張り付いていないなら
+		if (!mpWeight1->GetIsAttach())
 		{
-			// 箱のフラグを変更
-			mpBox1->SetEnable(enable);
+			// 重りのフラグを変更
+			mpWeight1->SetEnable(enable);
 		}
-		// 箱がスイッチに張り付いていないなら
-		if (!mpBox2->GetIsAttach())
+		// 重りがスイッチに張り付いていないなら
+		if (!mpWeight2->GetIsAttach())
 		{
-			// 箱のフラグを変更
-			mpBox2->SetEnable(enable);
+			// 重りのフラグを変更
+			mpWeight2->SetEnable(enable);
 		}
-		// 箱を削除
-		saveMgr->DeleteBox(mpBox1);
-		saveMgr->DeleteBox(mpBox2);
+		// 重りを削除
+		saveMgr->DeleteWeight(mpWeight1);
+		saveMgr->DeleteWeight(mpWeight2);
 		// 移動床を削除
 		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor1);
 		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor2);
@@ -122,12 +122,12 @@ void CRoom3::SetEnableRoom(bool enable)
 // フィールドオブジェクトを生成
 void CRoom3::CreateFieldObjects()
 {
-	// 箱を生成
-	mpBox1 = new CBox(Position() + BOX_OFFSET_POS1);
-	mpBox2 = new CBox(Position() + BOX_OFFSET_POS2);
+	// 重りを生成
+	mpWeight1 = new CWeight(Position() + weight_OFFSET_POS1);
+	mpWeight2 = new CWeight(Position() + weight_OFFSET_POS2);
 	// 最初は無効
-	mpBox1->SetEnable(false);
-	mpBox2->SetEnable(false);
+	mpWeight1->SetEnable(false);
+	mpWeight2->SetEnable(false);
 
 	// スイッチを生成
 	mpSwitch1 = new CSwitch(Position() + SWITCH_OFFSET_POS1);

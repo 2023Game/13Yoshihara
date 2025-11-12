@@ -5,6 +5,7 @@
 // 引っ張る力
 #define PULL_POWER 60.0f
 
+class CConnectPoint;
 class CConnectTarget;
 class CModel;
 
@@ -36,8 +37,16 @@ public:
 	/// <param name="hit">衝突した時の情報</param>
 	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
-	// 繋がったときの処理
-	virtual void Connect(CVector wandPointPos, CVector targetPointPos);
+	/// <summary>
+	/// 繋がったときの処理
+	/// </summary>
+	/// <param name="otherPoint">相手の接続部</param>
+	virtual void Connect(CConnectPoint* otherPoint, bool isWand);
+
+	// 繋げた瞬間の処理
+	void JustConnect(CVector otherPointPos);
+	// 接続解除の処理
+	void Disconnect();
 
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);
@@ -56,6 +65,9 @@ public:
 	// 接続オブジェクトのタグを取得
 	EConnectObjTag GetConnectObjTag();
 
+	// 接続したときに移動の処理をするかを設定
+	void SetMove(bool enable);
+
 protected:
 	// 接続ターゲット
 	std::vector<CConnectTarget*> mTargets;
@@ -72,6 +84,11 @@ protected:
 
 	bool mIsGrounded;	// 接地しているか
 	bool mIsGravity;	// 重力を掛けるか
+	bool mIsMove;		// 接続によって移動するか
+
+	bool mIsConnectAir;	// 空中オブジェクトとつながっているか
+
+	CVector mPreOtherPointPos;	// 前回の接続相手の座標
 
 	// 接続オブジェクトのタグ
 	EConnectObjTag mConnectObjTag;

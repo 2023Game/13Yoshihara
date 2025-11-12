@@ -2,7 +2,7 @@
 #include "MoveState.h"
 
 class CPlayer;
-class CBox;
+class CWeight;
 class CMoveObj;
 class CSwitchMoveFloor;
 class CSwitchMoveWall;
@@ -21,14 +21,14 @@ struct PlayerData {
 		: pos(p), vec(v), target(t), animationType(type), animationFrame(frame) {}
 };
 
-// 箱のデータ
-struct BoxData {
+// 重りのデータ
+struct weightData {
 	CVector pos;	// 座標
-	CBox* box;		// 箱
+	CWeight* weight;		// 重り
 
 	// コンストラクタ
-	BoxData(const CVector& p, CBox* b)
-		: pos(p), box(b) {}
+	weightData(const CVector& p, CWeight* b)
+		: pos(p), weight(b) {}
 };
 
 // 移動するオブジェクトのデータ
@@ -76,7 +76,7 @@ struct MoveWallData {
 // ゲーム全体のデータ
 struct GameData {
 	PlayerData player = PlayerData(CVector::zero, CVector::zero, nullptr, 0, 0.0f);
-	std::vector<BoxData> boxes;
+	std::vector<weightData> weightes;
 	std::vector<MoveObjData> moveObjs;
 	std::vector<MoveFloorData> moveFloor;
 	std::vector<MoveWallData> moveWall;

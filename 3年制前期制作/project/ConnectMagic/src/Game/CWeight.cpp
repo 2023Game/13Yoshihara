@@ -1,4 +1,4 @@
-#include "CBox.h"
+#include "CWeight.h"
 #include "CColliderMesh.h"
 #include "CColliderSphere.h"
 #include "CColliderCapsule.h"
@@ -7,7 +7,7 @@
 // 接続ターゲットの座標
 #define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
 
-// 箱の重さ
+// 重りの重さ
 #define WEIGHT 0.1f
 
 // コライダーの半径
@@ -23,13 +23,13 @@
 #define DELETE_POS_Y -50.0f
 
 // コンストラクタ
-CBox::CBox(CVector defaultPos, float scaleRatio)
+CWeight::CWeight(CVector defaultPos, float scaleRatio)
 	: CConnectObject(WEIGHT)
 	, mDefaultPos(defaultPos)
 	, mIsRespawn(false)
 	, mElapsedTime(0.0f)
 {
-	mpModel = CResourceManager::Get<CModel>("Box");
+	mpModel = CResourceManager::Get<CModel>("Weight");
 
 	Scale(Scale() * SCALE * scaleRatio);
 
@@ -43,12 +43,12 @@ CBox::CBox(CVector defaultPos, float scaleRatio)
 }
 
 // デストラクタ
-CBox::~CBox()
+CWeight::~CWeight()
 {
 }
 
 // 衝突処理
-void CBox::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CWeight::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CConnectObject::Collision(self, other, hit);
 
@@ -73,7 +73,7 @@ void CBox::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 }
 
 // 更新
-void CBox::Update()
+void CWeight::Update()
 {
 	// リスポーンするなら
 	if (mIsRespawn)
@@ -98,24 +98,24 @@ void CBox::Update()
 	}
 
 	CConnectObject::Update();
-	// 箱が張り付いていない
+	// 重りが張り付いていない
 	SetIsAttach(false);
 }
 
-// 箱がスイッチに張り付いているかを設定
-void CBox::SetIsAttach(bool enable)
+// 重りがスイッチに張り付いているかを設定
+void CWeight::SetIsAttach(bool enable)
 {
 	mIsAttach = enable;
 }
 
-// 箱がスイッチに張り付いているか
-bool CBox::GetIsAttach() const
+// 重りがスイッチに張り付いているか
+bool CWeight::GetIsAttach() const
 {
 	return mIsAttach;
 }
 
 // コライダーを生成
-void CBox::CreateCol()
+void CWeight::CreateCol()
 {
 	// フィールドやオブジェクトと衝突判定をするコライダー
 	mpCol = new CColliderSphere

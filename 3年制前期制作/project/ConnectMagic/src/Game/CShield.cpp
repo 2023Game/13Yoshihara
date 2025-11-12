@@ -1,6 +1,6 @@
 #include "CShield.h"
 #include "CColliderRectangle.h"
-#include "CImage3D.h"
+#include "CMaterial.h"
 #include "CConnectPointManager.h"
 
 // ’¸“_

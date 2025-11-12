@@ -7,7 +7,7 @@
 CColliderBox::CColliderBox(CObjectBase* owner, ELayer layer, 
 	CVector min,CVector max,
 	bool isKinematic, float weight)
-	: CCollider(owner, layer, EColliderType::eBox, isKinematic, weight)
+	: CCollider(owner, layer, EColliderType::eWeight, isKinematic, weight)
 {
 	Set(min, max);
 }

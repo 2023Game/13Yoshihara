@@ -1,6 +1,6 @@
 #include "CSaveManager.h"
 #include "CPlayer.h"
-#include "CBox.h"
+#include "CWeight.h"
 #include "CMoveObj.h"
 #include "CSwitchMoveFloor.h"
 #include "CSwitchMoveWall.h"
@@ -96,10 +96,10 @@ void CSaveManager::Save()
 	// アニメーションの再生時間
 	data.player.animationFrame = player->GetAnimationFrame();
 
-	// 箱を取得
-	for (CBox* box : mBox) {
+	// 重りを取得
+	for (CWeight* weight : mWeights) {
 		// リストに追加
-		data.boxes.emplace_back(box->Position(), box);
+		data.weightes.emplace_back(weight->Position(), weight);
 	}
 
 	// 移動オブジェクトを取得
@@ -180,15 +180,15 @@ void CSaveManager::Load()
 		player->ChangeAnimationTime(playerData.animationType, playerData.animationFrame);
 	}
 
-	CBox* box = nullptr;
-	for (auto& boxData : data.boxes)
+	CWeight* weight = nullptr;
+	for (auto& weightData : data.weightes)
 	{
-		// 箱を取得
-		box = boxData.box;
-		if (box)
+		// 重りを取得
+		weight = weightData.weight;
+		if (weight)
 		{
 			// 座標をロード
-			box->Position(boxData.pos);
+			weight->Position(weightData.pos);
 		}
 	}
 
@@ -250,18 +250,18 @@ void CSaveManager::Load()
 	DeleteNew();
 }
 
-// 保存する箱に追加
-void CSaveManager::AddBox(CBox* box)
+// 保存する重りに追加
+void CSaveManager::AddWeight(CWeight* weight)
 {
-	mBox.push_back(box);
+	mWeights.push_back(weight);
 }
 
-// 保存する箱から削除
-void CSaveManager::DeleteBox(CBox* box)
+// 保存する重りから削除
+void CSaveManager::DeleteWeight(CWeight* weight)
 {
-	mBox.erase(
-		std::remove(mBox.begin(), mBox.end(), box),
-		mBox.end()
+	mWeights.erase(
+		std::remove(mWeights.begin(), mWeights.end(), weight),
+		mWeights.end()
 	);
 }
 

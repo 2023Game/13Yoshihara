@@ -6,6 +6,8 @@ CSwitchObject::CSwitchObject(ETaskPriority prio, int sortOrder, ETaskPauseType p
 	: CObjectBase(ETag::eSwitchObject, prio, 0, pause)
 	, mState(EState::eOff)
 	, mOnSwitchNum(0)
+	, mpModel(nullptr)
+	, mpCol(nullptr)
 {
 }
 
@@ -31,7 +33,10 @@ void CSwitchObject::Update()
 // •`‰æ
 void CSwitchObject::Render()
 {
-	mpModel->Render(Matrix());
+	if (mpModel != nullptr)
+	{
+		mpModel->Render(Matrix());
+	}
 }
 
 // Õ“Ëˆ—

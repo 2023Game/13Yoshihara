@@ -1,13 +1,13 @@
 #pragma once
 #include "CConnectObject.h"
 
-class CBox : public CConnectObject
+class CWeight : public CConnectObject
 {
 public:
 	// コンストラクタ
-	CBox(CVector defaultPos, float scaleRatio = 1.0f);
+	CWeight(CVector defaultPos, float scaleRatio = 1.0f);
 	// デストラクタ
-	~CBox();
+	~CWeight();
 
 	/// <summary>
 	/// 衝突処理
@@ -20,9 +20,9 @@ public:
 	// 更新
 	void Update() override;
 
-	// 箱がスイッチに張り付いているかを設定
+	// 重りがスイッチに張り付いているかを設定
 	void SetIsAttach(bool enable);
-	// 箱がスイッチに張り付いているか
+	// 重りがスイッチに張り付いているか
 	bool GetIsAttach() const;
 
 private:
@@ -36,6 +36,6 @@ private:
 	// 経過時間
 	float mElapsedTime;
 
-	// 箱がスイッチに張り付いているか
+	// 重りがスイッチに張り付いているか
 	bool mIsAttach;
 };

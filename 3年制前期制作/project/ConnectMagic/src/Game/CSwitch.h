@@ -3,13 +3,22 @@
 class CSwitchFrame;
 class CSwitchButton;
 class CSwitchObject;
+class CCrystal;
+
+// スイッチのタイプ
+enum class ESwitchType
+{
+	eButton,	// ボタン式
+	eBatteries,	// 電源式
+};
 
 // スイッチのクラス
 class CSwitch
 {
 public:
+
 	// コンストラクタ
-	CSwitch(CVector pos, bool isAttach = false);
+	CSwitch(CVector pos, bool isAttach = false, ESwitchType type = ESwitchType::eButton);
 	// デストラクタ
 	~CSwitch();
 
@@ -25,6 +34,8 @@ public:
 	CSwitchFrame* GetFrame();
 	// スイッチのボタンを取得
 	CSwitchButton* GetButton();
+	// クリスタルを取得する
+	CCrystal* GetCrystal();
 
 	// スイッチの有効無効を切り替え
 	void SetEnableSwitch(bool enable);
@@ -32,8 +43,12 @@ public:
 private:
 	CSwitchFrame* mpFrame;	// フレーム
 	CSwitchButton* mpButton;// ボタン
+	CCrystal* mpCrystal;	// クリスタル
+
 
 	CSwitchObject* mpActionObject;	// 作用するオブジェクト
+
+	ESwitchType mSwitchType;	// スイッチの種類
 
 	// スイッチが作動しているか
 	bool mIsOn;

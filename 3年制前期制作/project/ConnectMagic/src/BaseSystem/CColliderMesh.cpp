@@ -170,7 +170,7 @@ void CColliderMesh::RenderBounds()
 	//col.A(0.35f);
 	//for (STDivMesh& divMesh : mDivMesh)
 	//{
-	//	Primitive::DrawWireBox
+	//	Primitive::DrawWireweight
 	//	(
 	//		divMesh.bounds.Center(), divMesh.bounds.Size(),
 	//		col, EBlend::eAlpha
@@ -203,7 +203,7 @@ void CColliderMesh::RenderDivArea()
 
 				CVector center = (min + max) * 0.5f;
 				CVector size2 = max - min;
-				Primitive::DrawWireBox
+				Primitive::DrawWireweight
 				(
 					center, size2,
 					col, EBlend::eAlpha

@@ -40,17 +40,21 @@ void CGameScene::Load()
 	CResourceManager::Load<CModelX>("Player", "Character\\Adventurer\\Adventurer.x", true);
 	// CModel
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Weight.obj");
+	CResourceManager::Load<CModel>("Weight",		"Field\\Weight\\Weight.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
-	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
+	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj"); 
+	CResourceManager::Load<CModel>("AirConnectObj", "Field\\AirConnectPoint\\AirConnectPoint.obj");
 	CResourceManager::Load<CModel>("ConnectRoom",	"Field\\Room\\ConnectRoom\\ConnectRoom.obj");
 	CResourceManager::Load<CModel>("Room1",			"Field\\Room\\Room1\\Room1.obj");
 	CResourceManager::Load<CModel>("Room2",			"Field\\Room\\Room2\\Room2.obj");
 	CResourceManager::Load<CModel>("Room3",			"Field\\Room\\Room3\\Room3.obj");
 	CResourceManager::Load<CModel>("Room4",			"Field\\Room\\Room4\\Room4.obj");
 	CResourceManager::Load<CModel>("Room5",			"Field\\Room\\Room5\\Room5.obj");
+	CResourceManager::Load<CModel>("Room6",			"Field\\Room\\Room6\\Room6.obj");
 	CResourceManager::Load<CModel>("LastRoom",		"Field\\Room\\LastRoom\\LastRoom.obj");
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
+	CResourceManager::Load<CModel>("CrystalOn",		"Field\\Crystal\\CrystalOn.obj");
+	CResourceManager::Load<CModel>("CrystalOff",	"Field\\Crystal\\CrystalOff.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
 	CResourceManager::Load<CModel>("ConnectRoom_Wall_Col",		"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Wall_Col.obj");
@@ -64,6 +68,8 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("Room4_Wall_Col",			"Field\\Room\\Room4\\Col\\Room4_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Room5_Ground_Col",			"Field\\Room\\Room5\\Col\\Room5_Ground_Col.obj");
 	CResourceManager::Load<CModel>("Room5_Wall_Col",			"Field\\Room\\Room5\\Col\\Room5_Wall_Col.obj");
+	CResourceManager::Load<CModel>("Room6_Ground_Col",			"Field\\Room\\Room6\\Col\\Room6_Ground_Col.obj");
+	CResourceManager::Load<CModel>("Room6_Wall_Col",			"Field\\Room\\Room6\\Col\\Room6_Wall_Col.obj");
 	CResourceManager::Load<CModel>("LastRoom_Ground_Col",		"Field\\Room\\LastRoom\\Col\\LastRoom_Ground_Col.obj");
 	CResourceManager::Load<CModel>("LastRoom_Wall_Col",			"Field\\Room\\LastRoom\\Col\\LastRoom_Wall_Col.obj");
 	CResourceManager::Load<CModel>("MoveObject_Col",			"Field\\MoveObject\\Col\\MoveObject_Col.obj");

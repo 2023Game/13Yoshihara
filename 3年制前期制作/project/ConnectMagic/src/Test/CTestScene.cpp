@@ -43,7 +43,7 @@ void CTestScene::Load()
 	// CModel
 	CResourceManager::Load<CModel>("TestField",		"Field\\field.obj");
 	CResourceManager::Load<CModel>("Wand",			"Wepon\\Wand\\Wand.obj", true);
-	CResourceManager::Load<CModel>("Box",			"Field\\Box\\Box.obj");
+	CResourceManager::Load<CModel>("Weight",		"Field\\Weight\\Weight.obj");
 	CResourceManager::Load<CModel>("Door",			"Field\\Door\\Door.obj");
 	CResourceManager::Load<CModel>("SwitchFrame",	"Field\\Switch\\Switch_Frame.obj");
 	CResourceManager::Load<CModel>("SwitchButton",	"Field\\Switch\\Switch_Button.obj");
@@ -55,11 +55,13 @@ void CTestScene::Load()
 	CResourceManager::Load<CModel>("ConnectRoom",	"Field\\Room\\ConnectRoom\\ConnectRoom.obj");
 	CResourceManager::Load<CModel>("Room1",			"Field\\Room\\Room1\\Room1.obj");
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
+	CResourceManager::Load<CModel>("CrystalOn",		"Field\\Crystal\\CrystalOn.obj");
+	CResourceManager::Load<CModel>("CrystalOff",	"Field\\Crystal\\CrystalOff.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("TestField_Ground_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Ground_Col.obj");
 	CResourceManager::Load<CModel>("TestField_Wall_Col",	"Field\\Map\\Map_1\\Col\\Map_1_Wall_Col.obj");
 	CResourceManager::Load<CModel>("Door_Col",				"Field\\Door\\Col\\Door_Col.obj");
-	CResourceManager::Load<CModel>("Box_Col",				"Field\\Box\\Col\\Box_Col.obj");
+	CResourceManager::Load<CModel>("weight_Col",			"Field\\weight\\Col\\weight_Col.obj");
 	CResourceManager::Load<CModel>("Bridge_Col",			"Field\\Bridge\\Col\\Bridge_Col.obj");
 	CResourceManager::Load<CModel>("CampFire_Col",			"Field\\CampFire\\Col\\CampFire_Col.obj");
 	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col","Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
