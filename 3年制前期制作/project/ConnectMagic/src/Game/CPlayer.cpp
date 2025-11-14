@@ -159,6 +159,17 @@ void CPlayer::Update()
 		ActionInput();
 	}
 
+	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+
+	if (!mIsGrounded &&
+		mState != EState::eTarzanStart &&
+		mState != EState::eTarzan &&
+		mState != EState::eTarzanEnd &&
+		connectPointMgr->IsWandConnectAirObject())
+	{
+		ChangeState(EState::eTarzan);
+	}
+
 	// 場外へ落ちたら
 	if (Position().Y() < MAX_UNDER_POS)
 	{
@@ -180,17 +191,6 @@ void CPlayer::Update()
 	case EState::eTarzanEnd:	UpdateTarzanEnd();		break;	// ターザン終了
 	case EState::eReturn:		UpdateReturn();			break;	// 場外から戻す
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
-	}
-
-	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-
-	if (!mIsGrounded &&
-		mState != EState::eTarzanStart &&
-		mState != EState::eTarzan &&
-		mState != EState::eTarzanEnd &&
-		connectPointMgr->IsWandConnectAirObject())
-	{
-		ChangeState(EState::eTarzanStart);
 	}
 
 	// 基底プレイヤークラスの更新
@@ -308,7 +308,7 @@ void CPlayer::ActionInput()
 					// 接続部を有効
 					connectPointMgr->EnableConnect(mpCenterTarget);
 					// ターザン中状態へ
-					ChangeState(EState::eTarzan);
+					ChangeState(EState::eTarzanStart);
 				}
 				// 空中でないなら
 				else
@@ -322,8 +322,6 @@ void CPlayer::ActionInput()
 		{
 			// 接続部管理クラス
 			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-			// 待機状態へ
-			ChangeState(EState::eIdle);
 
 			// ターザン状態なら
 			if (mState == EState::eTarzanStart ||
@@ -350,6 +348,8 @@ void CPlayer::ActionInput()
 				{
 					// 杖の接続を解除
 					connectPointMgr->DisableConnect(connectPointMgr->GetConnectWandTarget());
+					// 待機状態へ
+					ChangeState(EState::eIdle);
 				}
 			}
 		}
@@ -358,9 +358,12 @@ void CPlayer::ActionInput()
 		{
 			// 重力オン
 			mIsGravity = true;
-			// 攻撃中でないなら
+			// 攻撃中かターザン状態でないなら
 			if (mState != EState::eAttackStart &&
-				mState != EState::eAttack)
+				mState != EState::eAttack &&
+				mState != EState::eTarzanStart &&
+				mState != EState::eTarzan &&
+				mState != EState::eTarzanEnd)
 			{
 				// 接続部管理クラス
 				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
@@ -545,7 +548,16 @@ void CPlayer::UpdateAttackEnd()
 
 // ターザン開始
 void CPlayer::UpdateTarzanStart()
-{
+{		
+	// 接地したら
+	if (mIsGrounded)
+	{
+		// 重力オン
+		mIsGravity = true;
+		// 待機状態へ
+		ChangeState(EState::eIdle);
+		return;
+	}
 	switch (mStateStep)
 	{
 		// 20フレーム進行したら
@@ -570,7 +582,16 @@ void CPlayer::UpdateTarzanStart()
 
 // ターザン中
 void CPlayer::UpdateTarzan()
-{
+{		
+	// 接地したら
+	if (mIsGrounded)
+	{
+		// 重力オン
+		mIsGravity = true;
+		// 待機状態へ
+		ChangeState(EState::eIdle);
+		return;
+	}
 	switch (mStateStep)
 	{
 		// スイングアニメーションに切り替える
@@ -586,15 +607,7 @@ void CPlayer::UpdateTarzan()
 	case 1:
 		// 接続部管理クラス
 		CConnectPointManager * connectPointMgr = CConnectPointManager::Instance();
-		// 接地したら
-		if (mIsGrounded)
-		{
-			// 重力オン
-			mIsGravity = true;
-			// 待機状態へ
-			ChangeState(EState::eIdle);
-			return;
-		}
+
 		// ターゲット
 		CConnectTarget* target = connectPointMgr->GetConnectWandTarget();
 		// ターゲットがnullなら重力オン

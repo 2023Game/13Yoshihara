@@ -50,7 +50,7 @@ void CSaveManager::Update()
 		// ロード
 	case CSaveManager::EState::eLoad:
 
-		if (CInput::Key(VK_LBUTTON)) {
+		if (CInput::Key(VK_RBUTTON)) {
 			// テキスト非表示
 			mpRewindUI->SetTextEnable(false);
 			// 画像の色を青に設定
@@ -60,9 +60,9 @@ void CSaveManager::Update()
 			Load();
 			CTaskManager::Instance()->UnPause(PAUSE_GAME);
 		}
-		// キーを離したら
+		// キーを離すか
 		// データが空になったら
-		if (CInput::PullKey(VK_LBUTTON) || mData.empty()) {
+		if (CInput::PullKey(VK_RBUTTON) || mData.empty()) {
 			// ロード終了
 			ChangeState(EState::eSave);
 			// ポーズ解除

@@ -12,10 +12,10 @@
 #define SWITCH_OFFSET_POS2			CVector( 30.0f,		 0.0f,		-100.0f)
 
 #define AIR_OBJ1_MOVE_TARGET_POS1	CVector(-30.0f,		 35.0f,		-25.0f)
-#define AIR_OBJ1_MOVE_TARGET_POS2	CVector(-105.0f,	 35.0f,		-25.0f)
+#define AIR_OBJ1_MOVE_TARGET_POS2	CVector(-145.0f,	 35.0f,		-25.0f)
 
 #define AIR_OBJ2_MOVE_TARGET_POS1	CVector( 30.0f,		 35.0f,		-25.0f)
-#define AIR_OBJ2_MOVE_TARGET_POS2	CVector( 105.0f,	 35.0f,		-25.0f)
+#define AIR_OBJ2_MOVE_TARGET_POS2	CVector( 145.0f,	 35.0f,		-25.0f)
 
 #define CRYSTAL_OFFSET_POS1			CVector(-30.0f,		 0.0f,		-35.0f)
 #define CRYSTAL_OFFSET_POS2			CVector( 30.0f,		 0.0f,		-35.0f)
@@ -26,7 +26,7 @@
 #define ROT_Y_90					CVector( 0.0f,		 90.0f,		 0.0f)
 
 #define WATER_OFFSET_POS			CVector( 0.0f,		-15.0f,		-100.0f)
-#define WATER_SCALE					CVector( 160.0f,	 0.0f,		 100.0f)
+#define WATER_SCALE					CVector( 200.0f,	 0.0f,		 100.0f)
 
 #define RESPAWN_OFFSET_POS			CVector( 0.0f,		 0.0f,		-30.0f)
 #define RESPAWN_RADIUS				30.0f

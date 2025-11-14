@@ -179,7 +179,7 @@ void CTestField::CreateFieldObjects()
 	crystal = new CSwitch(CVector(-20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
 
 	CSwitchMoveAirObj* switchAirObj =
-		new CSwitchMoveAirObj(CVector(40.0f, 40.0f, 0.0f), { CVector(40.0f, 40.0f, 0.0f), CVector(80.0f,40.0f,0.0f) });
+		new CSwitchMoveAirObj(CVector(40.0f, 40.0f, 0.0f), { CVector(40.0f, 40.0f, 0.0f), CVector(80.0f,80.0f,0.0f) });
 	crystal->SetActionObj(switchAirObj);
 
 	//// スイッチを生成
