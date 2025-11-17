@@ -10,11 +10,13 @@
 #define VERT_POS_4  10.0f,	40.0f,	0.0f
 
 // コンストラクタ
-CSwitchShield::CSwitchShield()
-	: CObjectBase(ETag::eField, ETaskPriority::eShield, 0, ETaskPauseType::eGame)
+CSwitchShield::CSwitchShield(CVector scale)
+	: CSwitchObject(ETaskPriority::eShield)
 {
 	// コライダーを生成
 	CreateCol();
+
+	Scale(scale);
 }
 
 // デストラクタ
@@ -67,6 +69,18 @@ void CSwitchShield::Render()
 
 	// 描画前の行列に戻す
 	glPopMatrix();
+}
+
+void CSwitchShield::UpdateOff()
+{
+	SetShow(true);
+	SetEnableCol(true);
+}
+
+void CSwitchShield::UpdateOn()
+{
+	SetShow(false);
+	SetEnableCol(false);
 }
 
 // コライダーを生成

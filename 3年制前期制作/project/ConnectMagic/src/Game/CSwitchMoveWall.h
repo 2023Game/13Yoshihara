@@ -10,10 +10,6 @@ public:
 	void SetState(EMoveState state);
 	// 状態を取得
 	EMoveState GetState() const;
-	// 前回の状態を設定
-	void SetPreState(EMoveState state);
-	// 前回の状態を取得
-	EMoveState GetPreState() const;
 	// 経過時間を設定
 	void SetElapsedTime(float time);
 	// 経過時間を取得
@@ -54,7 +50,6 @@ private:
 	// 状態を変更
 	void ChangeMoveState(EMoveState state);
 	EMoveState mMoveState;		// 移動状態
-	EMoveState mPreMoveState;	// 一つ前の移動状態
 	float mElapsedTime;		// 経過時間
 
 	// 開いているか

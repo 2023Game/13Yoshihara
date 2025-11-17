@@ -1,13 +1,13 @@
 #pragma once
 #pragma once
-#include "CObjectBase.h"
+#include "CSwitchObject.h"
 
 // 何も通さないスイッチでオンオフできるシールド
-class CSwitchShield : public CObjectBase
+class CSwitchShield : public CSwitchObject
 {
 public:
 	// コンストラクタ
-	CSwitchShield();
+	CSwitchShield(CVector scale = CVector(1.0f, 1.0f, 1.0f));
 	// デストラクタ
 	~CSwitchShield();
 
@@ -15,6 +15,9 @@ public:
 	void Render() override;
 
 private:
+	void UpdateOff() override;
+	void UpdateOn() override;
+
 	// コライダーを生成
 	void CreateCol() override;
 	// コライダー

@@ -160,6 +160,11 @@ bool CConnectPointManager::RayTarget(CVector targetPos)
 	// 設定されているコライダーを順番に調べる
 	for (CCollider* c : mColliders)
 	{
+		if (c == nullptr)
+			continue;
+		// 無効なら次へ
+		if (c->Owner() != nullptr && !c->Owner()->IsEnableCol())
+			continue;
 		// レイとコライダーの衝突判定を行う
 		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
 		{
@@ -195,6 +200,11 @@ void CConnectPointManager::RayPoint()
 	// 設定されているコライダーを順番に調べる
 	for (CCollider* c : mColliders)
 	{
+		if (c == nullptr)
+			continue;
+		// 無効なら次へ
+		if (c->Owner()!= nullptr && !c->Owner()->IsEnableCol())
+			continue;
 		// レイとコライダーの衝突判定を行う
 		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
 		{

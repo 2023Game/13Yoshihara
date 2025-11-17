@@ -63,14 +63,13 @@ struct MoveFloorData {
 struct MoveWallData {
 	CVector pos;			// 座標
 	EMoveState state;		// 状態
-	EMoveState preState;	// 1つ前の状態
 	float elapsedTime;		// 移動の経過時間
 	CSwitchMoveWall* moveWall;	// 壁
 
 	// コンストラクタ
-	MoveWallData(const CVector& p, EMoveState s, EMoveState preS, float t,
+	MoveWallData(const CVector& p, EMoveState s, float t,
 		CSwitchMoveWall* o)
-		: pos(p), state(s), preState(preS), elapsedTime(t), moveWall(o) {}
+		: pos(p), state(s), elapsedTime(t), moveWall(o) {}
 };
 
 // ゲーム全体のデータ

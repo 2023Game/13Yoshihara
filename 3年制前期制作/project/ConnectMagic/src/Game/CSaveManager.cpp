@@ -122,7 +122,7 @@ void CSaveManager::Save()
 	for (CSwitchMoveWall* wall: mMoveWall) {
 		// リストに追加
 		data.moveWall.emplace_back(wall->Position(),
-			wall->GetState(), wall->GetPreState(),
+			wall->GetState(),
 			wall->GetElapsedTime(), wall);
 	}
 
@@ -239,8 +239,6 @@ void CSaveManager::Load()
 			moveWall->Position(wallData.pos);
 			// 状態をロード
 			moveWall->SetState(wallData.state);
-			// 前の状態をロード
-			moveWall->SetPreState(wallData.preState);
 			// 経過時間をロード
 			moveWall->SetElapsedTime(wallData.elapsedTime);
 		}

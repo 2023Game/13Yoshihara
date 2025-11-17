@@ -25,9 +25,6 @@ void CSwitchObject::Update()
 	case EState::eOff:	UpdateOff();	break;
 	case EState::eOn:	UpdateOn();		break;
 	}
-
-	std::string state = "Off";
-	if (mState == EState::eOn) state = "On";
 }
 
 // •`‰æ

@@ -17,6 +17,8 @@
 #include "CRoom1.h"
 #include "CSwitchMoveFloor.h"
 #include "CSwitchMoveAirObj.h"
+#include "CSwitchPushWall.h"
+#include "CSwitchShield.h"
 
 // ポータルの設定
 #define PORTAL_POS	CVector(100.0f, 10.0f, -100.0f)
@@ -174,13 +176,28 @@ void CTestField::CreateFieldObjects()
 	new CRespawnArea(RESPAWN_POS_1, RESPAWN_RADIUS);
 	new CRespawnArea(RESPAWN_POS_2, RESPAWN_RADIUS);
 
-	CSwitch* crystal = new CSwitch(CVector(20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
-	crystal->SetOnOff(true);
-	crystal = new CSwitch(CVector(-20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
+	// クリスタル
+	CSwitch* crystal1 = new CSwitch(CVector(20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
+	crystal1->SetOnOff(true);
+	CSwitch* crystal2 = new CSwitch(CVector(-20.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
+	CSwitch* crystal3 = new CSwitch(CVector(-40.0f, 0.0f, 0.0f), false, ESwitchType::eBatteries);
 
 	CSwitchMoveAirObj* switchAirObj =
 		new CSwitchMoveAirObj(CVector(40.0f, 40.0f, 0.0f), { CVector(40.0f, 40.0f, 0.0f), CVector(80.0f,80.0f,0.0f) });
-	crystal->SetActionObj(switchAirObj);
+	crystal1->SetActionObj(switchAirObj);
+
+	// 押し出す壁
+	CModel* model = CResourceManager::Get<CModel>("MoveObject");
+	CSwitchPushWall* switchPushWall = 
+		new CSwitchPushWall(model,model,CVector(80.0f,0.0f,0.0f),
+			CVector(1.0f, 4.0f, 1.0f), CVector(100.0f, 0.0f, 0.0f), 12.0f);
+	crystal2->SetActionObj(switchPushWall);
+
+	// シールド
+	CSwitchShield* switchShield =
+		new CSwitchShield(CVector(1.0f,1.0f,1.0f));
+	switchShield->Position(-40.0f, 0.0f, 10.0f);
+	crystal3->SetActionObj(switchShield);
 
 	//// スイッチを生成
 	//std::vector<CSwitch*> switchs = { new CSwitch(SWITCH_POS) };
