@@ -17,6 +17,9 @@
 #define BODY_RADIUS 2.5f
 #define BODY_HEIGHT 15.0f
 
+// 前方の地面確認用レイの前方への距離
+const float RAY_FRONT_DIST = 5.0f;
+
 // 探知コライダの半径
 #define SEARCH_RADIUS 50.0f
 
@@ -69,6 +72,8 @@ CPlayer::CPlayer()
 	, mpWandPoint(nullptr)
 	, mpCenterTarget(nullptr)
 	, mRespawnPos(CVector::zero)
+	, mWasGrounded(false)
+	, mIsJump(false)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
@@ -147,7 +152,10 @@ void CPlayer::Update()
 {
 	// 待機中、ターザン開始は、移動処理を行う
 	if (mState == EState::eIdle ||
-		mState == EState::eTarzanStart)
+		mState == EState::eTarzanStart ||
+		mState == EState::eEdgeJumpStart ||
+		mState == EState::eEdgeJump ||
+		mState == EState::eEdgeJumpEnd)
 	{
 		UpdateMove();
 	}
@@ -177,6 +185,12 @@ void CPlayer::Update()
 		ChangeState(EState::eReturn);
 	}
 
+	// 正面から落ちるときならジャンプする
+	if (mWasGrounded && !mIsGrounded) {
+		ChangeState(EState::eEdgeJumpStart);
+	}
+	mWasGrounded = mIsGrounded;
+
 	switch (mState)
 	{
 	case EState::eIdle:			UpdateIdle();			break;	// 待機
@@ -189,10 +203,13 @@ void CPlayer::Update()
 	case EState::eTarzanStart:	UpdateTarzanStart();	break;	// ターザン開始
 	case EState::eTarzan:		UpdateTarzan();			break;	// ターザン中
 	case EState::eTarzanEnd:	UpdateTarzanEnd();		break;	// ターザン終了
+	case EState::eEdgeJumpStart:UpdateEdgeJumpStart();	break;	// エッジジャンプ開始
+	case EState::eEdgeJump:		UpdateEdgeJump();		break;	// エッジジャンプ中
+	case EState::eEdgeJumpEnd:	UpdateEdgeJumpEnd();	break;	// エッジジャンプ終了
 	case EState::eReturn:		UpdateReturn();			break;	// 場外から戻す
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
-
+	
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
 
@@ -358,12 +375,15 @@ void CPlayer::ActionInput()
 		{
 			// 重力オン
 			mIsGravity = true;
-			// 攻撃中かターザン状態でないなら
+			// 攻撃中かターザン状態かエッジジャンプ中でないなら
 			if (mState != EState::eAttackStart &&
 				mState != EState::eAttack &&
 				mState != EState::eTarzanStart &&
 				mState != EState::eTarzan &&
-				mState != EState::eTarzanEnd)
+				mState != EState::eTarzanEnd &&
+				mState != EState::eEdgeJumpStart &&
+				mState != EState::eEdgeJump &&
+				mState != EState::eEdgeJumpEnd)
 			{
 				// 接続部管理クラス
 				CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
@@ -709,6 +729,79 @@ void CPlayer::UpdateTarzanEnd()
 		break;
 		// アニメーションが終了したら待機へ
 	case 3:
+		if (IsAnimationFinished())
+		{
+			ChangeState(EState::eIdle);
+		}
+		break;
+	}
+}
+
+// エッジジャンプの開始
+void CPlayer::UpdateEdgeJumpStart()
+{
+	switch (mStateStep)
+	{
+		// アニメーション変更
+	case 0:
+		mMoveSpeed = VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime();
+		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+		// ジャンプ開始アニメーション
+		ChangeAnimation((int)EAnimType::eJump_Start);
+		mStateStep++;
+		break;
+
+		// アニメーションが終了したら移動をゼロにする
+	case 1:
+	{
+		if (IsAnimationFinished())
+		{
+			mMoveSpeedY = 0.0f;
+			mStateStep++;
+		}
+		break;
+	}
+
+	// 次の状態へ
+	case 2:
+		// ジャンプ中状態へ
+		ChangeState(EState::eEdgeJump);
+		break;
+	}
+}
+
+// エッジジャンプ中
+void CPlayer::UpdateEdgeJump()
+{
+	switch (mStateStep)
+	{
+		// アニメーション変更
+	case 0:
+		ChangeAnimation((int)EAnimType::eJump);
+		mStateStep++;
+		break;
+		// 接地したら次の状態へ
+	case 1:
+		if (mIsGrounded)
+		{
+			ChangeState(EState::eEdgeJumpEnd);
+		}
+		break;
+	}
+}
+
+// エッジジャンプの終了
+void CPlayer::UpdateEdgeJumpEnd()
+{
+	switch (mStateStep)
+	{
+		// アニメーション変更
+	case 0:
+		ChangeAnimation((int)EAnimType::eJump_End);
+		mStateStep++;
+		break;
+		// アニメーションが終了したら待機へ戻る
+	case 1:
 		if (IsAnimationFinished())
 		{
 			ChangeState(EState::eIdle);

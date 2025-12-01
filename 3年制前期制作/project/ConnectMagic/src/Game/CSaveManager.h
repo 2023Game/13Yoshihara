@@ -52,6 +52,16 @@ public:
 	// 保存するスイッチで移動する壁から削除
 	void DeleteMoveFloor(CSwitchMoveWall* wall);
 
+	// 保存するスイッチで移動する空中オブジェクトに追加
+	void AddMoveAirObj(CSwitchMoveAirObj* air);
+	// 保存するスイッチで移動する空中オブジェクトから削除
+	void DeleteMoveAirObj(CSwitchMoveAirObj* air);
+
+	// 保存するスイッチに追加
+	void AddMoveAirObj(CSwitch* switchObj);
+	// 保存するスイッチから削除
+	void DeleteSwitch(CSwitch* switchObj);
+
 	// 保存管理クラスの状態
 	enum class EState
 	{
@@ -77,9 +87,13 @@ private:
 	// 保存する重り
 	std::vector<CWeight*> mWeights;
 	// 保存する移動オブジェクト
-	std::vector<CMoveObj*> mMoveObj;
+	std::vector<CMoveObj*> mMoveObjs;
 	// 保存するスイッチで移動する床
-	std::vector<CSwitchMoveFloor*> mMoveFloor;
+	std::vector<CSwitchMoveFloor*> mMoveFloors;
 	// 保存するスイッチで移動する壁
-	std::vector<CSwitchMoveWall*> mMoveWall;
+	std::vector<CSwitchMoveWall*> mMoveWalls;
+	// 保存するスイッチで移動する空中オブジェクト
+	std::vector<CSwitchMoveAirObj*> mMoveAirObjs;
+	// 保存するスイッチ
+	std::vector<CSwitch*> mSwitchs;
 };

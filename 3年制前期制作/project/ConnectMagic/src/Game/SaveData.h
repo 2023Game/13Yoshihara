@@ -6,6 +6,8 @@ class CWeight;
 class CMoveObj;
 class CSwitchMoveFloor;
 class CSwitchMoveWall;
+class CSwitchMoveAirObj;
+class CSwitch;
 class CConnectTarget;
 
 // プレイヤーのデータ
@@ -22,12 +24,12 @@ struct PlayerData {
 };
 
 // 重りのデータ
-struct weightData {
+struct WeightData {
 	CVector pos;	// 座標
 	CWeight* weight;		// 重り
 
 	// コンストラクタ
-	weightData(const CVector& p, CWeight* b)
+	WeightData(const CVector& p, CWeight* b)
 		: pos(p), weight(b) {}
 };
 
@@ -72,11 +74,36 @@ struct MoveWallData {
 		: pos(p), state(s), elapsedTime(t), moveWall(o) {}
 };
 
+// スイッチで移動する空中オブジェクトのデータ
+struct MoveAirObjData {
+	CVector pos;		// 座標
+	EMoveState state;	// 状態
+	float elapsedTime;	// 移動時の経過時間
+	CSwitchMoveAirObj* moveAirObj;	// 空中オブジェクト
+
+	// コンストラクタ
+	MoveAirObjData(const CVector& p, EMoveState s, float t,
+		CSwitchMoveAirObj* o)
+		: pos(p), state(s), elapsedTime(t), moveAirObj(o) {}
+};
+
+// スイッチのデータ
+struct SwitchData {
+	bool isOn;	// スイッチが作動しているか
+	CSwitch* switchObj;
+
+	// コンストラクタ
+	SwitchData(bool enable, CSwitch* o)
+		: isOn(enable), switchObj(o) {}
+};
+
 // ゲーム全体のデータ
 struct GameData {
 	PlayerData player = PlayerData(CVector::zero, CVector::zero, nullptr, 0, 0.0f);
-	std::vector<weightData> weightes;
+	std::vector<WeightData> weightes;
 	std::vector<MoveObjData> moveObjs;
 	std::vector<MoveFloorData> moveFloor;
 	std::vector<MoveWallData> moveWall;
+	std::vector<MoveAirObjData> moveAirObj;
+	std::vector<SwitchData> switchData;
 };

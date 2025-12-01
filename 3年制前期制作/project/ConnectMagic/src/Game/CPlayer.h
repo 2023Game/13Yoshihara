@@ -33,6 +33,9 @@ public:
 		eTarzanStart,	// ターザン開始
 		eTarzan,		// ターザン中
 		eTarzanEnd,		// ターザン終了
+		eEdgeJumpStart,	// エッジジャンプの開始
+		eEdgeJump,		// エッジジャンプ中
+		eEdgeJumpEnd,	// エッジジャンプの終了
 		eReturn,		// 帰還
 		eDeath,			// 死亡
 	};
@@ -138,6 +141,12 @@ private:
 	void UpdateTarzan();
 	// ターザン終了
 	void UpdateTarzanEnd();
+	// エッジジャンプの開始
+	void UpdateEdgeJumpStart();
+	// エッジジャンプ中
+	void UpdateEdgeJump();
+	// エッジジャンプの終了
+	void UpdateEdgeJumpEnd();
 	// 場外から帰還する処理
 	void UpdateReturn();
 	// 死亡の更新処理
@@ -154,6 +163,8 @@ private:
 	std::string GetStateStr(EState state) const;
 #endif
 
+	// 1フレーム前の接地状態
+	bool mWasGrounded;
 	// ジャンプしているか
 	bool mIsJump;
 	// 杖を持っているか

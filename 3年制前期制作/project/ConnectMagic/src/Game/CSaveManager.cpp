@@ -4,6 +4,8 @@
 #include "CMoveObj.h"
 #include "CSwitchMoveFloor.h"
 #include "CSwitchMoveWall.h"
+#include "CSwitchMoveAirObj.h"
+#include "CSwitch.h"
 #include "CTaskManager.h"
 #include "CInput.h"
 #include "CConnectPointManager.h"
@@ -97,13 +99,15 @@ void CSaveManager::Save()
 	data.player.animationFrame = player->GetAnimationFrame();
 
 	// 重りを取得
-	for (CWeight* weight : mWeights) {
+	for (CWeight* weight : mWeights)
+	{
 		// リストに追加
 		data.weightes.emplace_back(weight->Position(), weight);
 	}
 
 	// 移動オブジェクトを取得
-	for (CMoveObj* obj : mMoveObj) {
+	for (CMoveObj* obj : mMoveObjs)
+	{
 		// リストに追加
 		data.moveObjs.emplace_back(obj->Position(),
 			obj->GetState(), obj->GetPreState(),
@@ -111,7 +115,8 @@ void CSaveManager::Save()
 	}
 
 	// 床を取得
-	for (CSwitchMoveFloor* floor : mMoveFloor) {
+	for (CSwitchMoveFloor* floor : mMoveFloors) 
+	{
 		// リストに追加
 		data.moveFloor.emplace_back(floor->Position(),
 			floor->GetState(), floor->GetPreState(),
@@ -119,11 +124,28 @@ void CSaveManager::Save()
 	}
 
 	// 壁を取得
-	for (CSwitchMoveWall* wall: mMoveWall) {
+	for (CSwitchMoveWall* wall: mMoveWalls) 
+	{
 		// リストに追加
 		data.moveWall.emplace_back(wall->Position(),
 			wall->GetState(),
 			wall->GetElapsedTime(), wall);
+	}
+
+	// 空中オブジェクトを取得
+	for (CSwitchMoveAirObj* airObj : mMoveAirObjs) 
+	{
+		// リストに追加
+		data.moveAirObj.emplace_back(airObj->Position(),
+			airObj->GetState(),
+			airObj->GetElapsedTime(), airObj);
+	}
+
+	// スイッチを取得
+	for (CSwitch* switchObj : mSwitchs)
+	{
+		// リストに追加
+		data.switchData.emplace_back(switchObj->GetOnOff(), switchObj);
 	}
 
 	// データのリストに追加
@@ -181,14 +203,14 @@ void CSaveManager::Load()
 	}
 
 	CWeight* weight = nullptr;
-	for (auto& weightData : data.weightes)
+	for (auto& WeightData : data.weightes)
 	{
 		// 重りを取得
-		weight = weightData.weight;
+		weight = WeightData.weight;
 		if (weight)
 		{
 			// 座標をロード
-			weight->Position(weightData.pos);
+			weight->Position(WeightData.pos);
 		}
 	}
 
@@ -244,6 +266,33 @@ void CSaveManager::Load()
 		}
 	}
 
+	CSwitchMoveAirObj* moveAirObj = nullptr;
+	for (auto& airData : data.moveAirObj)
+	{
+		// 空中オブジェクトを取得
+		moveAirObj = airData.moveAirObj;
+		if (moveAirObj)
+		{
+			// 座標をロード
+			moveAirObj->Position(airData.pos);
+			// 状態をロード
+			moveAirObj->SetState(airData.state);
+			// 経過時間をロード
+			moveAirObj->SetElapsedTime(airData.elapsedTime);
+		}
+	}
+
+	CSwitch* switchObj = nullptr;
+	for (auto& data : data.switchData)
+	{
+		// スイッチを取得
+		switchObj = data.switchObj;
+		if (switchObj)
+		{
+			// オンオフを設定
+			switchObj->SetOnOff(data.isOn);
+		}
+	}
 	// 一番新しい状態を削除
 	DeleteNew();
 }
@@ -266,45 +315,75 @@ void CSaveManager::DeleteWeight(CWeight* weight)
 // 保存する移動オブジェクトに追加
 void CSaveManager::AddMoveObj(CMoveObj* obj)
 {
-	mMoveObj.push_back(obj);
+	mMoveObjs.push_back(obj);
 }
 
 // 保存する移動オブジェクトから削除
 void CSaveManager::DeleteMoveObj(CMoveObj* obj)
 {
-	mMoveObj.erase(
-		std::remove(mMoveObj.begin(), mMoveObj.end(), obj),
-		mMoveObj.end()
+	mMoveObjs.erase(
+		std::remove(mMoveObjs.begin(), mMoveObjs.end(), obj),
+		mMoveObjs.end()
 	);
 }
 
 // 保存するスイッチで移動する床に追加
 void CSaveManager::AddMoveFloor(CSwitchMoveFloor* floor)
 {
-	mMoveFloor.push_back(floor);
+	mMoveFloors.push_back(floor);
 }
 
 // 保存するスイッチで移動する床から削除
 void CSaveManager::DeleteMoveFloor(CSwitchMoveFloor* floor)
 {
-	mMoveFloor.erase(
-		std::remove(mMoveFloor.begin(), mMoveFloor.end(), floor),
-		mMoveFloor.end()
+	mMoveFloors.erase(
+		std::remove(mMoveFloors.begin(), mMoveFloors.end(), floor),
+		mMoveFloors.end()
 	);
 }
 
 // 保存するスイッチで移動する壁に追加
 void CSaveManager::AddMoveWall(CSwitchMoveWall* wall)
 {
-	mMoveWall.push_back(wall);
+	mMoveWalls.push_back(wall);
 }
 
 // 保存するスイッチで移動する壁から削除
 void CSaveManager::DeleteMoveFloor(CSwitchMoveWall* wall)
 {
-	mMoveWall.erase(
-		std::remove(mMoveWall.begin(), mMoveWall.end(), wall),
-		mMoveWall.end()
+	mMoveWalls.erase(
+		std::remove(mMoveWalls.begin(), mMoveWalls.end(), wall),
+		mMoveWalls.end()
+	);
+}
+
+// 保存するスイッチで移動する空中オブジェクトに追加
+void CSaveManager::AddMoveAirObj(CSwitchMoveAirObj* air)
+{
+	mMoveAirObjs.push_back(air);
+}
+
+// 保存するスイッチで移動する空中オブジェクトから削除
+void CSaveManager::DeleteMoveAirObj(CSwitchMoveAirObj* air)
+{
+	mMoveAirObjs.erase(
+		std::remove(mMoveAirObjs.begin(), mMoveAirObjs.end(), air),
+		mMoveAirObjs.end()
+	);
+}
+
+// 保存するスイッチに追加
+void CSaveManager::AddMoveAirObj(CSwitch* switchObj)
+{
+	mSwitchs.push_back(switchObj);
+}
+
+// 保存するスイッチから削除
+void CSaveManager::DeleteSwitch(CSwitch* switchObj)
+{
+	mSwitchs.erase(
+		std::remove(mSwitchs.begin(), mSwitchs.end(), switchObj),
+		mSwitchs.end()
 	);
 }
 
