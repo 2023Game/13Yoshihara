@@ -24,7 +24,11 @@ public:
 	// デストラクタ
 	~CSwitchMoveAirObj();
 
+	// 空中オブジェクトを取得
 	CAirConnectObj* GetAirConnectObj();
+
+	// 有効無効の切り替え
+	void SetEnable(bool enable) override;
 
 private:
 	// 作用していないときの処理

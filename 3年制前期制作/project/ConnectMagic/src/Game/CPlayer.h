@@ -165,6 +165,8 @@ private:
 
 	// 1フレーム前の接地状態
 	bool mWasGrounded;
+	// 前方に地面があるか
+	bool mIsFront;
 	// ジャンプしているか
 	bool mIsJump;
 	// 杖を持っているか
@@ -179,6 +181,9 @@ private:
 	std::list<CConnectObject*> mConnectObjs;
 	// コネクトオブジェクトの探知用
 	CCollider* mpSearchConnectObjCol;
+	
+	// 前方に地面があるかの探知用コライダー
+	CCollider* mpSearchGroundCol;
 
 	// 視点の中心に一番近いターゲットを求める
 	void CenterTarget();

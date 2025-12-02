@@ -58,7 +58,7 @@ public:
 	void DeleteMoveAirObj(CSwitchMoveAirObj* air);
 
 	// 保存するスイッチに追加
-	void AddMoveAirObj(CSwitch* switchObj);
+	void AddSwitch(CSwitch* switchObj);
 	// 保存するスイッチから削除
 	void DeleteSwitch(CSwitch* switchObj);
 

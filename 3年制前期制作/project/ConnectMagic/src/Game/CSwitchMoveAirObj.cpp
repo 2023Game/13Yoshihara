@@ -53,9 +53,17 @@ CSwitchMoveAirObj::~CSwitchMoveAirObj()
 {
 }
 
+// 空中オブジェクトを取得
 CAirConnectObj* CSwitchMoveAirObj::GetAirConnectObj()
 {
 	return mpConnectObj;
+}
+
+// 有効無効の切り替え
+void CSwitchMoveAirObj::SetEnable(bool enable)
+{
+	CTask::SetEnable(enable);
+	mpConnectObj->SetEnable(enable);
 }
 
 // 作用していないときの処理

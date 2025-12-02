@@ -34,7 +34,7 @@ CPlayerBase::CPlayerBase()
 	, mMotionBlurRemainTime(0.0f)
 	, mpBodyCol(nullptr)
 	, mpAttackCol(nullptr)
-	, mpSearchCol(nullptr)
+	, mpSearchInteractCol(nullptr)
 	, mpHpGauge(nullptr)
 	, mIsGameEnd(false)
 {
@@ -51,7 +51,7 @@ CPlayerBase::~CPlayerBase()
 	// コライダ―を削除
 	SAFE_DELETE(mpBodyCol);
 	SAFE_DELETE(mpAttackCol);
-	SAFE_DELETE(mpSearchCol);
+	SAFE_DELETE(mpSearchInteractCol);
 
 	// 経路探索用のノードを削除
 	CNavManager* navMgr = CNavManager::Instance();
@@ -378,7 +378,7 @@ void CPlayerBase::Collision(CCollider* self, CCollider* other, const CHitInfo& h
 		}
 	}
 	// 調べるオブジェクトの探知コライダーの衝突判定
-	else if (self == mpSearchCol)
+	else if (self == mpSearchInteractCol)
 	{
 		CInteractObject* obj = dynamic_cast<CInteractObject*>(other->Owner());
 		if (obj != nullptr)

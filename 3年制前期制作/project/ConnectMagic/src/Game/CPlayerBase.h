@@ -83,7 +83,7 @@ protected:
 	// 近くにある調べるオブジェクトのリスト
 	std::list<CInteractObject*> mNearInteractObjs;
 	// 調べるオブジェクト探知用のコライダ―
-	CCollider* mpSearchCol;
+	CCollider* mpSearchInteractCol;
 
 	// Hpゲージ
 	CGaugeUI2D* mpHpGauge;

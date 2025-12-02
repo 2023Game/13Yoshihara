@@ -3,6 +3,7 @@
 
 class CSwitch;
 class CSwitchMoveAirObj;
+class CSwitchShield;
 class CWater;
 class CRespawnArea;
 
@@ -20,7 +21,8 @@ private:
 	// オブジェクト
 	// TODO：重り生成器
 	// TODO：バッテリー
-	// TODO：シールド
+	CSwitchShield* mpShield1;
+	CSwitchShield* mpShield2;
 	// TODO：押し出す壁
 	CSwitch* mpSwitch1;
 	CSwitch* mpSwitch2;
@@ -28,6 +30,9 @@ private:
 	CSwitch* mpCrystal2;
 	CSwitch* mpCrystal3;
 	CSwitch* mpCrystal4;
+	CSwitch* mpCrystal5;
+	CSwitch* mpCrystal6;
+	CSwitch* mpCrystal7;
 	CSwitchMoveAirObj* mpSwitchMoveAirObj1;
 	CSwitchMoveAirObj* mpSwitchMoveAirObj2;
 	CWater* mpWater;

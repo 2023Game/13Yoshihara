@@ -1,6 +1,7 @@
 #include "CPlayer.h"
 #include "CColliderCapsule.h"
 #include "CColliderSphere.h"
+#include "CColliderLine.h"
 #include "CInput.h"
 #include "CWand.h"
 #include "CConnectPoint.h"
@@ -74,6 +75,7 @@ CPlayer::CPlayer()
 	, mRespawnPos(CVector::zero)
 	, mWasGrounded(false)
 	, mIsJump(false)
+	, mIsFront(false)
 {
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
@@ -122,6 +124,7 @@ CPlayer::~CPlayer()
 	}
 
 	SAFE_DELETE(mpSearchConnectObjCol);
+	SAFE_DELETE(mpSearchGroundCol);
 }
 
 // 攻撃中か
@@ -186,10 +189,12 @@ void CPlayer::Update()
 	}
 
 	// 正面から落ちるときならジャンプする
-	if (mWasGrounded && !mIsGrounded) {
+	if (mWasGrounded && !mIsGrounded && !mIsFront) {
 		ChangeState(EState::eEdgeJumpStart);
 	}
 	mWasGrounded = mIsGrounded;
+	mIsFront = false;
+
 
 	switch (mState)
 	{
@@ -264,6 +269,16 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			mConnectObjs.push_back(obj);
 		}
 	}
+	// 前方地面探知用コライダーなら
+	else if (self == mpSearchGroundCol)
+	{
+		// 地面の場合
+		if (other->Layer() == ELayer::eGround)
+		{
+			// 前方に地面がある
+			mIsFront = true;
+		}
+	}
 }
 
 // 杖のポインタを取得
@@ -303,6 +318,17 @@ void CPlayer::CreateCol()
 	);
 	// コネクトオブジェクトだけ衝突
 	mpSearchConnectObjCol->SetCollisionLayers({ ELayer::eObject });
+
+	// 前方に地面があるかの探知用コライダ
+	mpSearchGroundCol = new CColliderLine
+	(
+		this, ELayer::eSearch,
+		CVector::zero, CVector(0.0f, BODY_HEIGHT, 0.0f)
+	);
+	// 地面とだけ衝突
+	mpSearchGroundCol->SetCollisionLayers({ ELayer::eGround });
+	// 位置調整
+	mpSearchGroundCol->Position(VectorZ() * (BODY_RADIUS * 2) - VectorY() * (BODY_HEIGHT / 2));
 }
 
 // アクションのキー入力

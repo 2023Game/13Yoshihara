@@ -373,7 +373,7 @@ void CSaveManager::DeleteMoveAirObj(CSwitchMoveAirObj* air)
 }
 
 // 保存するスイッチに追加
-void CSaveManager::AddMoveAirObj(CSwitch* switchObj)
+void CSaveManager::AddSwitch(CSwitch* switchObj)
 {
 	mSwitchs.push_back(switchObj);
 }

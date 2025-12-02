@@ -55,7 +55,7 @@ public:
 
 	//有効フラグを設定
 	//（オフにすると、更新、描画、衝突判定を停止）
-	void SetEnable(bool enable);
+	virtual void SetEnable(bool enable);
 	//有効フラグ取得
 	bool IsEnable() const;
 
