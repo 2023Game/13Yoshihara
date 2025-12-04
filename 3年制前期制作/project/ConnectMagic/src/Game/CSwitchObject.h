@@ -43,7 +43,7 @@ protected:
 	};
 	EState mState;
 	// ó‘Ô‚Ì•ÏX
-	void ChangeState(EState state);	
+	virtual void ChangeState(EState state);	
 	
 	// ì—p‚µ‚Ä‚¢‚È‚¢‚Ìˆ—
 	virtual void UpdateOff();

@@ -1,6 +1,10 @@
 #include "CSwitchPushWall.h"
 #include "CColliderMesh.h"
 #include "CConnectPointManager.h"
+#include "Maths.h"
+
+// 一時停止の時間
+#define STOP_TIME 0.5f
 
 void CSwitchPushWall::SetState(EMoveState state)
 {
@@ -30,7 +34,8 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 	, mMoveTime(moveTime)
 	, mElapsedTime(0.0f)
 	, mpCrushedCol(nullptr)
-	, mMoveState(EMoveState::eGo)
+	, mMoveState(EMoveState::eStop)
+	, mPreMoveState(EMoveState::eBack)
 {
 	mpModel = model;
 
@@ -69,27 +74,20 @@ void CSwitchPushWall::CreateCol()
 
 void CSwitchPushWall::UpdateOff()
 {
+	mElapsedTime += Times::DeltaTime();
+
 	switch (mMoveState)
 	{
+	case EMoveState::eStop:
+		UpdateStop();
+		break;
 	case EMoveState::eGo:
-		mElapsedTime += Times::DeltaTime();
+		UpdateGo();
 		break;
 	case EMoveState::eBack:
-		mElapsedTime -= Times::DeltaTime();
+		UpdateBack();
 		break;
 	}
-	if (mElapsedTime <= 0.0f)
-	{
-		SetState(EMoveState::eGo);
-		SetElapsedTime(0.0f);
-	}
-	else if (mElapsedTime >= mMoveTime)
-	{
-		SetState(EMoveState::eBack);
-		SetElapsedTime(mMoveTime);
-	}
-
-	Move();
 }
 
 // スイッチがオンになったら動かない
@@ -97,18 +95,59 @@ void CSwitchPushWall::UpdateOn()
 {
 }
 
-void CSwitchPushWall::Move()
+// 止まっているときの更新
+void CSwitchPushWall::UpdateStop()
 {
-	// 時間が進んだ割合
+	// 一時停止の時間が経過したら
+	if (mElapsedTime >= STOP_TIME)
+	{
+		// 一つ前が進む状態だったら
+		if (mPreMoveState == EMoveState::eGo)
+		{
+			// 戻る状態に変更
+			ChangeMoveState(EMoveState::eBack);
+		}
+		// 戻る状態なら
+		else if (mPreMoveState == EMoveState::eBack)
+		{
+			// 進む状態へ
+			ChangeMoveState(EMoveState::eGo);
+		}
+	}
+}
+
+// 進んでいるときの更新
+void CSwitchPushWall::UpdateGo()
+{
 	float per = mElapsedTime / mMoveTime;
-	// 座標を求める
 	Position(mDefaultPos + mMoveVec * per);
+
+	// 時間が経過したら一時停止状態へ
+	if (mElapsedTime >= mMoveTime)
+	{
+		ChangeMoveState(EMoveState::eStop);
+	}
+}
+
+// 戻っているときの更新
+void CSwitchPushWall::UpdateBack()
+{
+	float per = (mMoveTime - mElapsedTime) / mMoveTime;
+	Position(mDefaultPos + mMoveVec * per);
+
+	// 時間が経過したら一時停止状態へ
+	if (mElapsedTime >= mMoveTime)
+	{
+		ChangeMoveState(EMoveState::eStop);
+	}
 }
 
 void CSwitchPushWall::ChangeMoveState(EMoveState state)
 {
 	if (mMoveState == state) return;
 
+	// ひとつ前の状態を更新
+	mPreMoveState = mMoveState;
 	// 状態を変更
 	mMoveState = state;
 	mElapsedTime = 0.0f;

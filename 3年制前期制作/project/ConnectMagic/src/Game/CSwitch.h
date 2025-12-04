@@ -45,8 +45,7 @@ private:
 	CSwitchButton* mpButton;// ボタン
 	CCrystal* mpCrystal;	// クリスタル
 
-
-	CSwitchObject* mpActionObject;	// 作用するオブジェクト
+	std::vector<CSwitchObject*> mActionObjs;
 
 	ESwitchType mSwitchType;	// スイッチの種類
 

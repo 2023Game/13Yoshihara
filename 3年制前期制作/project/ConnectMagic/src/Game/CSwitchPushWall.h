@@ -15,7 +15,16 @@ public:
 	// 経過時間を取得
 	float GetElapsedTime() const;
 
-	// コンストラクタ
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="model">モデル</param>
+	/// <param name="col">コライダーモデル</param>
+	/// <param name="pos">初期座標</param>
+	/// <param name="scale">スケール</param>
+	/// <param name="move">移動ベクトル</param>
+	/// <param name="moveTime">移動時間</param>
+	/// <param name="isCrushed">プレイヤーが挟まれたときに死ぬか</param>
 	CSwitchPushWall(CModel* model, CModel* col,
 		const CVector& pos,
 		const CVector& scale,
@@ -35,8 +44,12 @@ private:
 	// 作用している時の処理
 	void UpdateOn() override;
 
-	// 移動の処理
-	void Move();
+	// 止まっているときの更新
+	void UpdateStop();
+	// 進んでいるときの更新
+	void UpdateGo();
+	// 戻っているときの更新
+	void UpdateBack();
 
 	CVector mDefaultPos;	// 初期座標
 	CVector mMoveVec;		// 移動ベクトル
@@ -45,5 +58,6 @@ private:
 	// 状態を変更
 	void ChangeMoveState(EMoveState state);
 	EMoveState mMoveState;		// 移動状態
+	EMoveState mPreMoveState;	// 前回の移動状態
 	float mElapsedTime;			// 経過時間
 };

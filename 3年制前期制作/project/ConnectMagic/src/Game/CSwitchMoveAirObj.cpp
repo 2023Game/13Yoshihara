@@ -5,7 +5,9 @@
 // 移動速度
 #define MOVE_SPEED 20.0f
 // 近い距離
-#define NEAR_DIST 0.1f
+#define NEAR_DIST 1.0f
+// 一時停止の時間
+#define STOP_TIME 0.5f
 
 // 状態を設定
 void CSwitchMoveAirObj::SetState(EMoveState state)
@@ -35,7 +37,8 @@ float CSwitchMoveAirObj::GetElapsedTime() const
 CSwitchMoveAirObj::CSwitchMoveAirObj(
 	const CVector& pos,
 	std::vector<CVector> targets)
-	: mMoveState(EMoveState::eStop)
+	: CSwitchObject()
+	, mMoveState(EMoveState::eStop)
 	, mElapsedTime(0.0f)
 	, mpConnectObj(nullptr)
 	, mTargetPos(targets)
@@ -93,14 +96,20 @@ void CSwitchMoveAirObj::Move()
 	// 到達した
 	if (dist < NEAR_DIST)
 	{
-		// 座標を目標座標に設定
-		Position(targetPos);
-		// 要素番号を次へ
-		mTargetPosNum++;
-		// 要素数以上なら最初へ
-		if (mTargetPosNum >= mTargetPos.size())
+		mElapsedTime += Times::DeltaTime();
+		// 一時停止の時間が経過したら
+		if (mElapsedTime >= STOP_TIME)
 		{
-			mTargetPosNum = 0;
+			mElapsedTime = 0.0f;
+			// 座標を目標座標に設定
+			Position(targetPos);
+			// 要素番号を次へ
+			mTargetPosNum++;
+			// 要素数以上なら最初へ
+			if (mTargetPosNum >= mTargetPos.size())
+			{
+				mTargetPosNum = 0;
+			}
 		}
 	}
 	// 到達していない

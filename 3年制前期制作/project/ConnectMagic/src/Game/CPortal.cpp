@@ -51,14 +51,11 @@ void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			// 現在のシーン
 			EScene CurrentScene = SceneMgr->GetCurrentScene();
 			// 次のシーン
-			EScene NextScene = EScene::eMap1;
+			EScene NextScene = EScene::eClear;
 			// 現在のシーンから次のシーンを決定
 			switch (CurrentScene)
 			{
 			case EScene::eGame:		NextScene = EScene::eClear;	break;
-			case EScene::eMap1:		NextScene = EScene::eMap2;  break;
-			case EScene::eMap2:		NextScene = EScene::eMap3;	break;
-			case EScene::eMap3:		NextScene = EScene::eMap1;	break;
 			case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
 			}
 			// 衝突判定を行うコライダーをリセット

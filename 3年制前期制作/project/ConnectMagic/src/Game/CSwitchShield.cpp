@@ -37,6 +37,8 @@ void CSwitchShield::Render()
 
 	// アルファブレンドを有効にする
 	glEnable(GL_BLEND);
+	// Zバッファへの書き込みを無効
+	glDepthMask(GL_FALSE);
 	// ブレンド方法を指定
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -64,6 +66,8 @@ void CSwitchShield::Render()
 	glEnable(GL_LIGHTING);
 	// 裏面描画
 	glEnable(GL_CULL_FACE);
+	// Zバッファへの書き込みを元に戻す
+	glDepthMask(GL_TRUE);
 	// アルファブレンド無効
 	glDisable(GL_ALPHA);
 
@@ -73,8 +77,6 @@ void CSwitchShield::Render()
 
 void CSwitchShield::UpdateOff()
 {
-	SetShow(true);
-	SetEnableCol(true);
 }
 
 void CSwitchShield::UpdateOn()

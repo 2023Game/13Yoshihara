@@ -8,7 +8,7 @@
 #include "Maths.h"
 
 // レイを伸ばせる距離の最大
-#define RAY_MAX_DISTANCE 100.0f
+#define RAY_MAX_DISTANCE 75.0f
 
 // ターザンの最短距離
 #define TARZAN_MIN_DISTANCE 30.0f

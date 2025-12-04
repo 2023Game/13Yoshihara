@@ -55,6 +55,7 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("MoveObject",	"Field\\MoveObject\\MoveObject.obj");
 	CResourceManager::Load<CModel>("CrystalOn",		"Field\\Crystal\\CrystalOn.obj");
 	CResourceManager::Load<CModel>("CrystalOff",	"Field\\Crystal\\CrystalOff.obj");
+	CResourceManager::Load<CModel>("Generator",		"Field\\Generator\\Generator.obj");
 	// 当たり判定用のコリジョンモデル
 	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
 	CResourceManager::Load<CModel>("ConnectRoom_Wall_Col",		"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Wall_Col.obj");

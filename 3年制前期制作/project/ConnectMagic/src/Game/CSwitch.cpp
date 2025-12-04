@@ -6,8 +6,7 @@
 
 // コンストラクタ
 CSwitch::CSwitch(CVector pos, bool isAttach, ESwitchType type)
-	: mpActionObject(nullptr)
-	, mIsOn(false)
+	: mIsOn(false)
 	, mpFrame(nullptr)
 	, mpButton(nullptr)
 	, mpCrystal(nullptr)
@@ -33,7 +32,7 @@ CSwitch::~CSwitch()
 // 作用するオブジェクトを設定する
 void CSwitch::SetActionObj(CSwitchObject* obj)
 {
-	mpActionObject = obj;
+	mActionObjs.push_back(obj);
 }
 
 // 作用するオブジェクトにオンオフを知らせる
@@ -43,9 +42,11 @@ void CSwitch::SetOnOff(bool isOnOff)
 	if (mIsOn == isOnOff) return;
 	mIsOn = isOnOff;
 
-	if (mpActionObject == nullptr) return;
-	// オンオフを切り替える
-	mpActionObject->SetOnOff(isOnOff);
+	for (int i = 0; i < mActionObjs.size(); i++)
+	{
+		// オンオフを切り替える
+		mActionObjs[i]->SetOnOff(isOnOff);
+	}
 }
 
 // スイッチが作動中かを取得

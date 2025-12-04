@@ -22,7 +22,7 @@
 const float RAY_FRONT_DIST = 5.0f;
 
 // 探知コライダの半径
-#define SEARCH_RADIUS 50.0f
+#define SEARCH_RADIUS 75.0f
 
 // 杖のオフセット座標と回転とスケール
 #define WAND_OFFSET_POS CVector(-90.0f,8.0f,4.0f)
@@ -56,8 +56,6 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 	{ANIM_PATH"Swing_End_End.x",		false,	69.0f,	2.0f},	// スイング終了の終了
 };
 
-// ターザン時の線の長さ
-#define TARZAN_DISTANCE 40.0f
 // 減速する速度
 #define DECREASE_SPEED 0.1f
 // 加速する速度
@@ -930,6 +928,9 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eTarzanStart:	return "ターザン開始";	break;
 	case EState::eTarzan:		return "ターザン中";	break;
 	case EState::eTarzanEnd:	return "ターザン終了";	break;
+	case EState::eEdgeJumpStart:return "ジャンプ開始";	break;
+	case EState::eEdgeJump:		return "ジャンプ中";	break;
+	case EState::eEdgeJumpEnd:	return "ジャンプ終了";	break;
 	case EState::eReturn:		return "場外から帰還中";break;
 	case EState::eDeath:		return "死亡";			break;
 	}

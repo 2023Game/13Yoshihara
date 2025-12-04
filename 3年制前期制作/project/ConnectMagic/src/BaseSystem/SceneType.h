@@ -7,9 +7,6 @@ enum class EScene
 
 	eTitle,			// タイトルシーン
 	eGame,			// ゲームシーン
-	eMap1,			// マップ1シーン
-	eMap2,			// マップ2シーン
-	eMap3,			// マップ3シーン
 	eClear,			// クリアシーン
 
 	eBootMenu,	// 起動時メニュー

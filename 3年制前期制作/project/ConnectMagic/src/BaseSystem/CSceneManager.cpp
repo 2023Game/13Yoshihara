@@ -2,9 +2,6 @@
 #include "CFade.h"
 #include "CTitleScene.h"
 #include "CGameScene.h"
-#include "CMap1Scene.h"
-#include "CMap2Scene.h"
-#include "CMap3Scene.h"
 #include "CGameClearScene.h"
 #include "CTaskManager.h"
 
@@ -114,12 +111,6 @@ void CSceneManager::ChangeNextScene()
 		case EScene::eTitle:		mpScene = new CTitleScene();			break;
 		// ゲームシーン
 		case EScene::eGame:			mpScene = new CGameScene();				break;
-		// マップ1シーン
-		case EScene::eMap1:			mpScene = new CMap1Scene();				break;
-		// マップ2シーン
-		case EScene::eMap2:			mpScene = new CMap2Scene();				break;
-		// マップ3シーン
-		case EScene::eMap3:			mpScene = new CMap3Scene();				break;
 		// クリアシーン
 		case EScene::eClear:		mpScene = new CGameClearScene();		break;
 		//起動時メニュー

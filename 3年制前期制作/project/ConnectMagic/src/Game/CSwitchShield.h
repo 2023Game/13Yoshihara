@@ -2,7 +2,9 @@
 #pragma once
 #include "CSwitchObject.h"
 
-// 何も通さないスイッチでオンオフできるシールド
+// 何も通さない
+// スイッチでオフにできるシールド
+// 一度オフにするとオンにならない
 class CSwitchShield : public CSwitchObject
 {
 public:
