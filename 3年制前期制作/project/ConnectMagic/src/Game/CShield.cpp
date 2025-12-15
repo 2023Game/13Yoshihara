@@ -4,10 +4,10 @@
 #include "CConnectPointManager.h"
 
 // 頂点
-#define VERT_POS_1 -10.0f,	40.0f,	0.0f
-#define VERT_POS_2 -10.0f,	0.0f,	0.0f
-#define VERT_POS_3  10.0f,	0.0f,	0.0f
-#define VERT_POS_4  10.0f,	40.0f,	0.0f
+const CVector VERT_POS_1 = CVector(-10.0f, 40.0f, 0.0f);
+const CVector VERT_POS_2 = CVector(-10.0f, 0.0f,  0.0f);
+const CVector VERT_POS_3 = CVector( 10.0f, 0.0f,  0.0f);
+const CVector VERT_POS_4 = CVector( 10.0f, 40.0f, 0.0f);
 
 // コンストラクタ
 CShield::CShield()
@@ -52,10 +52,10 @@ void CShield::Render()
 
 	// 四角形を描画
 	glBegin(GL_QUADS);
-	glVertex3f(VERT_POS_1);
-	glVertex3f(VERT_POS_2);
-	glVertex3f(VERT_POS_3);
-	glVertex3f(VERT_POS_4);
+	glVertex3f(VERT_POS_1.X(), VERT_POS_1.Y(), VERT_POS_1.Z());
+	glVertex3f(VERT_POS_2.X(), VERT_POS_2.Y(), VERT_POS_2.Z());
+	glVertex3f(VERT_POS_3.X(), VERT_POS_3.Y(), VERT_POS_3.Z());
+	glVertex3f(VERT_POS_4.X(), VERT_POS_4.Y(), VERT_POS_4.Z());
 	glEnd();
 
 	// ライトオン

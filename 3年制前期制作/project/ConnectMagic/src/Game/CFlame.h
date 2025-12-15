@@ -3,9 +3,9 @@
 #include "CColliderSphere.h"
 
 // 炎のスケール値の最大値
-#define FLAME_SCALE 10.0f
+constexpr float FLAME_SCALE =			10.0f;
 // 炎のスケール値が最大値になるまでの時間
-#define FLAME_SCALE_ANIM_TIME 3.0f
+constexpr float FLAME_SCALE_ANIM_TIME = 3.0f;
 
 // 炎のエフェクト
 class CFlame : public CBillBoardImage

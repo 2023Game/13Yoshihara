@@ -3,6 +3,7 @@
 
 class CGameMenu;
 class CRoomManager;
+class CPhysicsManager;
 
 // ゲームシーン
 class CGameScene : public CSceneBase
@@ -22,4 +23,6 @@ private:
 	CGameMenu* mpGameMenu;
 	// 部屋の管理クラス
 	CRoomManager* mpRoomMgr;
+	// 物理管理クラス
+	CPhysicsManager* mpPhysicsMgr;
 };

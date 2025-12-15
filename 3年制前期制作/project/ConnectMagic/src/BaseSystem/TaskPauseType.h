@@ -5,9 +5,9 @@
 //------------------------------
 
 //ゲームポーズ時
-#define PAUSE_GAME (1 << 0)
+constexpr int PAUSE_GAME =		(1 << 0);
 //メニューを開いた時
-#define PAUSE_MENU_OPEN (1 << 1)
+constexpr int PAUSE_MENU_OPEN = (1 << 1);
 
 //------------------------------
 

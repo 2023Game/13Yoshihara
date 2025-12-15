@@ -1,11 +1,11 @@
 #include "CGameMenu.h"
 #include "CSceneManager.h"
 
-#define MENU_ITEM1 "UI/menu_title.png"
-#define MENU_CLOSE "UI/menu_close.png"
+const char* const MENU_ITEM1 = "UI/menu_title.png";
+const char* const MENU_CLOSE = "UI/menu_close.png";
 
 // 効果音の音量
-#define SE_VOLUME 0.5f
+constexpr float SE_VOLUME = 0.5f;
 
 // コンストラクタ
 CGameMenu::CGameMenu()

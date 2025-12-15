@@ -2,6 +2,55 @@
 #include "CColliderMesh.h"
 #include "Maths.h"
 #include "CConnectPointManager.h"
+#include <typeinfo>
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchMoveWallSaveData {
+	CVector pos;		// 現在座標
+	float elapsedTime;	// 経過時間
+	CSwitchObject::EState state;	// 状態
+	EMoveState moveState;			// 移動状態
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CSwitchMoveWall::SaveState() const
+{
+	SwitchMoveWallSaveData data;
+	data.pos = Position();
+	data.elapsedTime = GetElapsedTime();
+	data.state = GetState();
+	data.moveState = GetMoveState();
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CSwitchMoveWall::LoadState(const std::vector<char>& data)
+{
+	if (data.size() != sizeof(SwitchMoveWallSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchMoveWallSaveData* saveData = reinterpret_cast<const SwitchMoveWallSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetState(saveData->state);
+	SetMoveState(saveData->moveState);
+}
+
+size_t CSwitchMoveWall::GetTypeID() const
+{
+	return typeid(CSwitchMoveWall).hash_code();
+}
+
+unsigned int CSwitchMoveWall::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 // コンストラクタ
 CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
@@ -12,6 +61,7 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 	, mElapsedTime(0.0f)
 	, mpCrushedCol(nullptr)
 	, mIsOpen(false)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = model;
 
@@ -132,14 +182,14 @@ void CSwitchMoveWall::ChangeMoveState(EMoveState state)
 	mElapsedTime = 0.0f;
 }
 
-// 状態を設定
-void CSwitchMoveWall::SetState(EMoveState state)
+// 移動状態を設定
+void CSwitchMoveWall::SetMoveState(EMoveState state)
 {
 	mMoveState = state;
 }
 
-// 状態を取得
-EMoveState CSwitchMoveWall::GetState() const
+// 移動状態を取得
+EMoveState CSwitchMoveWall::GetMoveState() const
 {
 	return mMoveState;
 }

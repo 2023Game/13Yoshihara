@@ -5,9 +5,10 @@ class CSwitch;
 class CSwitchMoveAirObj;
 class CSwitchShield;
 class CSwitchPushWall;
-class CWater;
+class CSwitchWater;
 class CRespawnArea;
 class CWeightGenerator;
+class CWeight;
 
 // 繋げる要素のチュートリアル的部屋
 class CRoom6 : public CRoomBase
@@ -22,6 +23,7 @@ private:
 	void CreateFieldObjects() override;
 
 	// オブジェクト
+	CWeight* mpWeight;
 	CWeightGenerator* mpGenerator1;
 	CWeightGenerator* mpGenerator2;
 	CSwitchShield* mpShield1;
@@ -46,6 +48,6 @@ private:
 	CSwitch* mpCrystal10;
 	CSwitchMoveAirObj* mpSwitchMoveAirObj1;
 	CSwitchMoveAirObj* mpSwitchMoveAirObj2;
-	CWater* mpWater;
+	CSwitchWater* mpWater;
 	CRespawnArea* mpRespawnArea;
 };

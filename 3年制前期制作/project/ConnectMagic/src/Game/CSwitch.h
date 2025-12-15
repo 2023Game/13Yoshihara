@@ -1,4 +1,5 @@
 #pragma once
+#include "CSavable.h"
 
 class CSwitchFrame;
 class CSwitchButton;
@@ -13,9 +14,14 @@ enum class ESwitchType
 };
 
 // スイッチのクラス
-class CSwitch
+class CSwitch : public CSavable
 {
 public:
+	// CSavableの純粋仮想関数のオーバーライド
+	std::vector<char> SaveState() const override;
+	void LoadState(const std::vector<char>& data) override;
+	size_t GetTypeID() const override;
+	unsigned int GetUniqueInstanceID() const override;
 
 	// コンストラクタ
 	CSwitch(CVector pos, bool isAttach = false, ESwitchType type = ESwitchType::eButton);
@@ -41,6 +47,9 @@ public:
 	void SetEnableSwitch(bool enable);
 
 private:
+	// データ保存に使用
+	unsigned int mUniqueID;
+
 	CSwitchFrame* mpFrame;	// フレーム
 	CSwitchButton* mpButton;// ボタン
 	CCrystal* mpCrystal;	// クリスタル

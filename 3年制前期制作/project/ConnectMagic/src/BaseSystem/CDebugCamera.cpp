@@ -5,21 +5,21 @@
 #include "Maths.h"
 
 // 加速度
-#define MOVE_ADD_SPEED 0.0625f
+constexpr float MOVE_ADD_SPEED =			0.0625f;
 // 最大速度
-#define MOVE_MAX_SPEED 10.0f
+constexpr float MOVE_MAX_SPEED =			10.0f;
 // 移動速度の減衰率
-#define MOVE_ATTEN_RATIO 0.95f
+constexpr float MOVE_ATTEN_RATIO =			0.95f;
 // 移動速度の倍率の最小値
-#define MOVE_SPEED_RATIO_MIN 0.1f
+constexpr float MOVE_SPEED_RATIO_MIN =		0.1f;
 // 移動速度の倍率の最大値
-#define MOVE_SPEED_RATIO_MAX 3.0f
+constexpr float MOVE_SPEED_RATIO_MAX =		3.0f;
 // 移動速度の倍率の変換量
-#define MOVE_SPEED_RATIO_VALUE 0.05f
+constexpr float MOVE_SPEED_RATIO_VALUE =	0.05f;
 // 回転速度
-#define ROTATE_SPEED 0.125f
+constexpr float ROTATE_SPEED =				0.125f;
 // 平行移動速度
-#define TRANSLATE_SPEED 0.125f
+constexpr float TRANSLATE_SPEED =			0.125f;
 
 // デバッグカメラのインスタンス
 CDebugCamera* CDebugCamera::spDebugCamera = nullptr;

@@ -4,10 +4,10 @@
 #include "CPortalFragment.h"
 
 // 半径
-#define RADIUS 10.0f
+constexpr float RADIUS =			10.0f;
 
 // ポータルのオフセット座標
-#define PORTAL_OFFSET_POS CVector(0.0f,10.0f,0.0f)
+const CVector PORTAL_OFFSET_POS =	CVector(0.0f, 10.0f, 0.0f);
 
 // コンストラクタ
 CFragmentMergeArea::CFragmentMergeArea(int num)

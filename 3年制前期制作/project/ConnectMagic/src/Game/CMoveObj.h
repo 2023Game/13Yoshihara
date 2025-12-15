@@ -3,18 +3,25 @@
 #include "CModel.h"
 #include "CColliderMesh.h"
 #include "MoveState.h"
+#include "CSavable.h"
 
-class CMoveObj : public CRideableObject
+class CMoveObj : public CRideableObject, public CSavable
 {
 public:
+	// CSavableの純粋仮想関数のオーバーライド
+	std::vector<char> SaveState() const override;
+	void LoadState(const std::vector<char>& data) override;
+	size_t GetTypeID() const override;
+	unsigned int GetUniqueInstanceID() const override;
+
 	// 状態を設定
-	void SetState(EMoveState state);
+	void SetMoveState(EMoveState state);
 	// 状態を取得
-	EMoveState GetState() const;
+	EMoveState GetMoveState() const;
 	// 前回の状態を設定
-	void SetPreState(EMoveState state);
+	void SetPreMoveState(EMoveState state);
 	// 前回の状態を取得
-	EMoveState GetPreState() const;
+	EMoveState GetPreMoveState() const;
 	// 経過時間を設定
 	void SetElapsedTime(float time);
 	// 経過時間を取得
@@ -32,6 +39,9 @@ public:
 	void Render();
 
 private:
+	// データ保存に使用
+	unsigned int mUniqueID;
+
 	CModel* mpModel;
 	// 本体コライダ―
 	CColliderMesh* mpColliderMesh;
@@ -43,9 +53,9 @@ private:
 	float mMoveTime;
 
 	// 状態を変更
-	void ChangeState(EMoveState state);
-	EMoveState mState;		// 状態
-	EMoveState mPreState;	// 一つ前の状態
+	void ChangeMoveState(EMoveState state);
+	EMoveState mMoveState;		// 状態
+	EMoveState mPreMoveState;	// 一つ前の状態
 	float mElapsedTime;
 
 	// 止まっているときの更新

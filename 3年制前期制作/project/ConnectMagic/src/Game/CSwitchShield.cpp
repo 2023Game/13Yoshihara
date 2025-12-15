@@ -2,16 +2,63 @@
 #include "CColliderRectangle.h"
 #include "CMaterial.h"
 #include "CConnectPointManager.h"
+#include <typeinfo>
 
 // 頂点
-#define VERT_POS_1 -10.0f,	40.0f,	0.0f
-#define VERT_POS_2 -10.0f,	0.0f,	0.0f
-#define VERT_POS_3  10.0f,	0.0f,	0.0f
-#define VERT_POS_4  10.0f,	40.0f,	0.0f
+const CVector VERT_POS_1 = CVector(-10.0f,  40.0f,  0.0f);
+const CVector VERT_POS_2 = CVector(-10.0f,	0.0f,	0.0f);
+const CVector VERT_POS_3 = CVector( 10.0f,	0.0f,	0.0f);
+const CVector VERT_POS_4 = CVector( 10.0f,	40.0f,	0.0f);
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchShieldSaveData {
+	bool isShow;		// 描画が有効か
+	bool isEnableCol;	// 衝突判定が有効か
+	CSwitchObject::EState state;	// 状態
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CSwitchShield::SaveState() const
+{
+	SwitchShieldSaveData data;
+	data.isShow = IsShow();
+	data.isEnableCol = IsEnableCol();
+	data.state = GetState();
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CSwitchShield::LoadState(const std::vector<char>& data)
+{
+	if (data.size() != sizeof(SwitchShieldSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchShieldSaveData* saveData = reinterpret_cast<const SwitchShieldSaveData*>(data.data());
+	SetShow(saveData->isShow);
+	SetEnableCol(saveData->isEnableCol);
+	SetState(saveData->state);
+}
+
+size_t CSwitchShield::GetTypeID() const
+{
+	return typeid(CSwitchShield).hash_code();
+}
+
+unsigned int CSwitchShield::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 // コンストラクタ
 CSwitchShield::CSwitchShield(CVector scale)
 	: CSwitchObject(ETaskPriority::eShield)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	// コライダーを生成
 	CreateCol();
@@ -56,10 +103,10 @@ void CSwitchShield::Render()
 
 	// 四角形を描画
 	glBegin(GL_QUADS);
-	glVertex3f(VERT_POS_1);
-	glVertex3f(VERT_POS_2);
-	glVertex3f(VERT_POS_3);
-	glVertex3f(VERT_POS_4);
+	glVertex3f(VERT_POS_1.X(),VERT_POS_1.Y(),VERT_POS_1.Z());
+	glVertex3f(VERT_POS_2.X(),VERT_POS_2.Y(),VERT_POS_2.Z());
+	glVertex3f(VERT_POS_3.X(),VERT_POS_3.Y(),VERT_POS_3.Z());
+	glVertex3f(VERT_POS_4.X(),VERT_POS_4.Y(),VERT_POS_4.Z());
 	glEnd();
 
 	// ライトオン

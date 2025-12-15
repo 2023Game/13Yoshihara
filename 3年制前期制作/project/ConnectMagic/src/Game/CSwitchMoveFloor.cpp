@@ -1,9 +1,60 @@
 #include "CSwitchMoveFloor.h"
 #include "CColliderMesh.h"
 #include "CConnectPointManager.h"
+#include <typeinfo>
 
 // 一時停止の時間
-#define STOP_TIME 0.5f
+constexpr float STOP_TIME = 0.5f;
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchMoveFloorSaveData {
+	CVector pos;		// 現在座標
+	float elapsedTime;		// 経過時間
+	CSwitchObject::EState state;	// 状態
+	EMoveState moveState;			// 移動状態
+	EMoveState preMoveState;		// 前の移動状態
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CSwitchMoveFloor::SaveState() const
+{
+	SwitchMoveFloorSaveData data;
+	data.pos = Position();
+	data.elapsedTime = GetElapsedTime();
+	data.state = GetState();
+	data.moveState = GetMoveState();
+	data.preMoveState = GetPreMoveState();
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr,dataPtr + sizeof(data));
+}
+
+void CSwitchMoveFloor::LoadState(const std::vector<char>& data)
+{
+	if (data.size() != sizeof(SwitchMoveFloorSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchMoveFloorSaveData* saveData = reinterpret_cast<const SwitchMoveFloorSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetMoveState(saveData->moveState);
+	SetPreMoveState(saveData->preMoveState);
+}
+
+size_t CSwitchMoveFloor::GetTypeID() const
+{
+	return typeid(CSwitchMoveFloor).hash_code();
+}
+
+unsigned int CSwitchMoveFloor::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 // コンストラクタ
 CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
@@ -16,6 +67,7 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
 	, mpCrushedCol(nullptr)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = model;
 
@@ -42,6 +94,32 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 CSwitchMoveFloor::~CSwitchMoveFloor()
 {
 	SAFE_DELETE(mpCrushedCol);
+}
+
+void CSwitchMoveFloor::SetMoveState(EMoveState moveState)
+{
+	if (mMoveState != moveState)
+	{
+		mMoveState = moveState;
+	}
+}
+
+EMoveState CSwitchMoveFloor::GetMoveState() const
+{
+	return mMoveState;
+}
+
+void CSwitchMoveFloor::SetPreMoveState(EMoveState moveState)
+{
+	if (mPreMoveState != moveState)
+	{
+		mPreMoveState = moveState;
+	}
+}
+
+EMoveState CSwitchMoveFloor::GetPreMoveState() const
+{
+	return mPreMoveState;
 }
 
 // コライダーを生成
@@ -136,30 +214,6 @@ void CSwitchMoveFloor::UpdateBack()
 	{
 		ChangeMoveState(EMoveState::eStop);
 	}
-}
-
-// 状態を設定
-void CSwitchMoveFloor::SetState(EMoveState state)
-{
-	mMoveState = state;
-}
-
-// 状態を取得
-EMoveState CSwitchMoveFloor::GetState() const
-{
-	return mMoveState;
-}
-
-// 前回の状態を設定
-void CSwitchMoveFloor::SetPreState(EMoveState state)
-{
-	mPreMoveState = state;
-}
-
-// 前回の状態を取得
-EMoveState CSwitchMoveFloor::GetPreState() const
-{
-	return mPreMoveState;
 }
 
 // 経過時間を設定

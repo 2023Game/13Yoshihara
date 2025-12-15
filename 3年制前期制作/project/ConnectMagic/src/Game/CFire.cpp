@@ -5,10 +5,10 @@
 #include "CColliderMesh.h"
 
 // 重量（動かさない）
-#define WEIGHT 1.0f
+constexpr float WEIGHT = 1.0f;
 
 // コライダー半径
-#define RADIUS 5.0f
+constexpr float RADIUS = 5.0f;
 
 // コンストラクタ
 CFire::CFire(CVector fireOffsetPos,

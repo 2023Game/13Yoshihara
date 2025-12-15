@@ -2,18 +2,58 @@
 #include "CColliderMesh.h"
 #include "CConnectPointManager.h"
 #include "Maths.h"
+#include <typeinfo>
 
 // 一時停止の時間
-#define STOP_TIME 0.5f
+constexpr float STOP_TIME = 0.5f;
 
-void CSwitchPushWall::SetState(EMoveState state)
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchPushWallSaveData {
+	CVector pos;		// 現在座標
+	float elapsedTime;	// 経過時間
+	CSwitchObject::EState state;	// 状態
+	EMoveState moveState;			// 移動状態
+	EMoveState preMoveState;		// 前の移動状態
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CSwitchPushWall::SaveState() const
 {
-	mMoveState = state;
+	SwitchPushWallSaveData data;
+	data.pos = Position();
+	data.elapsedTime = GetElapsedTime();
+	data.state = GetState();
+	data.moveState = GetMoveState();
+	data.preMoveState = GetPreMoveState();
+
+	return std::vector<char>();
 }
 
-EMoveState CSwitchPushWall::GetState() const
+void CSwitchPushWall::LoadState(const std::vector<char>& data)
 {
-	return mMoveState;
+	if (data.size() != sizeof(SwitchPushWallSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchPushWallSaveData* saveData = reinterpret_cast<const SwitchPushWallSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetState(saveData->state);
+	SetMoveState(saveData->moveState);
+	SetPreMoveState(saveData->preMoveState);
+}
+
+size_t CSwitchPushWall::GetTypeID() const
+{
+	return typeid(CSwitchPushWall).hash_code();
+}
+
+unsigned int CSwitchPushWall::GetUniqueInstanceID() const
+{
+	return mUniqueID;
 }
 
 void CSwitchPushWall::SetElapsedTime(float time)
@@ -36,6 +76,7 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 	, mpCrushedCol(nullptr)
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = model;
 
@@ -57,6 +98,32 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 CSwitchPushWall::~CSwitchPushWall()
 {
 	SAFE_DELETE(mpCrushedCol);
+}
+
+void CSwitchPushWall::SetMoveState(EMoveState moveState)
+{
+	if (mMoveState != moveState)
+	{
+		mMoveState = moveState;
+	}
+}
+
+EMoveState CSwitchPushWall::GetMoveState() const
+{
+	return mMoveState;
+}
+
+void CSwitchPushWall::SetPreMoveState(EMoveState moveState)
+{
+	if (mPreMoveState != moveState)
+	{
+		mPreMoveState = moveState;
+	}
+}
+
+EMoveState CSwitchPushWall::GetPreMoveState() const
+{
+	return mPreMoveState;
 }
 
 void CSwitchPushWall::CreateCol()

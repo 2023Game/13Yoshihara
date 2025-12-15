@@ -5,9 +5,9 @@
 #include "CConnectPoint.h"
 
 // 接続ターゲットの座標
-#define TARGET_POS CVector( 0.0f,5.0f, 0.0f)
+const CVector TARGET_POS =		CVector(0.0f, 5.0f, 0.0f);
 // コライダーの半径
-#define COL_RADIUS 5.0f
+constexpr float COL_RADIUS =	5.0f;
 
 // コンストラクタ
 CCrystal::CCrystal(CVector pos, CSwitch* owner)

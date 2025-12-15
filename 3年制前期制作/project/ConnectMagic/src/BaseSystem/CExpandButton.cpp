@@ -3,7 +3,7 @@
 #include "Easing.h"
 #include "Maths.h"
 
-#define EXPAND_ANIM_TIME 0.25f
+constexpr float EXPAND_ANIM_TIME = 0.25f;
 
 CExpandButton::CExpandButton(const CVector2& pos, const CVector2& size,
 	ETaskPriority prio, int sortOrder,

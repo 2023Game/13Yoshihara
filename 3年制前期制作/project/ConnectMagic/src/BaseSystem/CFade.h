@@ -4,7 +4,7 @@
 #include "CImage.h"
 #include "FadeType.h"
 
-#define DEFAULT_FADE_TIME 0.4f
+constexpr float DEFAULT_FADE_TIME = 0.4f;
 
 // 画面のフェード処理
 class CFade : public CTask

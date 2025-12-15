@@ -3,7 +3,7 @@
 #include "CFontData.h"
 #include "CResourceManager.h"
 
-#define DEFAULT_FONT_PATH "C:\\Windows\\Fonts\\msgothic.ttc"
+const char* const DEFAULT_FONT_PATH = "C:\\Windows\\Fonts\\msgothic.ttc";
 
 CFont::CFont(const char* path)
 	: mpFontData(nullptr)

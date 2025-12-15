@@ -3,11 +3,11 @@
 // フェードクラスのインスタンスdeskNum
 CFade* CFade::ms_instance = nullptr;
 
-#define BLACKOUT_PATH	"UI/white.png"
-#define VORTEX_PATH		"Effect/Portal.png"
+const char* const BLACKOUT_PATH =	"UI/white.png";
+const char* const VORTEX_PATH =		"Effect/Portal.png";
 
 // 画像の回転速度
-#define ROT_SPEED 2000.0f
+constexpr float ROT_SPEED = 2000.0f;
 
 // コンストラクタ
 CFade::CFade(EFadeType type)

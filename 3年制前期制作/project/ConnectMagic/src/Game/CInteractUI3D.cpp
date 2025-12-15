@@ -1,7 +1,7 @@
 #include "CInteractUI3D.h"
 #include "CImage3D.h"
 
-#define WORLD_UNIT_PER_PIXEL 128.0f
+constexpr float WORLD_UNIT_PER_PIXEL = 128.0f;
 
 CInteractUI3D::CInteractUI3D(CObjectBase* owner)
 	: CObjectBase(ETag::eUI, ETaskPriority::eUI3D, 0, ETaskPauseType::eGame)

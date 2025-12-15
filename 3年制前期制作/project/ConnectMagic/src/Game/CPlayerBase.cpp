@@ -14,14 +14,14 @@
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
 
-#define THRESHOLD 0.1f
+constexpr float THRESHOLD =			0.1f;
 
 // モーションブラーを掛ける時間
-#define MOTION_BLUR_TIME 3.0f
+constexpr float MOTION_BLUR_TIME =	3.0f;
 // モーションブラーの幅
-#define MOTION_BLUR_WIDTH 1.0f
+constexpr float MOTION_BLUR_WIDTH = 1.0f;
 // モーションブラーの反復回数
-#define MOTION_BLUR_COUNT 5
+constexpr float MOTION_BLUR_COUNT = 5;
 
 // コンストラクタ
 CPlayerBase::CPlayerBase()

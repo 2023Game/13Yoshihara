@@ -1,22 +1,76 @@
 #include "CSwitchMoveAirObj.h"
 #include "Maths.h"
 #include "CAirConnectObj.h"
+#include <typeinfo>
 
 // 移動速度
-#define MOVE_SPEED 20.0f
+constexpr float MOVE_SPEED =	20.0f;
 // 近い距離
-#define NEAR_DIST 1.0f
+constexpr float NEAR_DIST =		1.0f;
 // 一時停止の時間
-#define STOP_TIME 0.5f
+constexpr float STOP_TIME =		0.5f;
 
-// 状態を設定
-void CSwitchMoveAirObj::SetState(EMoveState state)
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchMoveAirObjSaveData {
+	CVector pos;				// 現在座標
+	float elapsedTime;			// 経過時間
+	EMoveState moveState;		// 移動の状態
+	CSwitchObject::EState state;// オンオフの状態
+	int targetPosNum;			// 目標座標の番号
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+
+std::vector<char> CSwitchMoveAirObj::SaveState() const
+{
+	SwitchMoveAirObjSaveData data;
+	data.pos = Position();
+	data.elapsedTime = GetElapsedTime();
+	data.moveState = GetMoveState();
+	data.state = GetState();
+	data.targetPosNum = GetTargetPosNum();
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CSwitchMoveAirObj::LoadState(const std::vector<char>& data)
+{
+	// データのサイズチェック
+	if (data.size() != sizeof(SwitchMoveAirObjSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchMoveAirObjSaveData* saveData = reinterpret_cast<const SwitchMoveAirObjSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetMoveState(saveData->moveState);
+	SetState(saveData->state);
+	SetTargetPosNum(saveData->targetPosNum);
+}
+
+size_t CSwitchMoveAirObj::GetTypeID() const
+{
+	return typeid(CSwitchMoveAirObj).hash_code();
+}
+
+unsigned int CSwitchMoveAirObj::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
+
+// 移動状態を設定
+void CSwitchMoveAirObj::SetMoveState(EMoveState state)
 {
 	mMoveState = state;
 }
 
-// 状態を取得
-EMoveState CSwitchMoveAirObj::GetState() const
+// 移動状態を取得
+EMoveState CSwitchMoveAirObj::GetMoveState() const
 {
 	return mMoveState;
 }
@@ -43,6 +97,7 @@ CSwitchMoveAirObj::CSwitchMoveAirObj(
 	, mpConnectObj(nullptr)
 	, mTargetPos(targets)
 	, mTargetPosNum(0)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	// 座標を設定
 	Position(pos);
@@ -121,6 +176,16 @@ void CSwitchMoveAirObj::Move()
 		Position(newPos);
 		mpConnectObj->Position(newPos);
 	}
+}
+
+void CSwitchMoveAirObj::SetTargetPosNum(int num)
+{
+	mTargetPosNum = num;
+}
+
+int CSwitchMoveAirObj::GetTargetPosNum() const
+{
+	return mTargetPosNum;
 }
 
 // 状態を変更

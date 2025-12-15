@@ -3,12 +3,12 @@
 #include "CConnectPointManager.h"
 
 // 開いたときの回転
-#define OPEN_ROT 90.0f
+constexpr float OPEN_ROT = 90.0f;
 // 回転速度
-#define ROTATE_SPEED 2.0f
+constexpr float ROTATE_SPEED = 2.0f;
 
 // 閾値
-#define THRESHOLD 1.0f
+constexpr float THRESHOLD = 1.0f;
 
 // コンストラクタ
 CDoor::CDoor(const CVector& rot)

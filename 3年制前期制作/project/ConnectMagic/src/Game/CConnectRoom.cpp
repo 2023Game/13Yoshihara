@@ -6,29 +6,29 @@
 #include "CRoomManager.h"
 
 // 重りのオフセット座標
-#define WEIGHT_OFFSET_POS CVector(25.0f,0.0f,-40.0f)
+const CVector WEIGHT_OFFSET_POS =			CVector( 25.0f,	0.0f, -40.0f);
 // スイッチのオフセット座標
-#define SWITCH_OFFSET_POS_NEXT	CVector(-25.0f,0.0f,-40.0f)
+const CVector SWITCH_OFFSET_POS_NEXT =		CVector(-25.0f,	0.0f, -40.0f);
 // 部屋の長さ
-#define ROOM_LENGTH 80.0f
+constexpr float ROOM_LENGTH =				80.0f;
 
 // 動く壁のオフセット座標
-#define MOVE_WALL_OFFSET_POS_NEXT	CVector(0.0f,0.0f,-70.0f)
-#define MOVE_WALL_OFFSET_POS_PRE	CVector(0.0f,0.0f,0.0f)
+const CVector MOVE_WALL_OFFSET_POS_NEXT =	CVector( 0.0f,	0.0f, -70.0f);
+const CVector MOVE_WALL_OFFSET_POS_PRE =	CVector( 0.0f,	0.0f,  0.0f);
 // 動く壁のスケール
-#define MOVE_WALL_SCALE CVector(2.0f,4.0f,1.0f)
+const CVector MOVE_WALL_SCALE =				CVector( 2.0f,	4.0f,  1.0f);
 // 動く壁の移動
-#define MOVE_WALL_MOVE	CVector(0.0f,40.0f,0.0f)
+const CVector MOVE_WALL_MOVE =				CVector( 0.0f,	40.0f, 0.0f);
 // 動く壁の移動時間
-#define MOVE_WALL_MOVE_TIME 0.5f
+constexpr float MOVE_WALL_MOVE_TIME =		0.5f;
 
 // 閉じるフラグ用のコライダーの半径
-#define COL_RADIUS 15.0f
+constexpr float COL_RADIUS =				15.0f;
 // コライダーの位置
-#define COL_POS CVector(0.0f,0.0f,-45.0f)
+const CVector COL_POS =						CVector( 0.0f,	0.0f, -45.0f);
 
 // シールドのオフセット座標
-#define SHIELD_OFFSET_POS CVector(0.0f,0.0f,-75.0f)
+const CVector SHIELD_OFFSET_POS =			CVector( 0.0f,	0.0f, -75.0f);
 
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)

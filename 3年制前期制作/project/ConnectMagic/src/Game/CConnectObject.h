@@ -3,7 +3,7 @@
 #include "ConnectObjectTag.h"
 
 // ˆø‚Á’£‚é—Í
-#define PULL_POWER 60.0f
+constexpr float PULL_POWER = 60.0f;
 
 class CConnectPoint;
 class CConnectTarget;

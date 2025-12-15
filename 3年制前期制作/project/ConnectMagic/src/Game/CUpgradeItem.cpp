@@ -4,15 +4,15 @@
 #include "CConnectPointManager.h"
 
 // コライダーの半径
-#define RADIUS 5.0f
+constexpr float RADIUS =			5.0f;
 
 // 大きさ
-#define SIZE 0.5f
+constexpr float SIZE =				0.5f;
 
 // 上下移動が切り替わる時間
-#define CHANGE_MOVE_TIME 1.0f
+constexpr float CHANGE_MOVE_TIME =	1.0f;
 // 上下移動の速度
-#define MOVE_SPEED 2.0f
+constexpr float MOVE_SPEED =		2.0f;
 
 // コンストラクタ
 CUpgradeItem::CUpgradeItem()

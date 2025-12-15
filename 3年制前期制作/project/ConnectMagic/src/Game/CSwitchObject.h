@@ -1,11 +1,12 @@
 #pragma once
 #include "CObjectBase.h"
+#include "CSavable.h"
 
 class CSwitch;
 class CModel;
 
 // スイッチで作用するオブジェクトのベースクラス
-class CSwitchObject : public CObjectBase
+class CSwitchObject : public CObjectBase, public CSavable
 {
 public:
 	// コンストラクタ
@@ -30,20 +31,24 @@ public:
 
 	// オンオフを切り替える
 	virtual void SetOnOff(bool isOnOff);
+	// オンかオフかを取得
+	bool GetOnOff() const;
 
 	// 作用するスイッチを設定する
 	void SetSwitchs(std::vector<CSwitch*> switchs);
 
-protected:
 	// オンオフの状態
 	enum class EState
 	{
 		eOff,
 		eOn,
 	};
+protected:
 	EState mState;
 	// 状態の変更
-	virtual void ChangeState(EState state);	
+	virtual void ChangeState(EState state);
+	void SetState(EState state);
+	EState GetState() const;
 	
 	// 作用していない時の処理
 	virtual void UpdateOff();

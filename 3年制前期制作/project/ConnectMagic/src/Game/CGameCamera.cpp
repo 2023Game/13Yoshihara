@@ -2,7 +2,7 @@
 #include "CInput.h"
 
 // カメラの回転速度
-#define ROTATE_SPEED 0.1f
+constexpr float ROTATE_SPEED = 0.1f;
 
 // コンストラクタ
 CGameCamera::CGameCamera(const CVector& eye, const CVector& center, bool isMainCamera)

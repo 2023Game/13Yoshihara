@@ -2,7 +2,7 @@
 #include "CPortal.h"
 
 // ポータルのオフセット座標
-#define PORTAL_OFFSET_POS CVector(0.0f,15.0f,-60.0f)
+const CVector PORTAL_OFFSET_POS = CVector(0.0f, 15.0f, -60.0f);
 
 // コンストラクタ
 CLastRoom::CLastRoom(const CVector& pos)

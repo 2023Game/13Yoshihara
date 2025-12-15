@@ -5,17 +5,17 @@
 #include "CConnectPointManager.h"
 
 // 画像のサイズ
-#define GRASS_SIZE 2.0f
-#define VINE_SIZE 12.0f
+constexpr float GRASS_SIZE = 2.0f;
+constexpr float VINE_SIZE = 12.0f;
 
 // アルファの減少速度
-#define ALPHA_DECREASE_SPEED 0.5f
+constexpr float ALPHA_DECREASE_SPEED = 0.5f;
 
 // 頂点
-#define VERT_POS_1 CVector(-VINE_WIDTH/2.0f, VINE_HEIGHT, 0.0f)
-#define VERT_POS_2 CVector(-VINE_WIDTH/2.0f,		0.0f, 0.0f)
-#define VERT_POS_3 CVector( VINE_WIDTH/2.0f,		0.0f, 0.0f)
-#define VERT_POS_4 CVector( VINE_WIDTH/2.0f, VINE_HEIGHT, 0.0f)
+const CVector VERT_POS_1 = CVector(-VINE_WIDTH / 2.0f, VINE_HEIGHT, 0.0f);
+const CVector VERT_POS_2 = CVector(-VINE_WIDTH / 2.0f, 0.0f,		0.0f);
+const CVector VERT_POS_3 = CVector( VINE_WIDTH / 2.0f, 0.0f,		0.0f);
+const CVector VERT_POS_4 = CVector( VINE_WIDTH / 2.0f, VINE_HEIGHT, 0.0f);
 
 // コンストラクタ
 CGrass::CGrass(EGrassType type, CVector fireOffsetPos, float fireScale)

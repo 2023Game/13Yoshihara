@@ -2,13 +2,13 @@
 #include "CColliderCapsule.h"
 
 // 松明の炎のオフセット座標
-#define TORCH_FIRE_OFFSET_POS CVector(0.0f,9.0f,0.0f)
+const CVector TORCH_FIRE_OFFSET_POS = CVector(0.0f, 9.0f, 0.0f);
 
 // コライダーの半径
-#define RADIUS 5.0f
+constexpr float RADIUS = 5.0f;
 
 // 松明の縦の長さ
-#define TORCH_HEIGHT 7.0f
+constexpr float TORCH_HEIGHT = 7.0f;
 
 // コンストラクタ
 CTorch::CTorch()

@@ -51,6 +51,7 @@
     <ClCompile Include="src\BaseSystem\CMyShader.cpp" />
     <ClCompile Include="src\BaseSystem\CNavManager.cpp" />
     <ClCompile Include="src\BaseSystem\CNavNode.cpp" />
+    <ClCompile Include="src\BaseSystem\CPhysicsManager.cpp" />
     <ClCompile Include="src\BaseSystem\CRect.cpp" />
     <ClCompile Include="src\BaseSystem\CResource.cpp" />
     <ClCompile Include="src\BaseSystem\CResourceManager.cpp" />
@@ -81,6 +82,7 @@
     <ClCompile Include="src\CWeightGenerator.cpp" />
     <ClCompile Include="src\Game\CAirConnectObj.cpp" />
     <ClCompile Include="src\Game\CApplication.cpp" />
+    <ClCompile Include="src\Game\CUIDManager.cpp" />
     <ClCompile Include="src\Game\CWeight.cpp" />
     <ClCompile Include="src\Game\CBridge.cpp" />
     <ClCompile Include="src\Game\CCampFire.cpp" />
@@ -102,7 +104,6 @@
     <ClCompile Include="src\Game\CGameClearUI.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
-    <ClCompile Include="src\Game\CGearBaseStatus.cpp" />
     <ClCompile Include="src\Game\CGrass.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="src\BaseSystem\CNavNode.h" />
     <ClInclude Include="src\BaseSystem\ColliderType.h" />
     <ClInclude Include="src\BaseSystem\CollisionLayer.h" />
+    <ClInclude Include="src\BaseSystem\CPhysicsManager.h" />
     <ClInclude Include="src\BaseSystem\CRect.h" />
     <ClInclude Include="src\BaseSystem\CResource.h" />
     <ClInclude Include="src\BaseSystem\CResourceManager.h" />
@@ -258,6 +260,8 @@
     <ClInclude Include="src\Define.h" />
     <ClInclude Include="src\Game\CAirConnectObj.h" />
     <ClInclude Include="src\Game\CApplication.h" />
+    <ClInclude Include="src\Game\CSavable.h" />
+    <ClInclude Include="src\Game\CUIDManager.h" />
     <ClInclude Include="src\Game\CWeight.h" />
     <ClInclude Include="src\Game\CBridge.h" />
     <ClInclude Include="src\Game\CCampFire.h" />
@@ -298,7 +302,6 @@
     <ClInclude Include="src\Game\CSwitchPushWall.h" />
     <ClInclude Include="src\Game\FragmentType.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
-    <ClInclude Include="src\Game\CGearBaseStatus.h" />
     <ClInclude Include="src\Game\CGrass.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
@@ -407,13 +410,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;FTGL_LIBRARY_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\BaseSystem;$(ProjectDir)src\Game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\BaseSystem;$(ProjectDir)src\Game;$(ProjectDir)lib\bullet3\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>Define.h</ForcedIncludeFiles>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>NotSet</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32.lib;glfw3.lib;glfw3dll.lib;glut32.lib;soil.lib;freetyped.lib;ftgl_static_D.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glfw3.lib;glfw3dll.lib;glut32.lib;soil.lib;freetyped.lib;ftgl_static_D.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib\bullet3\Debug</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -427,7 +432,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_WARNINGS;FTGL_LIBRARY_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\BaseSystem;$(ProjectDir)src\Game;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)src;$(ProjectDir)src\BaseSystem;$(ProjectDir)src\Game;$(ProjectDir)lib\bullet3\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>Define.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
@@ -435,7 +440,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glew32.lib;glfw3_mt.lib;glut32.lib;soil.lib;freetype.lib;ftgl_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32.lib;glfw3_mt.lib;glut32.lib;soil.lib;freetype.lib;ftgl_static.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib\bullet3\Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

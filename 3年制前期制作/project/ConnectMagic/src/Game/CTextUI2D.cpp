@@ -3,12 +3,12 @@
 #include <stdarg.h>
 #include "Maths.h"
 
-#define DEFAULT_FONT_SIZE 64
+constexpr int DEFAULT_FONT_SIZE = 64;
 
 // 点滅時間
-#define TEXT_BLINK_TIME 1.0f
+constexpr float TEXT_BLINK_TIME = 1.0f;
 // 点滅間隔
-#define TEXT_INTERVAL_TIME 1.0f
+constexpr float TEXT_INTERVAL_TIME = 1.0f;
 
 // コンストラクタ
 CTextUI2D::CTextUI2D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)

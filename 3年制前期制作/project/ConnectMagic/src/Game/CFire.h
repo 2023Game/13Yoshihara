@@ -4,13 +4,13 @@
 class CFlamethrower;
 
 // 炎のスケール
-#define FIRE_SCALE 0.7f
+constexpr float DEFAULT_FIRE_SCALE =		0.7f;
 
 // 炎の移動速度
-#define MOVE_SPEED 2.0f
+constexpr float DEFAULT_FIRE_SPEED =		2.0f;
 
 // 接続ターゲットのオフセット座標
-#define TARGET_OFFSET_POS CVector(0.0f,2.0f,0.0f)
+const CVector DEFAULT_TARGET_OFFSET_POS =	CVector(0.0f, 2.0f, 0.0f);
 
 // 炎がつく接続オブジェクト
 class CFire : public CConnectObject
@@ -24,8 +24,8 @@ public:
 	/// <param name="fireSpeed">炎の移動速度</param>
 	/// <param name="targetOffsetPos">接続ターゲットのオフセット座標</param>
 	CFire(CVector fireOffsetPos = CVector::zero,
-		float fireScale = FIRE_SCALE, float fireSpeed = MOVE_SPEED,
-		CVector targetOffsetPos = TARGET_OFFSET_POS);
+		float fireScale = DEFAULT_FIRE_SCALE, float fireSpeed = DEFAULT_FIRE_SPEED,
+		CVector targetOffsetPos = DEFAULT_TARGET_OFFSET_POS);
 	// デストラクタ
 	~CFire();
 

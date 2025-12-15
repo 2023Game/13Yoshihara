@@ -3,24 +3,71 @@
 #include "CColliderSphere.h"
 #include "CColliderCapsule.h"
 #include "CConnectPointManager.h"
+#include <typeinfo>
 
 // 接続ターゲットの座標
-#define TARGET_POS_1 CVector( 0.0f,10.0f, 0.0f)
+const CVector TARGET_POS_1 = CVector(0.0f, 10.0f, 0.0f);
 
 // 重りの重さ
-#define WEIGHT 0.1f
+constexpr float WEIGHT = 0.1f;
 
 // コライダーの半径
-#define RADIUS 2.4f
+constexpr float RADIUS = 2.4f;
 
 // スケールの倍率
-#define SCALE 2.0f
+constexpr float SCALE = 2.0f;
 
 // 水に当たって返ってくるまでの時間
-#define RETURN_TIME 0.5f
+constexpr float RETURN_TIME = 0.5f;
 
 // 削除されるY座標
-#define DELETE_POS_Y -50.0f
+constexpr float DELETE_POS_Y = -50.0f;
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct WeightSaveData {
+	CVector pos;		// 現在座標
+	float elapsedTime;	// 経過時間
+	bool isAttach;		// スイッチに張り付いているか
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CWeight::SaveState() const
+{
+	WeightSaveData data;
+	data.pos = Position();
+	data.elapsedTime = GetElapsedTime();
+	data.isAttach = GetIsAttach();
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CWeight::LoadState(const std::vector<char>& data)
+{
+	// データサイズのチェック
+	if (data.size() != sizeof(WeightSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const WeightSaveData* saveData = reinterpret_cast<const WeightSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetIsAttach(saveData->isAttach);
+}
+
+size_t CWeight::GetTypeID() const
+{
+	return typeid(CWeight).hash_code();
+}
+
+unsigned int CWeight::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 // コンストラクタ
 CWeight::CWeight(CVector defaultPos, float scaleRatio)
@@ -28,6 +75,7 @@ CWeight::CWeight(CVector defaultPos, float scaleRatio)
 	, mDefaultPos(defaultPos)
 	, mIsRespawn(false)
 	, mElapsedTime(0.0f)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = CResourceManager::Get<CModel>("Weight");
 
@@ -112,6 +160,16 @@ void CWeight::SetIsAttach(bool enable)
 bool CWeight::GetIsAttach() const
 {
 	return mIsAttach;
+}
+
+void CWeight::SetElapsedTime(float time)
+{
+	mElapsedTime = time;
+}
+
+float CWeight::GetElapsedTime() const
+{
+	return mElapsedTime;
 }
 
 // コライダーを生成

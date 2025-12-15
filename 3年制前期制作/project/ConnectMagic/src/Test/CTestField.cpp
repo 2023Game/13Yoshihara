@@ -21,56 +21,56 @@
 #include "CSwitchShield.h"
 
 // ポータルの設定
-#define PORTAL_POS	CVector(100.0f, 10.0f, -100.0f)
+const CVector PORTAL_POS =				CVector( 100.0f,	 10.0f,				-100.0f);
 
 // リスポーン地点の設定
-#define RESPAWN_POS_1	CVector(  0.0f,-5.0f,-180.0f)
-#define RESPAWN_POS_2	CVector(-90.0f,35.0f,-430.0f)
-#define RESPAWN_RADIUS	25.0f
+const CVector RESPAWN_POS_1 =			CVector( 0.0f,		-5.0f,				-180.0f);
+const CVector RESPAWN_POS_2 =			CVector(-90.0f,		 35.0f,				-430.0f);
+constexpr float RESPAWN_RADIUS =		25.0f;
 
 // 松明の座標
-#define TORCH_POS_1 CVector(0.0f,0.0f,-50.0f)
-#define TORCH_POS_2 CVector(10.0f,0.0f,-50.0f)
+const CVector TORCH_POS_1 =				CVector( 0.0f,		 0.0f,				-50.0f);
+const CVector TORCH_POS_2 =				CVector( 10.0f,		 0.0f,				-50.0f);
 
 // 草の座標
-#define GRASS_POS_1 CVector(-50.0f,0.0f,-50.0f)
-#define GRASS_POS_2 CVector(-100.0f,0.0f,-50.0f)
+const CVector GRASS_POS_1 =				CVector(-50.0f,		 0.0f,				-50.0f);
+const CVector GRASS_POS_2 =				CVector(-100.0f,	 0.0f,				-50.0f);
 
 // ツタの炎のオフセット座標
-#define VINE_FIRE_OFFSET_POS CVector(0.0f,VINE_HEIGHT/2.0f,0.0f)
+const CVector VINE_FIRE_OFFSET_POS =	CVector( 0.0f,		 VINE_HEIGHT / 2.0f, 0.0f);
 // ツタの炎の大きさ
-#define VINE_FIRE_SCALE FIRE_SCALE * 15.0f
+constexpr float VINE_FIRE_SCALE =		DEFAULT_FIRE_SCALE * 15.0f;
 
 // 橋の座標
-#define BRIDGE_POS_1 CVector(50.0f,0.0f,-50.0f)
-#define BRIDGE_POS_2 CVector(50.0f,0.0f,-100.0f)
+const CVector BRIDGE_POS_1 =			CVector( 50.0f,		 0.0f,				-50.0f);
+const CVector BRIDGE_POS_2 =			CVector( 50.0f,		 0.0f,				-100.0f);
 // 橋の回転
-#define BRIDGE_ROT_2 CVector(0.0f,180.0f,0.0f)
+const CVector BRIDGE_ROT_2 =			CVector( 0.0f,		 180.0f,			 0.0f);
 
 // 重りの座標
-#define WEIGHT_POS CVector(0.0f,0.0f,-25.0f)
+const CVector WEIGHT_POS =				CVector( 0.0f,		 0.0f,				-25.0f);
 
 // 水の座標
-#define WATER_POS CVector(300.0f,1.0f,0.0f)
+const CVector WATER_POS =				CVector( 300.0f,	 1.0f,				 0.0f);
 
 // アイテムの座標
-#define ITEM_POS CVector(0.0f,5.0f,30.0f)
+const CVector ITEM_POS =				CVector( 0.0f,		 5.0f,				 30.0f);
 
 // キャンプファイヤーの座標
-#define CAMPFIRE_POS CVector(0.0f,0.0f,-70.0f)
+const CVector CAMPFIRE_POS =			CVector( 0.0f,		 0.0f,				-70.0f);
 
 // ポータルの欠片の数
-#define PORTAL_FRAGMENT_NUM 4
+constexpr int PORTAL_FRAGMENT_NUM =		4;
 
 // 下がる壁の座標
-#define DOWN_WALL_POS_1 CVector(150.0f,0.0f,50.0f)
-#define DOWN_WALL_POS_2 CVector(-225.5f,0.0f,468.0f)
+const CVector DOWN_WALL_POS_1 =			CVector( 150.0f,	 0.0f,				 50.0f);
+const CVector DOWN_WALL_POS_2 =			CVector(-225.5f,	 0.0f,				 468.0f);
 // スイッチの座標
-#define SWITCH_POS CVector(0.0f,0.0f,50.0f)
+const CVector SWITCH_POS =				CVector( 0.0f,		 0.0f,				 50.0f);
 // 3連スイッチの座標
-#define SWITCHS_POS_1 CVector(-200.0f,0.0f,418.0f)
-#define SWITCHS_POS_2 CVector(-200.0f,0.0f,368.0f)
-#define SWITCHS_POS_3 CVector(-200.0f,0.0f,318.0f)
+const CVector SWITCHS_POS_1 =			CVector(-200.0f,	 0.0f,				 418.0f);
+const CVector SWITCHS_POS_2 =			CVector(-200.0f,	 0.0f,				 368.0f);
+const CVector SWITCHS_POS_3 =			CVector(-200.0f,	 0.0f,				 318.0f);
 
 // コンストラクタ
 CTestField::CTestField()

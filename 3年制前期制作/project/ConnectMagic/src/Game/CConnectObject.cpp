@@ -6,15 +6,15 @@
 #include "CConnectPoint.h"
 #include "CWand.h"
 
-#define THRESHOLD 0.1f
+constexpr float THRESHOLD =			0.1f;
 
 // 移動前後のレイが衝突したときのマージン
-#define MARGIN 50.0f
+constexpr float MARGIN =			50.0f;
 
 // 減速する速度
-#define DECREASE_SPEED 1.0f
+constexpr float DECREASE_SPEED =	1.0f;
 // 加速する速度
-#define INCREASE_SPEED 0.5f
+constexpr float INCREASE_SPEED =	0.5f;
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,

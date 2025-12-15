@@ -7,31 +7,31 @@
 #include "CSaveManager.h"
 
 // 部屋の長さ
-#define ROOM_LENGTH 170.0f
+constexpr float ROOM_LENGTH =			170.0f;
 
 // 重りの座標
-#define WEIGHT_OFFSET_POS CVector(25.0f, 0.0f, -150.0f)
+const CVector WEIGHT_OFFSET_POS =		CVector(25.0f, 0.0f, -150.0f);
 // スイッチの座標
-#define SWITCH_OFFSET_POS CVector(25.0f, 0.0f, -35.0f)
+const CVector SWITCH_OFFSET_POS =		CVector(25.0f, 0.0f, -35.0f);
 
 // 動く床のオフセット座標
-#define MOVE_FLOOR_OFFSET_POS	CVector(-60.0f, -10.0f, -50.0f)
+const CVector MOVE_FLOOR_OFFSET_POS =	CVector(-60.0f, -10.0f, -50.0f);
 // 動く床のスケール
-#define MOVE_FLOOR_SCALE		CVector(4.0f, 1.0f, 8.0f)
+const CVector MOVE_FLOOR_SCALE =		CVector(4.0f, 1.0f, 8.0f);
 // 動く床の移動
-#define MOVE_FLOOR_MOVE			CVector(30.0f,0.0f,0.0f)
+const CVector MOVE_FLOOR_MOVE =			CVector(30.0f,0.0f,0.0f);
 // 動く床の移動時間	
-#define MOVE_FLOOR_MOVE_TIME	1.0f
+constexpr float MOVE_FLOOR_MOVE_TIME =	1.0f;
 
 // 水のオフセット座標
-#define WATER_OFFSET_POS	CVector(0.0f,-5.0f,-85.0f)
+const CVector WATER_OFFSET_POS =		CVector(0.0f,-5.0f,-85.0f);
 // 水のスケール
-#define WATER_SCALE			CVector(50.0f,1.0f,50.0f)
+const CVector WATER_SCALE =				CVector(50.0f,1.0f,50.0f);
 
 // リスポーン地点
-#define RESPAWN_OFFSET_POS		CVector(0.0f,0.0f,-30.0f)
+const CVector RESPAWN_OFFSET_POS =		CVector(0.0f,0.0f,-30.0f);
 // リスポーン地点の半径
-#define RESPAWN_RADIUS	30.0f
+constexpr float RESPAWN_RADIUS =		30.0f;
 
 // コンストラクタ
 CRoom1::CRoom1(const CVector& pos)
@@ -66,9 +66,9 @@ void CRoom1::SetEnableRoom(bool enable)
 		// 重りのフラグを変更
 		mpWeight->SetEnable(enable);
 		// 重りを追加
-		saveMgr->AddWeight(mpWeight);
+		saveMgr->AddSavableObj(mpWeight);
 		// 移動床を追加
-		saveMgr->AddMoveFloor(mpMoveFloor);
+		saveMgr->AddSavableObj(mpMoveFloor);
 	}
 	// 無効時
 	else
@@ -80,9 +80,9 @@ void CRoom1::SetEnableRoom(bool enable)
 			mpWeight->SetEnable(enable);
 		}
 		// 重りを削除
-		saveMgr->DeleteWeight(mpWeight);
+		saveMgr->DeleteSavableObj(mpWeight);
 		// 移動床を削除
-		saveMgr->DeleteMoveFloor(mpMoveFloor);
+		saveMgr->DeleteSavableObj(mpMoveFloor);
 	}
 }
 

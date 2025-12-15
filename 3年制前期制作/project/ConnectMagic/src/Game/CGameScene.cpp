@@ -9,9 +9,10 @@
 #include "CPlayer.h"
 #include "CRoomBase.h"
 #include "CSaveManager.h"
+#include "CPhysicsManager.h"
 
 // プレイヤーのスタート地点
-#define PLAYER_POS		CVector(0.0f,0.0f,-30.0f)
+const CVector PLAYER_POS = CVector(0.0f, 0.0f, -30.0f);
 
 // コンストラクタ
 CGameScene::CGameScene()
@@ -78,6 +79,8 @@ void CGameScene::Load()
 	効果音
 	*/
 
+	mpPhysicsMgr = new CPhysicsManager();
+
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 	// 衝突判定をするコライダーをリセット
@@ -127,4 +130,5 @@ void CGameScene::Load()
 // シーンの更新処理
 void CGameScene::Update()
 {
+	mpPhysicsMgr->StepSimulation(Times::DeltaTime());
 }

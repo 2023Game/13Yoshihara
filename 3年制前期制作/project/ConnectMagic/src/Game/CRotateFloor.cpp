@@ -1,7 +1,7 @@
 #include "CRotateFloor.h"
 #include "Maths.h"
 
-#define ROTATE_Y 1.0f
+constexpr float ROTATE_Y = 1.0f;
 
 CRotateFloor::CRotateFloor(CModel* model, const CVector& pos, const CVector& scale, float rotateSpeedY)
 	: mpModel(model)

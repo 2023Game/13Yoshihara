@@ -1,9 +1,16 @@
 #pragma once
 #include "CConnectObject.h"
+#include "CSavable.h"
 
-class CWeight : public CConnectObject
+class CWeight : public CConnectObject, public CSavable
 {
 public:
+	// CSavableの純粋仮想関数のオーバーライド
+	std::vector<char> SaveState() const override;
+	void LoadState(const std::vector<char>& data) override;
+	size_t GetTypeID() const override;
+	unsigned int GetUniqueInstanceID() const override;
+
 	// コンストラクタ
 	CWeight(CVector defaultPos, float scaleRatio = 1.0f);
 	// デストラクタ
@@ -26,6 +33,11 @@ public:
 	bool GetIsAttach() const;
 
 private:
+	// データ保存で使用
+	unsigned int mUniqueID;
+	void SetElapsedTime(float time);
+	float GetElapsedTime() const;
+
 	// コライダーを生成
 	void CreateCol() override;
 

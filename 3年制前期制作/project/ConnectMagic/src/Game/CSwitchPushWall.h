@@ -6,14 +6,11 @@
 class CSwitchPushWall : public CSwitchObject
 {
 public:
-	// 状態を設定
-	void SetState(EMoveState state);
-	// 状態を取得
-	EMoveState GetState() const;
-	// 経過時間を設定
-	void SetElapsedTime(float time);
-	// 経過時間を取得
-	float GetElapsedTime() const;
+	// CSavableの純粋仮想関数のオーバーライド
+	std::vector<char> SaveState() const override;
+	void LoadState(const std::vector<char>& data) override;
+	size_t GetTypeID() const override;
+	unsigned int GetUniqueInstanceID() const override;
 
 	/// <summary>
 	/// コンストラクタ
@@ -34,6 +31,18 @@ public:
 	~CSwitchPushWall();
 
 private:
+	// データ保存に使用
+	unsigned int mUniqueID;
+	// 移動状態
+	void SetMoveState(EMoveState moveState);
+	EMoveState GetMoveState() const;
+	// 前の移動状態
+	void SetPreMoveState(EMoveState moveState);
+	EMoveState GetPreMoveState() const;
+	// 経過時間
+	void SetElapsedTime(float time);
+	float GetElapsedTime() const;
+
 	// コライダーを生成
 	void CreateCol() override;
 	// プレイヤーが挟まれた時用のコライダー

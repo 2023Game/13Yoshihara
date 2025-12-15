@@ -9,58 +9,63 @@
 #include "CSaveManager.h"
 #include "CSwitchShield.h"
 #include "CWeightGenerator.h"
+#include "CSwitchWater.h"
+#include "CWeight.h"
 
-#define ROOM_LENGTH					200.0f
+constexpr float ROOM_LENGTH = 200.0f;
 
-#define SWITCH_OFFSET_POS1			CVector(-30.0f,		 0.0f,		-100.0f)
-#define SWITCH_OFFSET_POS2			CVector( 30.0f,		 0.0f,		-100.0f)
+const CVector WEIGHT_POS =					CVector(-25.0f,		 0.0f,		-175.0f);
 
-#define AIR_OBJ1_MOVE_TARGET_POS1	CVector(-67.5f,		 35.0f,		-25.0f)
-#define AIR_OBJ1_MOVE_TARGET_POS2	CVector(-145.0f,	 35.0f,		-25.0f)
+const CVector SWITCH_OFFSET_POS1 =			CVector(-30.0f,		 0.0f,		-100.0f);
+const CVector SWITCH_OFFSET_POS2 =			CVector( 30.0f,		 0.0f,		-100.0f);
 
-#define AIR_OBJ2_MOVE_TARGET_POS1	CVector( 67.5f,		 35.0f,		-25.0f)
-#define AIR_OBJ2_MOVE_TARGET_POS2	CVector( 145.0f,	 35.0f,		-25.0f)
+const CVector AIR_OBJ1_MOVE_TARGET_POS1 =	CVector(-67.5f,		 35.0f,		-25.0f);
+const CVector AIR_OBJ1_MOVE_TARGET_POS2 =	CVector(-145.0f,	 35.0f,		-25.0f);
 
-#define SHIELD_POS1					CVector(-175.0f,	 0.0f,		-60.0f)
-#define SHIELD_POS2					CVector(-175.0f,	 0.0f,		-90.0f)
-#define SHIELD_POS3					CVector(-150.0f,	 0.0f,		-75.0f)
-#define SHIELD_POS4					CVector(-175.0f,	 0.0f,		-110.0f)
-#define SHIELD_POS5					CVector(-175.0f,	 0.0f,		-140.0f)
-#define SHIELD_POS6					CVector(-150.0f,	 0.0f,		-125.0f)
-#define SHIELD_SCALE_BIG			CVector( 2.5f,		 1.0f,		 1.0f)
-#define SHIELD_SCALE_SMALL			CVector( 1.5f,		 1.0f,		 1.0f)
+const CVector AIR_OBJ2_MOVE_TARGET_POS1 =	CVector( 67.5f,		 35.0f,		-25.0f);
+const CVector AIR_OBJ2_MOVE_TARGET_POS2 =	CVector( 145.0f,	 35.0f,		-25.0f);
 
-#define PUSH_WALL_POS1				CVector( 224.0f,	 0.0f,		-59.5f)
-#define PUSH_WALL_POS2				CVector( 224.0f,	 0.0f,		-109.5f)
-#define PUSH_WALL_SCALE				CVector( 5.1f,		 4.0f,		 3.1f)
-#define PUSH_WALL_MOVE_VEC			CVector(-50.0f,		 0.0f,		 0.0f)
-#define PUSH_WALL_MOVE_TIME			1.0f
+const CVector SHIELD_POS1 =					CVector(-175.0f,	 0.0f,		-60.0f);
+const CVector SHIELD_POS2 =					CVector(-175.0f,	 0.0f,		-90.0f);
+const CVector SHIELD_POS3 =					CVector(-150.0f,	 0.0f,		-75.0f);
+const CVector SHIELD_POS4 =					CVector(-175.0f,	 0.0f,		-110.0f);
+const CVector SHIELD_POS5 =					CVector(-175.0f,	 0.0f,		-140.0f);
+const CVector SHIELD_POS6 =					CVector(-150.0f,	 0.0f,		-125.0f);
+const CVector SHIELD_SCALE_BIG =			CVector( 2.5f,		 1.0f,		 1.0f);
+const CVector SHIELD_SCALE_SMALL =			CVector( 1.5f,		 1.0f,		 1.0f);
 
-#define GENERATOR_POS1				CVector(-30.0f,		 20.0f,		-100.0f)
-#define GENERATOR_POS2				CVector( 30.0f,		 20.0f,		-100.0f)
+const CVector PUSH_WALL_POS1 =				CVector( 224.0f,	 0.0f,		-59.5f);
+const CVector PUSH_WALL_POS2 =				CVector( 224.0f,	 0.0f,		-109.5f);
+const CVector PUSH_WALL_SCALE =				CVector( 5.1f,		 4.0f,		 3.1f);
+const CVector PUSH_WALL_MOVE_VEC =			CVector(-50.0f,		 0.0f,		 0.0f);
+constexpr float PUSH_WALL_MOVE_TIME =		1.0f;
 
-#define CRYSTAL_OFFSET_POS1			CVector(-30.0f,		 0.0f,		-35.0f)
-#define CRYSTAL_OFFSET_POS2			CVector( 30.0f,		 0.0f,		-35.0f)
-#define CRYSTAL_OFFSET_POS3			CVector(-67.5f,		 36.0f,		-30.0f)
-#define CRYSTAL_OFFSET_POS4			CVector( 67.5f,		 36.0f,		-30.0f)
-#define CRYSTAL_OFFSET_POS5			CVector(-140.0f,	 40.0f,		-75.0f)
-#define CRYSTAL_OFFSET_POS6			CVector(-140.0f,	 40.0f,		-125.0f)
-#define CRYSTAL_OFFSET_POS7			CVector(-175.0f,	 0.0f,		-175.0f)
-#define CRYSTAL_OFFSET_POS8			CVector( 140.0f,	 40.0f,		-75.0f)
-#define CRYSTAL_OFFSET_POS9			CVector( 140.0f,	 40.0f,		-125.0f)
-#define CRYSTAL_OFFSET_POS10		CVector( 175.0f,	 0.0f,		-175.0f)
-#define CRYSTAL_SCALE_BIG			CVector::one * 2.0f
+const CVector GENERATOR_POS1 =				CVector(-30.0f,		 20.0f,		-100.0f);
+const CVector GENERATOR_POS2 =				CVector( 30.0f,		 20.0f,		-100.0f);
 
-#define ROT_X_180					CVector( 180.0f,	 0.0f,		 0.0f)
-#define ROT_X_90					CVector( 90.0f,		 0.0f,		 0.0f)
-#define ROT_Y_180					CVector( 0.0f,		 180.0f,	 0.0f)
-#define ROT_Y_90					CVector( 0.0f,		 90.0f,		 0.0f)
+const CVector CRYSTAL_OFFSET_POS1 =			CVector(-30.0f,		 0.0f,		-35.0f);
+const CVector CRYSTAL_OFFSET_POS2 =			CVector( 30.0f,		 0.0f,		-35.0f);
+const CVector CRYSTAL_OFFSET_POS3 =			CVector(-67.5f,		 36.0f,		-30.0f);
+const CVector CRYSTAL_OFFSET_POS4 =			CVector( 67.5f,		 36.0f,		-30.0f);
+const CVector CRYSTAL_OFFSET_POS5 =			CVector(-140.0f,	 40.0f,		-75.0f);
+const CVector CRYSTAL_OFFSET_POS6 =			CVector(-140.0f,	 40.0f,		-125.0f);
+const CVector CRYSTAL_OFFSET_POS7 =			CVector(-175.0f,	 0.0f,		-175.0f);
+const CVector CRYSTAL_OFFSET_POS8 =			CVector( 140.0f,	 40.0f,		-75.0f);
+const CVector CRYSTAL_OFFSET_POS9 =			CVector( 140.0f,	 40.0f,		-125.0f);
+const CVector CRYSTAL_OFFSET_POS10 =		CVector( 175.0f,	 0.0f,		-175.0f);
+const CVector CRYSTAL_SCALE_BIG =			CVector::one * 2.0f;
 
-#define WATER_OFFSET_POS			CVector( 0.0f,		-15.0f,		-100.0f)
-#define WATER_SCALE					CVector( 200.0f,	 0.0f,		 100.0f)
+const CVector ROT_X_180 =					CVector( 180.0f,	 0.0f,		 0.0f);
+const CVector ROT_X_90 =					CVector( 90.0f,		 0.0f,		 0.0f);
+const CVector ROT_Y_180 =					CVector( 0.0f,		 180.0f,	 0.0f);
+const CVector ROT_Y_90 =					CVector( 0.0f,		 90.0f,		 0.0f);
 
-#define RESPAWN_OFFSET_POS			CVector( 0.0f,		 0.0f,		-30.0f)
-#define RESPAWN_RADIUS				30.0f
+const CVector WATER_OFFSET_POS =			CVector( 0.0f,		-15.0f,		-100.0f);
+const CVector WATER_MOVE_POS =				CVector( 0.0f,		-45.0f,		-100.0f);
+const CVector WATER_SCALE =					CVector( 200.0f,	 0.0f,		 100.0f);
+
+const CVector RESPAWN_OFFSET_POS =			CVector( 0.0f,		 0.0f,		-30.0f);
+constexpr float RESPAWN_RADIUS =			30.0f;
 
 CRoom6::CRoom6(const CVector& pos)
 	: CRoomBase(ROOM_LENGTH)
@@ -97,39 +102,60 @@ void CRoom6::SetEnableRoom(bool enable)
 	CSaveManager* saveMgr = CSaveManager::Instance();
 	// —LŒøŽž‚Ì‚Ý
 	if (enable) {
-		saveMgr->AddMoveAirObj(mpSwitchMoveAirObj1);
-		saveMgr->AddMoveAirObj(mpSwitchMoveAirObj2);
-		saveMgr->AddSwitch(mpCrystal1);
-		saveMgr->AddSwitch(mpCrystal2);
-		saveMgr->AddSwitch(mpCrystal3);
-		saveMgr->AddSwitch(mpCrystal4);
-		saveMgr->AddSwitch(mpCrystal5);
-		saveMgr->AddSwitch(mpCrystal6);
-		saveMgr->AddSwitch(mpCrystal7);
-		saveMgr->AddSwitch(mpCrystal8);
-		saveMgr->AddSwitch(mpCrystal9);
-		saveMgr->AddSwitch(mpCrystal10);
+		saveMgr->AddSavableObj(mpSwitchMoveAirObj1);
+		saveMgr->AddSavableObj(mpSwitchMoveAirObj2);
+		saveMgr->AddSavableObj(mpCrystal1);
+		saveMgr->AddSavableObj(mpCrystal2);
+		saveMgr->AddSavableObj(mpCrystal3);
+		saveMgr->AddSavableObj(mpCrystal4);
+		saveMgr->AddSavableObj(mpCrystal5);
+		saveMgr->AddSavableObj(mpCrystal6);
+		saveMgr->AddSavableObj(mpCrystal7);
+		saveMgr->AddSavableObj(mpCrystal8);
+		saveMgr->AddSavableObj(mpCrystal9);
+		saveMgr->AddSavableObj(mpCrystal10);
+		saveMgr->AddSavableObj(mpGenerator1);
+		saveMgr->AddSavableObj(mpGenerator2);
+		saveMgr->AddSavableObj(mpWater);
+		saveMgr->AddSavableObj(mpShield1);
+		saveMgr->AddSavableObj(mpShield2);
+		saveMgr->AddSavableObj(mpShield3);
+		saveMgr->AddSavableObj(mpShield4);
+		saveMgr->AddSavableObj(mpShield5);
+		saveMgr->AddSavableObj(mpShield6);
 	}
 	// –³ŒøŽž
 	else
 	{
-		saveMgr->DeleteMoveAirObj(mpSwitchMoveAirObj1);
-		saveMgr->DeleteMoveAirObj(mpSwitchMoveAirObj2);
-		saveMgr->DeleteSwitch(mpCrystal1);
-		saveMgr->DeleteSwitch(mpCrystal2);
-		saveMgr->DeleteSwitch(mpCrystal3);
-		saveMgr->DeleteSwitch(mpCrystal4);
-		saveMgr->DeleteSwitch(mpCrystal5);
-		saveMgr->DeleteSwitch(mpCrystal6);
-		saveMgr->DeleteSwitch(mpCrystal7);
-		saveMgr->DeleteSwitch(mpCrystal8);
-		saveMgr->DeleteSwitch(mpCrystal9);
-		saveMgr->DeleteSwitch(mpCrystal10);
+		saveMgr->DeleteSavableObj(mpSwitchMoveAirObj1);
+		saveMgr->DeleteSavableObj(mpSwitchMoveAirObj2);
+		saveMgr->DeleteSavableObj(mpCrystal1);
+		saveMgr->DeleteSavableObj(mpCrystal2);
+		saveMgr->DeleteSavableObj(mpCrystal3);
+		saveMgr->DeleteSavableObj(mpCrystal4);
+		saveMgr->DeleteSavableObj(mpCrystal5);
+		saveMgr->DeleteSavableObj(mpCrystal6);
+		saveMgr->DeleteSavableObj(mpCrystal7);
+		saveMgr->DeleteSavableObj(mpCrystal8);
+		saveMgr->DeleteSavableObj(mpCrystal9);
+		saveMgr->DeleteSavableObj(mpCrystal10);
+		saveMgr->DeleteSavableObj(mpGenerator1);
+		saveMgr->DeleteSavableObj(mpGenerator2);
+		saveMgr->DeleteSavableObj(mpWater);
+		saveMgr->DeleteSavableObj(mpShield1);
+		saveMgr->DeleteSavableObj(mpShield2);
+		saveMgr->DeleteSavableObj(mpShield3);
+		saveMgr->DeleteSavableObj(mpShield4);
+		saveMgr->DeleteSavableObj(mpShield5);
+		saveMgr->DeleteSavableObj(mpShield6);
 	}
 }
 
 void CRoom6::CreateFieldObjects()
 {
+	mpWeight = new CWeight(Position() + WEIGHT_POS);
+	mObjs.push_back(mpWeight);
+
 	mpSwitch1 = new CSwitch(Position() + SWITCH_OFFSET_POS1, true);
 	mpSwitch2 = new CSwitch(Position() + SWITCH_OFFSET_POS2, true);
 
@@ -231,12 +257,14 @@ void CRoom6::CreateFieldObjects()
 	mpCrystal10->GetCrystal()->Scale(CRYSTAL_SCALE_BIG);
 	mpCrystal7->SetActionObj(mpGenerator1);
 	mpCrystal10->SetActionObj(mpGenerator2);
-	mpCrystal7->SetOnOff(true);
+	mpCrystal7->SetOnOff(false);
 	mpCrystal10->SetOnOff(true);
 
-	mpWater = new CWater(WATER_SCALE);
-	mpWater->Position(Position() + WATER_OFFSET_POS);
+	mpWater = new CSwitchWater(Position() + WATER_OFFSET_POS, Position() + WATER_MOVE_POS, WATER_SCALE);
 	mObjs.push_back(mpWater);
+	mpWater->SetSwitchs({ mpSwitch1,mpSwitch2 });
+	mpSwitch1->SetActionObj(mpWater);
+	mpSwitch2->SetActionObj(mpWater);
 
 	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
 	mObjs.push_back(mpRespawnArea);

@@ -8,18 +8,18 @@
 #include "Easing.h"
 
 // メニューのアニメーション時間
-#define OPEN_ANIM_TIME 0.25f
+constexpr float OPEN_ANIM_TIME =		0.25f;
 // メニューのアニメーション後の待ち時間
-#define OPENED_WAIT_TIME 0.5f
+constexpr float  OPENED_WAIT_TIME =		0.5f;
 
 // ボタンのオフセット座標
-#define BUTTON_OFFSET_POS1 CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.5f)
-#define BUTTON_OFFSET_POS2 CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.75f)
+const CVector2 BUTTON_OFFSET_POS1 =		CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.5f);
+const CVector2 BUTTON_OFFSET_POS2 =		CVector2(WINDOW_WIDTH * 0.825f, WINDOW_HEIGHT * 0.75f);
 // ボタンのサイズ
-#define BUTTON_SIZE CVector2(340.0f, 96.0f)
+const CVector2 BUTTON_SIZE =			CVector2(340.0f, 96.0f);
 
 // 背景画像のパス
-#define BG_PATH "UI/game_clear_bg.png"
+const char* const BG_PATH =				"UI/game_clear_bg.png";
 
 // コンストラクタ
 CGameClearUI::CGameClearUI()

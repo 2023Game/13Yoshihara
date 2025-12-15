@@ -3,13 +3,13 @@
 #include "CInput.h"
 
 // 接続ターゲットの座標
-#define TARGET_POS CVector(2.5f,0.0f,0.0f)
+const CVector TARGET_POS =	CVector(2.5f, 0.0f, 0.0f);
 
 // 空中の接続オブジェクトの重さ
-#define WEIGHT 1.0f
+constexpr float WEIGHT =	1.0f;
 
 // コライダーの半径
-#define RADIUS 5.0f
+constexpr float RADIUS =	5.0f;
 
 // コンストラクタ
 CAirConnectObj::CAirConnectObj()

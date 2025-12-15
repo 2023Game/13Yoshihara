@@ -7,26 +7,26 @@
 #include "CConnectTarget.h"
 
 // 画像の座標
-#define IMG_OFFSET_POS CVector(0.0f,10.0f,0.0f)
+const CVector IMG_OFFSET_POS =		CVector(0.0f, 10.0f, 0.0f);
 // 画像のサイズ
-#define IMG_SIZE 2.0f
+constexpr float IMG_SIZE =			2.0f;
 
 // コライダーの高さ
-#define HEIGHT 10.0f
+constexpr float HEIGHT =			10.0f;
 // コライダーの半径
-#define RADIUS 10.0f
+constexpr float RADIUS =			10.0f;
 
 // 合成の移動速度
-#define MERGE_SPEED 10.0f
+constexpr float MERGE_SPEED =		10.0f;
 
 // 飛び上がりの移動速度
-#define JUMP_MOVE_SPEEDY	100.0f
-#define JUMP_MOVE_SPEED		20.0f
+constexpr float JUMP_MOVE_SPEEDY =	100.0f;
+constexpr float JUMP_MOVE_SPEED =	20.0f;
 
 // 待機の上下移動速度
-#define IDLE_MOVE_SPEED 2.0f
+constexpr float IDLE_MOVE_SPEED =	2.0f;
 // 待機の上下が切り替わる時間
-#define CHANGE_UD_TIME 1.0f
+constexpr float CHANGE_UD_TIME =	1.0f;
 
 // コンストラクタ
 CPortalFragment::CPortalFragment(EFragmentType fragmentType,

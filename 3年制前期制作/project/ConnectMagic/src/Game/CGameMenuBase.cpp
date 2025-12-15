@@ -7,25 +7,25 @@
 #include "Easing.h"
 #include "CSceneManager.h"
 
-#define MENU_ALPHA 0.75f
+constexpr float MENU_ALPHA =			0.75f;
 
 // 効果音の音量
-#define SE_VOLUME 0.5f
+constexpr float SE_VOLUME =				0.5f;
 
 // サイズの倍率
-#define SIZE_RATIO 1.5f
+constexpr float SIZE_RATIO =			1.5f;
 // ボタンのサイズ
-#define BUTTON_SIZE CVector2(340.0f, 96.0f)*1.5f
+const CVector2 BUTTON_SIZE =			CVector2(340.0f, 96.0f) * 1.5f;
 // ボタンのオフセット座標
-#define BUTTON_OFFSET_POSX 200.0f
+constexpr float BUTTON_OFFSET_POSX =	200.0f;
 
 // メニューのアニメーション時間
-#define OPEN_ANIM_TIME 0.25f
+constexpr float OPEN_ANIM_TIME =		0.25f;
 // メニューのアニメーション後の待ち時間
-#define OPENED_WAIT_TIME 0.1f
+constexpr float OPENED_WAIT_TIME =		0.1f;
 
 // テキストのオフセット座標
-#define TEXT_OFFSET_POSY 50.0f
+constexpr float TEXT_OFFSET_POSY =		50.0f;
 
 // コンストラクタ
 CGameMenuBase::CGameMenuBase(std::vector<std::string> menuItemPathList)

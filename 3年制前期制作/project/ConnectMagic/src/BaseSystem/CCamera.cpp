@@ -8,8 +8,8 @@ CCamera* CCamera::spMainCamera = nullptr;
 CCamera* CCamera::spCurrentCamera = nullptr;
 
 // カメラが衝突したときの調整値
-#define Camera_HIT_POSY 1.0f
-#define Camera_HIT_POSXZ 0.0f
+constexpr float Camera_HIT_POSY =	1.0f;
+constexpr float Camera_HIT_POSXZ =	0.0f;
 
 // コンストラクタ
 CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)

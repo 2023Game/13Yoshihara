@@ -5,10 +5,10 @@
 #include "CConnectPointManager.h"
 
 // 頂点
-#define VERT_POS_1 -1.0f, 0.0f, -1.0f
-#define VERT_POS_2 -1.0f, 0.0f,  1.0f
-#define VERT_POS_3  1.0f, 0.0f,  1.0f
-#define VERT_POS_4  1.0f, 0.0f, -1.0f
+const CVector VERT_POS_1 = CVector(-1.0f, 0.0f, -1.0f);
+const CVector VERT_POS_2 = CVector(-1.0f, 0.0f,  1.0f);
+const CVector VERT_POS_3 = CVector( 1.0f, 0.0f,  1.0f);
+const CVector VERT_POS_4 = CVector( 1.0f, 0.0f, -1.0f);
 
 // コンストラクタ
 CWater::CWater(CVector scale)
@@ -51,14 +51,14 @@ bool CWater::Init(const char* vertexPath, const char* flagPath)
 
 	// 平面を生成
 	float vertices[] = {
-		// positions    // uvs       // normals
-		VERT_POS_1,		0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-		VERT_POS_2,		1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-		VERT_POS_3,		1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+		// positions										// uvs       // normals
+		VERT_POS_1.X(), VERT_POS_1.Y(), VERT_POS_1.Z(),		0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+		VERT_POS_2.X(), VERT_POS_2.Y(), VERT_POS_2.Z(),		1.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+		VERT_POS_3.X(), VERT_POS_3.Y(), VERT_POS_3.Z(),		1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
 
-		VERT_POS_1,		0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
-		VERT_POS_3,		0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
-		VERT_POS_4,		1.0f, 1.0f,  0.0f, 1.0f, 0.0f
+		VERT_POS_1.X(), VERT_POS_1.Y(), VERT_POS_1.Z(),		0.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+		VERT_POS_3.X(), VERT_POS_3.Y(), VERT_POS_3.Z(),		0.0f, 1.0f,  0.0f, 1.0f, 0.0f,
+		VERT_POS_4.X(), VERT_POS_4.Y(), VERT_POS_4.Z(),		1.0f, 1.0f,  0.0f, 1.0f, 0.0f
 	};
 
 	// VAOを一つ生成

@@ -15,51 +15,71 @@
 #include "CTaskManager.h"
 
 // 体の半径と高さ
-#define BODY_RADIUS 2.5f
-#define BODY_HEIGHT 15.0f
+constexpr float BODY_RADIUS =				2.5f;
+constexpr float BODY_HEIGHT =				15.0f;
 
 // 前方の地面確認用レイの前方への距離
-const float RAY_FRONT_DIST = 5.0f;
+constexpr float RAY_FRONT_DIST =			5.0f;
 
 // 探知コライダの半径
-#define SEARCH_RADIUS 75.0f
+constexpr float SEARCH_RADIUS =				75.0f;
 
 // 杖のオフセット座標と回転とスケール
-#define WAND_OFFSET_POS CVector(-90.0f,8.0f,4.0f)
-#define WAND_OFFSET_ROT CVector(0.0f,0.0f,90.0f)
-#define WAND_SCALE	3.0f
+const CVector WAND_OFFSET_POS =				CVector(-90.0f,8.0f,4.0f);
+const CVector WAND_OFFSET_ROT =				CVector(0.0f,0.0f,90.0f);
+constexpr float WAND_SCALE =				3.0f;
+
+// 減速する速度
+constexpr float DECREASE_SPEED =			0.1f;
+// 加速する速度
+constexpr float INCREASE_SPEED =			0.5f;
 
 // ターゲットするときの視点とオブジェクトの画面距離の最大
-#define TARGET_MAX_DISTANCE (WINDOW_HEIGHT / 2)
+constexpr float TARGET_MAX_DISTANCE =		(WINDOW_HEIGHT / 2);
 
 // ターゲット場所の画像のスケール
-#define TARGET_POINT_IMG_SCALE 0.1f
+constexpr float TARGET_POINT_IMG_SCALE =	0.1f;
 
 // アニメーションのパス
-#define ANIM_PATH "Character\\Adventurer\\AdventurerAnim\\"
+const std::string ANIM_PATH =				"Character\\Adventurer\\AdventurerAnim\\";
 
 // アニメーションデータのテーブル
 const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 {
 	{ "",								true,	0.0f,	1.0f},	// Tポーズ
-	{ANIM_PATH"Idle.x",					true,	118.0f,	1.0f},	// 待機
-	{ANIM_PATH"Idle_Wand.x",			true,	221.0f,	1.0f},	// 杖持ち待機
-	{ANIM_PATH"Run.x",					true,	48.0f,	1.0f},	// 走り
-	{ANIM_PATH"Run_Wand.x",				true,	43.0f,	1.0f},	// 杖持ち走り
-	{ANIM_PATH"Jump_Start.x",			false,	40.0f,	2.0f},	// ジャンプ開始
-	{ANIM_PATH"Jump.x",					true,	40.0f,	1.0f},	// ジャンプ中
-	{ANIM_PATH"Jump_End.x",				false,	11.0f,	2.0f},	// ジャンプ終了
-	{ANIM_PATH"Attack_Wand.x",			false,	61.0f,	1.5f},	// 杖攻撃
-	{ANIM_PATH"Swing.x",				true,	70.0f,	1.0f},	// スイング
-	{ANIM_PATH"Swing_End_Start.x",		false,	60.0f,	2.0f},	// スイング終了の開始
-	{ANIM_PATH"Swing_End.x",			true,	40.0f,	1.0f},	// スイング終了中
-	{ANIM_PATH"Swing_End_End.x",		false,	69.0f,	2.0f},	// スイング終了の終了
+	{ANIM_PATH + "Idle.x",				true,	118.0f,	1.0f},	// 待機
+	{ANIM_PATH + "Idle_Wand.x",			true,	221.0f,	1.0f},	// 杖持ち待機
+	{ANIM_PATH + "Run.x",				true,	48.0f,	1.0f},	// 走り
+	{ANIM_PATH + "Run_Wand.x",			true,	43.0f,	1.0f},	// 杖持ち走り
+	{ANIM_PATH + "Jump_Start.x",		false,	40.0f,	2.0f},	// ジャンプ開始
+	{ANIM_PATH + "Jump.x",				true,	40.0f,	1.0f},	// ジャンプ中
+	{ANIM_PATH + "Jump_End.x",			false,	11.0f,	2.0f},	// ジャンプ終了
+	{ANIM_PATH + "Attack_Wand.x",		false,	61.0f,	1.5f},	// 杖攻撃
+	{ANIM_PATH + "Swing.x",				true,	70.0f,	1.0f},	// スイング
+	{ANIM_PATH + "Swing_End_Start.x",	false,	60.0f,	2.0f},	// スイング終了の開始
+	{ANIM_PATH + "Swing_End.x",			true,	40.0f,	1.0f},	// スイング終了中
+	{ANIM_PATH + "Swing_End_End.x",		false,	69.0f,	2.0f},	// スイング終了の終了
 };
 
-// 減速する速度
-#define DECREASE_SPEED 0.1f
-// 加速する速度
-#define INCREASE_SPEED 0.5f
+PlayerData CPlayer::SaveState()
+{
+	PlayerData data(Position(),
+		EulerAngles(),
+		CConnectPointManager::Instance()->GetConnectWandTarget(),
+		AnimationIndex(),
+		GetAnimationFrame());
+
+	return data;
+}
+
+void CPlayer::LoadState(const PlayerData& data)
+{
+	Position(data.pos);
+	Rotation(data.vec);
+	CConnectPointManager::Instance()->EnableConnect(data.target);
+	ChangeAnimation(data.animationType);
+	SetAnimationFrame(data.animationFrame);
+}
 
 // コンストラクタ
 CPlayer::CPlayer()
@@ -248,8 +268,6 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		{
 			// 保存管理クラスをロード状態へ
 			CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
-			// ポーズ
-			CTaskManager::Instance()->Pause(PAUSE_GAME);
 			// 死亡状態にする
 			ChangeState(EState::eDeath);
 			return;

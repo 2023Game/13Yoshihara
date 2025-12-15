@@ -8,11 +8,11 @@
 #include "Easing.h"
 
 // メニューのアニメーション時間
-#define OPEN_ANIM_TIME 0.25f
+constexpr float OPEN_ANIM_TIME =	0.25f;
 // メニューのアニメーション後の待ち時間
-#define OPENED_WAIT_TIME 0.5f
+constexpr float OPENED_WAIT_TIME =	0.5f;
 
-#define TEXT_OFFSET_POS CVector2(0.0f, 20.0f)
+const CVector2 TEXT_OFFSET_POS =	CVector2(0.0f, 20.0f);
 
 // コンストラクタ
 CEndUIBase::CEndUIBase(std::string bgPath)

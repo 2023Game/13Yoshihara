@@ -3,6 +3,45 @@
 #include "CSwitchButton.h"
 #include "CSwitchObject.h"
 #include "CCrystal.h"
+#include <typeinfo>
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct SwitchSaveData {
+	bool isOn;			// スイッチが作動しているか
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CSwitch::SaveState() const
+{
+	SwitchSaveData data;
+	data.isOn = GetOnOff();
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CSwitch::LoadState(const std::vector<char>& data)
+{
+	// データサイズのチェック
+	if (data.size() != sizeof(SwitchSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const SwitchSaveData* saveData = reinterpret_cast<const SwitchSaveData*>(data.data());
+	SetOnOff(saveData->isOn);
+}
+
+size_t CSwitch::GetTypeID() const
+{
+	return typeid(CSwitch).hash_code();
+}
+
+unsigned int CSwitch::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 // コンストラクタ
 CSwitch::CSwitch(CVector pos, bool isAttach, ESwitchType type)
@@ -11,6 +50,7 @@ CSwitch::CSwitch(CVector pos, bool isAttach, ESwitchType type)
 	, mpButton(nullptr)
 	, mpCrystal(nullptr)
 	, mSwitchType(type)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	switch (mSwitchType)
 	{

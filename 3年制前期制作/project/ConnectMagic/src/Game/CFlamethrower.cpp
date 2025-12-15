@@ -4,13 +4,13 @@
 #include "Maths.h"
 
 // 炎の発射間隔時間
-#define THROW_INTERVAL 0.15f
+constexpr float THROW_INTERVAL =	0.15f;
 // 炎の発射方向のブレ幅
-#define FLAME_DIR_RAND 0.02f
+constexpr float FLAME_DIR_RAND =	0.02f;
 // 炎の移動速度
-#define FLAME_MOVE_SPEED 75.0f
+constexpr float FLAME_MOVE_SPEED =	75.0f;
 // 炎の色
-#define FLAME_COLOR CColor(1.0f, 0.25f, 0.1f)
+const CColor FLAME_COLOR =			CColor(1.0f, 0.25f, 0.1f);
 
 // コンストラクタ
 CFlamethrower::CFlamethrower(CObjectBase* owner, const CMatrix* attach,

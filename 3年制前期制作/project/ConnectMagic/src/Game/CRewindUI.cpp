@@ -4,13 +4,13 @@
 #include "CGaugeUI2D.h"
 
 // 画像のパス
-#define IMG_PATH "UI\\white.png"
+const char* const IMG_PATH =	"UI\\white.png";
 // 画像のアルファ
-#define ALPHA 0.1f
+constexpr float ALPHA =			0.1f;
 // 文字座標
-#define TEXT_POS CVector(0.0f,120.0f,0.0f)
+const CVector TEXT_POS =		CVector(0.0f, 120.0f, 0.0f);
 // 文字サイズ
-#define TEXT_FONT_SIZE 128
+constexpr int TEXT_FONT_SIZE =	128;
 
 // コンストラクタ
 CRewindUI::CRewindUI()

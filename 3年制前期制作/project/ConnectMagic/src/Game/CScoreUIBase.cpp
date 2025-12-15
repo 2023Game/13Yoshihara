@@ -2,7 +2,7 @@
 #include "CTextUI2D.h"
 
 // スコアUIのオフセット座標
-#define SCORE_UI_OFFSET_POS CVector(WINDOW_WIDTH * 0.35f,WINDOW_HEIGHT - 100.0f,0.0f)
+const CVector SCORE_UI_OFFSET_POS = CVector(WINDOW_WIDTH * 0.35f, WINDOW_HEIGHT - 100.0f, 0.0f);
 
 // スコア表示UIのインスタンス
 CScoreUIBase* CScoreUIBase::spInstance = nullptr;

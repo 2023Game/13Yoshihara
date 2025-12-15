@@ -2,7 +2,7 @@
 #include <cmath>
 
 // 3D空間での縮尺（3D空間での1のサイズに相当するピクセル数）
-#define WORLD_UNIT_PER_PIXEL 256.0f
+constexpr float WORLD_UNIT_PER_PIXEL = 256.0f;
 
 //コンストラクタ
 CImage3D::CImage3D(std::string path,

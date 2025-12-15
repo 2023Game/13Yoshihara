@@ -1,8 +1,8 @@
 #include "CSword.h"
 #include "CColliderCapsule.h"
 
-#define SWORD_LENGTH 100.0f
-#define SWORD_RADIUS 1.0f
+constexpr float SWORD_LENGTH = 100.0f;
+constexpr float SWORD_RADIUS = 1.0f;
 
 // コンストラクタ
 CSword::CSword(CObjectBase* owner, ETag tag,

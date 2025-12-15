@@ -8,21 +8,21 @@
 #include "Maths.h"
 
 // レイを伸ばせる距離の最大
-#define RAY_MAX_DISTANCE 75.0f
+constexpr float RAY_MAX_DISTANCE =		75.0f;
 
 // ターザンの最短距離
-#define TARZAN_MIN_DISTANCE 30.0f
+constexpr float TARZAN_MIN_DISTANCE =	30.0f;
 
 // 接続部のオフセット座標
-#define POINT_OFFSET_POSX 0.0f
-#define POINT_OFFSET_POSY 45.0f
-#define POINT_OFFSET_POSZ 0.0f
+constexpr float POINT_OFFSET_POSX =		0.0f;
+constexpr float POINT_OFFSET_POSY =		45.0f;
+constexpr float POINT_OFFSET_POSZ =		0.0f;
 
 // 接続部のスケール
-#define POINT_SCALE 0.5f
+constexpr float POINT_SCALE =			0.5f;
 
 // 杖の重量
-#define WAND_WEIGHT 0.5f
+constexpr float WAND_WEIGHT =			0.5f;
 
 // インスタンス
 CConnectPointManager* CConnectPointManager::spInstance = nullptr;
@@ -249,8 +249,12 @@ void CConnectPointManager::ResetCollider()
 // 接続部を有効
 void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 {
-	// ターゲットが空なら処理しない
-	if (connectTarget == nullptr) return;
+	// ターゲットが空なら接続無効
+	if (connectTarget == nullptr)
+	{
+		DisableConnect(GetConnectWandTarget());
+		return;
+	}
 
 	// 1つ目の接続が無効なら
 	if (!mpConnectPoint1->IsEnable())
@@ -278,6 +282,9 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 	else if (mpConnectPoint1->IsEnable() &&
 		!mpConnectPoint2->IsEnable())
 	{
+		// 同じオブジェクトなら処理しない
+		if (connectTarget->GetConnectObj() == mpConnectPoint1->GetConnectObj())return;
+
 		// 座標を設定
 		mpConnectPoint2->Position(connectTarget->Position());
 		// 親子設定
@@ -286,7 +293,7 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 		mpConnectPoint2->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
 		mpConnectPoint1->GetConnectObj()->JustConnect(mpConnectPoint2->Position());
-		mpConnectPoint2->GetConnectObj()->JustConnect(mpConnectPoint2->Position());
+		mpConnectPoint2->GetConnectObj()->JustConnect(mpConnectPoint1->Position());
 
 		// 杖の接続を解除
 		SetWandConnect(false, nullptr);
@@ -442,8 +449,13 @@ bool CConnectPointManager::IsWandConnectAirObject()
 	// 杖が接続されているか
 	if (GetWandConnect())
 	{
+		CConnectTarget* target = GetConnectWandTarget();
 		// 杖と接続中のオブジェクト
-		CConnectObject* obj = GetConnectWandTarget()->GetConnectObj();
+		CConnectObject* obj = nullptr;
+		if (target != nullptr)
+		{
+			obj = target->GetConnectObj();
+		}
 		if (obj != nullptr)
 		{
 			// 空中の接続オブジェクトなら

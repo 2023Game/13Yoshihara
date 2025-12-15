@@ -4,13 +4,13 @@
 #include "CColliderSphere.h"
 
 // 回転速度
-#define ROT_SPEED 200.0f
+constexpr float ROT_SPEED = 200.0f;
 
 // コライダーの半径
-#define RADIUS 5.0f
+constexpr float RADIUS =	5.0f;
 
 // 大きさ
-#define SIZE 2.0f
+constexpr float SIZE =		2.0f;
 
 // コンストラクタ
 CPortal::CPortal()

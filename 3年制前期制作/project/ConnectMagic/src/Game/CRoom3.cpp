@@ -8,45 +8,45 @@
 #include "CSaveManager.h"
 
 // 部屋の長さ
-#define ROOM_LENGTH 240.0f
+constexpr float ROOM_LENGTH =					240.0f;
 
 // 重りの座標
-#define weight_OFFSET_POS1	CVector(160.0f,60.0f,-220.0f)
-#define weight_OFFSET_POS2	CVector(80.0f,0.0f,-100.0f)
+const CVector weight_OFFSET_POS1 =				CVector( 160.0f,	 60.0f,	-220.0f);
+const CVector weight_OFFSET_POS2 =				CVector( 80.0f,		 0.0f,	-100.0f);
 
 // スイッチの座標
-#define SWITCH_OFFSET_POS1	CVector(10.0f,0.0f,-30.0f)
-#define SWITCH_OFFSET_POS2	CVector(120.0f,60.0f,-60.0f)
+const CVector SWITCH_OFFSET_POS1 =				CVector( 10.0f,		 0.0f,	-30.0f);
+const CVector SWITCH_OFFSET_POS2 =				CVector( 120.0f,	 60.0f,	-60.0f);
 
 // スイッチで動く床のオフセット座標
-#define SWITCH_MOVE_FLOOR_OFFSET_POS1	CVector(80.0f,50.0f,-40.0f)
-#define SWITCH_MOVE_FLOOR_OFFSET_POS2	CVector(0.0f,-10.0f,-40.0f)
+const CVector SWITCH_MOVE_FLOOR_OFFSET_POS1 =	CVector( 80.0f,		 50.0f,	-40.0f);
+const CVector SWITCH_MOVE_FLOOR_OFFSET_POS2 =	CVector( 0.0f,		-10.0f,	-40.0f);
 // スイッチで動く床の移動
-#define SWITCH_MOVE_FLOOR_MOVE1			CVector(0.0f,-60.0f,0.0f)
-#define SWITCH_MOVE_FLOOR_MOVE2			CVector(0.0f,0.0f,-120.0f)
+const CVector SWITCH_MOVE_FLOOR_MOVE1 =			CVector( 0.0f,		-60.0f,	 0.0f);
+const CVector SWITCH_MOVE_FLOOR_MOVE2 =			CVector( 0.0f,		 0.0f,	-120.0f);
 
 // 動く床のオフセット座標
-#define MOVE_FLOOR_OFFSET_POS1	CVector(120.0f,-10.0f,0.0f)
-#define MOVE_FLOOR_OFFSET_POS2	CVector(160.0f,-10.0f,0.0f)
-#define MOVE_FLOOR_OFFSET_POS3	CVector(160.0f,50.0f,-160.0f)
+const CVector MOVE_FLOOR_OFFSET_POS1 =			CVector( 120.0f,	-10.0f,	 0.0f);
+const CVector MOVE_FLOOR_OFFSET_POS2 =			CVector( 160.0f,	-10.0f,	 0.0f);
+const CVector MOVE_FLOOR_OFFSET_POS3 =			CVector( 160.0f,	 50.0f,	-160.0f);
 // 動く床のスケール
-#define MOVE_FLOOR_SCALE		CVector(4.0f,1.0f,4.0f)
+const CVector MOVE_FLOOR_SCALE =				CVector( 4.0f,		 1.0f,	 4.0f);
 // 動く床の移動
-#define MOVE_FLOOR_MOVE1		CVector(-80.0f,0.0f,0.0f)
-#define MOVE_FLOOR_MOVE2		CVector(0.0f,0.0f,-120.0f)
-#define MOVE_FLOOR_MOVE3		CVector(0.0f,-60.0f,0.0f)
+const CVector MOVE_FLOOR_MOVE1 =				CVector(-80.0f,		 0.0f,	 0.0f);
+const CVector MOVE_FLOOR_MOVE2 =				CVector( 0.0f,		 0.0f,	-120.0f);
+const CVector MOVE_FLOOR_MOVE3 =				CVector( 0.0f,		-60.0f,	 0.0f);
 // 動く床の移動時間
-#define MOVE_FLOOR_MOVE_TIME	2.5f
+constexpr float MOVE_FLOOR_MOVE_TIME =			2.5f;
 
 // 水のオフセット座標
-#define WATER_OFFSET_POS	CVector(80.0f,-5.0f,-120.0f)
+const CVector WATER_OFFSET_POS =				CVector( 80.0f,		-5.0f,	-120.0f);
 // 水のスケール
-#define WATER_SCALE			CVector(100.0f,1.0f,120.0f)
+const CVector WATER_SCALE =						CVector( 100.0f,	 1.0f,	 120.0f);
 
 // リスポーン地点
-#define RESPAWN_OFFSET_POS		CVector(0.0f,0.0f,-30.0f)
+const CVector RESPAWN_OFFSET_POS =				CVector( 0.0f,		 0.0f,	-30.0f);
 // リスポーン地点の半径
-#define RESPAWN_RADIUS	30.0f
+constexpr float RESPAWN_RADIUS =				30.0f;
 
 // コンストラクタ
 CRoom3::CRoom3(const CVector& pos)
@@ -83,14 +83,14 @@ void CRoom3::SetEnableRoom(bool enable)
 		mpWeight1->SetEnable(enable);
 		mpWeight2->SetEnable(enable);
 		// 重りを追加
-		saveMgr->AddWeight(mpWeight1);
-		saveMgr->AddWeight(mpWeight2);
+		saveMgr->AddSavableObj(mpWeight1);
+		saveMgr->AddSavableObj(mpWeight2);
 		// 移動床を追加
-		saveMgr->AddMoveFloor(mpSwitchMoveFloor1);
-		saveMgr->AddMoveFloor(mpSwitchMoveFloor2);
-		saveMgr->AddMoveObj(mpMoveFloor1);
-		saveMgr->AddMoveObj(mpMoveFloor2);
-		saveMgr->AddMoveObj(mpMoveFloor3);
+		saveMgr->AddSavableObj(mpSwitchMoveFloor1);
+		saveMgr->AddSavableObj(mpSwitchMoveFloor2);
+		saveMgr->AddSavableObj(mpMoveFloor1);
+		saveMgr->AddSavableObj(mpMoveFloor2);
+		saveMgr->AddSavableObj(mpMoveFloor3);
 	}
 	// 無効時
 	else
@@ -108,14 +108,14 @@ void CRoom3::SetEnableRoom(bool enable)
 			mpWeight2->SetEnable(enable);
 		}
 		// 重りを削除
-		saveMgr->DeleteWeight(mpWeight1);
-		saveMgr->DeleteWeight(mpWeight2);
+		saveMgr->DeleteSavableObj(mpWeight1);
+		saveMgr->DeleteSavableObj(mpWeight2);
 		// 移動床を削除
-		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor1);
-		saveMgr->DeleteMoveFloor(mpSwitchMoveFloor2);
-		saveMgr->DeleteMoveObj(mpMoveFloor1);
-		saveMgr->DeleteMoveObj(mpMoveFloor2);
-		saveMgr->DeleteMoveObj(mpMoveFloor3);
+		saveMgr->DeleteSavableObj(mpSwitchMoveFloor1);
+		saveMgr->DeleteSavableObj(mpSwitchMoveFloor2);
+		saveMgr->DeleteSavableObj(mpMoveFloor1);
+		saveMgr->DeleteSavableObj(mpMoveFloor2);
+		saveMgr->DeleteSavableObj(mpMoveFloor3);
 	}
 }
 

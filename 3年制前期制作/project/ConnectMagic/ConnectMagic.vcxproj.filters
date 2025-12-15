@@ -119,9 +119,6 @@
     <Filter Include="ソース ファイル\Game\Character\Player">
       <UniqueIdentifier>{eaae7974-2825-4b30-b13b-c499a4c89c6e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Weapon\Status">
-      <UniqueIdentifier>{26d63da8-7a3b-42a5-be9b-2aa12b4363dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Field\Object\ConnectObject">
       <UniqueIdentifier>{d2a3212a-df0f-4d15-940a-4b91fe0007b8}</UniqueIdentifier>
     </Filter>
@@ -142,6 +139,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Field\Room">
       <UniqueIdentifier>{b8705340-45e8-41b5-a21b-6e3ae3419b53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Game\System\Save">
+      <UniqueIdentifier>{5e8deec3-3247-4de9-bca0-25539115346b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BaseSystem\Physics">
+      <UniqueIdentifier>{d2c3fed9-2ff8-484a-8778-d97adf241c65}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -481,9 +484,6 @@
     <ClCompile Include="src\Test\CTestField.cpp">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CGearBaseStatus.cpp">
-      <Filter>ソース ファイル\Game\Weapon\Status</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CWand.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
@@ -616,9 +616,6 @@
     <ClCompile Include="src\Game\CShield.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CSaveManager.cpp">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CRewindUI.cpp">
       <Filter>ソース ファイル\Game\UI\UI2D</Filter>
     </ClCompile>
@@ -642,6 +639,15 @@
     </ClCompile>
     <ClCompile Include="src\CSwitchWater.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CSaveManager.cpp">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game\CUIDManager.cpp">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BaseSystem\CPhysicsManager.cpp">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1005,9 +1011,6 @@
     <ClInclude Include="src\Test\CTestField.h">
       <Filter>ソース ファイル\Test\TestScene</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CGearBaseStatus.h">
-      <Filter>ソース ファイル\Game\Weapon\Status</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CWand.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
@@ -1149,12 +1152,6 @@
     <ClInclude Include="src\Game\CShield.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CSaveManager.h">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\SaveData.h">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\MoveState.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
@@ -1181,6 +1178,21 @@
     </ClInclude>
     <ClInclude Include="src\CSwitchWater.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\SaveData.h">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSaveManager.h">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CSavable.h">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Game\CUIDManager.h">
+      <Filter>ソース ファイル\Game\System\Save</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CPhysicsManager.h">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
 #include "CPlayerBase.h"
 // プレイヤーのステータスクラスのインクルード
 #include "CPlayerStatus.h"
+#include "SaveData.h"
 
 class CSound;
 class CWand;
@@ -19,6 +20,10 @@ class CImage;
 class CPlayer : public CPlayerBase ,  public CPlayerStatus
 {
 public:
+	// セーブ・ロード処理
+	PlayerData SaveState();
+	void LoadState(const PlayerData& data);
+
 	// プレイヤーの状態
 	enum class EState
 	{

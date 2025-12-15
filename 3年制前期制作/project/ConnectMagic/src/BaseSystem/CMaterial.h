@@ -2,7 +2,7 @@
 #define CMATERIAL_H
 #include "CTexture.h"
 #include "CModelX.h"
-#define MATERIAL_NAME_LEN 64 //–¼‘O‚Ì’·‚³
+constexpr int MATERIAL_NAME_LEN = 64; //–¼‘O‚Ì’·‚³
 #include "CColor.h"
 
 class CMyShader;

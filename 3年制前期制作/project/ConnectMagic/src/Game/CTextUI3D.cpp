@@ -3,10 +3,10 @@
 #include FT_FREETYPE_H
 
 // 3D空間での縮尺（3D空間での1のサイズに相当するピクセル数）
-#define WORLD_UNIT_PER_PIXEL 256.0f
+constexpr float WORLD_UNIT_PER_PIXEL = 256.0f;
 
 // デフォルトサイズ
-#define DEFAULT_SIZE CVector2(512.0f,64.0f)
+const CVector2 DEFAULT_SIZE = CVector2(512.0f, 64.0f);
 
 // コンストラクタ
 CTextUI3D::CTextUI3D(ETaskPauseType pauseType, bool addTaskList, char* fontPath)

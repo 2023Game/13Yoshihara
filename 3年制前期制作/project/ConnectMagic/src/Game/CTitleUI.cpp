@@ -9,16 +9,16 @@
 #include "Easing.h"
 
 // 「CLICK TO START」の点滅時間
-#define START_TEXT_BLINK_TIME 1.0f
+constexpr float START_TEXT_BLINK_TIME =		1.0f;
 // 「CLICK TO START」の点滅間隔
-#define START_TEXT_INTERVAL_TIME 1.0f
+constexpr float START_TEXT_INTERVAL_TIME =	1.0f;
 // タイトルメニューのアニメーション時間
-#define OPEN_ANIM_TIME 0.25f
+constexpr float OPEN_ANIM_TIME =			0.25f;
 // タイトルメニューのアニメーション後の待ち時間
-#define OPENED_WAIT_TIME 0.5f
+constexpr float OPENED_WAIT_TIME =			0.5f;
 
 // ボタンのサイズ
-#define BUTTON_SIZE CVector2(340.0f, 96.0f)
+const CVector2 BUTTON_SIZE =				CVector2(340.0f, 96.0f);
 
 // コンストラクタ
 CTitleUI::CTitleUI()

@@ -5,11 +5,11 @@
 #include "CWeight.h"
 
 // 下がる距離
-#define PUSH_POS_Y 0.5f
+constexpr float PUSH_POS_Y = 0.5f;
 // 上下する速度
-#define MOVE_SPEED 0.1f
+constexpr float MOVE_SPEED = 0.1f;
 // 押しているかのコライダーの半径
-#define COL_RADIUS 5.0f
+constexpr float COL_RADIUS = 5.0f;
 
 // コンストラクタ
 CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)

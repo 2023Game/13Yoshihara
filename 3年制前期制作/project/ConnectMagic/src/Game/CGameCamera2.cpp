@@ -3,9 +3,9 @@
 #include "Maths.h"
 
 // カメラの回転速度
-#define ROTATE_SPEED 0.1f
+constexpr float ROTATE_SPEED = 0.1f;
 // カメラの上下回転の範囲
-#define ROTATE_RANGE_X 45.0f
+constexpr float ROTATE_RANGE_X = 45.0f;
 
 // コンストラクタ
 CGameCamera2::CGameCamera2(const CVector& eye, const CVector& center, bool isMainCamera)

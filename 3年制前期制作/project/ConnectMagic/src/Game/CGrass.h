@@ -5,8 +5,8 @@
 class CImage3D;
 
 // ツタの高さと幅
-#define VINE_HEIGHT 50.0f
-#define VINE_WIDTH	100.0f
+constexpr float VINE_HEIGHT = 50.0f;
+constexpr float VINE_WIDTH	= 100.0f;
 
 // 草の種類
 enum class EGrassType
@@ -22,7 +22,7 @@ public:
 	// コンストラクタ(初期値は通常の草）
 	CGrass(EGrassType type = EGrassType::eGrass,
 		CVector fireOffsetPos = CVector::zero,
-		float fireScale = FIRE_SCALE);
+		float fireScale = DEFAULT_FIRE_SCALE);
 	// デストラクタ
 	~CGrass();
 

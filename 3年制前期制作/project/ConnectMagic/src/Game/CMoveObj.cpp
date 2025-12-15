@@ -1,9 +1,59 @@
 #include "CMoveObj.h"
 #include "Maths.h"
 #include "CConnectPointManager.h"
+#include <typeinfo>
 
 // 一時停止の時間
-#define STOP_TIME 0.5f
+constexpr float STOP_TIME = 0.5f;
+
+#pragma pack(push,1)// パディング無効化
+// 保存するデータ構造
+struct MoveObjSaveData {
+	CVector pos;		// 現在座標
+	float elapsedTime;	// 経過時間
+	EMoveState moveState;	// 移動状態
+	EMoveState preMoveState;// 前の移動状態
+};
+#pragma pack(pop)	// 設定を元に戻す
+
+std::vector<char> CMoveObj::SaveState() const
+{
+	MoveObjSaveData data;
+	data.pos = Position();				// 現在座標
+	data.elapsedTime = GetElapsedTime();// 経過時間
+	data.moveState = GetMoveState();			// 状態
+	data.preMoveState = GetPreMoveState();		// 前の状態
+
+	// データをバイト列に変換して返す
+	const char* dataPtr = reinterpret_cast<const char*>(&data);
+	return std::vector<char>(dataPtr, dataPtr + sizeof(data));
+}
+
+void CMoveObj::LoadState(const std::vector<char>& data)
+{
+	// データのサイズチェック
+	if (data.size() != sizeof(MoveObjSaveData))
+	{
+		return;
+	}
+
+	// バイト列を構造体に戻し、データを復元
+	const MoveObjSaveData* saveData = reinterpret_cast<const MoveObjSaveData*>(data.data());
+	Position(saveData->pos);
+	SetElapsedTime(saveData->elapsedTime);
+	SetMoveState(saveData->moveState);
+	SetPreMoveState(saveData->preMoveState);
+}
+
+size_t CMoveObj::GetTypeID() const
+{
+	return typeid(CMoveObj).hash_code();
+}
+
+unsigned int CMoveObj::GetUniqueInstanceID() const
+{
+	return mUniqueID;
+}
 
 CMoveObj::CMoveObj(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale,
@@ -14,9 +64,10 @@ CMoveObj::CMoveObj(CModel* model, CModel* col,
 	, mMoveVec(move)
 	, mMoveTime(moveTime)
 	, mElapsedTime(0.0f)
-	, mState(EMoveState::eStop)
-	, mPreState(EMoveState::eBack)
+	, mMoveState(EMoveState::eStop)
+	, mPreMoveState(EMoveState::eBack)
 	, mpCrushedCol(nullptr)
+	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	// 本体のコライダー
 	mpColliderMesh = new CColliderMesh(this, layer, mpModel, true);
@@ -52,7 +103,7 @@ void CMoveObj::Update()
 {
 	mElapsedTime += Times::DeltaTime();
 
-	switch (mState)
+	switch (mMoveState)
 	{
 	case EMoveState::eStop:
 		UpdateStop();
@@ -72,39 +123,39 @@ void CMoveObj::Render()
 }
 
 // 状態を変更
-void CMoveObj::ChangeState(EMoveState state)
+void CMoveObj::ChangeMoveState(EMoveState state)
 {
-	if (mState == state) return;
+	if (mMoveState == state) return;
 	
 	// 一つ前の状態を更新
-	mPreState = mState;
+	mPreMoveState = mMoveState;
 	// 状態を変更
-	mState = state;
+	mMoveState = state;
 	mElapsedTime = 0.0f;
 }
 
 // 状態を設定
-void CMoveObj::SetState(EMoveState state)
+void CMoveObj::SetMoveState(EMoveState state)
 {
-	mState = state;
+	mMoveState = state;
 }
 
 // 状態を取得
-EMoveState CMoveObj::GetState() const
+EMoveState CMoveObj::GetMoveState() const
 {
-	return mState;
+	return mMoveState;
 }
 
 // 前回の状態を設定
-void CMoveObj::SetPreState(EMoveState state)
+void CMoveObj::SetPreMoveState(EMoveState state)
 {
-	mPreState = state;
+	mPreMoveState = state;
 }
 
 // 前回の状態を取得
-EMoveState CMoveObj::GetPreState() const
+EMoveState CMoveObj::GetPreMoveState() const
 {
-	return mPreState;
+	return mPreMoveState;
 }
 
 // 経過時間を設定
@@ -126,16 +177,16 @@ void CMoveObj::UpdateStop()
 	if (mElapsedTime >= STOP_TIME)
 	{
 		// 一つ前が進む状態だったら
-		if (mPreState == EMoveState::eGo)
+		if (mPreMoveState == EMoveState::eGo)
 		{
 			// 戻る状態に変更
-			ChangeState(EMoveState::eBack);
+			ChangeMoveState(EMoveState::eBack);
 		}
 		// 戻る状態なら
-		else if (mPreState == EMoveState::eBack)
+		else if (mPreMoveState == EMoveState::eBack)
 		{
 			// 進む状態へ
-			ChangeState(EMoveState::eGo);
+			ChangeMoveState(EMoveState::eGo);
 		}
 	}
 }
@@ -149,7 +200,7 @@ void CMoveObj::UpdateGo()
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
 	{
-		ChangeState(EMoveState::eStop);
+		ChangeMoveState(EMoveState::eStop);
 	}
 }
 
@@ -162,6 +213,6 @@ void CMoveObj::UpdateBack()
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
 	{
-		ChangeState(EMoveState::eStop);
+		ChangeMoveState(EMoveState::eStop);
 	}
 }

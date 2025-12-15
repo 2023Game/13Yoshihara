@@ -2,7 +2,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#define EPSILON 1e-6f
+constexpr float EPSILON = 1e-6f;
 
 namespace Math
 {

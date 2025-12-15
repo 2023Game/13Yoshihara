@@ -4,7 +4,7 @@
 #include "CImage3D.h"
 #include "Maths.h"
 
-#define WORLD_UNIT_PER_PIXEL 32.0f
+constexpr float WORLD_UNIT_PER_PIXEL = 32.0f;
 
 // コンストラクタ
 CGaugeUI3D::CGaugeUI3D(CObjectBase* owner,std::string gaugePath)

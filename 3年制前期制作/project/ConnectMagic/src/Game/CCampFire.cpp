@@ -2,13 +2,13 @@
 #include "CColliderMesh.h"
 
 // 炎のオフセット座標
-#define FIRE_OFFSET_POS CVector(0.0f,3.0f,0.0f)
+const CVector FIRE_OFFSET_POS =		CVector(0.0f, 3.0f, 0.0f);
 // 炎の大きさ
-#define FIRE_SCALE 2.5f
+constexpr float FIRE_SCALE =		2.5f;
 // 炎の移動速度
-#define FIRE_SPEED 10.0f
+constexpr float FIRE_SPEED =		10.0f;
 // 接続ターゲットのオフセット座標
-#define TARGET_OFFSET_POS CVector(0.0f,15.0f,0.0f)
+const CVector TARGET_OFFSET_POS =	CVector(0.0f,15.0f,0.0f);
 
 // コンストラクタ
 CCampFire::CCampFire()

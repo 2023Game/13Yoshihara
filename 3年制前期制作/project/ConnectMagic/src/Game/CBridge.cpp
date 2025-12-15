@@ -4,22 +4,22 @@
 #include "CPlayer.h"
 
 // 重量
-#define WEIGHT 1.0f
+constexpr float WEIGHT =				1.0f;
 
 // 接続ターゲットのオフセット座標
-#define TARGET_OFFSET_POS CVector(0.0f,50.0f,0.0f)
+const CVector TARGET_OFFSET_POS =		CVector(0.0f, 50.0f, 0.0f);
 
 // 回転速度
-#define ROTATE_SPEED 1.0f
-#define GRAVITY_ROTATE_SPEED 180.0f
+constexpr float ROTATE_SPEED =			1.0f;
+constexpr float GRAVITY_ROTATE_SPEED =	180.0f;
 
 // 傾ける最大の角度
-#define MAX_ANGLE 90.0f
+constexpr float MAX_ANGLE =				90.0f;
 // 傾ける最小の角度
-#define MIN_ANGLE 0.0f
+constexpr float MIN_ANGLE =				0.0f;
 
 // 倒れ始める角度
-#define FALL_ANGLE 30.0f
+constexpr float FALL_ANGLE =			30.0f;
 
 // コンストラクタ
 CBridge::CBridge(float defaultAngle)

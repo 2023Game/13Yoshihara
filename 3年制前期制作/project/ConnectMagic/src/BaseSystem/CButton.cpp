@@ -3,10 +3,10 @@
 #include "CText.h"
 #include "CImage.h"
 
-#define DEFAULT_BUTTON_COLOR CColor(1.0f, 1.0f, 1.0f)
-#define DEFAULT_ENTER_COLOR CColor(0.875f, 0.875f, 0.875f)
-#define DEFAULT_PRESS_COLOR CColor(0.75f, 0.75f, 0.75f)
-#define DEFAULT_BUTTON_TEXT_COLOR CColor(0.0f, 0.0f, 0.0f)
+const CColor DEFAULT_BUTTON_COLOR =			CColor(1.0f, 1.0f, 1.0f);
+const CColor DEFAULT_ENTER_COLOR =			CColor(0.875f, 0.875f, 0.875f);
+const CColor DEFAULT_PRESS_COLOR =			CColor(0.75f, 0.75f, 0.75f);
+const CColor DEFAULT_BUTTON_TEXT_COLOR =	CColor(0.0f, 0.0f, 0.0f);
 
 CButton::CButton(const CVector2& pos, const CVector2& size,
 	ETaskPriority prio, int sortOrder,

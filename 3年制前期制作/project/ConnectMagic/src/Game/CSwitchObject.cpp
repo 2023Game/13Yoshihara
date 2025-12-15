@@ -85,6 +85,12 @@ void CSwitchObject::SetOnOff(bool isOnOff)
 	}
 }
 
+// オンかオフかを取得
+bool CSwitchObject::GetOnOff() const
+{
+	return GetState() == EState::eOn;
+}
+
 // 作用するスイッチを設定する
 void CSwitchObject::SetSwitchs(std::vector<CSwitch*> switchs)
 {
@@ -105,4 +111,17 @@ void CSwitchObject::UpdateOn()
 void CSwitchObject::ChangeState(EState state)
 {
 	if (mState != state) mState = state;
+}
+
+void CSwitchObject::SetState(EState state)
+{
+	if (mState != state)
+	{
+		mState = state;
+	}
+}
+
+CSwitchObject::EState CSwitchObject::GetState() const
+{
+	return mState;
 }

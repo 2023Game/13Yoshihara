@@ -8,42 +8,42 @@
 #include "CSaveManager.h"
 
 // 部屋の長さ
-#define ROOM_LENGTH 220.0f
+constexpr float ROOM_LENGTH =			220.0f;
 
 // 重りの座標
-#define weight_OFFSET_POS1		CVector(30.0f,0.0f,-110.0f)
-#define weight_OFFSET_POS2		CVector(30.0f,0.0f,-200.0f)
+const CVector weight_OFFSET_POS1 =		CVector( 30.0f, 0.0f, -110.0f);
+const CVector weight_OFFSET_POS2 =		CVector( 30.0f, 0.0f, -200.0f);
 
 // 動く床のオフセット座標
-#define MOVE_FLOOR_OFFSET_POS	CVector(0.0f,-10.0f,-40.0f)
+const CVector MOVE_FLOOR_OFFSET_POS =	CVector( 0.0f, -10.0f, -40.0f);
 // 動く床のスケール
-#define MOVE_FLOOR_SCALE		CVector(4.0f,1.0f,4.0f)
+const CVector MOVE_FLOOR_SCALE =		CVector( 4.0f,  1.0f,   4.0f);
 // 動く床の移動
-#define MOVE_FLOOR_MOVE			CVector(0.0f,0.0f,-100.0f)
+const CVector MOVE_FLOOR_MOVE =			CVector( 0.0f,  0.0f,  -100.0f);
 // 動く床の移動時間
-#define MOVE_FLOOR_MOVE_TIME	2.5f
+constexpr float MOVE_FLOOR_MOVE_TIME =	2.5f;
 
 // スイッチのオフセット座標
-#define SWITCH_OFFSET_POS	CVector(-30.0f,0.0f,-110.0f)
+const CVector SWITCH_OFFSET_POS =		CVector(-30.0f, 0.0f,  -110.0f);
 
 // 動く壁のオフセット座標
-#define MOVE_WALL_OFFSET_POS	CVector(0.0f,0.0f,-150.0f)
+const CVector MOVE_WALL_OFFSET_POS =	CVector( 0.0f,  0.0f,  -150.0f);
 // 動く壁のスケール
-#define MOVE_WALL_SCALE			CVector(8.0f,4.0f,1.0f)
+const CVector MOVE_WALL_SCALE =			CVector( 8.0f,  4.0f,   1.0f);
 // 動く壁の移動
-#define MOVE_WALL_MOVE			CVector(-80.0f,0.0f,0.0f)
+const CVector MOVE_WALL_MOVE =			CVector(-80.0f, 0.0f,   0.0f);
 // 動く壁の移動時間
-#define MOVE_WALL_MOVE_TIME		0.5f
+constexpr float MOVE_WALL_MOVE_TIME =	0.5f;
 
 // 水のオフセット座標
-#define WATER_OFFSET_POS	CVector(0.0f,-5.0f,-100.0f)
+const CVector WATER_OFFSET_POS =		CVector( 0.0f, -5.0f,  -100.0f);
 // 水のスケール
-#define WATER_SCALE			CVector(50.0f,1.0f,100.0f)
+const CVector WATER_SCALE =				CVector( 50.0f, 1.0f,   100.0f);
 
 // リスポーン地点
-#define RESPAWN_OFFSET_POS		CVector(0.0f,0.0f,-30.0f)
+const CVector RESPAWN_OFFSET_POS =		CVector( 0.0f,  0.0f,  -30.0f);
 // リスポーン地点の半径
-#define RESPAWN_RADIUS	30.0f
+constexpr float RESPAWN_RADIUS =		30.0f;
 
 // コンストラクタ
 CRoom5::CRoom5(const CVector& pos)
@@ -79,10 +79,10 @@ void CRoom5::SetEnableRoom(bool enable)
 		mpWeight1->SetEnable(enable);
 		mpWeight2->SetEnable(enable);
 		// 重りを追加
-		saveMgr->AddWeight(mpWeight1);
-		saveMgr->AddWeight(mpWeight2);
+		saveMgr->AddSavableObj(mpWeight1);
+		saveMgr->AddSavableObj(mpWeight2);
 		// 移動床を追加
-		saveMgr->AddMoveObj(mpMoveFloor);
+		saveMgr->AddSavableObj(mpMoveFloor);
 	}
 	// 無効時
 	else
@@ -100,10 +100,10 @@ void CRoom5::SetEnableRoom(bool enable)
 			mpWeight2->SetEnable(enable);
 		}
 		// 重りを削除
-		saveMgr->DeleteWeight(mpWeight1);
-		saveMgr->DeleteWeight(mpWeight2);
+		saveMgr->DeleteSavableObj(mpWeight1);
+		saveMgr->DeleteSavableObj(mpWeight2);
 		// 移動床を削除
-		saveMgr->DeleteMoveObj(mpMoveFloor);
+		saveMgr->DeleteSavableObj(mpMoveFloor);
 	}
 }
 

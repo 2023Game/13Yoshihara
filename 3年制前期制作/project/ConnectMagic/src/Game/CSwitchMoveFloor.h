@@ -6,18 +6,11 @@
 class CSwitchMoveFloor : public CSwitchObject
 {
 public:
-	// 状態を設定
-	void SetState(EMoveState state);
-	// 状態を取得
-	EMoveState GetState() const;
-	// 前回の状態を設定
-	void SetPreState(EMoveState state);
-	// 前回の状態を取得
-	EMoveState GetPreState() const;
-	// 経過時間を設定
-	void SetElapsedTime(float time);
-	// 経過時間を取得
-	float GetElapsedTime() const;
+	// CSavableの純粋仮想関数のオーバーライド
+	std::vector<char> SaveState() const override;
+	void LoadState(const std::vector<char>& data) override;
+	size_t GetTypeID() const override;
+	unsigned int GetUniqueInstanceID() const override;
 
 	// コンストラクタ
 	CSwitchMoveFloor(CModel* model, CModel* col,
@@ -29,6 +22,21 @@ public:
 	~CSwitchMoveFloor();
 
 private:
+	// データ保存に使用
+	unsigned int mUniqueID;
+	// 状態を設定
+	void SetMoveState(EMoveState state);
+	// 状態を取得
+	EMoveState GetMoveState() const;
+	// 前回の状態を設定
+	void SetPreMoveState(EMoveState state);
+	// 前回の状態を取得
+	EMoveState GetPreMoveState() const;
+	// 経過時間を設定
+	void SetElapsedTime(float time);
+	// 経過時間を取得
+	float GetElapsedTime() const;
+
 	// コライダーを生成
 	void CreateCol() override;
 	// プレイヤーが挟まれた時用のコライダー
