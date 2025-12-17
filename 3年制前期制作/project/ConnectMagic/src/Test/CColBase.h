@@ -2,6 +2,8 @@
 #include "CObjectBase.h"
 #include "CColor.h"
 
+class CCollider;
+
 // コライダー表示クラスのベースクラス
 class CColBase : public CObjectBase
 {

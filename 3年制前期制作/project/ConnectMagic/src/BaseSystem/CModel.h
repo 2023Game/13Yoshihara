@@ -56,6 +56,13 @@ public:
 	// 描画
 	// Render(行列)
 	void Render(const CMatrix& m);
+
+	// 頂点座標をBullet用のfloat配列として取得
+	std::vector<float> GetPhysicsVertexPositions() const;
+
+	// インデックスデータを取得
+	std::vector<int> GetPhysicsIndices() const;
+
 private:
 	CModel();
 	~CModel();

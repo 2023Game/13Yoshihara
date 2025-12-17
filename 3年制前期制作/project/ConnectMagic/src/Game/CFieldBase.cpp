@@ -1,6 +1,7 @@
 #include "CFieldBase.h"
 #include "CSceneManager.h"
 #include <assert.h>
+#include "CPhysicsManager.h"
 
 // コンストラクタ
 CFieldBase::CFieldBase()
@@ -102,6 +103,22 @@ void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::stri
 	// 空じゃなければ
 	if (groundCol != "")
 	{
+		CModel* model = CResourceManager::Get<CModel>(groundCol);
+
+		// 物理用データの取得
+		mMeshVertices = model->GetPhysicsVertexPositions();
+		mMeshIndices = model->GetPhysicsIndices();
+
+		// 剛体の作成
+		CPhysicsManager::Instance()->CreateMeshRigidBody(
+			this,                                   // owner
+			mMeshVertices.data(),                   // 頂点データ
+			(int)mMeshVertices.size() / 3,          // 頂点数
+			mMeshIndices.data(),                    // インデックスデータ
+			(int)mMeshIndices.size() / 3,           // 三角形数
+			Position()                              // 初期位置
+		);
+
 		// 地面のコライダーを生成
 		mpGroundColliderMesh = new CColliderMesh
 		{

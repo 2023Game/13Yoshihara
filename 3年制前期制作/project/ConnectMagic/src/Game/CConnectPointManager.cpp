@@ -6,6 +6,7 @@
 #include "CConnectObject.h"
 #include "CConnectTarget.h"
 #include "Maths.h"
+#include "CCollider.h"
 
 // ƒŒƒC‚ğL‚Î‚¹‚é‹——£‚ÌÅ‘å
 constexpr float RAY_MAX_DISTANCE =		75.0f;

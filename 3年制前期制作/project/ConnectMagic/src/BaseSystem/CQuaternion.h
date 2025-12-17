@@ -36,6 +36,15 @@ public:
 	// 回転なし
 	const static CQuaternion identity;
 
+	// X軸の値を取得
+	float X() const;
+	// Y軸の値を取得
+	float Y() const;
+	// Z軸の値を取得
+	float Z() const;
+	// W軸の値を取得
+	float W() const;
+
 private:
 	float mX, mY, mZ, mW;
 };

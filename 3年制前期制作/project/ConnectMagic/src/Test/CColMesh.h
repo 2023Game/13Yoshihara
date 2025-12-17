@@ -1,6 +1,10 @@
 #pragma once
 #include "CColBase.h"
-#include "CColliderMesh.h"
+#include "CCollider.h"
+
+class CColliderMesh;
+class CHitInfo;
+class CModel;
 
 class CColMesh : public CColBase
 {

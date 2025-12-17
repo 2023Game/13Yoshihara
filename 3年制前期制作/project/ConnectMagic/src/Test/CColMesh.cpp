@@ -1,5 +1,8 @@
 #include "CColMesh.h"
 #include "Primitive.h"
+#include "CColliderMesh.h"
+#include "CollisionLayer.h"
+#include "CColor.h"
 
 CColMesh::CColMesh(CModel* model, const CColor& defaultColor,
 	bool isKinematic, float weight)

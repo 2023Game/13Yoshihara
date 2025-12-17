@@ -5,6 +5,8 @@
 #include "CPlayer.h"
 #include "CConnectPoint.h"
 #include "CWand.h"
+#include "CollisionLayer.h"
+#include "CCollider.h"
 
 constexpr float THRESHOLD =			0.1f;
 
@@ -77,10 +79,6 @@ void CConnectObject::Update()
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
 
-	if (mIsGravity)
-	{
-		mMoveSpeedY -= GRAVITY;
-	}
 	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
 	if (!mIsConnectAir)
 	{

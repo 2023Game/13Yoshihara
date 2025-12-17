@@ -2,6 +2,8 @@
 #include "CSwitchObject.h"
 #include "MoveState.h"
 
+class CColliderMesh;
+
 // スイッチで動く床
 class CSwitchMoveFloor : public CSwitchObject
 {

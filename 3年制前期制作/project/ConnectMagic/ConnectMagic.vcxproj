@@ -51,6 +51,7 @@
     <ClCompile Include="src\BaseSystem\CMyShader.cpp" />
     <ClCompile Include="src\BaseSystem\CNavManager.cpp" />
     <ClCompile Include="src\BaseSystem\CNavNode.cpp" />
+    <ClCompile Include="src\BaseSystem\CPhysicsDebugDraw.cpp" />
     <ClCompile Include="src\BaseSystem\CPhysicsManager.cpp" />
     <ClCompile Include="src\BaseSystem\CRect.cpp" />
     <ClCompile Include="src\BaseSystem\CResource.cpp" />
@@ -221,7 +222,9 @@
     <ClInclude Include="src\BaseSystem\CNavManager.h" />
     <ClInclude Include="src\BaseSystem\CNavNode.h" />
     <ClInclude Include="src\BaseSystem\ColliderType.h" />
+    <ClInclude Include="src\BaseSystem\CollisionData.h" />
     <ClInclude Include="src\BaseSystem\CollisionLayer.h" />
+    <ClInclude Include="src\BaseSystem\CPhysicsDebugDraw.h" />
     <ClInclude Include="src\BaseSystem\CPhysicsManager.h" />
     <ClInclude Include="src\BaseSystem\CRect.h" />
     <ClInclude Include="src\BaseSystem\CResource.h" />

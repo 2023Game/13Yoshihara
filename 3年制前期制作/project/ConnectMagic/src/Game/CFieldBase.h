@@ -53,4 +53,7 @@ protected:
 	CColliderMesh* mpWallColliderMesh;
 	// フィールドのオブジェクトの衝突判定
 	CColliderMesh* mpObjectColliderMesh;
+	// メッシュのデータ
+	std::vector<float> mMeshVertices;
+	std::vector<int> mMeshIndices;
 };

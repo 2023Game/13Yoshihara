@@ -3,6 +3,7 @@
 #include "CTask.h"
 
 class CNavNode;
+class CCollider;
 
 // Œo˜H’Tõˆ—‚ÌŠÇ—ƒNƒ‰ƒX
 class CNavManager : public CTask

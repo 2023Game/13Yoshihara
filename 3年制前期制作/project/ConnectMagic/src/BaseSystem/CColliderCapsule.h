@@ -1,6 +1,9 @@
 #pragma once
 #include "CCollider.h"
 
+class CObjectBase;
+enum class ELayer;
+
 /// <summary>
 /// カプセルコライダー
 /// </summary>

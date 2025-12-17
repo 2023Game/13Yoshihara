@@ -1,5 +1,7 @@
 #include "CColLine.h"
 #include "Primitive.h"
+#include "CColliderLine.h"
+#include "CollisionLayer.h"
 
 // コンストラクタ
 CColLine::CColLine(const CVector& start, const CVector& end, const CColor& defaultColor,

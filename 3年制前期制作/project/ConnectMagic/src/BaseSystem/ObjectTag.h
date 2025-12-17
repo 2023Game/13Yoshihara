@@ -7,6 +7,7 @@ enum class ETag
 	eNone = -1,
 
 	eField,	// フィールドを構成するオブジェクト
+	eWater,	// 水
 	eRideableObject,	// 乗ることができるオブジェクト
 	eInteractObject,	// 調べるオブジェクト
 	eConnectObject,		// 繋げれるオブジェクト

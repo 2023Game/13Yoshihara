@@ -23,6 +23,4 @@ private:
 	CGameMenu* mpGameMenu;
 	// 部屋の管理クラス
 	CRoomManager* mpRoomMgr;
-	// 物理管理クラス
-	CPhysicsManager* mpPhysicsMgr;
 };

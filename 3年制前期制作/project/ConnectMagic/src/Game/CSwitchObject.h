@@ -4,6 +4,7 @@
 
 class CSwitch;
 class CModel;
+class CCollider;
 
 // スイッチで作用するオブジェクトのベースクラス
 class CSwitchObject : public CObjectBase, public CSavable

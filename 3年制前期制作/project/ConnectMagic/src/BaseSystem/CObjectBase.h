@@ -2,10 +2,18 @@
 #include "CTask.h"
 #include "CTransform.h"
 #include "ObjectTag.h"
-#include "CCollider.h"
 #include "CColor.h"
 
 class CNavNode;
+class CCollider;
+struct CollisionData;
+class CHitInfo;
+// Bullet関連
+class btCollisionObject;
+class btRigidBody;
+class btCollisionShape;
+class btDefaultMotionState;
+class btTriangleIndexVertexArray;
 
 /// <summary>
 /// 3D空間に配置するオブジェクトのベースクラス
@@ -88,11 +96,48 @@ public:
 	// 攻撃を受けているかどうか
 	bool IsDamaging() const;
 
+	// 剛体を取得
+	btRigidBody* GetRigidBody() const;
+	// 剛体を設定
+	void SetRigidBody(btRigidBody* body,
+		btCollisionShape* shape,
+		btDefaultMotionState* ms,
+		float halfHeightY,
+		btTriangleIndexVertexArray* indexVertexArray = nullptr);
+
+	// センサーを取得
+	btCollisionObject* GetSensor() const;
+	// センサーを設定
+	void SetSensor(btCollisionObject* sensor);
+
+	// 力を加える（加速する動き）
+	void AddForce(const CVector& force);
+	// インパルスを加える（瞬発的な動き）
+	void AddImpulse(const CVector& impulse);
+
+	// 剛体の半分の高さを取得
+	float GetHalfHeight() const;
+	// 剛体の半分の高さを設定
+	void SetHalfHeight(float halfHeight);
+
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
 	bool mIsEnableCol;	// 衝突判定を行うかどうか
 
+	// Bullet Physics関連
+	btRigidBody* mpRigidBody;						// 剛体本体
+	btCollisionShape* mpCollisionShape;				// 衝突形状
+	btDefaultMotionState* mpMotionState;			// モーションステート
+	float mHalfHeightY;								// 剛体の半分の高さ
+	btTriangleIndexVertexArray* mpIndexVertexArray;	// メッシュデータ
+	btCollisionObject* mpSensorCol;					// 探知用のコライダー
+
 protected:
+
+	// 衝突イベントのチェックと配布
+	void DispatchCollisionEvents();
+	// 衝突処理
+	virtual void OnCollision(const CollisionData& data);
 	// すべて削除
 	virtual void Delete();
 	// コライダーを作成

@@ -1,6 +1,9 @@
 #pragma once
 #include "CWeapon.h"
-#include "CModel.h"
+#include "ObjectTag.h"
+#include "CollisionLayer.h"
+
+class CModel;
 
 // Œ•‚ÌƒNƒ‰ƒX
 class CSword : public CWeapon

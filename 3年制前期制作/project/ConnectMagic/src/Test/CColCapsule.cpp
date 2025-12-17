@@ -1,5 +1,7 @@
 #include "CColCapsule.h"
 #include "Primitive.h"
+#include "CColliderCapsule.h"
+#include "CollisionLayer.h"
 
 // コンストラクタ
 CColCapsule::CColCapsule(

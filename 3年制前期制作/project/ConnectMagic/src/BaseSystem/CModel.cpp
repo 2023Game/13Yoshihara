@@ -229,6 +229,21 @@ void CModel::Render()
 	}
 }
 
+std::vector<int> CModel::GetPhysicsIndices() const
+{
+	int totalVertices = mTriangles.size() * 3;
+
+	std::vector<int> indices;
+	indices.reserve(totalVertices);
+
+	for (int i = 0; i < totalVertices; ++i)
+	{
+		indices.push_back(i);
+	}
+
+	return indices;
+}
+
 CModel::CModel()
 	: mpVertexes(nullptr)
 	, mColor(CColor::white)
@@ -390,6 +405,24 @@ void CModel::Render(const CMatrix& m)
 	glEnable(GL_LIGHTING);
 	//カリング設定
 	glEnable(GL_CULL_FACE);
+}
+
+std::vector<float> CModel::GetPhysicsVertexPositions() const
+{
+	// 頂点数（三角形の数×3）
+	int totalVertices = mTriangles.size() * 3;
+	std::vector<float> positions;
+	positions.reserve(totalVertices * 3);// XYZの3要素
+
+	for (int i = 0; i < totalVertices; ++i)
+	{
+		const CVector& pos = mpVertexes[i].mPosition;
+
+		positions.push_back(pos.X());
+		positions.push_back(pos.Y());
+		positions.push_back(pos.Z());
+	}
+	return positions;
 }
 
 void CModel::CreateVertexBuffer()

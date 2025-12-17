@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
-#include "CCollider.h"
+
+class CCollider;
 
 /// <summary>
 /// Õ“Ëˆ—‚ÌŠÇ—ƒNƒ‰ƒX

@@ -649,6 +649,9 @@
     <ClCompile Include="src\BaseSystem\CPhysicsManager.cpp">
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="src\BaseSystem\CPhysicsDebugDraw.cpp">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BaseSystem\CCollider.h">
@@ -1192,6 +1195,12 @@
       <Filter>ソース ファイル\Game\System\Save</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CPhysicsManager.h">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CPhysicsDebugDraw.h">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CollisionData.h">
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
   </ItemGroup>

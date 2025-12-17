@@ -10,6 +10,8 @@
 #include "CNavNode.h"
 #include "CNavManager.h"
 #include "CGaugeUI2D.h"
+#include "CollisionLayer.h"
+#include "CCollider.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -201,31 +203,6 @@ void CPlayerBase::Update()
 {
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
-
-	// 重力を掛けるなら
-	if (mIsGravity)
-	{
-		mMoveSpeedY -= GRAVITY;
-	}
-	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-
-	// 移動
-	Position(Position() + moveSpeed);
-
-	// 攻撃を受けていない時かつ
-	// 移動方向を向く設定がオンの時
-	if (!mIsDamage&&
-		mIsMoveDir)
-	{
-		// プレイヤーを移動方向へ向ける
-		CVector current = VectorZ();
-		CVector target = moveSpeed;
-		target.Y(0.0f);
-		target.Normalize();
-		CVector forward = CVector::Slerp(current, target, 0.125f);
-		Rotation(CQuaternion::LookRotation(forward));
-	}
-
 
 	// 「P」キーを押したら、ゲームを終了
 	if (CInput::PushKey('P'))
@@ -450,4 +427,14 @@ void CPlayerBase::ChangeAnimationTime(int type, float time)
 	ChangeAnimation(type);
 	// 時間の設定
 	SetAnimationFrame(time);
+}
+
+void CPlayerBase::SetGrounded(bool isGrounded)
+{
+	mIsGrounded = isGrounded;
+}
+
+bool CPlayerBase::GetGrounded() const
+{
+	return mIsGrounded;
 }

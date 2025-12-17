@@ -1,9 +1,6 @@
 #pragma once
-//プレイヤー基底クラスのインクルード
 #include "CPlayerBase.h"
-// プレイヤーのステータスクラスのインクルード
 #include "CPlayerStatus.h"
-#include "SaveData.h"
 
 class CSound;
 class CWand;
@@ -11,6 +8,8 @@ class CConnectPoint;
 class CConnectObject;
 class CConnectTarget;
 class CImage;
+class CCollider;
+struct PlayerData;
 
 /*
 ゲームのプレイヤークラス
@@ -87,6 +86,21 @@ public:
 private:
 	// コライダ―を生成
 	void CreateCol() override;
+
+	// 射程内にあるコネクトオブジェクトのリスト
+	std::list<CConnectObject*> mConnectObjs;
+	// コネクトオブジェクトの探知用
+	CCollider* mpSearchConnectObjCol;
+
+	// 前方に地面があるかの探知用コライダー
+	CCollider* mpSearchGroundCol;
+
+	// 衝突処理
+	void OnCollision(const CollisionData& data) override;
+	// 実体のあるコライダーの衝突処理
+	void PhysicalCollision(const CollisionData& data);
+	// センサーの衝突処理
+	void SensorCollision(const CollisionData& data);
 	/*
 	アクションのキー入力
 	回収員がついていないときのみ入力可能
@@ -181,14 +195,6 @@ private:
 
 	CWand* mpWand;			// 杖
 	CConnectPoint* mpWandPoint;	// 接続部
-
-	// 射程内にあるコネクトオブジェクトのリスト
-	std::list<CConnectObject*> mConnectObjs;
-	// コネクトオブジェクトの探知用
-	CCollider* mpSearchConnectObjCol;
-	
-	// 前方に地面があるかの探知用コライダー
-	CCollider* mpSearchGroundCol;
 
 	// 視点の中心に一番近いターゲットを求める
 	void CenterTarget();

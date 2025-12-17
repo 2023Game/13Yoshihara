@@ -1,6 +1,8 @@
 #pragma once
 #include "CObjectBase.h"
 
+class CCollider;
+
 // 武器のベースクラス
 class CWeapon : public CObjectBase
 {

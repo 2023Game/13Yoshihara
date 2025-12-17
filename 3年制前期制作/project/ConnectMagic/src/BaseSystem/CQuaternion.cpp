@@ -278,3 +278,27 @@ CQuaternion CQuaternion::LookRotation(const CVector& forward, const CVector& upw
 
 	return q2 * q1;
 }
+
+// X軸の値を取得
+float CQuaternion::X() const
+{
+	return mX;
+}
+
+// Y軸の値を取得
+float CQuaternion::Y() const
+{
+	return mY;
+}
+
+// Z軸の値を取得
+float CQuaternion::Z() const
+{
+	return mZ;
+}
+
+// W軸の値を取得
+float CQuaternion::W() const
+{
+	return mW;
+}

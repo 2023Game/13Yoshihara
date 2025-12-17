@@ -1,6 +1,8 @@
 #include "CUIBase.h"
 #include "CUIManager.h"
 #include "CInput.h"
+#include "CCollider.h"
+#include "CRect.h"
 
 CUIBase::CUIBase(ETaskPriority prio, int sortOrder, ETaskPauseType pause, bool dontDelete, bool addTaskList)
 	: CTask(prio, sortOrder, pause, dontDelete, addTaskList)

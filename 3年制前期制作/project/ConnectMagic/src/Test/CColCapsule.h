@@ -1,6 +1,8 @@
 #pragma once
 #include "CColBase.h"
-#include "CColliderCapsule.h"
+
+class CColliderCapsule;
+class CHitInfo;
 
 // カプセルコライダー表示用のテストクラス
 class CColCapsule : public CColBase

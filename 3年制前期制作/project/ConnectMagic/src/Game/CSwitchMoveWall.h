@@ -2,6 +2,8 @@
 #include "CSwitchObject.h"
 #include "MoveState.h"
 
+class CColliderMesh;
+
 // スイッチで動く壁
 class CSwitchMoveWall : public CSwitchObject
 {

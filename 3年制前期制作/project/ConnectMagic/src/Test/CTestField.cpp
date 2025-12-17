@@ -19,6 +19,7 @@
 #include "CSwitchMoveAirObj.h"
 #include "CSwitchPushWall.h"
 #include "CSwitchShield.h"
+#include "CPhysicsManager.h"
 
 // ポータルの設定
 const CVector PORTAL_POS =				CVector( 100.0f,	 10.0f,				-100.0f);
@@ -48,7 +49,7 @@ const CVector BRIDGE_POS_2 =			CVector( 50.0f,		 0.0f,				-100.0f);
 const CVector BRIDGE_ROT_2 =			CVector( 0.0f,		 180.0f,			 0.0f);
 
 // 重りの座標
-const CVector WEIGHT_POS =				CVector( 0.0f,		 0.0f,				-25.0f);
+const CVector WEIGHT_POS =				CVector( 50.0f,		 0.0f,				-25.0f);
 
 // 水の座標
 const CVector WATER_POS =				CVector( 300.0f,	 1.0f,				 0.0f);
@@ -71,6 +72,12 @@ const CVector SWITCH_POS =				CVector( 0.0f,		 0.0f,				 50.0f);
 const CVector SWITCHS_POS_1 =			CVector(-200.0f,	 0.0f,				 418.0f);
 const CVector SWITCHS_POS_2 =			CVector(-200.0f,	 0.0f,				 368.0f);
 const CVector SWITCHS_POS_3 =			CVector(-200.0f,	 0.0f,				 318.0f);
+
+// 地面
+constexpr float GROUND_MASS = 0.0f;
+const CVector GROUND_HALF_EXTENTS = CVector(50.0f, 0.5f, 50.0f);
+const CVector GROUND_POS = CVector::zero;
+const CQuaternion GROUND_ROT = CQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
 // コンストラクタ
 CTestField::CTestField()

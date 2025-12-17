@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
 #include "ConnectObjectTag.h"
+#include <vector>
 
 // ˆø‚Á’£‚é—Í
 constexpr float PULL_POWER = 60.0f;

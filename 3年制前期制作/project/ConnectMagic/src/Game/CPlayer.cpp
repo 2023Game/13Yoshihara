@@ -13,16 +13,32 @@
 #include "Maths.h"
 #include "CSaveManager.h"
 #include "CTaskManager.h"
+#include "CPhysicsManager.h"
+#include "CollisionData.h"
+#include "btBulletDynamicsCommon.h"
+#include "SaveData.h"
+
 
 // 体の半径と高さ
 constexpr float BODY_RADIUS =				2.5f;
-constexpr float BODY_HEIGHT =				15.0f;
+constexpr float BODY_HEIGHT =				12.5f;
+// 物理設定
+constexpr float MASS =						7.0f;
+constexpr float MAX_SPEED =					150.0f;	// 最高速度
+constexpr float ACCELERATION_FORCE =		500.0f;	// 加速度の強さ
+constexpr float TURN_RATE =					0.1f;	// 回転速度
+constexpr float FRICTION =					0.5f;	// 摩擦（値が高いと停止まで早くなる）
+constexpr float LIN_DAMPING =				0.5f;	// 線形減衰(値が高いと滑りが小さくなる)
+constexpr float ANG_DAMPING =				0.1f;	// 角減衰(値が高いと微細な回転振動を吸収する）
+
+// 接地とみなすための、接触点の最低限のY軸法線成分
+constexpr float GROUND_NORMAL_THRESHOLD = 0.7f;
 
 // 前方の地面確認用レイの前方への距離
 constexpr float RAY_FRONT_DIST =			5.0f;
 
 // 探知コライダの半径
-constexpr float SEARCH_RADIUS =				75.0f;
+constexpr float SENSOR_RADIUS =				75.0f;
 
 // 杖のオフセット座標と回転とスケール
 const CVector WAND_OFFSET_POS =				CVector(-90.0f,8.0f,4.0f);
@@ -141,7 +157,6 @@ CPlayer::~CPlayer()
 		mpWand->Kill();
 	}
 
-	SAFE_DELETE(mpSearchConnectObjCol);
 	SAFE_DELETE(mpSearchGroundCol);
 }
 
@@ -235,6 +250,8 @@ void CPlayer::Update()
 	
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
+	// 衝突イベントのチェック
+	DispatchCollisionEvents();
 
 	// 中心に一番近いオブジェクトを求める
 	CenterTarget();
@@ -266,11 +283,6 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 		// 水の場合
 		if (other->Layer() == ELayer::eCrushed)
 		{
-			// 保存管理クラスをロード状態へ
-			CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
-			// 死亡状態にする
-			ChangeState(EState::eDeath);
-			return;
 		}
 	}
 	// コネクトオブジェクト探知用コライダーなら
@@ -312,6 +324,31 @@ void CPlayer::SetRespawnPos(CVector respawnPos)
 // コライダ―を生成
 void CPlayer::CreateCol()
 {
+	// 位置の調整
+	CVector pos = Position();
+	pos.Y(pos.Y() + BODY_HEIGHT);
+	// 本体コライダー
+	CPhysicsManager::Instance()->CreateCapsuleRigidBody(
+		this,
+		MASS,
+		BODY_RADIUS,
+		BODY_HEIGHT,
+		pos,
+		Rotation()
+	);
+	btRigidBody* playerBody = GetRigidBody();
+	// 摩擦
+	playerBody->setFriction(FRICTION);
+	// 線形減衰
+	playerBody->setDamping(LIN_DAMPING, ANG_DAMPING);
+
+	// 探知用コライダー
+	CPhysicsManager::Instance()->CreateSensor(
+		this,
+		SENSOR_RADIUS
+	);
+
+
 	// 本体コライダ
 	mpBodyCol = new CColliderCapsule
 	(
@@ -326,15 +363,6 @@ void CPlayer::CreateCol()
 		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal,
 		ELayer::eRespawnArea,ELayer::eCrushed,ELayer::eItem});
 
-	// コネクトオブジェクトの探知用コライダ
-	mpSearchConnectObjCol = new CColliderSphere
-	(
-		this, ELayer::eConnectSearch,
-		SEARCH_RADIUS
-	);
-	// コネクトオブジェクトだけ衝突
-	mpSearchConnectObjCol->SetCollisionLayers({ ELayer::eObject });
-
 	// 前方に地面があるかの探知用コライダ
 	mpSearchGroundCol = new CColliderLine
 	(
@@ -345,6 +373,63 @@ void CPlayer::CreateCol()
 	mpSearchGroundCol->SetCollisionLayers({ ELayer::eGround });
 	// 位置調整
 	mpSearchGroundCol->Position(VectorZ() * (BODY_RADIUS * 2) - VectorY() * (BODY_HEIGHT / 2));
+}
+
+void CPlayer::OnCollision(const CollisionData& data)
+{
+	// 本体コライダーが衝突
+	if (data.selfBody == GetRigidBody())
+	{
+		PhysicalCollision(data);
+	}
+	// センサーコライダーが衝突
+	else if (data.selfBody == GetSensor())
+	{
+		SensorCollision(data);
+	}
+}
+
+void CPlayer::PhysicalCollision(const CollisionData& data)
+{
+	// 相手のOBJのポインタを取得
+	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
+
+	if (otherObj == nullptr) return;
+
+	// 接地判定
+	if (otherObj->Tag() == ETag::eField)
+	{
+		if (data.contactNormal.getY() > GROUND_NORMAL_THRESHOLD)
+		{
+			SetGrounded(true);
+		}
+	}
+	// 水
+	else if (otherObj->Tag() == ETag::eWater)
+	{
+		// 保存管理クラスをロード状態へ
+		CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
+		// 死亡状態にする
+		ChangeState(EState::eDeath);
+		return;
+	}
+}
+
+void CPlayer::SensorCollision(const CollisionData& data)
+{
+	// 相手のOBJのポインタを取得
+	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
+
+	if (otherObj == nullptr) return;
+
+	// コネクトオブジェクト
+	if (otherObj->Tag() == ETag::eConnectObject)
+	{
+		// コネクトオブジェクトクラスを取得
+		CConnectObject* obj = dynamic_cast<CConnectObject*>(otherObj);
+		// 射程内にあるコネクトオブジェクトに追加
+		mConnectObjs.push_back(obj);
+	}
 }
 
 // アクションのキー入力
@@ -436,13 +521,6 @@ void CPlayer::ActionInput()
 			}
 		}
 	}
-
-#if _DEBUG
-	if (CInput::PushKey('G'))
-	{
-		mIsGravity = !mIsGravity;
-	}
-#endif
 }
 
 // 待機状態
@@ -453,13 +531,47 @@ void CPlayer::UpdateIdle()
 // 移動処理
 void CPlayer::UpdateMove()
 {
-	mMoveSpeed = CVector::zero;
+	btRigidBody* playerBody = GetRigidBody();
+	// 現在のXZ平面の速度
+	btVector3 currentVelocity = playerBody->getLinearVelocity();
+	currentVelocity.setY(0.0f);
+
 	// プレイヤーの移動ベクトルを求める
 	CVector move = CalcMoveVec();
+
 	// 求めた移動ベクトルの長さで入力されているか判定
 	if (move.LengthSqr() > 0.0f)
 	{
-		mMoveSpeed += move * GetBaseMoveSpeed() * Times::DeltaTime();
+		// 現在の速度が最高速度に達していないか
+		if (currentVelocity.length() < MAX_SPEED)
+		{
+			// 達していないなら、入力方向に力を加える
+			CVector force = move * ACCELERATION_FORCE;
+			AddForce(force);
+		}
+
+		// 攻撃を受けていない時かつ
+		// 移動方向を向く設定がオンの時
+		// 速度が小さすぎない
+		if (!mIsDamage &&
+			mIsMoveDir&&
+			currentVelocity.length2() > 0.01f)
+		{
+			// 移動方向ベクトルから回転角度を計算する
+			float angle = atan2(currentVelocity.getX(), currentVelocity.getZ());
+
+			// 目標回転を作成
+			btQuaternion targetRotation(btVector3(0.0f, 1.0f, 0.0f), angle);
+
+			// 現在の回転を取得
+			btQuaternion currentRotation = playerBody->getWorldTransform().getRotation();
+			// 目標回転まで補間
+			btQuaternion newRotation = currentRotation.slerp(targetRotation, TURN_RATE);
+			// 剛体に適用
+			btTransform currentTrans = playerBody->getWorldTransform();
+			currentTrans.setRotation(newRotation);
+			playerBody->setWorldTransform(currentTrans);
+		}
 
 		// 待機状態であれば、移動アニメーションに切り替え
 		if (mState == EState::eIdle)

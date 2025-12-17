@@ -1,6 +1,8 @@
 #pragma once
 #include "CColBase.h"
-#include "CColliderLine.h"
+
+class CColliderLine;
+class CHitInfo;
 
 // 線分コライダー表示用のテストクラス
 class CColLine : public CColBase

@@ -13,6 +13,10 @@ CSaveManager* CSaveManager::spInstance = nullptr;
 // インスタンスを取得
 CSaveManager* CSaveManager::Instance()
 {
+	if (spInstance == nullptr)
+	{
+		spInstance = new CSaveManager();
+	}
 	return spInstance;
 }
 

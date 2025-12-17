@@ -1,8 +1,9 @@
 ﻿#pragma once
 #include "CTask.h"
-#include "CObjectBase.h"
 #include <list>
+#include "CColor.h"
 
+class CObjectBase;
 class CFlame;
 
 // 火炎放射クラス

@@ -1,7 +1,10 @@
 #pragma once
 #include "CColBase.h"
+#include "CCollider.h"
+#include <vector>
 
 class CColliderBox;
+class CHitInfo;
 
 class CColBox : public CColBase
 {

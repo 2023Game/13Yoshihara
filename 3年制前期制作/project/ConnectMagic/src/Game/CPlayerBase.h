@@ -5,6 +5,8 @@
 
 class CGaugeUI2D;
 class CInteractObject;
+class CCollider;
+class CRideableObject;
 
 /*
 プレイヤークラス
@@ -47,6 +49,10 @@ public:
 
 	// アニメーションを時間を指定して設定
 	void ChangeAnimationTime(int type, float time);
+
+	// 接地しているかのセッターゲッター
+	void SetGrounded(bool isGrounded);
+	bool GetGrounded() const;
 
 protected:
 	// アニメーション切り替え

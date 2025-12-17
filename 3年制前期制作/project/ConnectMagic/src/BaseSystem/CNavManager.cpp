@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "Primitive.h"
 #include <assert.h>
+#include "CCollider.h"
 
 CNavManager* CNavManager::spInstance = nullptr;
 

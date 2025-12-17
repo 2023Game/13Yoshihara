@@ -2,6 +2,10 @@
 #include "CCollider.h"
 #include "Maths.h"
 #include "CNavNode.h"
+#include "CPhysicsManager.h"
+#include "btBulletDynamicsCommon.h"
+#include "CollisionData.h"
+#include "CColor.h"
 
 // コンストラクタ
 CObjectBase::CObjectBase(ETag tag,
@@ -15,12 +19,42 @@ CObjectBase::CObjectBase(ETag tag,
 	, mColor(CColor::white)
 	, mpNavNode(nullptr)
 	, mIsDamage(false)
+	, mpRigidBody(nullptr)
+	, mpCollisionShape(nullptr)
+	, mpMotionState(nullptr)
+	, mHalfHeightY(0.0f)
+	, mpIndexVertexArray(nullptr)
+	, mpSensorCol(nullptr)
 {
 }
 
 // デストラクタ
 CObjectBase::~CObjectBase()
 {
+	// 物理管理クラスを取得
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+
+	if (physicsMgr != nullptr)
+	{
+		// 物理ワールドから剛体を取り除く
+		if (mpRigidBody != nullptr)
+		{
+			physicsMgr->RemoveRigidBody(mpRigidBody);
+		}
+
+		// 物理ワールドからセンサーを取り除く
+		if (mpSensorCol != nullptr)
+		{
+			physicsMgr->RemoveSensor(mpSensorCol);
+		}
+	}
+
+	// 関連するBulletオブジェクトを解放
+	SAFE_DELETE(mpRigidBody);
+	SAFE_DELETE(mpCollisionShape);
+	SAFE_DELETE(mpMotionState);
+	SAFE_DELETE(mpIndexVertexArray);
+	SAFE_DELETE(mpSensorCol);
 }
 
 // オブジェクト削除を伝える関数
@@ -133,6 +167,102 @@ CNavNode* CObjectBase::GetNavNode() const
 bool CObjectBase::IsDamaging() const
 {
 	return mIsDamage;
+}
+
+// 剛体を取得
+btRigidBody* CObjectBase::GetRigidBody() const
+{
+	return mpRigidBody;
+}
+
+// 剛体を設定
+void CObjectBase::SetRigidBody(btRigidBody* body,
+	btCollisionShape* shape,
+	btDefaultMotionState* ms,
+	float halfHeight,
+	btTriangleIndexVertexArray* indexVertexArray)
+{
+	mpRigidBody = body;
+	mpCollisionShape = shape;
+	mpMotionState = ms;
+	SetHalfHeight(halfHeight);
+	mpIndexVertexArray = indexVertexArray;
+}
+
+btCollisionObject* CObjectBase::GetSensor() const
+{
+	return mpSensorCol;
+}
+
+void CObjectBase::SetSensor(btCollisionObject* sensor)
+{
+	mpSensorCol = sensor;
+}
+
+// 力を加える（加速する動き）
+void CObjectBase::AddForce(const CVector& force)
+{
+	// 動的剛体である
+	if (mpRigidBody && mpRigidBody->getInvMass() > 0.0f)
+	{
+		// 剛体を強制的にアクティブにする
+		if (mpRigidBody->getActivationState() == ISLAND_SLEEPING)
+		{
+			// ACTIVATE状態に設定
+			mpRigidBody->activate(true);
+		}
+		mpRigidBody->applyCentralForce(btVector3(force.X(), force.Y(), force.Z()));
+	}
+}
+
+// インパルスを加える（瞬発的な動き）
+void CObjectBase::AddImpulse(const CVector& impulse)
+{
+	// 動的剛体である
+	if (mpRigidBody && mpRigidBody->getInvMass() > 0.0f)
+	{
+		// 剛体を強制的にアクティブにする
+		if (mpRigidBody->getActivationState() == ISLAND_SLEEPING)
+		{
+			// ACTIVATE状態に設定
+			mpRigidBody->activate(true);
+		}
+		mpRigidBody->applyCentralImpulse(btVector3(impulse.X(), impulse.Y(), impulse.Z()));
+	}
+}
+
+// 剛体の半分の高さを取得
+float CObjectBase::GetHalfHeight() const
+{
+	return mHalfHeightY;
+}
+
+// 剛体の半分の高さを設定
+void CObjectBase::SetHalfHeight(float halfHeight)
+{
+	mHalfHeightY = halfHeight;
+}
+
+void CObjectBase::DispatchCollisionEvents()
+{
+	btRigidBody* body = GetRigidBody();
+	if (body == nullptr)
+	{
+		return;
+	}
+
+	// 全オブジェクトの衝突リスト
+	const std::list<CollisionData>& collisions = CPhysicsManager::Instance()->GetCollisionDataList();
+
+	for (const CollisionData& data : collisions)
+	{
+		// 衝突処理
+		OnCollision(data);
+	}
+}
+
+void CObjectBase::OnCollision(const CollisionData& data)
+{
 }
 
 // すべて削除

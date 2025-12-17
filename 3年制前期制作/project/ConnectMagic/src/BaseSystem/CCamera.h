@@ -1,6 +1,8 @@
 #pragma once
 #include "CObjectBase.h"
 
+class CCollider;
+
 // ƒJƒƒ‰
 class CCamera : public CObjectBase
 {

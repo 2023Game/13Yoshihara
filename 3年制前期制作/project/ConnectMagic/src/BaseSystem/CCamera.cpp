@@ -2,6 +2,8 @@
 #include "glut.h"
 #include "Maths.h"
 #include "CDebugCamera.h"
+#include "CCollider.h"
+#include <algorithm>
 
 std::list<CCamera*> CCamera::spCameraList;
 CCamera* CCamera::spMainCamera = nullptr;

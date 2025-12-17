@@ -1,5 +1,6 @@
 #include "CSword.h"
 #include "CColliderCapsule.h"
+#include "CModel.h"
 
 constexpr float SWORD_LENGTH = 100.0f;
 constexpr float SWORD_RADIUS = 1.0f;

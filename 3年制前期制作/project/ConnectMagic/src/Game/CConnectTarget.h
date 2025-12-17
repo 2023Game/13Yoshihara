@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
-#include "CConnectObject.h"
+
+class CConnectObject;
 
 // 接続できるターゲット部分
 class CConnectTarget : public CObjectBase

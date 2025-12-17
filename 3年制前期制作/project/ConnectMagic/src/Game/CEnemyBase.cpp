@@ -6,6 +6,7 @@
 #include "CNavNode.h"
 #include "CNavManager.h"
 #include "CGaugeUI3D.h"
+#include "CCollider.h"
 
 // コンストラクタ
 CEnemyBase::CEnemyBase(float fovAngle, float fovLength,
