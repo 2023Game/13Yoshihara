@@ -5,8 +5,9 @@
 #include "CConnectPointManager.h"
 #include <typeinfo>
 #include "CPhysicsManager.h"
+#include "PhysicsMaterial.h"
 #include "CInput.h"
-#include "btBulletDynamicsCommon.h"
+#include "CollisionData.h"
 
 // 接続ターゲットの座標
 const CVector TARGET_POS_1 =	CVector(0.0f, 10.0f, 0.0f);
@@ -105,31 +106,6 @@ CWeight::~CWeight()
 {
 }
 
-// 衝突処理
-void CWeight::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	CConnectObject::Collision(self, other, hit);
-
-	if (mpCol == self)
-	{
-		// 相手が地面なら
-		if (other->Layer() == ELayer::eGround)
-		{
-			// 乗ることが出来るオブジェクトなら
-			if (other->Tag() == ETag::eRideableObject)
-			{
-				// 乗っているオブジェクトに設定する
-				mpRideObject = other->Owner();
-			}
-		}
-		// 相手が水なら
-		if (other->Layer() == ELayer::eCrushed)
-		{
-			mIsRespawn = true;
-		}
-	}
-}
-
 // 更新
 void CWeight::Update()
 {
@@ -161,6 +137,9 @@ void CWeight::Update()
 	}
 
 	CConnectObject::Update();
+	// 衝突イベントのチェック
+	DispatchCollisionEvents();
+
 	// 重りが張り付いていない
 	SetIsAttach(false);
 }
@@ -187,32 +166,50 @@ float CWeight::GetElapsedTime() const
 	return mElapsedTime;
 }
 
+void CWeight::OnCollision(const CollisionData& data)
+{	
+	// 本体コライダーでなければ処理しない
+	if (data.selfBody != GetRigidBody()) return;
+
+	// 相手のOBJのポインタを取得
+	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
+
+	if (otherObj == nullptr) return;
+
+	// 水
+	if (otherObj->Tag() == ETag::eWater)
+	{
+		mIsRespawn = true;
+	}
+	// 相手が乗れるオブジェクトなら
+	else if (otherObj->Tag() == ETag::eRideableObject)
+	{
+		// 乗っているオブジェクトに設定する
+		mpRideObject = otherObj;
+	}
+}
+
 // コライダーを生成
 void CWeight::CreateCol()
 {
-	CPhysicsManager::Instance()->CreateBoxRigidBody(
-		this, MASS,
+	// 物理設定
+	PhysicsMaterial material;
+	material.mass = MASS;
+	material.friction = FRICTION;
+	material.linDamping = LIN_DAMPING;
+	material.angDamping = ANG_DAMPING;
+	
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// 本体コライダー
+	physicsMgr->CreateBoxRigidBody(
+		this,
+		material,
 		HALF_EXTENTS,
 		Position(),
-		Rotation()
+		Rotation(),
+		ELayer::eConnectObj,
+		{ ELayer::eField,ELayer::ePlayer,
+		ELayer::eConnectObj,ELayer::eConnectSearch,ELayer::eSwitch,
+		ELayer::eCrushed }
 	);
-	btRigidBody* body = GetRigidBody();
-	// 摩擦
-	body->setFriction(FRICTION);
-	// 減衰
-	body->setDamping(LIN_DAMPING, ANG_DAMPING);
-
-	// フィールドやオブジェクトと衝突判定をするコライダー
-	mpCol = new CColliderSphere
-	(
-		this, ELayer::eObject,
-		RADIUS
-	);
-	// 座標を調整
-	mpCol->Position(Position() + CVector(0.0f, RADIUS / 2, 0.0f));
-	// プレイヤー、敵、フィールド、オブジェクト、コネクトオブジェクトの探知用、スイッチ、水と衝突判定
-	mpCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eGround, ELayer::eWall,
-		ELayer::eObject, ELayer::eConnectSearch, ELayer::eSwitch,
-		ELayer::eCrushed});
 }

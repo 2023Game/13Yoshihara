@@ -25,7 +25,7 @@ private:
 
 public:
 	// コンストラクタ
-	CWater(CVector scale);
+	CWater(CVector pos, CVector scale);
 	// デストラクタ
 	~CWater();
 

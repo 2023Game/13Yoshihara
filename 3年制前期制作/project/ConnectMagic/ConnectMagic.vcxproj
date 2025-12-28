@@ -85,8 +85,6 @@
     <ClCompile Include="src\Game\CApplication.cpp" />
     <ClCompile Include="src\Game\CUIDManager.cpp" />
     <ClCompile Include="src\Game\CWeight.cpp" />
-    <ClCompile Include="src\Game\CBridge.cpp" />
-    <ClCompile Include="src\Game\CCampFire.cpp" />
     <ClCompile Include="src\Game\CConnectObject.cpp" />
     <ClCompile Include="src\Game\CConnectPoint.cpp" />
     <ClCompile Include="src\Game\CConnectPointManager.cpp" />
@@ -99,19 +97,15 @@
     <ClCompile Include="src\Game\CEndUIBase.cpp" />
     <ClCompile Include="src\Game\CEnemyBase.cpp" />
     <ClCompile Include="src\Game\CFieldBase.cpp" />
-    <ClCompile Include="src\Game\CFire.cpp" />
-    <ClCompile Include="src\Game\CFragmentMergeArea.cpp" />
     <ClCompile Include="src\Game\CGameClearScene.cpp" />
     <ClCompile Include="src\Game\CGameClearUI.cpp" />
     <ClCompile Include="src\Game\CGameScene.cpp" />
     <ClCompile Include="src\Game\CGaugeUI2D.cpp" />
-    <ClCompile Include="src\Game\CGrass.cpp" />
     <ClCompile Include="src\Game\CInteractUI3D.cpp" />
     <ClCompile Include="src\Game\CBullet.cpp" />
     <ClCompile Include="src\Game\CItemBase.cpp" />
     <ClCompile Include="src\Game\CItemDrop.cpp" />
     <ClCompile Include="src\Game\CLastRoom.cpp" />
-    <ClCompile Include="src\Game\CPortalFragment.cpp" />
     <ClCompile Include="src\Game\CRewindUI.cpp" />
     <ClCompile Include="src\Game\CRoom1.cpp" />
     <ClCompile Include="src\Game\CRoom2.cpp" />
@@ -128,7 +122,6 @@
     <ClCompile Include="src\Game\CSwitchMoveWall.cpp" />
     <ClCompile Include="src\Game\CSwitchPushWall.cpp" />
     <ClCompile Include="src\Game\CSwitchShield.cpp" />
-    <ClCompile Include="src\Game\CTorch.cpp" />
     <ClCompile Include="src\Game\CPlayer.cpp" />
     <ClCompile Include="src\Game\CPlayerStatus.cpp" />
     <ClCompile Include="src\Game\CPortal.cpp" />
@@ -159,7 +152,6 @@
     <ClCompile Include="src\Game\CRotateFloor.cpp" />
     <ClCompile Include="src\Game\CTitleScene.cpp" />
     <ClCompile Include="src\Game\CTitleUI.cpp" />
-    <ClCompile Include="src\Game\CUpgradeItem.cpp" />
     <ClCompile Include="src\Game\CWand.cpp" />
     <ClCompile Include="src\Game\CWater.cpp" />
     <ClCompile Include="src\Game\CWeapon.cpp" />
@@ -234,6 +226,7 @@
     <ClInclude Include="src\BaseSystem\CUIManager.h" />
     <ClInclude Include="src\BaseSystem\CWaterShader.h" />
     <ClInclude Include="src\BaseSystem\Easing.h" />
+    <ClInclude Include="src\BaseSystem\PhysicsMaterial.h" />
     <ClInclude Include="src\BaseSystem\Primitive.h" />
     <ClInclude Include="src\BaseSystem\CQuaternion.h" />
     <ClInclude Include="src\BaseSystem\CSceneBase.h" />
@@ -266,8 +259,6 @@
     <ClInclude Include="src\Game\CSavable.h" />
     <ClInclude Include="src\Game\CUIDManager.h" />
     <ClInclude Include="src\Game\CWeight.h" />
-    <ClInclude Include="src\Game\CBridge.h" />
-    <ClInclude Include="src\Game\CCampFire.h" />
     <ClInclude Include="src\Game\CConnectObject.h" />
     <ClInclude Include="src\Game\CConnectRoom.h" />
     <ClInclude Include="src\Game\CCrystal.h" />
@@ -285,8 +276,6 @@
     <ClInclude Include="src\Game\CEndUIBase.h" />
     <ClInclude Include="src\Game\CEnemyBase.h" />
     <ClInclude Include="src\Game\CFieldBase.h" />
-    <ClInclude Include="src\Game\CFire.h" />
-    <ClInclude Include="src\Game\CFragmentMergeArea.h" />
     <ClInclude Include="src\Game\CRewindUI.h" />
     <ClInclude Include="src\Game\CRoom1.h" />
     <ClInclude Include="src\Game\CRoom2.h" />
@@ -303,15 +292,11 @@
     <ClInclude Include="src\Game\CSwitchMoveFloor.h" />
     <ClInclude Include="src\Game\CSwitchMoveWall.h" />
     <ClInclude Include="src\Game\CSwitchPushWall.h" />
-    <ClInclude Include="src\Game\FragmentType.h" />
     <ClInclude Include="src\Game\CGaugeUI2D.h" />
-    <ClInclude Include="src\Game\CGrass.h" />
     <ClInclude Include="src\Game\CInteractUI3D.h" />
     <ClInclude Include="src\Game\CBullet.h" />
     <ClInclude Include="src\Game\CItemBase.h" />
     <ClInclude Include="src\Game\CItemDrop.h" />
-    <ClInclude Include="src\Game\CPortalFragment.h" />
-    <ClInclude Include="src\Game\CTorch.h" />
     <ClInclude Include="src\Game\CPlayer.h" />
     <ClInclude Include="src\Game\CPlayerStatus.h" />
     <ClInclude Include="src\Game\CPortal.h" />
@@ -342,7 +327,6 @@
     <ClInclude Include="src\Game\CRotateFloor.h" />
     <ClInclude Include="src\Game\CTitleUI.h" />
     <ClInclude Include="src\Game\CTitleScene.h" />
-    <ClInclude Include="src\Game\CUpgradeItem.h" />
     <ClInclude Include="src\Game\CWand.h" />
     <ClInclude Include="src\Game\CWater.h" />
     <ClInclude Include="src\Game\CWeapon.h" />

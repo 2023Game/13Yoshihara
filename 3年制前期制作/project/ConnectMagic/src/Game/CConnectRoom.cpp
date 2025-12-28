@@ -126,7 +126,7 @@ void CConnectRoom::Update()
 void CConnectRoom::CreateCol()
 {
 	// コライダーを生成
-	CFieldBase::CreateCol("ConnectRoom_Ground_Col", "ConnectRoom_Wall_Col", "");
+	CFieldBase::CreateCol("ConnectRoom_Col");
 
 	// 閉じるフラグ用のコライダー
 	mpCloseCol = new CColliderSphere(

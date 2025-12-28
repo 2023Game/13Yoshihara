@@ -262,8 +262,6 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 	{
 		// 座標を設定
 		mpConnectPoint1->Position(connectTarget->Position());
-		// 親子設定
-		mpConnectPoint1->SetParent(connectTarget);
 		// 接続オブジェクトを設定
 		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
@@ -288,8 +286,6 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 
 		// 座標を設定
 		mpConnectPoint2->Position(connectTarget->Position());
-		// 親子設定
-		mpConnectPoint2->SetParent(connectTarget);
 		// 接続オブジェクトを設定
 		mpConnectPoint2->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
@@ -321,8 +317,6 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 		// 1番を更新して杖と接続
 		// 座標を設定
 		mpConnectPoint1->Position(connectTarget->Position());
-		// 親子設定
-		mpConnectPoint1->SetParent(connectTarget);
 		// 接続オブジェクトを設定
 		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理

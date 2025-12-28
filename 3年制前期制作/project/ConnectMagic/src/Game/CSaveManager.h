@@ -21,15 +21,6 @@ public:
 	// 更新
 	void Update() override;
 
-	// 状態を保存する
-	void Save();
-	// データをロード
-	void Load();
-
-	// 一番古い状態を削除する
-	void DeleteOld();
-	// 一番新しい状態を削除
-	void DeleteNew();
 	// 全て削除する
 	void AllDelete();
 
@@ -47,6 +38,25 @@ public:
 	void ChangeState(EState state);
 
 private:
+	// 状態を保存する
+	void Save();
+	// データをロード
+	void Load();
+	// 一番古い状態を削除する
+	void DeleteOld();
+	// 一番新しい状態を削除
+	void DeleteNew();
+
+	// 物理の影響を有効
+	void AllPhysicsOn();
+	// 物理の影響を無効
+	void AllPhysicsOff();
+
+	// 剛体の物理影響を有効
+	void PhysicsOn(btRigidBody* body);
+	// 剛体の物理影響を無効
+	void PhysicsOff(btRigidBody* body);
+
 	// インスタンス
 	static CSaveManager* spInstance;
 

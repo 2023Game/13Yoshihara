@@ -13,7 +13,7 @@ CLastRoom::CLastRoom(const CVector& pos)
 	Position(pos);
 
 	// コライダーを生成
-	CreateCol("LastRoom_Ground_Col", "LastRoom_Wall_Col", "");
+	CreateCol("LastRoom_Col");
 
 	// オブジェクトを生成
 	CreateFieldObjects();

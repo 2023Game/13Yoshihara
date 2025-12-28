@@ -73,7 +73,7 @@ CRoom6::CRoom6(const CVector& pos)
 	mpModel = CResourceManager::Get<CModel>("Room6");
 	Position(pos);
 
-	CreateCol("Room6_Ground_Col", "Room6_Wall_Col", "");
+	CreateCol("Room6_Col");
 
 	CreateFieldObjects();
 }

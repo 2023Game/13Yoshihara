@@ -30,9 +30,6 @@ private:
 	// コライダーを生成
 	void CreateCol();
 
-	// 当たり判定
-	CCollider* mpCol;
-
 	CSwitch* mpOwner;	// 持ち主
 
 	CModel* mpModelOn;

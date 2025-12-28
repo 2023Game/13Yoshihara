@@ -16,11 +16,6 @@ CConnectTarget::CConnectTarget(CConnectObject* connectObj)
 // デストラクタ
 CConnectTarget::~CConnectTarget()
 {
-	if (mpConnectObj != nullptr)
-	{
-		mpConnectObj->DeleteObject(this);
-		mpConnectObj = nullptr;
-	}
 }
 
 // 描画

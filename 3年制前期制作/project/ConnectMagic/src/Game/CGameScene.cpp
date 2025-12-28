@@ -58,22 +58,14 @@ void CGameScene::Load()
 	CResourceManager::Load<CModel>("CrystalOff",	"Field\\Crystal\\CrystalOff.obj");
 	CResourceManager::Load<CModel>("Generator",		"Field\\Generator\\Generator.obj");
 	// 当たり判定用のコリジョンモデル
-	CResourceManager::Load<CModel>("ConnectRoom_Ground_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Ground_Col.obj");
-	CResourceManager::Load<CModel>("ConnectRoom_Wall_Col",		"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room1_Ground_Col",			"Field\\Room\\Room1\\Col\\Room1_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room1_Wall_Col",			"Field\\Room\\Room1\\Col\\Room1_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room2_Ground_Col",			"Field\\Room\\Room2\\Col\\Room2_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room2_Wall_Col",			"Field\\Room\\Room2\\Col\\Room2_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room3_Ground_Col",			"Field\\Room\\Room3\\Col\\Room3_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room3_Wall_Col",			"Field\\Room\\Room3\\Col\\Room3_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room4_Ground_Col",			"Field\\Room\\Room4\\Col\\Room4_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room4_Wall_Col",			"Field\\Room\\Room4\\Col\\Room4_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room5_Ground_Col",			"Field\\Room\\Room5\\Col\\Room5_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room5_Wall_Col",			"Field\\Room\\Room5\\Col\\Room5_Wall_Col.obj");
-	CResourceManager::Load<CModel>("Room6_Ground_Col",			"Field\\Room\\Room6\\Col\\Room6_Ground_Col.obj");
-	CResourceManager::Load<CModel>("Room6_Wall_Col",			"Field\\Room\\Room6\\Col\\Room6_Wall_Col.obj");
-	CResourceManager::Load<CModel>("LastRoom_Ground_Col",		"Field\\Room\\LastRoom\\Col\\LastRoom_Ground_Col.obj");
-	CResourceManager::Load<CModel>("LastRoom_Wall_Col",			"Field\\Room\\LastRoom\\Col\\LastRoom_Wall_Col.obj");
+	CResourceManager::Load<CModel>("ConnectRoom_Col",	"Field\\Room\\ConnectRoom\\Col\\ConnectRoom_Col.obj");
+	CResourceManager::Load<CModel>("Room1_Col",			"Field\\Room\\Room1\\Col\\Room1_Col.obj");
+	CResourceManager::Load<CModel>("Room2_Col",			"Field\\Room\\Room2\\Col\\Room2_Col.obj");
+	CResourceManager::Load<CModel>("Room3_Col",			"Field\\Room\\Room3\\Col\\Room3_Col.obj");
+	CResourceManager::Load<CModel>("Room4_Col",			"Field\\Room\\Room4\\Col\\Room4_Col.obj");
+	CResourceManager::Load<CModel>("Room5_Col",			"Field\\Room\\Room5\\Col\\Room5_Col.obj");
+	CResourceManager::Load<CModel>("Room6_Col",			"Field\\Room\\Room6\\Col\\Room6_Col.obj");
+	CResourceManager::Load<CModel>("LastRoom_Col",		"Field\\Room\\LastRoom\\Col\\LastRoom_Col.obj");
 	CResourceManager::Load<CModel>("MoveObject_Col",			"Field\\MoveObject\\Col\\MoveObject_Col.obj");
 	/*
 	効果音
@@ -88,8 +80,7 @@ void CGameScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	// プレイヤー生成
-	CPlayer* player = new CPlayer();
-	player->Position(PLAYER_POS);
+	CPlayer* player = new CPlayer(PLAYER_POS);
 
 	// CGameCamera2のテスト
 	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);

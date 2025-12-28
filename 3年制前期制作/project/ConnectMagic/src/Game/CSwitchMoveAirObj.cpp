@@ -102,8 +102,7 @@ CSwitchMoveAirObj::CSwitchMoveAirObj(
 	// 座標を設定
 	Position(pos);
 	// 空中接続オブジェクトを生成
-	mpConnectObj = new CAirConnectObj();
-	mpConnectObj->Position(pos);
+	mpConnectObj = new CAirConnectObj(pos);
 }
 
 // デストラクタ

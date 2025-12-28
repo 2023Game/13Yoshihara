@@ -22,21 +22,10 @@ public:
 	// デストラクタ
 	~CConnectObject();
 
-	// オブジェクト削除を伝える関数
-	void DeleteObject(CObjectBase* obj) override;
-
 	// 更新
 	void Update() override;
 	// 描画
 	void Render() override;
-
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自分のコライダー</param>
-	/// <param name="other">衝突した相手のコライダ―</param>
-	/// <param name="hit">衝突した時の情報</param>
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	/// <summary>
 	/// 繋がったときの処理
@@ -53,7 +42,7 @@ public:
 	void CreateTarget(CVector pos);
 
 	// 接続ターゲットを取得
-	std::vector<CConnectTarget*> GetTargets();
+	CConnectTarget* GetTarget() const;
 
 	// 重さを取得
 	float GetWeight();
@@ -71,7 +60,7 @@ public:
 
 protected:
 	// 接続ターゲット
-	std::vector<CConnectTarget*> mTargets;
+	CConnectTarget* mpTarget;
 
 	// 重さ
 	float mWeight;

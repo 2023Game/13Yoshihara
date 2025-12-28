@@ -81,7 +81,7 @@ void CTestScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	// プレイヤー生成
-	CPlayer* player = new CPlayer();
+	CPlayer* player = new CPlayer(CVector::zero);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera

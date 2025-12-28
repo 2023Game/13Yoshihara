@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "CRewindUI.h"
 #include "CPlayer.h"
+#include "btBulletDynamicsCommon.h"
 
 // 保存するフレーム数
 constexpr float SAVE_FRAMES = 600;
@@ -159,6 +160,74 @@ void CSaveManager::DeleteNew()
 	mData.pop_back();
 }
 
+void CSaveManager::AllPhysicsOn()
+{
+	CPlayerBase* player = CPlayerBase::Instance();
+	btRigidBody* playerBody = player->GetRigidBody();
+	
+	if (player && playerBody)
+	{
+		// 物理オン
+		PhysicsOn(playerBody);
+	}
+
+	for (auto it : mSavableInstanceMap)
+	{
+		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
+		btRigidBody* objBody = obj->GetRigidBody();
+
+		if (!obj)continue;
+		if (!objBody) continue;
+
+		// 物理オン
+		PhysicsOn(objBody);
+	}
+}
+
+void CSaveManager::AllPhysicsOff()
+{
+	CPlayerBase* player = CPlayerBase::Instance();
+	btRigidBody* playerBody = player->GetRigidBody();
+
+	if (player && playerBody)
+	{
+		// 力をリセット
+		player->ResetForce();
+		// 物理オフ
+		PhysicsOff(playerBody);
+	}
+
+	for (auto it : mSavableInstanceMap)
+	{
+		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
+		btRigidBody* objBody = obj->GetRigidBody();
+
+		if (!obj)continue;
+		if (!objBody) continue;
+
+		// 力をリセット
+		obj->ResetForce();
+		// 物理オフ
+		PhysicsOff(objBody);
+	}
+}
+
+void CSaveManager::PhysicsOn(btRigidBody* body)
+{
+	// 移動開始
+	body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_KINEMATIC_OBJECT);
+	// 再び動くようにアクティブ化
+	body->forceActivationState(ACTIVE_TAG);
+}
+
+void CSaveManager::PhysicsOff(btRigidBody* body)
+{
+	// 物理演算による移動を停止
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	// スリープ防止
+	body->setActivationState(DISABLE_DEACTIVATION);
+}
+
 // 全て削除する
 void CSaveManager::AllDelete()
 {
@@ -185,13 +254,17 @@ void CSaveManager::ChangeState(EState state)
 	// 同じなら処理しない
 	if (mState == state) return;
 
+	// ロード
 	if (state == EState::eLoad) {
 		mpRewindUI->SetEnable(true);
 		mpRewindUI->SetTextEnable(true);
 		mpRewindUI->SetImgColor(CColor::red);
 		// ロード開始時にゲームをポーズ
 		CTaskManager::Instance()->Pause(PAUSE_GAME);
+		// すべての物理をオフ
+		AllPhysicsOff();
 	}
+	// セーブ
 	else {
 		mpRewindUI->SetEnable(false);
 		// ポーズ解除
@@ -202,6 +275,8 @@ void CSaveManager::ChangeState(EState state)
 		{
 			player->ChangeState(CPlayer::EState::eIdle);
 		}
+		// すべての物理をオン
+		AllPhysicsOn();
 	}
 
 	mState = state;

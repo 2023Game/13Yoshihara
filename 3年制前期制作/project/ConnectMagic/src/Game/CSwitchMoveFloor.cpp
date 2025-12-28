@@ -126,7 +126,7 @@ EMoveState CSwitchMoveFloor::GetPreMoveState() const
 void CSwitchMoveFloor::CreateCol()
 {
 	// 本体のコライダー
-	mpCol = new CColliderMesh(this, ELayer::eGround, mpModel, true);
+	mpCol = new CColliderMesh(this, ELayer::eField, mpModel, true);
 
 	// 接続部の管理クラス
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();

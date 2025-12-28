@@ -3,6 +3,8 @@
 #include "CMaterial.h"
 #include "CColliderRectangle.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h""
+#include "PhysicsMaterial.h"
 
 // 頂点
 const CVector VERT_POS_1 = CVector(-1.0f, 0.0f, -1.0f);
@@ -10,9 +12,13 @@ const CVector VERT_POS_2 = CVector(-1.0f, 0.0f,  1.0f);
 const CVector VERT_POS_3 = CVector( 1.0f, 0.0f,  1.0f);
 const CVector VERT_POS_4 = CVector( 1.0f, 0.0f, -1.0f);
 
+// 物理設定
+constexpr float MASS = 0.0f;
+const CVector HALF_EXTENTS = CVector(1.0f, 1.0f, 1.0f);
+
 // コンストラクタ
-CWater::CWater(CVector scale)
-	: CObjectBase(ETag::eField,ETaskPriority::eBackground,0,ETaskPauseType::eGame)
+CWater::CWater(CVector pos, CVector scale)
+	: CObjectBase(ETag::eWater,ETaskPriority::eBackground,0,ETaskPauseType::eGame)
 	, mVAO(0)
 	, mVBO(0)
 	, mNormalMapTex(0)
@@ -22,11 +28,12 @@ CWater::CWater(CVector scale)
 	// 初期設定
 	Init("Shader\\water.vert", "Shader\\water.flag");
 
-	// コライダーを生成
-	CreateCol();
-
+	Position(pos);
 	// スケールを設定
 	Scale(scale);
+
+	// コライダーを生成
+	CreateCol();
 }
 
 // デストラクタ
@@ -154,6 +161,24 @@ void CWater::Render()
 // コライダーを生成
 void CWater::CreateCol()
 {
+	// 物理設定
+	PhysicsMaterial material;
+	material.mass = MASS;
+
+	// サイズの計算
+	CVector size = CVector(
+		HALF_EXTENTS.X() * Scale().X(),
+		HALF_EXTENTS.Y() * Scale().Y(),
+		HALF_EXTENTS.Z() * Scale().Z());
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// 本体コライダー
+	physicsMgr->CreateBoxSensor(
+		this,
+		size,
+		ELayer::eCrushed,
+		{ ELayer::ePlayer,ELayer::eConnectObj }
+	);
+
 	mpCol = new CColliderRectangle(
 		this, ELayer::eCrushed,
 		CVector(VERT_POS_1),

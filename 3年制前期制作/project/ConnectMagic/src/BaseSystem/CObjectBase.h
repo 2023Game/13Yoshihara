@@ -21,6 +21,9 @@ class btTriangleIndexVertexArray;
 class CObjectBase : public CTask, public CTransform
 {
 public:
+	using CTransform::Position;
+	using CTransform::Rotation;
+
 	/// <summary>
 	/// コンストラクタ
 	/// </summary>
@@ -114,11 +117,19 @@ public:
 	void AddForce(const CVector& force);
 	// インパルスを加える（瞬発的な動き）
 	void AddImpulse(const CVector& impulse);
+	// 力をリセット
+	void ResetForce();
 
 	// 剛体の半分の高さを取得
 	float GetHalfHeight() const;
 	// 剛体の半分の高さを設定
 	void SetHalfHeight(float halfHeight);
+
+	// 座標を設定
+	void Position(const CVector& pos) override;
+	// 回転を設定
+	void Rotation(const CQuaternion& rot) override;
+
 
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
@@ -131,6 +142,11 @@ private:
 	float mHalfHeightY;								// 剛体の半分の高さ
 	btTriangleIndexVertexArray* mpIndexVertexArray;	// メッシュデータ
 	btCollisionObject* mpSensorCol;					// 探知用のコライダー
+
+	// 剛体の座標を設定
+	void SetBodyPos(const CVector& pos);
+	// 剛体の回転を設定
+	void SetBodyRot(const CQuaternion& rot);
 
 protected:
 

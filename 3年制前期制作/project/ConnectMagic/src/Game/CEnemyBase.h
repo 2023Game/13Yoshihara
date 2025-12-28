@@ -37,14 +37,6 @@ public:
 	// 描画
 	void Render() override;
 
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自身のコライダー</param>
-	/// <param name="other">衝突した相手のコライダー</param>
-	/// <param name="hit">衝突した時の情報</param>
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
-
 protected:
 	// アニメーション切り替え
 	void ChangeAnimation(int type, bool restart = false);

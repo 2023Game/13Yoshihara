@@ -98,12 +98,12 @@ void CFieldBase::CreateNavNodes()
 }
 
 // コライダ―を生成する
-void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::string objCol)
+void CFieldBase::CreateCol(std::string fieldCol)
 {
 	// 空じゃなければ
-	if (groundCol != "")
+	if (fieldCol != "")
 	{
-		CModel* model = CResourceManager::Get<CModel>(groundCol);
+		CModel* model = CResourceManager::Get<CModel>(fieldCol);
 
 		// 物理用データの取得
 		mMeshVertices = model->GetPhysicsVertexPositions();
@@ -116,37 +116,9 @@ void CFieldBase::CreateCol(std::string groundCol, std::string wallCol, std::stri
 			(int)mMeshVertices.size() / 3,          // 頂点数
 			mMeshIndices.data(),                    // インデックスデータ
 			(int)mMeshIndices.size() / 3,           // 三角形数
-			Position()                              // 初期位置
+			Position(),                             // 初期位置
+			ELayer::eField,
+			{ ELayer::ePlayer,ELayer::eConnectObj, ELayer::eObject }
 		);
-
-		// 地面のコライダーを生成
-		mpGroundColliderMesh = new CColliderMesh
-		{
-			this,ELayer::eGround,
-			CResourceManager::Get<CModel>(groundCol),
-			true
-		};
-	}
-	// 空じゃなければ
-	if (wallCol != "")
-	{
-		// 壁のコライダーを生成
-		mpWallColliderMesh = new CColliderMesh
-		{
-			this,ELayer::eWall,
-			CResourceManager::Get<CModel>(wallCol),
-			true
-		};
-	}
-	// 空じゃなければ
-	if (objCol != "")
-	{
-		// オブジェクトのコライダーを生成
-		mpObjectColliderMesh = new CColliderMesh
-		{
-			this,ELayer::eObject,
-			CResourceManager::Get<CModel>(objCol),
-			true
-		};
 	}
 }

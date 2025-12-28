@@ -19,7 +19,7 @@ public:
 		const btVector3& normalOnB,
 		btScalar distance,
 		int lifeTime,
-		const btVector3& coolor) override;
+		const btVector3& color) override;
 
 	// エラーレポート
 	virtual void reportErrorWarning(const char* warningString) override;

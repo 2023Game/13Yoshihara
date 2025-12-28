@@ -1,5 +1,6 @@
 #include "CConnectPoint.h"
 #include "CConnectObject.h"
+#include "CConnectTarget.h"
 
 // コンストラクタ
 CConnectPoint::CConnectPoint(CConnectObject* connectObj)
@@ -20,6 +21,12 @@ void CConnectPoint::Update()
 {
 	// 基底クラスの更新処理
 	CBillBoardImage::Update();
+
+	if (mpConnectObj != nullptr)
+	{
+		// 持ち主の座標へ
+		Position(mpConnectObj->GetTarget()->Position());
+	}
 }
 
 // 接続部がついているオブジェクトを取得する

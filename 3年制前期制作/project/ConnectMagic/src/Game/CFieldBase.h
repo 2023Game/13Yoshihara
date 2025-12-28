@@ -38,10 +38,7 @@ protected:
 	// 経路探索用のノードを作成
 	virtual void CreateNavNodes();
 	// コライダ―を生成する
-	void CreateCol(
-		std::string groundCol,
-		std::string wallCol,
-		std::string objCol);
+	void CreateCol(std::string fieldCol);
 
 	// フィールドのモデル
 	CModel* mpModel;

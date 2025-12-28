@@ -6,18 +6,14 @@ enum class ELayer
 {
 	eNone = -1,
 	eTest,			// テスト用
-	eGround,		// 地面
-	eWall,			// 壁
+	eField,			// 地形
 	eObject,		// オブジェクト
-	eItem,			// アイテム
 	ePortal,		// ポータル
 	eRespawnArea,	// リスポーン地点
-	eFragmentMergeArea,	// 欠片を合成する場所
-	eCrushed,			// プレイヤーがリスポーンさせられるオブジェクト
-	
-	eInteractObj,	// 調べるオブジェクト
-	eInteractSearch,// 調べるオブジェクト探知用
+	eCrushed,		// プレイヤーがリスポーンさせられるオブジェクト
+	eShield,		// シールド
 
+	eConnectObj,	// 接続できるオブジェクト
 	eConnectSearch,	// 接続できるオブジェクト探知用
 
 	eSwitch,		// スイッチ

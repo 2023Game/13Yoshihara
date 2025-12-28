@@ -232,7 +232,6 @@ void CModel::Render()
 std::vector<int> CModel::GetPhysicsIndices() const
 {
 	int totalVertices = mTriangles.size() * 3;
-
 	std::vector<int> indices;
 	indices.reserve(totalVertices);
 
@@ -429,22 +428,35 @@ void CModel::CreateVertexBuffer()
 {
 	mpVertexes = new CVertex[mTriangles.size() * 3];
 	int idx = 0;
-	for (int i = 0; i < mpMaterials.size(); i++)
+	// ‚à‚µƒ}ƒeƒŠƒAƒ‹‚ª1‚Â‚à‚È‚¢ê‡
+	if (mpMaterials.empty())
 	{
 		for (int j = 0; j < mTriangles.size(); j++)
 		{
-			if (i == mTriangles[j].MaterialIdx())
+			mpVertexes[idx++].mPosition = mTriangles[j].V0();
+			mpVertexes[idx++].mPosition = mTriangles[j].V1();
+			mpVertexes[idx++].mPosition = mTriangles[j].V2();
+		}
+	}
+	else
+	{
+		for (int i = 0; i < mpMaterials.size(); i++)
+		{
+			for (int j = 0; j < mTriangles.size(); j++)
 			{
-				mpMaterials[i]->VertexNum(mpMaterials[i]->VertexNum() + 3);
-				mpVertexes[idx].mPosition = mTriangles[j].V0();
-				mpVertexes[idx].mNormal = mTriangles[j].N0();
-				mpVertexes[idx++].mTextureCoords = mTriangles[j].U0();
-				mpVertexes[idx].mPosition = mTriangles[j].V1();
-				mpVertexes[idx].mNormal = mTriangles[j].N1();
-				mpVertexes[idx++].mTextureCoords = mTriangles[j].U1();
-				mpVertexes[idx].mPosition = mTriangles[j].V2();
-				mpVertexes[idx].mNormal = mTriangles[j].N2();
-				mpVertexes[idx++].mTextureCoords = mTriangles[j].U2();
+				if (i == mTriangles[j].MaterialIdx())
+				{
+					mpMaterials[i]->VertexNum(mpMaterials[i]->VertexNum() + 3);
+					mpVertexes[idx].mPosition = mTriangles[j].V0();
+					mpVertexes[idx].mNormal = mTriangles[j].N0();
+					mpVertexes[idx++].mTextureCoords = mTriangles[j].U0();
+					mpVertexes[idx].mPosition = mTriangles[j].V1();
+					mpVertexes[idx].mNormal = mTriangles[j].N1();
+					mpVertexes[idx++].mTextureCoords = mTriangles[j].U1();
+					mpVertexes[idx].mPosition = mTriangles[j].V2();
+					mpVertexes[idx].mNormal = mTriangles[j].N2();
+					mpVertexes[idx++].mTextureCoords = mTriangles[j].U2();
+				}
 			}
 		}
 	}

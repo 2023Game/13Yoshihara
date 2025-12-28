@@ -81,7 +81,7 @@ void CFlame::SetFlameScaleAnimTime(float flameScaleAnimTime)
 // Õ“Ëˆ—
 void CFlame::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
-	if (other->Layer() == ELayer::eGround)
+	if (other->Layer() == ELayer::eField)
 	{
 		float length = mMoveSpeed.Length();
 		CVector n = hit.adjust.Normalized();

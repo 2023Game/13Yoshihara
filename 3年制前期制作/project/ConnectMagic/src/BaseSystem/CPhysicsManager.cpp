@@ -4,6 +4,8 @@
 #include "CPlayer.h"
 #include "btBulletDynamicsCommon.h"
 #include "CollisionData.h"
+#include "PhysicsMaterial.h"
+#include "CDebugInput.h"
 
 // 最大分割数
 constexpr int MAX_SUB_STEPS =				 10;
@@ -29,6 +31,7 @@ CPhysicsManager* CPhysicsManager::Instance()
 // コンストラクタ
 CPhysicsManager::CPhysicsManager()
 	: CTask(ETaskPriority::eNone, 0, ETaskPauseType::eGame)
+	, mIsShowCollider(false)
 {
 	// 基礎コンポーネントの作成
 	mpCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -143,22 +146,48 @@ void CPhysicsManager::LateUpdate()
 			CQuaternion rot = CQuaternion(btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW());
 
 			// 位置を設定
-			obj->Position(pos);
+			obj->CTransform::Position(pos);
 			// 回転を設定
-			obj->Rotation(rot);
+			obj->CTransform::Rotation(rot);
 		}
 	}
 }
 
+#if _DEBUG
 // 描画
 void CPhysicsManager::Render()
 {
+	// 「SHIFT」+「9」でコライダー表示機能オンオフ
+	if (CDebugInput::Key(VK_SHIFT) && CDebugInput::PushKey('9'))
+	{
+		mIsShowCollider = !mIsShowCollider;
+	}
+	// コライダー表示フラグがオフなら、以降処理しない
+	if (!mIsShowCollider) return;
+
 	if (mpDebugDraw != nullptr && mpDynamicsWorld != nullptr)
 	{
 		// デバッグモードを設定
 		mpDebugDraw->setDebugMode(btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawContactPoints);
 		mpDynamicsWorld->debugDrawWorld();
 	}
+}
+#endif
+
+int CPhysicsManager::ToBit(ELayer layer)
+{
+	if (layer == ELayer::eNone) return 0;
+	return 1 << static_cast<int>(layer);
+}
+
+int CPhysicsManager::ToMask(Layers layers)
+{
+	int mask = 0;
+	for (ELayer layer : layers)
+	{
+		mask |= ToBit(layer);
+	}
+	return mask;
 }
 
 void CPhysicsManager::UpdateCollisionDataList()
@@ -219,11 +248,13 @@ CollisionData CPhysicsManager::CreateCollisionData(const btCollisionObject* objA
 }
 
 btRigidBody* CPhysicsManager::CreateBoxRigidBody(
-	CObjectBase* owner, 
-	float mass, 
+	CObjectBase* owner,
+	const PhysicsMaterial& material,
 	const CVector& halfExtents, 
 	const CVector& initialPos, 
-	const CQuaternion& initialRot)
+	const CQuaternion& initialRot,
+	ELayer myLayer,
+	Layers collisionLayers)
 {
 	// 衝突形状の作成
 	btCollisionShape* shape = new btBoxShape(
@@ -234,16 +265,16 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 	// 回転
 	startTrans.setRotation(
 		btQuaternion(initialRot.X(), initialRot.Y(), initialRot.Z(), initialRot.W()));
-	// 座標
+	// 座標(高さの半分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(initialPos.X(), initialPos.Y(), initialPos.Z()));
+		btVector3(initialPos.X(), initialPos.Y() + halfExtents.Y(), initialPos.Z()));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
-	if (mass != 0.0f)
+	if (material.mass != 0.0f)
 	{
 		// 質量がある場合のみ慣性を計算
-		shape->calculateLocalInertia(mass, localInertia);
+		shape->calculateLocalInertia(material.mass, localInertia);
 	}
 
 	// モーションステートの作成
@@ -251,18 +282,25 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 
 	// 剛体の作成
 	btRigidBody::btRigidBodyConstructionInfo
-		rbInfo(mass, motionState, shape, localInertia);
+		rbInfo(material.mass, motionState, shape, localInertia);
+	// 摩擦を設定
+	rbInfo.m_friction = material.friction;
+	// 反発係数を設定
+	rbInfo.m_restitution = material.restitution;
 	btRigidBody* body = new btRigidBody(rbInfo);
+
+	// 減衰設定
+	body->setDamping(material.linDamping, material.angDamping);
 
 	// 剛体の設定
 	// 質量0の場合、静的オブジェクトフラグを設定
-	if (mass == 0.0f)
+	if (material.mass == 0.0f)
 	{
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
 	}
 
 	// XZ軸の回転をロック
-	if (mass > 0.0f)
+	if (material.mass > 0.0f)
 	{
 		body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
 	}
@@ -270,8 +308,80 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 	// CObjectBaseに設定
 	owner->SetRigidBody(body, shape, motionState, halfExtents.Y());
 
-	// ワールドに追加
-	mpDynamicsWorld->addRigidBody(body);
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加(衝突相手を設定)
+	mpDynamicsWorld->addRigidBody(body, group, mask);
+
+	// オブジェクトにユーザポインタを設定
+	body->setUserPointer(owner);
+
+	return body;
+}
+
+btRigidBody* CPhysicsManager::CreateSphereRigidBody(
+	CObjectBase* owner,
+	const PhysicsMaterial& material,
+	float radius, 
+	const CVector& initPos,
+	ELayer myLayer,
+	Layers collisionLayers)
+{
+	// 衝突形状の作成
+	btCollisionShape* shape = new btSphereShape(radius);
+
+	// 初期トランスフォーム
+	btTransform startTrans;
+	startTrans.setIdentity();
+	// 座標(半径分上に位置調整)
+	startTrans.setOrigin(
+		btVector3(initPos.X(), initPos.Y() + radius, initPos.Z()));
+
+	// 慣性の計算
+	btVector3 localInertia(0.0f, 0.0f, 0.0f);
+	if (material.mass > 0.0f)
+	{
+		shape->calculateLocalInertia(material.mass, localInertia);
+	}
+
+	// モーションステートの作成
+	btDefaultMotionState* motionState = new btDefaultMotionState(startTrans);
+
+	// 剛体の作成
+	btRigidBody::btRigidBodyConstructionInfo
+		rbInfo(material.mass, motionState, shape, localInertia);
+	// 摩擦を設定
+	rbInfo.m_friction = material.friction;
+	// 反発係数を設定
+	rbInfo.m_restitution = material.restitution;
+	btRigidBody* body = new btRigidBody(rbInfo);
+
+	// 減衰設定
+	body->setDamping(material.linDamping, material.angDamping);
+
+	// 剛体の設定
+	if (material.mass == 0.0f)
+	{
+		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
+	}
+
+	// XZ軸の回転をロック
+	if (material.mass > 0.0f)
+	{
+		body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+	}
+
+	// CObjectBaseに設定
+	owner->SetRigidBody(body, shape, motionState, radius);
+
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加(衝突相手を設定)
+	mpDynamicsWorld->addRigidBody(body, group, mask);
 
 	// オブジェクトにユーザポインタを設定
 	body->setUserPointer(owner);
@@ -281,29 +391,33 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 
 btRigidBody* CPhysicsManager::CreateCapsuleRigidBody(
 	CObjectBase* owner,
-	float mass, 
+	const PhysicsMaterial& material,
 	float radius, 
 	float height, 
 	const CVector& initPos, 
-	const CQuaternion& initRot)
+	const CQuaternion& initRot,
+	ELayer myLayer,
+	Layers collisionLayers)
 {
 	// 衝突形状の作成
 	btCollisionShape* shape = new btCapsuleShape(radius, height);
 
+	// 高さの半分
+	float halfHeight = radius + height / 2;
 	// 初期トランスフォーム
 	btTransform startTrans;
 	// 回転
 	startTrans.setRotation(
 		btQuaternion(initRot.X(), initRot.Y(), initRot.Z(), initRot.W()));
-	// 座標
+	// 座標(高さの半分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(initPos.X(), initPos.Y(), initPos.Z()));
+		btVector3(initPos.X(), initPos.Y() + halfHeight, initPos.Z()));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
-	if (mass > 0.0f)
+	if (material.mass > 0.0f)
 	{
-		shape->calculateLocalInertia(mass, localInertia);
+		shape->calculateLocalInertia(material.mass, localInertia);
 	}
 
 	// モーションステートの作成
@@ -311,27 +425,37 @@ btRigidBody* CPhysicsManager::CreateCapsuleRigidBody(
 
 	// 剛体の作成
 	btRigidBody::btRigidBodyConstructionInfo
-		rbInfo(mass, motionState, shape, localInertia);
+		rbInfo(material.mass, motionState, shape, localInertia);
+	// 摩擦を設定
+	rbInfo.m_friction = material.friction;
+	// 反発係数を設定
+	rbInfo.m_restitution = material.restitution;
 	btRigidBody* body = new btRigidBody(rbInfo);
 
+	// 減衰設定
+	body->setDamping(material.linDamping, material.angDamping);
+
 	// 剛体の設定
-	if (mass == 0.0f)
+	if (material.mass == 0.0f)
 	{
 		body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_STATIC_OBJECT);
 	}
 
 	// XZ軸の回転をロック
-	if (mass > 0.0f)
+	if (material.mass > 0.0f)
 	{
 		body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
 	}
 
-	float halfHeight = radius + height / 2;
 	// CObjectBaseに設定
 	owner->SetRigidBody(body, shape, motionState, halfHeight);
 
-	// ワールドに追加
-	mpDynamicsWorld->addRigidBody(body);
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加(衝突相手を設定)
+	mpDynamicsWorld->addRigidBody(body, group, mask);
 
 	// オブジェクトにユーザポインタを設定
 	body->setUserPointer(owner);
@@ -345,19 +469,18 @@ btRigidBody* CPhysicsManager::CreateMeshRigidBody(
 	int numVertices, 
 	const int* indexArray, 
 	int numTriangles, 
-	const CVector& initialPos)
+	const CVector& initialPos,
+	ELayer myLayer,
+	Layers collisionLayers)
 {
-	// Bulletのメッシュ構造体を作成
-	btIndexedMesh mesh;
-	mesh.m_numTriangles = numTriangles;
-	mesh.m_triangleIndexBase = (const unsigned char*)indexArray;
-	mesh.m_triangleIndexStride = 3 * sizeof(int); // 3つのインデックスで1三角形
-	mesh.m_numVertices = numVertices;
-	mesh.m_vertexBase = (const unsigned char*)vertexArray;
-	mesh.m_vertexStride = sizeof(float) * 3; // 頂点は (X, Y, Z) の float 3つ
-
-	btTriangleIndexVertexArray* indexVertexArray = new btTriangleIndexVertexArray();
-	indexVertexArray->addIndexedMesh(mesh);
+	btTriangleIndexVertexArray* indexVertexArray = new btTriangleIndexVertexArray(
+		numTriangles,
+		(int*)indexArray,
+		3 * sizeof(int),	// 3つのインデックスで1三角形
+		numVertices,
+		(btScalar*)vertexArray,
+		3 * sizeof(float)	// 頂点は (X, Y, Z) の float 3つ
+	);
 
 	// BVH (Bounding Volume Hierarchy) 構造を持つ衝突形状の作成
 	btCollisionShape* shape = new btBvhTriangleMeshShape(
@@ -385,8 +508,13 @@ btRigidBody* CPhysicsManager::CreateMeshRigidBody(
 
 	// 剛体の設定
 	owner->SetRigidBody(body, shape, motionState, 0.0f, indexVertexArray);
-	// ワールドへの追加
-	mpDynamicsWorld->addRigidBody(body);
+
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加(衝突相手を設定)
+	mpDynamicsWorld->addRigidBody(body, group, mask);
 
 	// オブジェクトにユーザポインタを設定
 	body->setUserPointer(owner);
@@ -394,7 +522,41 @@ btRigidBody* CPhysicsManager::CreateMeshRigidBody(
 	return body;
 }
 
-btCollisionObject* CPhysicsManager::CreateSensor(CObjectBase* owner, float radius)
+btCollisionObject* CPhysicsManager::CreateBoxSensor(
+	CObjectBase* owner,
+	const CVector& halfExtents, 
+	ELayer myLayer, 
+	Layers collisionLayers)
+{
+	btCollisionObject* colObj = new btCollisionObject();
+	// 形をボックスに設定
+	colObj->setCollisionShape(new btBoxShape(btVector3(halfExtents.X(), halfExtents.Y(), halfExtents.Z())));
+	// 押し戻しをしないフラグ設定
+	colObj->setUserPointer(owner);
+	// スリープさせない
+	colObj->setActivationState(DISABLE_DEACTIVATION);
+
+	// センサーの設定
+	owner->SetSensor(colObj);
+
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加（衝突相手を設定）
+	mpDynamicsWorld->addCollisionObject(colObj, group, mask);
+
+	// リストに追加
+	mSensorList.push_back(colObj);
+
+	return colObj;
+}
+
+btCollisionObject* CPhysicsManager::CreateSphereSensor(
+	CObjectBase* owner,
+	float radius,
+	ELayer myLayer,
+	Layers collisionLayers)
 {
 	btCollisionObject* colObj = new btCollisionObject();
 	// 形を球に設定
@@ -403,16 +565,50 @@ btCollisionObject* CPhysicsManager::CreateSensor(CObjectBase* owner, float radiu
 	colObj->setCollisionFlags(colObj->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 	// オブジェクトにユーザポインタを設定
 	colObj->setUserPointer(owner);
+	// スリープさせない
+	colObj->setActivationState(DISABLE_DEACTIVATION);
 
 	// センサーの設定
 	owner->SetSensor(colObj);
-	// ワールド追加
-	mpDynamicsWorld->addCollisionObject(colObj);
+
+	// レイヤーをビットへ変換
+	int group = ToBit(myLayer);
+	int mask = ToMask(collisionLayers);
+
+	// ワールド追加(衝突相手を設定)
+	mpDynamicsWorld->addCollisionObject(colObj, group, mask);
 
 	// リストに追加
 	mSensorList.push_back(colObj);
 
 	return colObj;
+}
+
+void CPhysicsManager::SetFriction(btRigidBody* body, float friction)
+{
+	if (body)
+	{
+		// 摩擦を設定
+		body->setFriction(friction);
+	}
+}
+
+void CPhysicsManager::SetRestitution(btRigidBody* body, float restitution)
+{
+	if (body)
+	{
+		// 反発係数を設定
+		body->setRestitution(restitution);
+	}
+}
+
+void CPhysicsManager::SetDamping(btRigidBody* body, float linDamping, float angDamping)
+{
+	if (body)
+	{
+		// 減衰を設定
+		body->setDamping(linDamping, angDamping);
+	}
 }
 
 void CPhysicsManager::UpdateSensorPos()
@@ -424,8 +620,11 @@ void CPhysicsManager::UpdateSensorPos()
 
 		if (parentObj != nullptr)
 		{
-			// 親の剛体の位置と同期
-			btTransform trans = parentObj->GetRigidBody()->getWorldTransform();
+			// 親の位置と同期
+			btTransform trans = sensor->getWorldTransform();
+			CVector pos = parentObj->Position();
+			trans.setOrigin(btVector3(pos.X(), pos.Y(), pos.Z()));
+
 			sensor->setWorldTransform(trans);
 		}
 	}

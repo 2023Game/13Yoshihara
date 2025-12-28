@@ -6,7 +6,7 @@ class CAirConnectObj : public CConnectObject
 {
 public:
 	// コンストラクタ
-	CAirConnectObj();
+	CAirConnectObj(const CVector& pos);
 	// デストラクタ
 	~CAirConnectObj();
 

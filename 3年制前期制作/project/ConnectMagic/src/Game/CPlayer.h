@@ -45,7 +45,7 @@ public:
 	};
 
 	// コンストラクタ
-	CPlayer();
+	CPlayer(const CVector& pos);
 	// デストラクタ
 	~CPlayer();
 
@@ -89,8 +89,6 @@ private:
 
 	// 射程内にあるコネクトオブジェクトのリスト
 	std::list<CConnectObject*> mConnectObjs;
-	// コネクトオブジェクトの探知用
-	CCollider* mpSearchConnectObjCol;
 
 	// 前方に地面があるかの探知用コライダー
 	CCollider* mpSearchGroundCol;
@@ -107,27 +105,23 @@ private:
 	*/
 	void ActionInput();
 
-	/*
-	アニメーションの種類
-	(と)＝蓋が閉じている状態からのアニメーション
-	(開)＝蓋が開いている状態からのアニメーション
-	(開閉)＝両方の状態兼用のアニメーション
-	*/
+
+	// アニメーションの種類
 	enum class EAnimType
 	{
 		None = -1,
 
 		eTPose,				// Tポーズ
 
-		eIdle,		// 待機
-		eIdle_Wand,	// 杖持ち待機
-		eMove,		// 移動
-		eMove_Wand,	// 杖持ち移動
-		eJump_Start,// ジャンプ開始
-		eJump,		// ジャンプ中
-		eJump_End,	// ジャンプ終了
-		eAttack,	// 攻撃中
-		eSwing,		// スイング
+		eIdle,				// 待機
+		eIdle_Wand,			// 杖持ち待機
+		eMove,				// 移動
+		eMove_Wand,			// 杖持ち移動
+		eJump_Start,		// ジャンプ開始
+		eJump,				// ジャンプ中
+		eJump_End,			// ジャンプ終了
+		eAttack,			// 攻撃中
+		eSwing,				// スイング
 		eSwing_End_Start,	// スイング終了の開始
 		eSwing_End,			// スイング終了中
 		eSwing_End_End,		// スイング終了の終了

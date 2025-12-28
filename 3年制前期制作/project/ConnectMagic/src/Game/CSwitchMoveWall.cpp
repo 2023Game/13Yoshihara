@@ -2,7 +2,16 @@
 #include "CColliderMesh.h"
 #include "Maths.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
+#include "PhysicsMaterial.h"
 #include <typeinfo>
+
+// 物理設定
+constexpr float MASS =			0.0f;
+const CVector HALF_EXTENTS =	CVector(5.0f, 5.0f, 5.0f);
+constexpr float FRICTION =		0.1f;	// 摩擦（値が高いと停止まで早くなる）
+constexpr float LIN_DAMPING =	0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
+constexpr float ANG_DAMPING =	0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -65,6 +74,10 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 {
 	mpModel = model;
 
+	// 初期座標を設定
+	Position(mDefaultPos);
+	Scale(scale);
+
 	// コライダーを生成
 	CreateCol();
 	// プレイヤーを壊すなら
@@ -75,10 +88,6 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 		// プレイヤーとだけ衝突
 		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
 	}
-
-	// 初期座標を設定
-	Position(mDefaultPos);
-	Scale(scale);
 }
 
 // デストラクタ
@@ -104,7 +113,29 @@ void CSwitchMoveWall::SetIsOpen(bool enable)
 // コライダーを生成
 void CSwitchMoveWall::CreateCol()
 {
-	mpCol = new CColliderMesh(this, ELayer::eWall, mpModel, true);
+	// 物理設定
+	PhysicsMaterial material;
+	material.mass = MASS;
+	material.friction = FRICTION;
+	material.linDamping = LIN_DAMPING;
+	material.angDamping = ANG_DAMPING;
+	// サイズ計算
+	CVector size = CVector(
+		HALF_EXTENTS.X() * Scale().X(),
+		HALF_EXTENTS.Y() * Scale().Y(),
+		HALF_EXTENTS.Z() * Scale().Z());
+
+	CPhysicsManager::Instance()->CreateBoxRigidBody(
+		this,
+		material,
+		size,
+		Position(),
+		Rotation(),
+		ELayer::eObject,
+		{ ELayer::eField,ELayer::ePlayer,ELayer::eConnectObj }
+	);
+
+	mpCol = new CColliderMesh(this, ELayer::eObject, mpModel, true);
 
 	// 接続部の管理クラス
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();

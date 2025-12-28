@@ -7,6 +7,7 @@
 #include "CWand.h"
 #include "CollisionLayer.h"
 #include "CCollider.h"
+#include "btBulletDynamicsCommon.h"
 
 constexpr float THRESHOLD =			0.1f;
 
@@ -17,6 +18,8 @@ constexpr float MARGIN =			50.0f;
 constexpr float DECREASE_SPEED =	1.0f;
 // 加速する速度
 constexpr float INCREASE_SPEED =	0.5f;
+// 加速度の強さ
+constexpr float ACCELERATION_FORCE = 100.0f;
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
@@ -34,43 +37,14 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mPreOtherPointPos(CVector::zero)
 	, mIsConnectAir(false)
 	, mIsMove(true)
+	, mpTarget(nullptr)
 {
 }
 
 // デストラクタ
 CConnectObject::~CConnectObject()
 {
-	// 接続部管理クラス
-	auto* pointMgr = CConnectPointManager::Instance();
-
-	// 全てのターゲットを削除
-	for (int i = 0; i < mTargets.size(); i++)
-	{
-		// 接続されていれば解除
-		pointMgr->DisableConnect(mTargets[i]);
-		mTargets[i]->SetConnectObj(nullptr);
-		mTargets[i]->Kill();
-	}
-	
-	// 配列を空にする
-	mTargets.clear();
 	SAFE_DELETE(mpCol);
-}
-
-// オブジェクト削除を伝える関数
-void CConnectObject::DeleteObject(CObjectBase* obj)
-{
-	int num = mTargets.size();
-	for (int i = 0; i < num; i++)
-	{
-		// 一致したら
-		if (mTargets[i] == obj)
-		{
-			// 配列から取り除く
-			mTargets.erase(mTargets.begin() + i);
-			return;
-		}
-	}
 }
 
 // 更新
@@ -78,15 +52,6 @@ void CConnectObject::Update()
 {
 	SetParent(mpRideObject);
 	mpRideObject = nullptr;
-
-	CVector moveSpeed = mMoveSpeed + CVector(0.0f, mMoveSpeedY, 0.0f);
-	if (!mIsConnectAir)
-	{
-		mMoveSpeed = CVector::zero;
-	}
-
-	// 移動
-	Position(Position() + moveSpeed);
 
 	mIsGrounded = false;
 }
@@ -98,92 +63,6 @@ void CConnectObject::Render()
 		mpModel->Render(Matrix());
 }
 
-// 衝突処理
-void CConnectObject::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	if (self == mpCol)
-	{
-		// 衝突した相手が地面の場合
-		if (other->Layer() == ELayer::eGround)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-
-			// 衝突した地面が床か天井かを内積で判定
-			CVector normal = hit.adjust.Normalized();
-			float dot = CVector::Dot(normal, CVector::up);
-			// 内積の結果がプラスであれば、床と衝突した
-			if (dot >= 0.0f)
-			{
-				// 落下などで床に上から衝突したとき（下移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY < 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-				// 接地
-				mIsGrounded = true;
-			}
-			// 内積の結果がマイナスであれば、天井と衝突した
-			else if (dot < 0.0f)
-			{
-				// 天井にしたから衝突したとき（上移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY > 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-			}
-		}
-		// 衝突した相手が壁の場合
-		else if (other->Layer() == ELayer::eWall)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-			adjust.Y(0.0f);
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-		}
-		// 衝突した相手がオブジェクトの場合
-		else if (other->Layer() == ELayer::eObject)
-		{
-			// 押し戻しベクトル
-			CVector adjust = hit.adjust;
-
-			// 押し戻しベクトルの分、座標を移動
-			Position(Position() + adjust * hit.weight);
-
-			// 衝突した面が上か下かを内積で判定
-			CVector normal = hit.adjust.Normalized();
-			float dot = CVector::Dot(normal, CVector::up);
-			// 内積の結果がプラスであれば、上面と衝突した
-			if (dot >= THRESHOLD)
-			{
-				// 落下などで上から衝突したとき（下移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY < 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-			}
-			// 内積の結果がマイナスであれば、下面と衝突した
-			else if (dot < 0.0f)
-			{
-				// ジャンプなどで下から衝突したとき（上移動）のみ
-				// 上下の移動速度を0にする
-				if (mMoveSpeedY > 0.0f)
-				{
-					mMoveSpeedY = 0.0f;
-				}
-			}
-		}
-	}
-}
-
 // 繋がったときの処理
 void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 {
@@ -191,7 +70,7 @@ void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
 
 	// 空中か
-	bool isAir = false;
+	bool otherIsAir = false;
 	// 杖じゃないなら
 	if (!isWand)
 	{
@@ -199,11 +78,11 @@ void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 		// 相手が空中OBJならtrue
 		if (otherObj->GetConnectObjTag() == EConnectObjTag::eAir)
 		{
-			isAir = true;
+			otherIsAir = true;
 		}
 	}
 
-	if (isAir)
+	if (otherIsAir)
 	{
 		CConnectObject* otherObj = otherPoint->GetConnectObj();
 		CVector selfPos = Position();
@@ -262,17 +141,13 @@ void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 	{
 		// カメラの方向
 		CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
-		// オブジェクトからターゲットポイントへのベクトル
-		//CVector vec = selfPos - Position();
 		// 新しい座標を求める
 		CVector newPos = CPlayer::Instance()->Position() + cameraDir * pointMgr->GetConnectDistance();
-		// 今のままだとターゲットポイントとの座標の差分ずれるので
-		// 差を消す
-		//newPos = newPos - vec;
-		newPos.Y(Position().Y());
-		// 線形補間で、いきなりワープしないようにする
-		newPos = CVector::Lerp(Position(), newPos, 0.1f);
-		Position(newPos);
+		// 移動方向を求める
+		CVector moveVec = newPos - Position();
+		moveVec.Normalize();
+		// 力を加える
+		AddForce(moveVec * ACCELERATION_FORCE);
 	}
 }
 
@@ -301,19 +176,17 @@ void CConnectObject::Disconnect()
 void CConnectObject::CreateTarget(CVector pos)
 {
 	// ターゲット生成
-	CConnectTarget* target = new CConnectTarget(this);
+	mpTarget = new CConnectTarget(this);
 	// 親子設定
-	target->SetParent(this);
+	mpTarget->SetParent(this);
 	// 位置設定
-	target->Position(pos);
-	// リストに追加
-	mTargets.push_back(target);
+	mpTarget->Position(Position() + pos);
 }
 
 // 接続ターゲットを取得
-std::vector<CConnectTarget*> CConnectObject::GetTargets()
+CConnectTarget* CConnectObject::GetTarget() const
 {
-	return mTargets;
+	return mpTarget;
 }
 
 // 重さを取得

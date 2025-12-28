@@ -57,7 +57,7 @@ CRoom3::CRoom3(const CVector& pos)
 	Position(pos);
 
 	// コライダーを生成
-	CreateCol("Room3_Ground_Col", "Room3_Wall_Col", "");
+	CreateCol("Room3_Col");
 
 	// フィールドオブジェクトを生成
 	CreateFieldObjects();
@@ -161,28 +161,26 @@ void CRoom3::CreateFieldObjects()
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE1,
 		MOVE_FLOOR_MOVE_TIME,
-		ELayer::eGround);
+		ELayer::eField);
 	mpMoveFloor2 = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS2,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE2,
 		MOVE_FLOOR_MOVE_TIME,
-		ELayer::eGround);
+		ELayer::eField);
 	mpMoveFloor3 = new CMoveObj(model, colModel,
 		Position() + MOVE_FLOOR_OFFSET_POS3,
 		MOVE_FLOOR_SCALE,
 		MOVE_FLOOR_MOVE3,
 		MOVE_FLOOR_MOVE_TIME,
-		ELayer::eGround);
+		ELayer::eField);
 	// リストに追加
 	mObjs.push_back(mpMoveFloor1);
 	mObjs.push_back(mpMoveFloor2);
 	mObjs.push_back(mpMoveFloor3);
 
 	// 水を生成
-	mpWater = new CWater(WATER_SCALE);
-	// 座標を設定
-	mpWater->Position(Position() + WATER_OFFSET_POS);
+	mpWater = new CWater(Position() + WATER_OFFSET_POS, WATER_SCALE);
 	// リストに追加
 	mObjs.push_back(mpWater);
 

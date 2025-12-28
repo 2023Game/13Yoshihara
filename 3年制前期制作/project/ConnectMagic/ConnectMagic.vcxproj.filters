@@ -131,9 +131,6 @@
     <Filter Include="ソース ファイル\Game\Field\Object\ItemObject">
       <UniqueIdentifier>{c91adb51-8896-4cba-a435-c27ceac46c3d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Field\Object\ConnectObject\FireObject">
-      <UniqueIdentifier>{f41d80ba-3670-41a1-866d-2cbd4c3f354c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\BaseSystem\Navigation">
       <UniqueIdentifier>{f65178ff-9f6b-4c8a-a8db-e655071d2554}</UniqueIdentifier>
     </Filter>
@@ -523,13 +520,7 @@
     <ClCompile Include="src\Game\CPortal.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CUpgradeItem.cpp">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CConnectTarget.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CBridge.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CWaterShader.cpp">
@@ -540,24 +531,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CItemBase.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CPortalFragment.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CFragmentMergeArea.cpp">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CFire.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CGrass.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CTorch.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CCampFire.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CItemDrop.cpp">
       <Filter>ソース ファイル\Game\System</Filter>
@@ -1059,13 +1032,7 @@
     <ClInclude Include="src\Game\CPortal.h">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CUpgradeItem.h">
-      <Filter>ソース ファイル\Game\Field\Object</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CConnectTarget.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CBridge.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CWaterShader.h">
@@ -1076,27 +1043,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CItemBase.h">
       <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CPortalFragment.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\FragmentType.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CFragmentMergeArea.h">
-      <Filter>ソース ファイル\Game\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CFire.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CGrass.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CTorch.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CCampFire.h">
-      <Filter>ソース ファイル\Game\Field\Object\ConnectObject\FireObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CItemDrop.h">
       <Filter>ソース ファイル\Game\System</Filter>
@@ -1201,6 +1147,9 @@
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CollisionData.h">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\PhysicsMaterial.h">
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
   </ItemGroup>

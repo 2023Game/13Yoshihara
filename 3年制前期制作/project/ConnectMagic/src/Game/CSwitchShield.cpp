@@ -137,7 +137,7 @@ void CSwitchShield::CreateCol()
 {
 	// 四角形コライダーを生成
 	mpCol1 = new CColliderRectangle(
-		this, ELayer::eWall,
+		this, ELayer::eShield,
 		CVector(VERT_POS_1),
 		CVector(VERT_POS_2),
 		CVector(VERT_POS_3),
@@ -145,7 +145,7 @@ void CSwitchShield::CreateCol()
 		true
 	);
 	mpCol2 = new CColliderRectangle(
-		this, ELayer::eWall,
+		this, ELayer::eShield,
 		CVector(VERT_POS_4),
 		CVector(VERT_POS_3),
 		CVector(VERT_POS_2),

@@ -4,15 +4,15 @@ class CConnectTarget;
 
 // プレイヤーのデータ
 struct PlayerData {
-	CVector pos;		// 座標
-	CVector vec;		// 向き
+	CVector pos;			// 座標
+	CQuaternion vec;		// 向き
 	CConnectTarget* target;	// 接続中のターゲット
 	int animationType;		// アニメーションの番号
 	float animationFrame;	// アニメーションの進行時間
 
 	// コンストラクタ
 	PlayerData() = default;
-	PlayerData(const CVector& p, const CVector& v, CConnectTarget* t, int type, float frame)
+	PlayerData(const CVector& p, const CQuaternion& v, CConnectTarget* t, int type, float frame)
 		: pos(p), vec(v), target(t), animationType(type), animationFrame(frame) {}
 };
 

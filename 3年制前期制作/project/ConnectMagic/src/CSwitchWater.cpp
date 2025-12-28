@@ -56,8 +56,7 @@ CSwitchWater::CSwitchWater(const CVector& pos, const CVector& downPos, const CVe
 	, mElapsedTime(MOVE_TIME)
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
-	mpWater = new CWater(scale);
-	mpWater->Position(pos);
+	mpWater = new CWater(pos, scale);
 }
 
 CSwitchWater::~CSwitchWater()

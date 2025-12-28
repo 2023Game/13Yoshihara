@@ -231,6 +231,79 @@ void CObjectBase::AddImpulse(const CVector& impulse)
 	}
 }
 
+void CObjectBase::ResetForce()
+{
+	if (mpRigidBody)
+	{
+		// 加わっている力と回転力をゼロにする
+		mpRigidBody->clearForces();
+		// 現在の移動速度をゼロにする
+		mpRigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
+		// 現在の回転速度をゼロにする
+		mpRigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
+	}
+}
+
+void CObjectBase::SetBodyPos(const CVector& pos)
+{
+	// 剛体を取得
+	btRigidBody* body = GetRigidBody();
+	// 剛体がないなら処理しない
+	if (!body) return;
+
+	// トランスフォームを取得
+	btTransform trans = body->getWorldTransform();
+	// 座標設定
+	trans.setOrigin(btVector3(pos.X(), pos.Y() + mHalfHeightY, pos.Z()));
+
+	// 物理ワールドに伝える
+	body->getMotionState()->setWorldTransform(trans);
+	body->setWorldTransform(trans);
+}
+
+void CObjectBase::SetBodyRot(const CQuaternion& rot)
+{
+	// 剛体を取得
+	btRigidBody* body = GetRigidBody();
+	// 剛体がないなら処理しない
+	if (!body) return;
+
+	// トランスフォームを取得
+	btTransform trans = body->getWorldTransform();
+	// 回転を設定
+	trans.setRotation(btQuaternion(rot.X(), rot.Y(), rot.Z(), rot.W()));
+
+	// 物理ワールドに伝える
+	body->getMotionState()->setWorldTransform(trans);
+	body->setWorldTransform(trans);
+}
+
+void CObjectBase::Position(const CVector& pos)
+{
+	btRigidBody* body = GetRigidBody();
+	if (body)
+	{
+		SetBodyPos(pos);
+	}
+	else
+	{
+		CTransform::Position(pos);
+	}
+}
+
+void CObjectBase::Rotation(const CQuaternion& rot)
+{
+	btRigidBody* body = GetRigidBody();
+	if (body)
+	{
+		SetBodyRot(rot);
+	}
+	else
+	{
+		CTransform::Rotation(rot);
+	}
+}
+
 // 剛体の半分の高さを取得
 float CObjectBase::GetHalfHeight() const
 {

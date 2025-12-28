@@ -14,25 +14,28 @@
 #include "CSaveManager.h"
 #include "CTaskManager.h"
 #include "CPhysicsManager.h"
+#include "PhysicsMaterial.h"
 #include "CollisionData.h"
-#include "btBulletDynamicsCommon.h"
 #include "SaveData.h"
+#include "CollisionLayer.h"
 
 
 // 体の半径と高さ
 constexpr float BODY_RADIUS =				2.5f;
 constexpr float BODY_HEIGHT =				12.5f;
 // 物理設定
-constexpr float MASS =						7.0f;
+constexpr float MASS =						1.0f;
 constexpr float MAX_SPEED =					150.0f;	// 最高速度
 constexpr float ACCELERATION_FORCE =		500.0f;	// 加速度の強さ
 constexpr float TURN_RATE =					0.1f;	// 回転速度
 constexpr float FRICTION =					0.5f;	// 摩擦（値が高いと停止まで早くなる）
 constexpr float LIN_DAMPING =				0.5f;	// 線形減衰(値が高いと滑りが小さくなる)
-constexpr float ANG_DAMPING =				0.1f;	// 角減衰(値が高いと微細な回転振動を吸収する）
+constexpr float ANG_DAMPING =				0.8f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
 // 接地とみなすための、接触点の最低限のY軸法線成分
-constexpr float GROUND_NORMAL_THRESHOLD = 0.7f;
+constexpr float GROUND_NORMAL_THRESHOLD =	0.7f;
+
+constexpr float MOVE_THRESHOLD =			0.01f;
 
 // 前方の地面確認用レイの前方への距離
 constexpr float RAY_FRONT_DIST =			5.0f;
@@ -80,7 +83,7 @@ const std::vector<CPlayerBase::AnimData> ANIM_DATA =
 PlayerData CPlayer::SaveState()
 {
 	PlayerData data(Position(),
-		EulerAngles(),
+		Rotation(),
 		CConnectPointManager::Instance()->GetConnectWandTarget(),
 		AnimationIndex(),
 		GetAnimationFrame());
@@ -98,7 +101,7 @@ void CPlayer::LoadState(const PlayerData& data)
 }
 
 // コンストラクタ
-CPlayer::CPlayer()
+CPlayer::CPlayer(const CVector& pos)
 	: CPlayerBase()
 	, CPlayerStatus()
 	, mState(EState::eIdle)
@@ -111,6 +114,8 @@ CPlayer::CPlayer()
 	, mIsJump(false)
 	, mIsFront(false)
 {
+	Position(pos);
+
 	// アニメーションとモデルの初期化
 	InitAnimationModel("Player", &ANIM_DATA);
 
@@ -277,31 +282,11 @@ void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 {
 	CPlayerBase::Collision(self, other, hit);
 
-	// 本体コライダ―なら
-	if (self == mpBodyCol)
-	{
-		// 水の場合
-		if (other->Layer() == ELayer::eCrushed)
-		{
-		}
-	}
-	// コネクトオブジェクト探知用コライダーなら
-	else if (self == mpSearchConnectObjCol)
-	{
-		// コネクトオブジェクトの場合
-		if (other->Owner()->Tag() == ETag::eConnectObject)
-		{
-			// コネクトオブジェクトクラスを取得
-			CConnectObject* obj = dynamic_cast<CConnectObject*>(other->Owner());
-			// 射程内にあるコネクトオブジェクトに追加
-			mConnectObjs.push_back(obj);
-		}
-	}
 	// 前方地面探知用コライダーなら
-	else if (self == mpSearchGroundCol)
+	if (self == mpSearchGroundCol)
 	{
 		// 地面の場合
-		if (other->Layer() == ELayer::eGround)
+		if (other->Layer() == ELayer::eField)
 		{
 			// 前方に地面がある
 			mIsFront = true;
@@ -324,44 +309,34 @@ void CPlayer::SetRespawnPos(CVector respawnPos)
 // コライダ―を生成
 void CPlayer::CreateCol()
 {
-	// 位置の調整
-	CVector pos = Position();
-	pos.Y(pos.Y() + BODY_HEIGHT);
+	// 物理設定
+	PhysicsMaterial material;
+	material.mass = MASS;
+	material.friction = FRICTION;
+	material.linDamping = LIN_DAMPING;
+	material.angDamping = ANG_DAMPING;
+
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
 	// 本体コライダー
-	CPhysicsManager::Instance()->CreateCapsuleRigidBody(
+	physicsMgr->CreateCapsuleRigidBody(
 		this,
-		MASS,
+		material,
 		BODY_RADIUS,
 		BODY_HEIGHT,
-		pos,
-		Rotation()
+		Position(),
+		Rotation(),
+		ELayer::ePlayer,
+		{ ELayer::eField,ELayer::ePortal,ELayer::eConnectObj,ELayer::eObject,ELayer::eCrushed }
 	);
-	btRigidBody* playerBody = GetRigidBody();
-	// 摩擦
-	playerBody->setFriction(FRICTION);
-	// 線形減衰
-	playerBody->setDamping(LIN_DAMPING, ANG_DAMPING);
 
 	// 探知用コライダー
-	CPhysicsManager::Instance()->CreateSensor(
+	// 接続オブジェクトだけ衝突判定
+	physicsMgr->CreateSphereSensor(
 		this,
-		SENSOR_RADIUS
+		SENSOR_RADIUS,
+		ELayer::eConnectSearch,
+		{ ELayer::eConnectObj }
 	);
-
-
-	// 本体コライダ
-	mpBodyCol = new CColliderCapsule
-	(
-		this, ELayer::ePlayer,
-		CVector(0.0f, BODY_RADIUS / Scale().Y(), 0.0f),
-		CVector(0.0f, BODY_HEIGHT / Scale().Y(), 0.0f),
-		BODY_RADIUS
-	);
-	// フィールド,壁、オブジェクト、
-	// スイッチ、ポータル、リスポーン地点、リスポーンさせられるObj、アイテムとだけ衝突
-	mpBodyCol->SetCollisionLayers({ ELayer::eGround,
-		ELayer::eWall,ELayer::eObject,ELayer::eSwitch,ELayer::ePortal,
-		ELayer::eRespawnArea,ELayer::eCrushed,ELayer::eItem});
 
 	// 前方に地面があるかの探知用コライダ
 	mpSearchGroundCol = new CColliderLine
@@ -370,7 +345,7 @@ void CPlayer::CreateCol()
 		CVector::zero, CVector(0.0f, BODY_HEIGHT, 0.0f)
 	);
 	// 地面とだけ衝突
-	mpSearchGroundCol->SetCollisionLayers({ ELayer::eGround });
+	mpSearchGroundCol->SetCollisionLayers({ ELayer::eField });
 	// 位置調整
 	mpSearchGroundCol->Position(VectorZ() * (BODY_RADIUS * 2) - VectorY() * (BODY_HEIGHT / 2));
 }
@@ -402,6 +377,10 @@ void CPlayer::PhysicalCollision(const CollisionData& data)
 		if (data.contactNormal.getY() > GROUND_NORMAL_THRESHOLD)
 		{
 			SetGrounded(true);
+			mGroundNormal = CVector(
+				data.contactNormal.getX(),
+				data.contactNormal.getY(),
+				data.contactNormal.getZ());
 		}
 	}
 	// 水
@@ -540,7 +519,7 @@ void CPlayer::UpdateMove()
 	CVector move = CalcMoveVec();
 
 	// 求めた移動ベクトルの長さで入力されているか判定
-	if (move.LengthSqr() > 0.0f)
+	if (move.LengthSqr() > MOVE_THRESHOLD)
 	{
 		// 現在の速度が最高速度に達していないか
 		if (currentVelocity.length() < MAX_SPEED)
@@ -549,33 +528,37 @@ void CPlayer::UpdateMove()
 			CVector force = move * ACCELERATION_FORCE;
 			AddForce(force);
 		}
+	}
 
-		// 攻撃を受けていない時かつ
-		// 移動方向を向く設定がオンの時
-		// 速度が小さすぎない
-		if (!mIsDamage &&
-			mIsMoveDir&&
-			currentVelocity.length2() > 0.01f)
-		{
-			// 移動方向ベクトルから回転角度を計算する
-			float angle = atan2(currentVelocity.getX(), currentVelocity.getZ());
+	// 攻撃を受けていない時かつ
+	// 移動方向を向く設定がオンの時
+	// 速度が小さすぎない
+	if (!mIsDamage &&
+		mIsMoveDir &&
+		currentVelocity.length2() > MOVE_THRESHOLD)
+	{
+		// 移動方向ベクトルから回転角度を計算する
+		float angle = atan2(currentVelocity.getX(), currentVelocity.getZ());
 
-			// 目標回転を作成
-			btQuaternion targetRotation(btVector3(0.0f, 1.0f, 0.0f), angle);
+		// 目標回転を作成
+		btQuaternion targetRotation(btVector3(0.0f, 1.0f, 0.0f), angle);
 
-			// 現在の回転を取得
-			btQuaternion currentRotation = playerBody->getWorldTransform().getRotation();
-			// 目標回転まで補間
-			btQuaternion newRotation = currentRotation.slerp(targetRotation, TURN_RATE);
-			// 剛体に適用
-			btTransform currentTrans = playerBody->getWorldTransform();
-			currentTrans.setRotation(newRotation);
-			playerBody->setWorldTransform(currentTrans);
-		}
+		// 現在の回転を取得
+		btQuaternion currentRotation = playerBody->getWorldTransform().getRotation();
+		// 目標回転まで補間
+		btQuaternion newRotation = currentRotation.slerp(targetRotation, TURN_RATE);
+		// 変換
+		CQuaternion newRot = CQuaternion(newRotation.getX(), newRotation.getY(), newRotation.getZ(), newRotation.getW());
+		// 回転設定
+		Rotation(newRot);
+	}
 
+	// 移動している
+	if (currentVelocity.length2() > MOVE_THRESHOLD)
+	{
 		// 待機状態であれば、移動アニメーションに切り替え
 		if (mState == EState::eIdle)
-		{	
+		{
 			// 杖を持っている場合
 			if (mIsWand)
 			{
@@ -590,7 +573,7 @@ void CPlayer::UpdateMove()
 			}
 		}
 	}
-	// 移動キーを入力していない
+	// 移動していない
 	else
 	{
 		// 待機状態であれば、待機アニメーションに切り替え
@@ -1088,29 +1071,27 @@ void CPlayer::CenterTarget()
 		CVector objVec = obj->Position() - Position();
 		float dot = eyeVec.Dot(objVec);
 		if (dot < 0.0f) continue;
-		
-		// オブジェクトが持つ全てのターゲット
-		for (const auto& target : obj->GetTargets())
+
+		// オブジェクトが持つターゲット
+		CConnectTarget* target = obj->GetTarget();
+		// 接続部の管理クラス
+		CConnectPointManager* pointMgr = CConnectPointManager::Instance();
+		// ターゲットが見える場所にないなら次へ
+		if (pointMgr->RayTarget(target->Position())) continue;
+
+		// スクリーン座標に変換
+		CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(target->Position());
+
+		// 中心からの2乗の長さを求める
+		float dist = (screenPos - screenCenter).LengthSqr();
+
+		// 最短距離が不整値か、求めた距離の方が短い場合
+		if (minDist == -1.0f || minDist > dist)
 		{
-			// 接続部の管理クラス
-			CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-			// ターゲットが見える場所にないなら次へ
-			if (pointMgr->RayTarget(target->Position())) continue;
-
-			// スクリーン座標に変換
-			CVector2 screenPos = CCamera::CurrentCamera()->WorldToScreenPos(target->Position());
-
-			// 中心からの2乗の長さを求める
-			float dist = (screenPos - screenCenter).LengthSqr();
-
-			// 最短距離が不整値か、求めた距離の方が短い場合
-			if (minDist == -1.0f || minDist > dist)
-			{
-				// 最短距離を更新
-				minDist = dist;
-				// ターゲットを設定
-				nearTarget = target;
-			}
+			// 最短距離を更新
+			minDist = dist;
+			// ターゲットを設定
+			nearTarget = target;
 		}
 	}
 
