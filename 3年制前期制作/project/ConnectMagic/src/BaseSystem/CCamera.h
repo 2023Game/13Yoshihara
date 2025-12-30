@@ -1,8 +1,6 @@
 #pragma once
 #include "CObjectBase.h"
 
-class CCollider;
-
 // カメラ
 class CCamera : public CObjectBase
 {
@@ -125,17 +123,6 @@ public:
 	const CMatrix& GetViewportMatrix() const;
 
 	/// <summary>
-	/// 衝突判定を行うコライダーをリストに追加
-	/// </summary>
-	/// <param name="col"></param>
-	void AddCollider(CCollider* col);
-	/// <summary>
-	/// 衝突判定を行うコライダーをリストから取り除く
-	/// </summary>
-	/// <param name="col"></param>
-	void RemoveCollider(CCollider* col);
-
-	/// <summary>
 	/// コライダーとの衝突判定時に押し戻す距離の割合
 	/// </summary>
 	/// <param name="ratio"></param>
@@ -185,8 +172,6 @@ private:
 	float mZNear;		// 描画最短距離
 	float mZFar;		// 描画最長距離
 
-	// カメラが衝突判定を行うコライダーのリスト
-	std::list<CCollider*> mColliders;
 	// カメラが衝突時に押し戻す割合
 	float mHitColRatio;
 };

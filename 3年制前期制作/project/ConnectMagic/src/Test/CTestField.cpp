@@ -1,10 +1,8 @@
 #include "CTestField.h"
 #include "CSwitch.h"
-#include "CDoor.h"
 #include "CWeight.h"
 #include "CAirConnectObj.h"
 #include "CPortal.h"
-#include "CRespawnArea.h"
 #include "CWater.h"
 #include "CConnectRoom.h"
 #include "CRoom1.h"
@@ -89,10 +87,6 @@ void CTestField::CreateFieldObjects()
 	CPortal* portal = new CPortal();
 	// 位置調整
 	portal->Position(PORTAL_POS);
-
-	// リスポーン地点を生成
-	new CRespawnArea(RESPAWN_POS_1, RESPAWN_RADIUS);
-	new CRespawnArea(RESPAWN_POS_2, RESPAWN_RADIUS);
 
 	// クリスタル
 	CSwitch* crystal1 = new CSwitch(CRYSTAL_POS1, false, ESwitchType::eBatteries);

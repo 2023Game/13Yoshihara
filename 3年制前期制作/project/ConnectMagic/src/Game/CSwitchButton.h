@@ -18,17 +18,11 @@ public:
 	// 描画
 	void Render() override;
 
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自分のコライダー</param>
-	/// <param name="other">衝突した相手のコライダ―</param>
-	/// <param name="hit">衝突した時の情報</param>
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
-
 private:
 	// コライダーを生成
 	void CreateCol();
+	// 衝突処理
+	void OnCollision(const CollisionData& data) override;
 
 	enum class EState
 	{
@@ -45,8 +39,6 @@ private:
 	void UpdatePush();
 
 	float mDefaultY;	// 初期のY座標
-
-	CCollider* mpPushCol;	// 押してるかの当たり判定
 
 	CSwitch* mpOwner;	// 持ち主
 

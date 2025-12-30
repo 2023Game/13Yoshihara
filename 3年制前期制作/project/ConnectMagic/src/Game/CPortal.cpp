@@ -1,7 +1,8 @@
 #include "CPortal.h"
 #include "CSceneManager.h"
 #include "CConnectPointManager.h"
-#include "CColliderSphere.h"
+#include "CollisionData.h"
+#include "CPhysicsManager.h"
 
 // 回転速度
 constexpr float ROT_SPEED = 200.0f;
@@ -11,6 +12,9 @@ constexpr float RADIUS =	5.0f;
 
 // 大きさ
 constexpr float SIZE =		2.0f;
+
+// センサーの範囲
+const CVector HALF_EXTENTS = CVector(5.0f, 10.0f, 1.0f);
 
 // コンストラクタ
 CPortal::CPortal()
@@ -35,16 +39,31 @@ CPortal::CPortal()
 // デストラクタ
 CPortal::~CPortal()
 {
-	SAFE_DELETE(mpCol);
 }
 
-// 衝突処理
-void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+// コライダーを生成
+void CPortal::CreateCol()
 {
-	if (self == mpCol)
+	CPhysicsManager::Instance()->CreateBoxSensor(
+		this,
+		HALF_EXTENTS,
+		ELayer::ePortal,
+		{ ELayer::ePlayer }
+	);
+}
+
+void CPortal::OnCollision(const CollisionData& data)
+{
+	// センサー
+	if (data.selfBody == GetSensor())
 	{
+		// 相手のobj
+		CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
+
+		if (otherObj == nullptr) return;
+
 		// プレイヤーの場合
-		if (other->Layer() == ELayer::ePlayer)
+		if (otherObj->Tag() == ETag::ePlayer)
 		{
 			// シーン管理クラス
 			CSceneManager* SceneMgr = CSceneManager::Instance();
@@ -58,23 +77,9 @@ void CPortal::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
 			case EScene::eGame:		NextScene = EScene::eClear;	break;
 			case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
 			}
-			// 衝突判定を行うコライダーをリセット
-			CConnectPointManager::Instance()->ResetCollider();
 
 			// 次のステージへ
 			CSceneManager::Instance()->LoadScene(NextScene);
 		}
 	}
-}
-
-// コライダーを生成
-void CPortal::CreateCol()
-{
-	mpCol = new CColliderSphere
-	(
-		this, ELayer::ePortal,
-		RADIUS, true
-	);
-	// プレイヤーとだけ衝突判定
-	mpCol->SetCollisionLayers({ ELayer::ePlayer });
 }

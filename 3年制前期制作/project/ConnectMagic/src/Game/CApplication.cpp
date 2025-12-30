@@ -2,7 +2,6 @@
 //OpenGL
 #include "glut.h"
 #include "CTaskManager.h"
-#include "CCollisionManager.h"
 #include "CSoundManager.h"
 #include "CBGMManager.h"
 #include "CSceneManager.h"
@@ -46,7 +45,6 @@ void CApplication::End()
 {
 	CSceneManager::ClearInstance();
 	CTaskManager::ClearInstance();
-	CCollisionManager::ClearInstance();
 	CResourceManager::ClearInstance();
 	CBGMManager::ClearInstance();
 	CSoundManager::ClearInstance();
@@ -57,8 +55,6 @@ void CApplication::Update()
 	CTaskManager::Instance()->Delete();
 	// タスクの更新処理
 	CTaskManager::Instance()->Update();
-	// 衝突処理
-	CCollisionManager::Instance()->CollisionAll();
 	// タスクの後更新処理
 	CTaskManager::Instance()->LateUpdate();
 
@@ -70,8 +66,4 @@ void CApplication::Update()
 
 	// タスクの描画処理
 	CTaskManager::Instance()->Render();
-#if _DEBUG
-	// コライダの描画
-	CCollisionManager::Instance()->Render();
-#endif
 }

@@ -2,8 +2,6 @@
 #include "CSwitchObject.h"
 #include "MoveState.h"
 
-class CColliderMesh;
-
 // スイッチで動く床
 class CSwitchMoveFloor : public CSwitchObject
 {
@@ -41,8 +39,6 @@ private:
 
 	// コライダーを生成
 	void CreateCol() override;
-	// プレイヤーが挟まれた時用のコライダー
-	CColliderMesh* mpCrushedCol;
 
 	// 作用している時の処理
 	void UpdateOn() override;

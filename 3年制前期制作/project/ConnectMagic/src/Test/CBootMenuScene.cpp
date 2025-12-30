@@ -17,7 +17,6 @@ CBootMenuScene::CBootMenuScene()
 		{ "クリア",			EScene::eClear},
 		{ "",				EScene::eNone },
 		{ "■デバッグ",		EScene::eNone },
-		{ "衝突判定テスト", EScene::eColTest},
 		{ "ゲームテスト",	EScene::eGameTest},
 	};
 

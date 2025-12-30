@@ -1,10 +1,15 @@
 #include "CSwitchMoveFloor.h"
-#include "CColliderMesh.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
+#include "PhysicsMaterial.h"
 #include <typeinfo>
 
 // 一時停止の時間
-constexpr float STOP_TIME = 0.5f;
+constexpr float STOP_TIME =			0.5f;
+
+constexpr float MASS =				0.0f;
+const CVector HALF_EXTENTS =		CVector(5.0f, 10.0f, 5.0f);
+const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 10.0f, 5.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -66,7 +71,6 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	, mElapsedTime(0.0f)
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
-	, mpCrushedCol(nullptr)
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = model;
@@ -74,26 +78,27 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 	// タグを乗ることが出来るオブジェクトに設定
 	SetTag(ETag::eRideableObject);
 
+	// 初期座標の設定
+	Position(mDefaultPos);
+	Scale(scale);
+
 	// コライダーを生成
 	CreateCol();
 	// プレイヤーを壊すなら
 	if (isCrushed)
 	{
-		// プレイヤーが挟まれた時用のコライダー
-		mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
-		// プレイヤーとだけ衝突
-		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+		CPhysicsManager::Instance()->CreateBoxSensor(
+			this,
+			SENSOR_HALF_EXTENTS,
+			ELayer::eCrushed,
+			{ ELayer::ePlayer }
+		);
 	}
-
-	// 初期座標の設定
-	Position(mDefaultPos);
-	Scale(scale);
 }
 
 // デストラクタ
 CSwitchMoveFloor::~CSwitchMoveFloor()
 {
-	SAFE_DELETE(mpCrushedCol);
 }
 
 void CSwitchMoveFloor::SetMoveState(EMoveState moveState)
@@ -125,17 +130,18 @@ EMoveState CSwitchMoveFloor::GetPreMoveState() const
 // コライダーを生成
 void CSwitchMoveFloor::CreateCol()
 {
-	// 本体のコライダー
-	mpCol = new CColliderMesh(this, ELayer::eField, mpModel, true);
+	PhysicsMaterial material;
+	material.mass = MASS;
 
-	// 接続部の管理クラス
-	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// コライダーを追加
-	pointMgr->AddCollider(mpCol);
-	// 現在のカメラ
-	CCamera* camera = CCamera::CurrentCamera();
-	// コライダーを追加
-	camera->AddCollider(mpCol);
+	CPhysicsManager::Instance()->CreateBoxRigidBody(
+		this,
+		material,
+		HALF_EXTENTS,
+		Position(),
+		Rotation(),
+		ELayer::eField,
+		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
+	);
 }
 
 // 作用している時の処理

@@ -4,7 +4,6 @@
 #include "CSwitchMoveWall.h"
 #include "CMoveObj.h"
 #include "CWater.h"
-#include "CRespawnArea.h"
 #include "CSaveManager.h"
 
 // 部屋の長さ
@@ -148,9 +147,4 @@ void CRoom5::CreateFieldObjects()
 	mpWater = new CWater(Position() + WATER_OFFSET_POS, WATER_SCALE);
 	// リストに追加
 	mObjs.push_back(mpWater);
-
-	// リスポーン地点
-	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
-	// リストに追加
-	mObjs.push_back(mpRespawnArea);
 }

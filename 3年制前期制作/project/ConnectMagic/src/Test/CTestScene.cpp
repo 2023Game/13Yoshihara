@@ -6,7 +6,6 @@
 #include "CGameMenu.h"
 #include "CBGMManager.h"
 #include "CLineEffect.h"
-#include "CNavManager.h"
 #include "CTaskManager.h"
 #include "Maths.h"
 #include "CResourceManager.h"
@@ -74,8 +73,6 @@ void CTestScene::Load()
 	
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// 衝突判定をするコライダーをリセット
-	pointMgr->ResetCollider();
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -101,14 +98,6 @@ void CTestScene::Load()
 
 	// フィールドクラス生成
 	CTestField* field = new CTestField();
-
-	// 衝突判定するコライダーを追加
-	pointMgr->AddCollider(field->GetGroundCol());
-	pointMgr->AddCollider(field->GetWallCol());
-
-	//// 衝突判定するコライダ―を追加
-	mainCamera->AddCollider(field->GetGroundCol());
-	mainCamera->AddCollider(field->GetWallCol());
 
 	mainCamera->SetFollowTargetTf(player);
 

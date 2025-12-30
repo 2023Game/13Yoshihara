@@ -1,5 +1,4 @@
 #include "CAirConnectObj.h"
-#include "CColliderSphere.h"
 #include "CInput.h"
 #include "CPhysicsManager.h"
 #include "PhysicsMaterial.h"
@@ -70,13 +69,4 @@ void CAirConnectObj::CreateCol()
 		{ ELayer::eConnectSearch,ELayer::eConnectObj,ELayer::eObject,
 		ELayer::ePlayer }
 	);
-
-	mpCol = new CColliderSphere
-	(
-		this, ELayer::eObject,
-		RADIUS, true
-	);
-	// プレイヤー、敵、オブジェクト、コネクトオブジェクトの探知用と衝突判定をする
-	mpCol->SetCollisionLayers({ ELayer::ePlayer,ELayer::eEnemy,
-		ELayer::eObject,ELayer::eConnectSearch });
 }

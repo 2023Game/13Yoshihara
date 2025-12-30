@@ -6,7 +6,6 @@
 #include "CConnectPoint.h"
 #include "CWand.h"
 #include "CollisionLayer.h"
-#include "CCollider.h"
 #include "btBulletDynamicsCommon.h"
 
 constexpr float THRESHOLD =			0.1f;
@@ -26,7 +25,6 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	int sortOrder,ETaskPauseType pause)
 	: CObjectBase(ETag::eConnectObject, prio, 0, pause)
 	, mWeight(weight)
-	, mpCol(nullptr)
 	, mpModel(nullptr)
 	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
@@ -44,7 +42,6 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 // デストラクタ
 CConnectObject::~CConnectObject()
 {
-	SAFE_DELETE(mpCol);
 }
 
 // 更新

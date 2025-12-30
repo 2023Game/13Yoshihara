@@ -73,8 +73,6 @@ void CGameScene::Load()
 
 	// 接続部管理クラスを取得
 	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// 衝突判定をするコライダーをリセット
-	pointMgr->ResetCollider();
 
 	// ゲームBGMを読み込み
 	CBGMManager::Instance()->Play(EBGMType::eGame);
@@ -96,19 +94,6 @@ void CGameScene::Load()
 	new CSaveManager();
 	// 部屋管理クラスを生成
 	mpRoomMgr = new CRoomManager();
-
-	std::vector<CRoomBase*> rooms = mpRoomMgr->GetRooms();
-	for (int i = 0; i < rooms.size(); i++)
-	{
-		// 衝突判定するコライダーを追加
-		pointMgr->AddCollider(rooms[i]->GetGroundCol());
-		pointMgr->AddCollider(rooms[i]->GetWallCol());
-
-		// 衝突判定するコライダ―を追加
-		mainCamera->AddCollider(rooms[i]->GetGroundCol());
-		mainCamera->AddCollider(rooms[i]->GetWallCol());
-		mainCamera->AddCollider(rooms[i]->GetObjCol());
-	}
 
 	mainCamera->SetFollowTargetTf(player);
 

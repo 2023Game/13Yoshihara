@@ -1,8 +1,9 @@
 #include "CSwitchButton.h"
-#include "CColliderSphere.h"
 #include "CSwitch.h"
 #include "CModel.h"
 #include "CWeight.h"
+#include "CPhysicsManager.h"
+#include "CollisionData.h"
 
 // 下がる距離
 constexpr float PUSH_POS_Y = 0.5f;
@@ -10,6 +11,9 @@ constexpr float PUSH_POS_Y = 0.5f;
 constexpr float MOVE_SPEED = 0.1f;
 // 押しているかのコライダーの半径
 constexpr float COL_RADIUS = 5.0f;
+
+// 物理設定
+const CVector HALF_EXTENTS = CVector(5.0f, 1.0f, 5.0f);
 
 // コンストラクタ
 CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)
@@ -29,7 +33,6 @@ CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)
 // デストラクタ
 CSwitchButton::~CSwitchButton()
 {
-	SAFE_DELETE(mpPushCol);
 }
 
 // 更新
@@ -53,22 +56,18 @@ void CSwitchButton::Render()
 // コライダーを生成
 void CSwitchButton::CreateCol()
 {
-	mpPushCol = new CColliderSphere
-	(
-		this, ELayer::eSwitch,
-		COL_RADIUS,
-		true
+	CPhysicsManager::Instance()->CreateBoxSensor(
+		this,
+		HALF_EXTENTS,
+		ELayer::eSwitch,
+		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
 	);
-	// プレイヤー、敵、オブジェクトとだけ衝突
-	mpPushCol->SetCollisionLayers({ ELayer::ePlayer,
-		ELayer::eEnemy,ELayer::eObject });
 }
 
-// 衝突処理
-void CSwitchButton::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
+void CSwitchButton::OnCollision(const CollisionData& data)
 {
 	// 押しているかの判定コライダーとの衝突判定
-	if (self == mpPushCol)
+	if (data.selfBody == GetSensor())
 	{
 		ChangeState(EState::ePush);
 
@@ -76,7 +75,8 @@ void CSwitchButton::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		if (mIsAttach)
 		{
 			// 重りなら
-			CWeight* weight = dynamic_cast<CWeight*>(other->Owner());
+			CWeight* weight = static_cast<CWeight*>(data.otherBody->getUserPointer());
+
 			if (weight)
 			{
 				// 重りを貼り付ける
@@ -89,7 +89,6 @@ void CSwitchButton::Collision(CCollider* self, CCollider* other, const CHitInfo&
 		}
 	}
 }
-
 // 状態を変更
 void CSwitchButton::ChangeState(EState state)
 {

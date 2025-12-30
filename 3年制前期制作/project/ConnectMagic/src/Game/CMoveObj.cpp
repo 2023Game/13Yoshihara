@@ -1,10 +1,16 @@
 #include "CMoveObj.h"
 #include "Maths.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
+#include "PhysicsMaterial.h"
 #include <typeinfo>
 
 // 一時停止の時間
 constexpr float STOP_TIME = 0.5f;
+
+constexpr float MASS = 0.0f;
+const CVector HALF_EXTENTS = CVector(5.0f, 5.0f, 5.0f);
+const CVector SENSOR_HALF_EXTENTS = CVector(4.0f, 4.0f, 4.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -66,37 +72,27 @@ CMoveObj::CMoveObj(CModel* model, CModel* col,
 	, mElapsedTime(0.0f)
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
-	, mpCrushedCol(nullptr)
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
-	// 本体のコライダー
-	mpColliderMesh = new CColliderMesh(this, layer, mpModel, true);
+	Position(mDefaultPos);
+	Scale(scale);
+
+	// コライダーを生成
+	CreateCol();
 	// プレイヤーを壊すなら
 	if (isCrushed)
 	{
-		// プレイヤーが挟まれた時用のコライダー
-		mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
-		// プレイヤーとだけ衝突
-		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+		CPhysicsManager::Instance()->CreateBoxSensor(
+			this,
+			SENSOR_HALF_EXTENTS,
+			ELayer::eCrushed,
+			{ ELayer::ePlayer }
+		);
 	}
-
-	// 接続部の管理クラス
-	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// コライダーを追加
-	pointMgr->AddCollider(mpColliderMesh);
-	// 現在のカメラ
-	CCamera* camera = CCamera::CurrentCamera();
-	// コライダーを追加
-	camera->AddCollider(mpColliderMesh);
-
-	Position(mDefaultPos);
-	Scale(scale);
 }
 
 CMoveObj::~CMoveObj()
 {
-	SAFE_DELETE(mpColliderMesh);
-	SAFE_DELETE(mpCrushedCol);
 }
 
 void CMoveObj::Update()
@@ -120,6 +116,22 @@ void CMoveObj::Update()
 void CMoveObj::Render()
 {
 	mpModel->Render(Matrix());
+}
+
+void CMoveObj::CreateCol()
+{
+	PhysicsMaterial material;
+	material.mass = MASS;
+
+	CPhysicsManager::Instance()->CreateBoxRigidBody(
+		this,
+		material,
+		HALF_EXTENTS,
+		Position(),
+		Rotation(),
+		ELayer::eField,
+		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
+	);
 }
 
 // 状態を変更

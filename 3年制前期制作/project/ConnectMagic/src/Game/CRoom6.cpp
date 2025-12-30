@@ -5,7 +5,6 @@
 #include "CAirConnectObj.h"
 #include "CSwitchPushWall.h"
 #include "CWater.h"
-#include "CRespawnArea.h"
 #include "CSaveManager.h"
 #include "CSwitchShield.h"
 #include "CWeightGenerator.h"
@@ -265,7 +264,4 @@ void CRoom6::CreateFieldObjects()
 	mpWater->SetSwitchs({ mpSwitch1,mpSwitch2 });
 	mpSwitch1->SetActionObj(mpWater);
 	mpSwitch2->SetActionObj(mpWater);
-
-	mpRespawnArea = new CRespawnArea(Position() + RESPAWN_OFFSET_POS, RESPAWN_RADIUS);
-	mObjs.push_back(mpRespawnArea);
 }

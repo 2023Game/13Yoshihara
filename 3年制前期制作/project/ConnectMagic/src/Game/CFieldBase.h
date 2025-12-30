@@ -1,6 +1,7 @@
 #pragma once
 #include "CObjectBase.h"
-#include "CColliderMesh.h"
+
+class CModel;
 
 class CFieldBase : public CObjectBase
 {
@@ -17,20 +18,12 @@ public:
 	/// <param name="end">レイの終了位置</param>
 	/// <param name="hit">衝突情報返却用</param>
 	/// <returns>衝突していたら、trueを返す</returns>
-	bool CollisionRay(const CVector& start, const CVector& end,
-		CHitInfo* hit) override;
+	bool CollisionRay(const CVector& start, const CVector& end) override;
 
 	// 更新
 	virtual void Update();
 	// 描画
 	virtual void Render();
-
-	// 地面のコライダ―取得
-	CCollider* GetGroundCol();
-	// 壁のコライダ―取得
-	CCollider* GetWallCol();
-	// オブジェクトのコライダ―取得
-	CCollider* GetObjCol();
 
 protected:
 	// フィールドのオブジェクトを生成
@@ -44,12 +37,6 @@ protected:
 	CModel* mpModel;
 	// 空のモデル
 	CModel* mpSkyModel;
-	// フィールドの地面の衝突判定
-	CColliderMesh* mpGroundColliderMesh;
-	// フィールドの壁の衝突判定
-	CColliderMesh* mpWallColliderMesh;
-	// フィールドのオブジェクトの衝突判定
-	CColliderMesh* mpObjectColliderMesh;
 	// メッシュのデータ
 	std::vector<float> mMeshVertices;
 	std::vector<int> mMeshIndices;

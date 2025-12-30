@@ -1,5 +1,4 @@
 #include "CSwitchPushWall.h"
-#include "CColliderMesh.h"
 #include "CConnectPointManager.h"
 #include "Maths.h"
 #include "CPhysicsManager.h"
@@ -16,6 +15,7 @@ constexpr float FRICTION = 0.1f;	// 摩擦（値が高いと停止まで早くなる）
 constexpr float LIN_DAMPING = 0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
 constexpr float ANG_DAMPING = 0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
+const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 10.0f, 5.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -83,7 +83,6 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 	, mMoveVec(move)
 	, mMoveTime(moveTime)
 	, mElapsedTime(0.0f)
-	, mpCrushedCol(nullptr)
 	, mMoveState(EMoveState::eStop)
 	, mPreMoveState(EMoveState::eBack)
 	, mUniqueID(CUIDManager::GenerateNewID())
@@ -98,16 +97,17 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 	// プレイヤーを壊すなら
 	if (isCrushed)
 	{
-		// プレイヤーが挟まれた時用のコライダー
-		mpCrushedCol = new CColliderMesh(this, ELayer::eCrushed, col, true);
-		// プレイヤーとだけ衝突
-		mpCrushedCol->SetCollisionLayers({ ELayer::ePlayer });
+		CPhysicsManager::Instance()->CreateBoxSensor(
+			this,
+			SENSOR_HALF_EXTENTS,
+			ELayer::eCrushed,
+			{ ELayer::ePlayer }
+		);
 	}
 }
 
 CSwitchPushWall::~CSwitchPushWall()
 {
-	SAFE_DELETE(mpCrushedCol);
 }
 
 void CSwitchPushWall::SetMoveState(EMoveState moveState)
@@ -159,16 +159,6 @@ void CSwitchPushWall::CreateCol()
 		ELayer::eObject,
 		{ ELayer::eField,ELayer::ePlayer,ELayer::eConnectObj }
 	);
-
-	mpCol = new CColliderMesh(this, ELayer::eObject, mpModel, true);
-
-	// 接続部の管理クラス
-	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// コライダーを追加
-	pointMgr->AddCollider(mpCol);
-	// 現在のカメラ
-	CCamera* camera = CCamera::CurrentCamera();
-	camera->AddCollider(mpCol);
 }
 
 void CSwitchPushWall::UpdateOff()

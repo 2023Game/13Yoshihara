@@ -17,9 +17,6 @@ private:
 	// マテリアル
 	CMaterial* mpMaterial;
 
-	// コライダー
-	CCollider* mpCol;
-
 	// コライダーを生成
 	void CreateCol() override;
 

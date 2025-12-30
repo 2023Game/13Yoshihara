@@ -1,6 +1,6 @@
 #pragma once
 #include "CColBase.h"
-#include "CCollider.h"
+
 #include <vector>
 
 class CColliderBox;

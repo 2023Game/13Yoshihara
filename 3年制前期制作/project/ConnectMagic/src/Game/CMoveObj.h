@@ -1,9 +1,9 @@
 #pragma once
 #include "CRideableObject.h"
 #include "CModel.h"
-#include "CColliderMesh.h"
 #include "MoveState.h"
 #include "CSavable.h"
+#include "CollisionLayer.h"
 
 class CMoveObj : public CRideableObject, public CSavable
 {
@@ -39,14 +39,12 @@ public:
 	void Render();
 
 private:
+	void CreateCol() override;
+
 	// データ保存に使用
 	unsigned int mUniqueID;
 
 	CModel* mpModel;
-	// 本体コライダ―
-	CColliderMesh* mpColliderMesh;
-	// プレイヤーが挟まれた時用のコライダー
-	CColliderMesh* mpCrushedCol;
 
 	CVector mDefaultPos;
 	CVector mMoveVec;

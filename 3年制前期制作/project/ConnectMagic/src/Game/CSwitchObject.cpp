@@ -7,14 +7,12 @@ CSwitchObject::CSwitchObject(ETaskPriority prio, int sortOrder, ETaskPauseType p
 	, mState(EState::eOff)
 	, mOnSwitchNum(0)
 	, mpModel(nullptr)
-	, mpCol(nullptr)
 {
 }
 
 // デストラクタ
 CSwitchObject::~CSwitchObject()
 {
-	SAFE_DELETE(mpCol);
 }
 
 // 更新
@@ -34,11 +32,6 @@ void CSwitchObject::Render()
 	{
 		mpModel->Render(Matrix());
 	}
-}
-
-// 衝突処理
-void CSwitchObject::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
 }
 
 // オンオフを切り替える

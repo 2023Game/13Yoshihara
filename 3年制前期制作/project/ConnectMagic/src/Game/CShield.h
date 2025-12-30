@@ -16,7 +16,4 @@ public:
 private:
 	// コライダーを生成
 	void CreateCol() override;
-	// コライダー
-	CCollider* mpCol1;
-	CCollider* mpCol2;
 };

@@ -2,7 +2,6 @@
 #include "glut.h"
 #include "Maths.h"
 #include "CDebugCamera.h"
-#include "CCollider.h"
 #include <algorithm>
 
 std::list<CCamera*> CCamera::spCameraList;
@@ -307,18 +306,6 @@ const CMatrix& CCamera::GetViewportMatrix() const
 	return mViewportMatrix;
 }
 
-// 衝突判定を行うコライダーをリストに追加
-void CCamera::AddCollider(CCollider* col)
-{
-	mColliders.push_back(col);
-}
-
-// 衝突判定を行うコライダーをリストから取り除く
-void CCamera::RemoveCollider(CCollider* col)
-{
-	mColliders.remove(col);
-}
-
 // コライダーとの衝突判定時に押し戻す距離の割合
 void CCamera::SetHitColliderRatio(float ratio)
 {
@@ -328,39 +315,39 @@ void CCamera::SetHitColliderRatio(float ratio)
 // 設定されているコライダーとの衝突結果を反映する
 void CCamera::ApplyCollision()
 {
-	// 注視点から視点までレイを飛ばして、
-	// 間に障害物があれば、視点を障害物より手前にズラす
-	CHitInfo hit;
-	CVector rayStart = mAt;
-	CVector rayEnd = mEye;
-	float nearDist = 0.0f;
-	bool isHit = false;
-	// 設定されているコライダーを順番に調べる
-	for (CCollider* c : mColliders)
-	{
-		// レイとコライダーの衝突判定を行う
-		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-		{
-			// 交点が不整値でなければ、
-			if (hit.cross.LengthSqr() != 0.0f)
-			{
-				// 衝突位置までの距離で一番近い距離を求める
-				if (!isHit) nearDist = hit.dist;
-				else nearDist = std::min(hit.dist, nearDist);
-				isHit = true;
-			}
-		}
-	}
+	//// 注視点から視点までレイを飛ばして、
+	//// 間に障害物があれば、視点を障害物より手前にズラす
+	//CHitInfo hit;
+	//CVector rayStart = mAt;
+	//CVector rayEnd = mEye;
+	//float nearDist = 0.0f;
+	//bool isHit = false;
+	//// 設定されているコライダーを順番に調べる
+	//for (CCollider* c : mColliders)
+	//{
+	//	// レイとコライダーの衝突判定を行う
+	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
+	//	{
+	//		// 交点が不整値でなければ、
+	//		if (hit.cross.LengthSqr() != 0.0f)
+	//		{
+	//			// 衝突位置までの距離で一番近い距離を求める
+	//			if (!isHit) nearDist = hit.dist;
+	//			else nearDist = std::min(hit.dist, nearDist);
+	//			isHit = true;
+	//		}
+	//	}
+	//}
 
-	// レイが衝突していたら、
-	// 視点を衝突地点より手前に押し戻す
-	if (isHit)
-	{
-		mEye = rayStart + (rayEnd - rayStart).Normalized() * 
-			(nearDist+ Camera_HIT_POSXZ) * mHitColRatio;
-		// 少し上に上げる
-		mEye += CVector(0.0f, Camera_HIT_POSY, 0.0f);
-	}
+	//// レイが衝突していたら、
+	//// 視点を衝突地点より手前に押し戻す
+	//if (isHit)
+	//{
+	//	mEye = rayStart + (rayEnd - rayStart).Normalized() * 
+	//		(nearDist+ Camera_HIT_POSXZ) * mHitColRatio;
+	//	// 少し上に上げる
+	//	mEye += CVector(0.0f, Camera_HIT_POSY, 0.0f);
+	//}
 }
 
 // 後更新

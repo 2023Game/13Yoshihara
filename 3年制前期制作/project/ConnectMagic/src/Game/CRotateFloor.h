@@ -1,7 +1,6 @@
 #pragma once
 #include "CRideableObject.h"
 #include "CModel.h"
-#include "CColliderMesh.h"
 
 class CRotateFloor : public CRideableObject
 {
@@ -13,8 +12,12 @@ public:
 	void Render();
 
 private:
+	void CreateCol() override;
+
 	CModel* mpModel;
-	CColliderMesh* mpColliderMesh;
 
 	float mRotateSpeedY;
+	// メッシュのデータ
+	std::vector<float> mMeshVertices;
+	std::vector<int> mMeshIndices;
 };

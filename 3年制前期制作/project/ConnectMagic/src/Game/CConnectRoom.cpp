@@ -1,9 +1,10 @@
 #include "CConnectRoom.h"
 #include "CSwitch.h"
 #include "CSwitchMoveWall.h"
-#include "CColliderSphere.h"
 #include "CShield.h"
 #include "CRoomManager.h"
+#include "CollisionData.h"
+#include "CPhysicsManager.h"
 
 // 重りのオフセット座標
 const CVector WEIGHT_OFFSET_POS =			CVector( 25.0f,	0.0f, -40.0f);
@@ -30,6 +31,9 @@ const CVector COL_POS =						CVector( 0.0f,	0.0f, -45.0f);
 // シールドのオフセット座標
 const CVector SHIELD_OFFSET_POS =			CVector( 0.0f,	0.0f, -75.0f);
 
+// センサーの範囲
+const CVector HALF_EXTENTS =				CVector( 5.0f, 10.0f,  1.0f);
+
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)
 	: CRoomBase(ROOM_LENGTH)
@@ -50,7 +54,6 @@ CConnectRoom::CConnectRoom(const CVector& pos)
 // デストラクタ
 CConnectRoom::~CConnectRoom()
 {
-	SAFE_DELETE(mpCloseCol);
 }
 
 // 次の部屋を設定
@@ -63,24 +66,6 @@ void CConnectRoom::SetNextRoom(CRoomBase* room)
 void CConnectRoom::SetPreRoom(CRoomBase* room)
 {
 	mpPreRoom = room;
-}
-
-// 衝突処理
-void CConnectRoom::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	// 基底クラスの衝突処理
-	CFieldBase::Collision(self, other, hit);
-
-	// 閉じるフラグ用のコライダー
-	if (self == mpCloseCol)
-	{
-		// プレイヤーなら
-		if (other->Layer() == ELayer::ePlayer)
-		{
-			// 前の部屋に繋がる壁を閉じる
-			mpPreWall->SetOnOff(false);
-		}
-	}
 }
 
 // 部屋の有効無効を設定
@@ -128,13 +113,12 @@ void CConnectRoom::CreateCol()
 	// コライダーを生成
 	CFieldBase::CreateCol("ConnectRoom_Col");
 
-	// 閉じるフラグ用のコライダー
-	mpCloseCol = new CColliderSphere(
-		this, ELayer::eSwitch,
-		COL_RADIUS, true
+	CPhysicsManager::Instance()->CreateBoxSensor(
+		this,
+		HALF_EXTENTS,
+		ELayer::eSwitch,
+		{ ELayer::ePlayer }
 	);
-	mpCloseCol->Position(COL_POS);
-	mpCloseCol->SetCollisionLayers({ ELayer::ePlayer });
 }
 
 // フィールドオブジェクトを生成
@@ -170,4 +154,23 @@ void CConnectRoom::CreateFieldObjects()
 	mpShield->Position(Position() + SHIELD_OFFSET_POS);
 	// リストに追加
 	mObjs.push_back(mpShield);
+}
+
+void CConnectRoom::OnCollision(const CollisionData& data)
+{	
+	// 閉じるフラグ用のセンサー
+	if (data.selfBody == GetSensor())
+	{
+		// 相手のobj
+		CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
+
+		if (otherObj == nullptr) return;
+
+		// プレイヤーなら
+		if (otherObj->Tag() == ETag::ePlayer)
+		{
+			// 前の部屋に繋がる壁を閉じる
+			mpPreWall->SetOnOff(false);
+		}
+	}
 }

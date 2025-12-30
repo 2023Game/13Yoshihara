@@ -5,7 +5,6 @@
 
 class CGaugeUI2D;
 class CInteractObject;
-class CCollider;
 class CRideableObject;
 
 /*
@@ -30,9 +29,6 @@ public:
 
 	// 描画
 	void Render();
-
-	// 一番近くにある調べるオブジェクトを取得
-	CInteractObject* GetNearInteractObject() const;
 
 	// 死亡によってゲームが終了するかを取得する
 	bool GetGameEnd();
@@ -61,27 +57,16 @@ protected:
 	// プレイヤーのインスタンス
 	static CPlayerBase* spInstance;
 
-	CVector mMoveSpeed;	// 前後左右の移動速度
-	float mMoveSpeedY;	// 重力やジャンプによる上下の移動速度
-
 	bool mIsGrounded;	// 接地しているかどうか
 	bool mIsGravity;	// 重力を掛けるかどうか
 	bool mIsMoveDir;	// 移動方向を向くかどうか
 
 	CVector mGroundNormal;	// 接地している地面の法線
 
-	CCollider* mpBodyCol;	// 本体のコライダ―
-	CCollider* mpAttackCol;	// 攻撃のコライダ―
-
 	CTransform* mpRideObject;
 
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
-
-	// 近くにある調べるオブジェクトのリスト
-	std::list<CInteractObject*> mNearInteractObjs;
-	// 調べるオブジェクト探知用のコライダ―
-	CCollider* mpSearchInteractCol;
 
 	// Hpゲージ
 	CGaugeUI2D* mpHpGauge;

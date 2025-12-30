@@ -2,16 +2,10 @@
 #include "CPlayerBase.h"
 #include "CInput.h"
 #include "CCamera.h"
-#include "CBullet.h"
-#include "CFlamethrower.h"
 #include "Maths.h"
-#include "CInteractObject.h"
 #include "CSceneManager.h"
-#include "CNavNode.h"
-#include "CNavManager.h"
 #include "CGaugeUI2D.h"
 #include "CollisionLayer.h"
-#include "CCollider.h"
 
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
@@ -28,40 +22,20 @@ constexpr float MOTION_BLUR_COUNT = 5;
 // コンストラクタ
 CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
-	, mMoveSpeedY(0.0f)
 	, mIsGrounded(false)
 	, mIsGravity(true)
 	, mIsMoveDir(true)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
-	, mpBodyCol(nullptr)
-	, mpAttackCol(nullptr)
-	, mpSearchInteractCol(nullptr)
 	, mpHpGauge(nullptr)
 	, mIsGameEnd(false)
 {
 	spInstance = this;
-
-	// 経路探索用のノードを作成
-	mpNavNode = new CNavNode(Position(), true);
-	mpNavNode->SetColor(CColor::red);
 }
 
 // デストラクタ
 CPlayerBase::~CPlayerBase()
 {
-	// コライダ―を削除
-	SAFE_DELETE(mpBodyCol);
-	SAFE_DELETE(mpAttackCol);
-	SAFE_DELETE(mpSearchInteractCol);
-
-	// 経路探索用のノードを削除
-	CNavManager* navMgr = CNavManager::Instance();
-	if (navMgr != nullptr)
-	{
-		SAFE_DELETE(mpNavNode);
-	}
-
 	// インスタンスと削除しているプレイヤーが同一なら削除
 	if (spInstance == this)
 	{
@@ -228,12 +202,6 @@ void CPlayerBase::Update()
 	// キャラクターの更新
 	CXCharacter::Update();
 
-	// 経路探索用のノードが存在すれば、座標を更新
-	if (mpNavNode != nullptr)
-	{
-		mpNavNode->SetPos(Position());
-	}
-
 
 #if _DEBUG
 	CDebugPrint::Print("Grounded:%s\n", mIsGrounded ? "true" : "false");
@@ -242,41 +210,12 @@ void CPlayerBase::Update()
 #endif
 
 	mIsGrounded = false;
-
-	// 調べるオブジェクトのリストをクリア
-	mNearInteractObjs.clear();
 }
 
 // 描画
 void CPlayerBase::Render()
 {
 	CXCharacter::Render();
-}
-
-// 一番近くにある調べるオブジェクトを取得
-CInteractObject* CPlayerBase::GetNearInteractObject() const
-{
-	// 一番近くの調べるオブジェクトのポインタ格納用
-	CInteractObject* nearObj = nullptr;
-	float nearDist = 0.0f;	// 現在一番近くにある調べるオブジェクトとの距離
-	CVector pos = Position();
-	// 探知範囲内の調べるオブジェクトを順番に調べる
-	for (CInteractObject * obj : mNearInteractObjs)
-	{
-		// 現在調べられる状態じゃなければスルー
-		if (!obj->CanInteract()) continue;
-
-		float dist = (obj->Position() - pos).LengthSqr();
-		// 一番最初の調べるオブジェクトか
-		// 求めた距離が現在の一番近いオブジェクトよりも近い場合
-		if (nearObj == nullptr || dist < nearDist)
-		{
-			// 一番近いオブジェクトを更新
-			nearObj = obj;
-			nearDist = dist;
-		}
-	}
-	return nearObj;
 }
 
 // 死亡によってゲームが終了するかを取得する

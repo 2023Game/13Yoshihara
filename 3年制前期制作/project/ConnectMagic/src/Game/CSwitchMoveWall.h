@@ -2,8 +2,6 @@
 #include "CSwitchObject.h"
 #include "MoveState.h"
 
-class CColliderMesh;
-
 // スイッチで動く壁
 class CSwitchMoveWall : public CSwitchObject
 {
@@ -42,8 +40,6 @@ private:
 
 	// コライダーを生成
 	void CreateCol() override;
-	// プレイヤーが挟まれた時用のコライダー
-	CColliderMesh* mpCrushedCol;
 
 	// 作用していない時の処理
 	void UpdateOff() override;

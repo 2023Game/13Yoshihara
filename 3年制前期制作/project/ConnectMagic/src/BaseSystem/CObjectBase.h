@@ -4,10 +4,7 @@
 #include "ObjectTag.h"
 #include "CColor.h"
 
-class CNavNode;
-class CCollider;
 struct CollisionData;
-class CHitInfo;
 // Bullet関連
 class btCollisionObject;
 class btRigidBody;
@@ -67,20 +64,13 @@ public:
 	float GetDepth() const;
 
 	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自身のコライダー</param>
-	/// <param name="other">衝突した相手のコライダー</param>
-	/// <param name="hit">衝突した時の情報</param>
-	virtual void Collision(CCollider* self, CCollider* other, const CHitInfo& hit);
-	/// <summary>
 	/// レイとオブジェクトの衝突判定
 	/// </summary>
 	/// <param name="start">レイの開始位置</param>
 	/// <param name="end">レイの終了位置</param>
 	/// <param name="hit">衝突位置返却用</param>
 	/// <returns></returns>
-	virtual bool CollisionRay(const CVector& start, const CVector& end, CHitInfo* hit);
+	virtual bool CollisionRay(const CVector& start, const CVector& end);
 
 	// 攻撃中か
 	virtual bool IsAttacking() const;
@@ -92,9 +82,6 @@ public:
 	/// 攻撃終了
 	/// </summary>
 	virtual void AttackEnd();
-
-	// 経路探索用のノードを取得
-	CNavNode* GetNavNode() const;
 
 	// 攻撃を受けているかどうか
 	bool IsDamaging() const;
@@ -175,8 +162,6 @@ protected:
 
 	// 攻撃がヒットしたオブジェクトのリスト
 	std::list<CObjectBase*> mAttackHitObjects;
-
-	CNavNode* mpNavNode;	// 経路探索用のノードのポインタ
 
 	// 攻撃を受けているか
 	bool mIsDamage;

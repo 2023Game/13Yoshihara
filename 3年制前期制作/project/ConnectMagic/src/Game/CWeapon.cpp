@@ -5,7 +5,6 @@ CWeapon::CWeapon(ETag tag)
 	: CObjectBase(tag, ETaskPriority::eWeapon, 0, ETaskPauseType::eGame)
 	, mpOwner(nullptr)
 	, mpAttachMtx(nullptr)
-	, mpCollider(nullptr)
 {
 	// 最初はコライダーオフ
 	SetEnableCol(false);
@@ -19,9 +18,6 @@ CWeapon::~CWeapon()
 		mpOwner->DeleteObject(this);
 		mpOwner = nullptr;
 	}
-
-	// コライダーを削除
-	SAFE_DELETE(mpCollider);
 }
 
 // 武器の持ち主を設定
@@ -59,21 +55,6 @@ CMatrix CWeapon::Matrix() const
 		m = m * mpOwner->Matrix();
 	}
 	return m;
-}
-
-// 衝突処理
-void CWeapon::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	if (mpOwner != nullptr)
-	{
-		mpOwner->Collision(self, other, hit);
-	}
-}
-
-// コライダーを取得
-CCollider* CWeapon::Collider() const
-{
-	return mpCollider;
 }
 
 // 行列を更新

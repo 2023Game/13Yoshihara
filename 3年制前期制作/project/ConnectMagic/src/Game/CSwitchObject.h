@@ -4,7 +4,6 @@
 
 class CSwitch;
 class CModel;
-class CCollider;
 
 // スイッチで作用するオブジェクトのベースクラス
 class CSwitchObject : public CObjectBase, public CSavable
@@ -21,14 +20,6 @@ public:
 	void Update() override;
 	// 描画
 	void Render() override;
-
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自分のコライダー</param>
-	/// <param name="other">衝突した相手のコライダ―</param>
-	/// <param name="hit">衝突した時の情報</param>
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
 
 	// オンオフを切り替える
 	virtual void SetOnOff(bool isOnOff);
@@ -57,8 +48,6 @@ protected:
 	virtual void UpdateOn();
 
 	CModel* mpModel;
-
-	CCollider* mpCol;
 
 	// 作用するスイッチ
 	std::vector<CSwitch*> mSwitchs;

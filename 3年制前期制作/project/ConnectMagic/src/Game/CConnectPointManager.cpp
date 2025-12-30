@@ -6,7 +6,6 @@
 #include "CConnectObject.h"
 #include "CConnectTarget.h"
 #include "Maths.h"
-#include "CCollider.h"
 
 // レイを伸ばせる距離の最大
 constexpr float RAY_MAX_DISTANCE =		75.0f;
@@ -144,46 +143,46 @@ void CConnectPointManager::Connect()
 // 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
 bool CConnectPointManager::RayTarget(CVector targetPos)
 {
-	CHitInfo hit;
-	// プレイヤーを取得
-	CPlayerBase* player = CPlayerBase::Instance();
-	// プレイヤーの座標
-	CVector playerPos = player->Position();
-	// カメラを取得
-	CCamera* camera = CCamera::CurrentCamera();
-	// プレイヤーからターゲットへの方向
-	CVector dir = targetPos - playerPos;
-	dir.Y(0.0f);
-	dir.Normalize();
-	// レイの開始と終了地点
-	CVector rayStart = camera->GetEye();
-	CVector rayEnd = targetPos;
-	// 設定されているコライダーを順番に調べる
-	for (CCollider* c : mColliders)
-	{
-		if (c == nullptr)
-			continue;
-		// 無効なら次へ
-		if (c->Owner() != nullptr && !c->Owner()->IsEnableCol())
-			continue;
-		// レイとコライダーの衝突判定を行う
-		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-		{
-			// プレイヤーから衝突点への方向
-			CVector playerCrossDir = hit.cross - playerPos;
-			playerCrossDir.Y(0.0f);
-			playerCrossDir.Normalize();
-			// 二つの方向の内積を求める
-			float dot = playerCrossDir.Dot(dir);
-			
-			// 内積が負の値なら反対方向（プレイヤーの後ろ）にあるので衝突を無視
-			if (dot < 0.0f)
-				continue;
+	//CHitInfo hit;
+	//// プレイヤーを取得
+	//CPlayerBase* player = CPlayerBase::Instance();
+	//// プレイヤーの座標
+	//CVector playerPos = player->Position();
+	//// カメラを取得
+	//CCamera* camera = CCamera::CurrentCamera();
+	//// プレイヤーからターゲットへの方向
+	//CVector dir = targetPos - playerPos;
+	//dir.Y(0.0f);
+	//dir.Normalize();
+	//// レイの開始と終了地点
+	//CVector rayStart = camera->GetEye();
+	//CVector rayEnd = targetPos;
+	//// 設定されているコライダーを順番に調べる
+	//for (CCollider* c : mColliders)
+	//{
+	//	if (c == nullptr)
+	//		continue;
+	//	// 無効なら次へ
+	//	if (c->Owner() != nullptr && !c->Owner()->IsEnableCol())
+	//		continue;
+	//	// レイとコライダーの衝突判定を行う
+	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
+	//	{
+	//		// プレイヤーから衝突点への方向
+	//		CVector playerCrossDir = hit.cross - playerPos;
+	//		playerCrossDir.Y(0.0f);
+	//		playerCrossDir.Normalize();
+	//		// 二つの方向の内積を求める
+	//		float dot = playerCrossDir.Dot(dir);
+	//		
+	//		// 内積が負の値なら反対方向（プレイヤーの後ろ）にあるので衝突を無視
+	//		if (dot < 0.0f)
+	//			continue;
 
-			// 衝突した
-			return true;
-		}
-	}
+	//		// 衝突した
+	//		return true;
+	//	}
+	//}
 
 	// 衝突していない
 	return false;
@@ -193,26 +192,26 @@ bool CConnectPointManager::RayTarget(CVector targetPos)
 // 衝突していたら接続解除
 void CConnectPointManager::RayPoint()
 {
-	CHitInfo hit;
-	// レイの開始と終了地点
-	CVector rayStart = mpWandPoint->Position();
-	CVector rayEnd = mpConnectPoint1->Position();
+	//CHitInfo hit;
+	//// レイの開始と終了地点
+	//CVector rayStart = mpWandPoint->Position();
+	//CVector rayEnd = mpConnectPoint1->Position();
 
-	// 設定されているコライダーを順番に調べる
-	for (CCollider* c : mColliders)
-	{
-		if (c == nullptr)
-			continue;
-		// 無効なら次へ
-		if (c->Owner()!= nullptr && !c->Owner()->IsEnableCol())
-			continue;
-		// レイとコライダーの衝突判定を行う
-		if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-		{
-			// 接続を無効
-			DisableConnect(GetConnectWandTarget());
-		}
-	}
+	//// 設定されているコライダーを順番に調べる
+	//for (CCollider* c : mColliders)
+	//{
+	//	if (c == nullptr)
+	//		continue;
+	//	// 無効なら次へ
+	//	if (c->Owner()!= nullptr && !c->Owner()->IsEnableCol())
+	//		continue;
+	//	// レイとコライダーの衝突判定を行う
+	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
+	//	{
+	//		// 接続を無効
+	//		DisableConnect(GetConnectWandTarget());
+	//	}
+	//}
 }
 
 // 接続部との距離が最大値より遠ければ接続を無効にする
@@ -227,24 +226,6 @@ void CConnectPointManager::FarDist()
 		// 接続を無効
 		DisableConnect(GetConnectWandTarget());
 	}
-}
-
-// 衝突判定を行うコライダーをリストに追加
-void CConnectPointManager::AddCollider(CCollider* col)
-{
-	mColliders.push_back(col);
-}
-
-// 衝突判定を行うコライダーをリストから取り除く
-void CConnectPointManager::RemoveCollider(CCollider* col)
-{
-	mColliders.remove(col);
-}
-
-// 衝突判定を行うコライダーをリセット
-void CConnectPointManager::ResetCollider()
-{
-	mColliders.clear();
 }
 
 // 接続部を有効

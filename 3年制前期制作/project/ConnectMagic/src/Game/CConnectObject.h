@@ -65,8 +65,6 @@ protected:
 	// 重さ
 	float mWeight;
 
-	CCollider* mpCol;	// コライダー
-
 	CModel* mpModel;	// モデル
 
 	CVector mMoveSpeed;	// 前後左右の移動速度

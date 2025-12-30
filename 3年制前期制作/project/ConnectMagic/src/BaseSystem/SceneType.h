@@ -10,6 +10,5 @@ enum class EScene
 	eClear,			// クリアシーン
 
 	eBootMenu,	// 起動時メニュー
-	eColTest,	// 衝突判定テスト
 	eGameTest,	// ゲームテスト
 };

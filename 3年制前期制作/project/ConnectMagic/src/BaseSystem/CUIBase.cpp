@@ -1,7 +1,6 @@
 #include "CUIBase.h"
 #include "CUIManager.h"
 #include "CInput.h"
-#include "CCollider.h"
 #include "CRect.h"
 
 CUIBase::CUIBase(ETaskPriority prio, int sortOrder, ETaskPauseType pause, bool dontDelete, bool addTaskList)
@@ -126,7 +125,18 @@ float CUIBase::GetAlpha() const
 
 bool CUIBase::CollisionPoint(const CVector2& point)
 {
-	return CCollider::CollisionRectPoint(CRect(mPosition - mCenter, mSize), point);
+	return CollisionRectPoint(CRect(mPosition - mCenter, mSize), point);
+}
+
+// ãÈå`Ç∆ì_ÇÃè’ìÀîªíË
+bool CUIBase::CollisionRectPoint(const CRect& rect, const CVector2 point)
+{
+	if (rect.Left() <= point.X() && rect.Right() >= point.X() &&
+		rect.Top() <= point.Y() && rect.Bottom() >= point.Y())
+	{
+		return true;
+	}
+	return false;
 }
 
 void CUIBase::OnPointerEnter(const CVector2& pos)

@@ -1,6 +1,7 @@
 #pragma once
 #include "CTask.h"
 #include "CVector.h"
+#include "CRect.h"
 #include "CColor.h"
 
 class CUIBase : public CTask
@@ -56,6 +57,7 @@ public:
 
 protected:
 	bool CollisionPoint(const CVector2& point);
+	bool CollisionRectPoint(const CRect& rect, const CVector2 point);
 
 	virtual void OnPointerEnter(const CVector2& pos);
 	virtual void OnPointerExit(const CVector2& pos);

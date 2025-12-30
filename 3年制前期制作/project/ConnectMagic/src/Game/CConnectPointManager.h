@@ -41,13 +41,6 @@ public:
 	// 接続部との距離が最大値より遠ければ接続を無効にする
 	void FarDist();
 
-	// 衝突判定を行うコライダーをリストに追加
-	void AddCollider(CCollider* col);
-	// 衝突判定を行うコライダーをリストから取り除く
-	void RemoveCollider(CCollider* col);
-	// 衝突判定を行うコライダーをリセット
-	void ResetCollider();
-
 	// 接続を有効
 	void EnableConnect(CConnectTarget* connectTarget);
 
@@ -86,9 +79,6 @@ private:
 	CConnectPoint* mpWandPoint;
 	// 杖と接続中のターゲット
 	CConnectTarget* mpConnectWandTarget;
-
-	// 視点方向のレイで衝突判定するコライダーのリスト
-	std::list<CCollider*> mColliders;
 
 	// 杖の先の接続部の位置を特定
 	void WandPos();

@@ -115,8 +115,6 @@ void CSceneManager::ChangeNextScene()
 		case EScene::eClear:		mpScene = new CGameClearScene();		break;
 		//起動時メニュー
 		case EScene::eBootMenu:		mpScene = new CBootMenuScene();			break;
-		//衝突判定テスト
-		case EScene::eColTest:		mpScene = new CCollisionTestScene();	break;
 		//ゲームテストシーン
 		case EScene::eGameTest:		mpScene = new CTestScene();				break;
 	}

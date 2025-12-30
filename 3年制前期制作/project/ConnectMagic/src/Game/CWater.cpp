@@ -1,7 +1,6 @@
 #include "glew.h"
 #include "CWater.h"
 #include "CMaterial.h"
-#include "CColliderRectangle.h"
 #include "CConnectPointManager.h"
 #include "CPhysicsManager.h""
 #include "PhysicsMaterial.h"
@@ -42,8 +41,6 @@ CWater::~CWater()
 	glDeleteBuffers(1, &mVBO);
 	glDeleteVertexArrays(1, &mVAO);
 	glDeleteTextures(1, &mNormalMapTex);
-
-	SAFE_DELETE(mpCol);
 }
 
 // 初期設定
@@ -178,18 +175,4 @@ void CWater::CreateCol()
 		ELayer::eCrushed,
 		{ ELayer::ePlayer,ELayer::eConnectObj }
 	);
-
-	mpCol = new CColliderRectangle(
-		this, ELayer::eCrushed,
-		CVector(VERT_POS_1),
-		CVector(VERT_POS_2),
-		CVector(VERT_POS_3),
-		CVector(VERT_POS_4),
-		true
-	);
-	// プレイヤーとオブジェクトとだけ衝突判定
-	mpCol->SetCollisionLayers({ ELayer::ePlayer, ELayer::eObject });
-
-	CConnectPointManager::Instance()->AddCollider(mpCol);
-	CCamera::CurrentCamera()->AddCollider(mpCol);
 }

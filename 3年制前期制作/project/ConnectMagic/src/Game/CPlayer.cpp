@@ -1,7 +1,4 @@
 #include "CPlayer.h"
-#include "CColliderCapsule.h"
-#include "CColliderSphere.h"
-#include "CColliderLine.h"
 #include "CInput.h"
 #include "CWand.h"
 #include "CConnectPoint.h"
@@ -109,10 +106,10 @@ CPlayer::CPlayer(const CVector& pos)
 	, mIsAttacking(false)
 	, mpWandPoint(nullptr)
 	, mpCenterTarget(nullptr)
-	, mRespawnPos(CVector::zero)
 	, mWasGrounded(false)
 	, mIsJump(false)
 	, mIsFront(false)
+	, mTarzanMoveSpeed(CVector::zero)
 {
 	Position(pos);
 
@@ -161,8 +158,6 @@ CPlayer::~CPlayer()
 		mpWand->SetOwner(nullptr);
 		mpWand->Kill();
 	}
-
-	SAFE_DELETE(mpSearchGroundCol);
 }
 
 // 攻撃中か
@@ -201,8 +196,8 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
-	// 帰還状態と死亡状態以外なら
-	if (mState != EState::eReturn && mState != EState::eDeath)
+	// 死亡状態以外なら
+	if (mState != EState::eDeath)
 	{
 		// キー入力
 		ActionInput();
@@ -217,13 +212,6 @@ void CPlayer::Update()
 		connectPointMgr->IsWandConnectAirObject())
 	{
 		ChangeState(EState::eTarzan);
-	}
-
-	// 場外へ落ちたら
-	if (Position().Y() < MAX_UNDER_POS)
-	{
-		// 帰還状態へ
-		ChangeState(EState::eReturn);
 	}
 
 	// 正面から落ちるときならジャンプする
@@ -249,7 +237,6 @@ void CPlayer::Update()
 	case EState::eEdgeJumpStart:UpdateEdgeJumpStart();	break;	// エッジジャンプ開始
 	case EState::eEdgeJump:		UpdateEdgeJump();		break;	// エッジジャンプ中
 	case EState::eEdgeJumpEnd:	UpdateEdgeJumpEnd();	break;	// エッジジャンプ終了
-	case EState::eReturn:		UpdateReturn();			break;	// 場外から戻す
 	case EState::eDeath:		UpdateDeath();			break;	// 死亡
 	}
 	
@@ -270,40 +257,16 @@ void CPlayer::Update()
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("IsWand:%s\n", mIsWand ? "持っている" : "持っていない");
 	CDebugPrint::Print("ConnectObj:%d\n", mConnectObjs.size());
-	CDebugPrint::Print("MoveSpeed:%f,%f,%f\n", mMoveSpeed.X(), mMoveSpeed.Y(), mMoveSpeed.Z());
 #endif
 
 	// コネクトオブジェクトのリストをクリア
 	mConnectObjs.clear();
 }
 
-// 衝突処理
-void CPlayer::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-	CPlayerBase::Collision(self, other, hit);
-
-	// 前方地面探知用コライダーなら
-	if (self == mpSearchGroundCol)
-	{
-		// 地面の場合
-		if (other->Layer() == ELayer::eField)
-		{
-			// 前方に地面がある
-			mIsFront = true;
-		}
-	}
-}
-
 // 杖のポインタを取得
 CWand* CPlayer::GetWand()
 {
 	return mpWand;
-}
-
-// 復活地点を設定
-void CPlayer::SetRespawnPos(CVector respawnPos)
-{
-	mRespawnPos = respawnPos;
 }
 
 // コライダ―を生成
@@ -326,7 +289,9 @@ void CPlayer::CreateCol()
 		Position(),
 		Rotation(),
 		ELayer::ePlayer,
-		{ ELayer::eField,ELayer::ePortal,ELayer::eConnectObj,ELayer::eObject,ELayer::eCrushed }
+		{ ELayer::eField,ELayer::ePortal,
+		ELayer::eConnectObj,ELayer::eObject,ELayer::eCrushed,
+		ELayer::eSwitch}
 	);
 
 	// 探知用コライダー
@@ -337,17 +302,6 @@ void CPlayer::CreateCol()
 		ELayer::eConnectSearch,
 		{ ELayer::eConnectObj }
 	);
-
-	// 前方に地面があるかの探知用コライダ
-	mpSearchGroundCol = new CColliderLine
-	(
-		this, ELayer::eSearch,
-		CVector::zero, CVector(0.0f, BODY_HEIGHT, 0.0f)
-	);
-	// 地面とだけ衝突
-	mpSearchGroundCol->SetCollisionLayers({ ELayer::eField });
-	// 位置調整
-	mpSearchGroundCol->Position(VectorZ() * (BODY_RADIUS * 2) - VectorY() * (BODY_HEIGHT / 2));
 }
 
 void CPlayer::OnCollision(const CollisionData& data)
@@ -617,7 +571,7 @@ void CPlayer::UpdateAttackStart()
 	{
 		// アニメーション変更
 	case 0:
-		mMoveSpeed = CVector::zero;
+		ResetForce();
 		// 攻撃開始アニメーション
 		ChangeAnimation((int)EAnimType::eAttack);
 		mStateStep++;
@@ -753,8 +707,8 @@ void CPlayer::UpdateTarzan()
 	{
 		// スイングアニメーションに切り替える
 	case 0:
-		mMoveSpeed = CVector::zero;
-		mMoveSpeedY = 0.0f;
+		ResetForce();
+		mTarzanMoveSpeed = CVector::zero;
 		// スイングアニメーションに切り替え
 		ChangeAnimation((int)EAnimType::eSwing);
 		mStateStep++;
@@ -798,19 +752,19 @@ void CPlayer::UpdateTarzan()
 		moveDir.Normalize();
 
 		// 移動速度
-		mMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
+		mTarzanMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
 		// 重力を加える
 		// 振り切る時の減速と戻る時の加速のため
-		mMoveSpeed += gravity;
+		mTarzanMoveSpeed += gravity;
 
 		// 少しずつ減速していく
-		mMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
+		mTarzanMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
 
 		// 線方向の速度を削除
 		// ターゲットの真下での急な減速を防ぐため
-		mMoveSpeed -= dir * mMoveSpeed.Dot(dir);
+		mTarzanMoveSpeed -= dir * mTarzanMoveSpeed.Dot(dir);
 		// プレイヤー座標に追加
-		playerPos += mMoveSpeed;
+		playerPos += mTarzanMoveSpeed;
 
 		// 新しいプレイヤー座標への方向
 		dir = playerPos - targetPos;
@@ -836,7 +790,7 @@ void CPlayer::UpdateTarzanEnd()
 		// ターザンからのジャンプアニメーションに切り替え
 		ChangeAnimation((int)EAnimType::eSwing_End_Start);
 		// ジャンプ速度を設定
-		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+		AddImpulse(VectorY() * GetJumpSpeed());
 
 		mStateStep++;
 		break;
@@ -859,7 +813,7 @@ void CPlayer::UpdateTarzanEnd()
 	case 2:
 		if (mIsGrounded)
 		{
-			mMoveSpeed = CVector::zero;
+			mTarzanMoveSpeed = CVector::zero;
 			ChangeAnimation((int)EAnimType::eSwing_End_End);
 			mStateStep++;
 		}
@@ -881,19 +835,19 @@ void CPlayer::UpdateEdgeJumpStart()
 	{
 		// アニメーション変更
 	case 0:
-		mMoveSpeed = VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime();
-		mMoveSpeedY = GetJumpSpeed() * Times::DeltaTime();
+		mTarzanMoveSpeed = VectorZ() * GetBaseMoveSpeed() * Times::DeltaTime();
+		AddForce(VectorZ() * GetBaseMoveSpeed());
+		AddImpulse(VectorY() * GetJumpSpeed());
 		// ジャンプ開始アニメーション
 		ChangeAnimation((int)EAnimType::eJump_Start);
 		mStateStep++;
 		break;
 
-		// アニメーションが終了したら移動をゼロにする
+		// アニメーションが終了したら次へ
 	case 1:
 	{
 		if (IsAnimationFinished())
 		{
-			mMoveSpeedY = 0.0f;
 			mStateStep++;
 		}
 		break;
@@ -947,62 +901,6 @@ void CPlayer::UpdateEdgeJumpEnd()
 	}
 }
 
-// 場外から戻す処理
-void CPlayer::UpdateReturn()
-{
-	switch (mStateStep)
-	{
-		// フェードアウトを開始
-	case 0:
-		CFade::FadeOut();
-		mStateStep++;
-		break;
-		
-		// フェードアウトが終了したら次へ
-	case 1:
-		if (!CFade::IsFading())
-		{
-			mStateStep++;
-		}
-		break;
-
-		// 座標を設定
-	case 2:
-		// リスポーン地点に設定
-		Position(mRespawnPos);
-		// 移動しない
-		mMoveSpeed = CVector::zero;
-		// 杖を持っていたら
-		if (mIsWand)
-		{
-			// 杖持ち待機アニメーション
-			ChangeAnimation((int)EAnimType::eIdle_Wand);
-		}
-		// 持ってないなら
-		else
-		{
-			// 待機アニメーション
-			ChangeAnimation((int)EAnimType::eIdle);
-		}
-		mStateStep++;
-		break;
-		
-		// フェードインを開始
-	case 3:
-		CFade::FadeIn();
-		mStateStep++;
-		break;
-		// フェードインが終了したら待機状態へ
-	case 4:
-		if (!CFade::IsFading())
-		{
-			// 待機状態へ
-			ChangeState(EState::eIdle);
-		}
-		break;
-	}
-}
-
 // 死亡の更新処理
 void CPlayer::UpdateDeath()
 {
@@ -1044,7 +942,6 @@ std::string CPlayer::GetStateStr(EState state) const
 	case EState::eEdgeJumpStart:return "ジャンプ開始";	break;
 	case EState::eEdgeJump:		return "ジャンプ中";	break;
 	case EState::eEdgeJumpEnd:	return "ジャンプ終了";	break;
-	case EState::eReturn:		return "場外から帰還中";break;
 	case EState::eDeath:		return "死亡";			break;
 	}
 

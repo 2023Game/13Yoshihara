@@ -8,7 +8,6 @@ class CConnectPoint;
 class CConnectObject;
 class CConnectTarget;
 class CImage;
-class CCollider;
 struct PlayerData;
 
 /*
@@ -40,7 +39,6 @@ public:
 		eEdgeJumpStart,	// エッジジャンプの開始
 		eEdgeJump,		// エッジジャンプ中
 		eEdgeJumpEnd,	// エッジジャンプの終了
-		eReturn,		// 帰還
 		eDeath,			// 死亡
 	};
 
@@ -66,19 +64,8 @@ public:
 	// 更新
 	void Update();
 
-	/// <summary>
-	/// 衝突処理
-	/// </summary>
-	/// <param name="self">衝突した自身のコライダー</param>
-	/// <param name="other">衝突した相手のコライダー</param>
-	/// <param name="hit">衝突した時の情報</param>
-	void Collision(CCollider* self, CCollider* other, const CHitInfo& hit) override;
-
 	// 杖のポインタを取得
 	CWand* GetWand();
-
-	// リスポーン地点を設定
-	void SetRespawnPos(CVector respawnPos);
 
 	// 状態切り替え
 	void ChangeState(EState state);
@@ -89,9 +76,6 @@ private:
 
 	// 射程内にあるコネクトオブジェクトのリスト
 	std::list<CConnectObject*> mConnectObjs;
-
-	// 前方に地面があるかの探知用コライダー
-	CCollider* mpSearchGroundCol;
 
 	// 衝突処理
 	void OnCollision(const CollisionData& data) override;
@@ -125,7 +109,6 @@ private:
 		eSwing_End_Start,	// スイング終了の開始
 		eSwing_End,			// スイング終了中
 		eSwing_End_End,		// スイング終了の終了
-
 		eDeath,		// 死亡
 
 
@@ -160,8 +143,6 @@ private:
 	void UpdateEdgeJump();
 	// エッジジャンプの終了
 	void UpdateEdgeJumpEnd();
-	// 場外から帰還する処理
-	void UpdateReturn();
 	// 死亡の更新処理
 	void UpdateDeath();
 	// 死亡
@@ -200,6 +181,6 @@ private:
 	// ターゲット中の画像の位置や有効無効の更新
 	void UpdatePointImg();
 
-	// リスポーン地点
-	CVector mRespawnPos;
+	// ターザン中の移動速度
+	CVector mTarzanMoveSpeed;
 };

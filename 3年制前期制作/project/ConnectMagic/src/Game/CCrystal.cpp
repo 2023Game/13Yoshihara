@@ -1,5 +1,4 @@
 #include "CCrystal.h"
-#include "CColliderSphere.h"
 #include "CSwitch.h"
 #include "CModel.h"
 #include "CConnectPoint.h"
@@ -34,7 +33,6 @@ CCrystal::CCrystal(CVector pos, CSwitch* owner)
 // デストラクタ
 CCrystal::~CCrystal()
 {
-	SAFE_DELETE(mpCol);
 }
 
 // 更新

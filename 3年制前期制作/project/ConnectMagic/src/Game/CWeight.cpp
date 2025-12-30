@@ -1,7 +1,4 @@
 #include "CWeight.h"
-#include "CColliderMesh.h"
-#include "CColliderSphere.h"
-#include "CColliderCapsule.h"
 #include "CConnectPointManager.h"
 #include <typeinfo>
 #include "CPhysicsManager.h"

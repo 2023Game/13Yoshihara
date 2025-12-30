@@ -1,7 +1,5 @@
 #include "CObjectBase.h"
-#include "CCollider.h"
 #include "Maths.h"
-#include "CNavNode.h"
 #include "CPhysicsManager.h"
 #include "btBulletDynamicsCommon.h"
 #include "CollisionData.h"
@@ -17,7 +15,6 @@ CObjectBase::CObjectBase(ETag tag,
 	, mIsEnableCol(true)
 	, mDepth(0.0f)
 	, mColor(CColor::white)
-	, mpNavNode(nullptr)
 	, mIsDamage(false)
 	, mpRigidBody(nullptr)
 	, mpCollisionShape(nullptr)
@@ -128,13 +125,8 @@ float CObjectBase::GetDepth() const
 	return mDepth;
 }
 
-// 衝突処理
-void CObjectBase::Collision(CCollider* self, CCollider* other, const CHitInfo& hit)
-{
-}
-
 // レイとオブジェクトの衝突判定
-bool CObjectBase::CollisionRay(const CVector& start, const CVector& end, CHitInfo* hit)
+bool CObjectBase::CollisionRay(const CVector& start, const CVector& end)
 {
 	return false;
 }
@@ -155,12 +147,6 @@ void CObjectBase::AttackStart()
 // 攻撃終了
 void CObjectBase::AttackEnd()
 {
-}
-
-// 経路探索用のノードを取得
-CNavNode* CObjectBase::GetNavNode() const
-{
-	return mpNavNode;
 }
 
 // 攻撃を受けているかどうか

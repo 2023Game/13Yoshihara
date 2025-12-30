@@ -9,8 +9,7 @@ enum class ELayer
 	eField,			// 地形
 	eObject,		// オブジェクト
 	ePortal,		// ポータル
-	eRespawnArea,	// リスポーン地点
-	eCrushed,		// プレイヤーがリスポーンさせられるオブジェクト
+	eCrushed,		// クラッシュさせられるオブジェクト
 	eShield,		// シールド
 
 	eConnectObj,	// 接続できるオブジェクト

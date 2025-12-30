@@ -1,7 +1,9 @@
 #include "CSwitchShield.h"
-#include "CColliderRectangle.h"
 #include "CMaterial.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
+#include "CollisionData.h"
+#include "PhysicsMaterial.h"
 #include <typeinfo>
 
 // 頂点
@@ -9,6 +11,10 @@ const CVector VERT_POS_1 = CVector(-10.0f,  40.0f,  0.0f);
 const CVector VERT_POS_2 = CVector(-10.0f,	0.0f,	0.0f);
 const CVector VERT_POS_3 = CVector( 10.0f,	0.0f,	0.0f);
 const CVector VERT_POS_4 = CVector( 10.0f,	40.0f,	0.0f);
+
+// 物理設定
+constexpr float MASS = 0.0f;
+const CVector HALF_EXTENTS = CVector(10.0f, 20.0f, 1.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -60,17 +66,14 @@ CSwitchShield::CSwitchShield(CVector scale)
 	: CSwitchObject(ETaskPriority::eShield)
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
+	Scale(scale);
 	// コライダーを生成
 	CreateCol();
-
-	Scale(scale);
 }
 
 // デストラクタ
 CSwitchShield::~CSwitchShield()
 {
-	SAFE_DELETE(mpCol1);
-	SAFE_DELETE(mpCol2);
 }
 
 // 描画
@@ -135,33 +138,16 @@ void CSwitchShield::UpdateOn()
 // コライダーを生成
 void CSwitchShield::CreateCol()
 {
-	// 四角形コライダーを生成
-	mpCol1 = new CColliderRectangle(
-		this, ELayer::eShield,
-		CVector(VERT_POS_1),
-		CVector(VERT_POS_2),
-		CVector(VERT_POS_3),
-		CVector(VERT_POS_4),
-		true
-	);
-	mpCol2 = new CColliderRectangle(
-		this, ELayer::eShield,
-		CVector(VERT_POS_4),
-		CVector(VERT_POS_3),
-		CVector(VERT_POS_2),
-		CVector(VERT_POS_1),
-		true
-	);
-	// 少しずらす
-	mpCol1->Position(VectorZ());
-	mpCol2->Position(-VectorZ());
-	// オブジェクトとプレイヤーだけ衝突判定
-	mpCol1->SetCollisionLayers({ ELayer::eObject, ELayer::ePlayer });
-	mpCol2->SetCollisionLayers({ ELayer::eObject, ELayer::ePlayer });
+	PhysicsMaterial material;
+	material.mass = MASS;
 
-	// 接続部の管理クラス
-	CConnectPointManager* pointMgr = CConnectPointManager::Instance();
-	// 衝突判定するコライダーに追加
-	pointMgr->AddCollider(mpCol1);
-	pointMgr->AddCollider(mpCol2);
+	CPhysicsManager::Instance()->CreateBoxRigidBody(
+		this,
+		material,
+		HALF_EXTENTS,
+		Position(),
+		Rotation(),
+		ELayer::eShield,
+		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
+	);
 }

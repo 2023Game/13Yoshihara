@@ -20,9 +20,6 @@
     <Filter Include="ソース ファイル\BaseSystem\UI">
       <UniqueIdentifier>{93383a33-a196-413e-a7c6-2dfe09ecd721}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\BaseSystem\Collider">
-      <UniqueIdentifier>{87aa1e71-3b0d-4bbb-a1bf-7c214a8ac584}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\BaseSystem\System">
       <UniqueIdentifier>{88b3af3d-95a5-4b6c-b691-57f42b478603}</UniqueIdentifier>
     </Filter>
@@ -59,9 +56,6 @@
     <Filter Include="ソース ファイル\Test">
       <UniqueIdentifier>{ab8bd641-7ca6-42f9-8f59-214f855f6a94}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Test\CollisionTest">
-      <UniqueIdentifier>{2f8e40da-ce3e-4c93-a0ad-c58115e9f104}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Test\BootMenu">
       <UniqueIdentifier>{2aa74f13-8e56-41e9-ac27-7436c535f69b}</UniqueIdentifier>
     </Filter>
@@ -91,9 +85,6 @@
     </Filter>
     <Filter Include="ソース ファイル\Game\Character\CharacterStatus">
       <UniqueIdentifier>{19b03ac9-47f7-411f-9958-0ae719b5dd75}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Game\Field\Object\InteractObject">
-      <UniqueIdentifier>{c334abdd-1f88-484d-9d55-0ab121f15f9c}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Game\UI\UI3D">
       <UniqueIdentifier>{93fe88a5-b1a0-4ebf-94af-5cd96c20ffbf}</UniqueIdentifier>
@@ -128,12 +119,6 @@
     <Filter Include="ソース ファイル\Game\Field\Object\SwitchObject\Switch">
       <UniqueIdentifier>{3e2ed5db-0bf8-4b8e-9abd-e504b429eabb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Game\Field\Object\ItemObject">
-      <UniqueIdentifier>{c91adb51-8896-4cba-a435-c27ceac46c3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\BaseSystem\Navigation">
-      <UniqueIdentifier>{f65178ff-9f6b-4c8a-a8db-e655071d2554}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Game\Field\Room">
       <UniqueIdentifier>{b8705340-45e8-41b5-a21b-6e3ae3419b53}</UniqueIdentifier>
     </Filter>
@@ -147,21 +132,6 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
       <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CCollider.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderLine.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderMesh.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderTriangle.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CCollisionManager.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CMatrix.cpp">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
@@ -223,9 +193,6 @@
     <ClCompile Include="src\BaseSystem\CCharaBase.cpp">
       <Filter>ソース ファイル\BaseSystem\Object\Character</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderSphere.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\CSceneBase.cpp">
       <Filter>ソース ファイル\BaseSystem\Scene</Filter>
     </ClCompile>
@@ -277,32 +244,11 @@
     <ClCompile Include="src\BaseSystem\Primitive.cpp">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClCompile>
-    <ClCompile Include="src\Test\CCollisionTestScene.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
     <ClCompile Include="src\Test\CBootMenuScene.cpp">
       <Filter>ソース ファイル\Test\BootMenu</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\System.cpp">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColTriangle.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColQuad.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CMeasure.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColBase.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColLine.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColSphere.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CDebugCamera.cpp">
       <Filter>ソース ファイル\BaseSystem\Debug</Filter>
@@ -334,9 +280,6 @@
     <ClCompile Include="src\BaseSystem\CTrailEffect.cpp">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CBullet.cpp">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CGameMenuBase.cpp">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClCompile>
@@ -358,20 +301,8 @@
     <ClCompile Include="src\BaseSystem\BGMData.cpp">
       <Filter>ソース ファイル\BaseSystem\Sound</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderCapsule.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColCapsule.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\Easing.cpp">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CFlame.cpp">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CFlamethrower.cpp">
-      <Filter>ソース ファイル\Game\Effect</Filter>
     </ClCompile>
     <ClCompile Include="src\BaseSystem\CBounds.cpp">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
@@ -400,41 +331,17 @@
     <ClCompile Include="src\Game\CInteractUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderBox.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CColliderRectangle.cpp">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColRectangle.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CSword.cpp">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CWeapon.cpp">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CCharaStatusBase.cpp">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClCompile>
-    <ClCompile Include="src\Test\CColMesh.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Test\CColBox.cpp">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClCompile>
     <ClCompile Include="src\BaseSystem\CImage3D.cpp">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CInteractObject.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CGaugeUI3D.cpp">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CEnemyBase.cpp">
-      <Filter>ソース ファイル\Game\Character</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CDebugFieldOfView.cpp">
       <Filter>ソース ファイル\Game\Debug</Filter>
@@ -505,17 +412,11 @@
     <ClCompile Include="src\Game\CSwitchObject.cpp">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClCompile>
-    <ClCompile Include="src\Game\CDoor.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
-    </ClCompile>
     <ClCompile Include="src\Game\CWeight.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CAirConnectObj.cpp">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CRespawnArea.cpp">
-      <Filter>ソース ファイル\Game\System</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CPortal.cpp">
       <Filter>ソース ファイル\Game\Field\Object</Filter>
@@ -528,21 +429,6 @@
     </ClCompile>
     <ClCompile Include="src\Game\CWater.cpp">
       <Filter>ソース ファイル\Game\Field</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CItemBase.cpp">
-      <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CItemDrop.cpp">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Game\CDropItem.cpp">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CNavManager.cpp">
-      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
-    </ClCompile>
-    <ClCompile Include="src\BaseSystem\CNavNode.cpp">
-      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClCompile>
     <ClCompile Include="src\Game\CRoom1.cpp">
       <Filter>ソース ファイル\Game\Field\Room</Filter>
@@ -627,21 +513,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BaseSystem\CCollider.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderLine.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderMesh.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderTriangle.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CCollisionManager.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\CMatrix.h">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
     </ClInclude>
@@ -705,9 +576,6 @@
     <ClInclude Include="src\BaseSystem\TaskPauseType.h">
       <Filter>ソース ファイル\BaseSystem\Task</Filter>
     </ClInclude>
-    <ClInclude Include="src\BaseSystem\ColliderType.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\CObjectBase.h">
       <Filter>ソース ファイル\BaseSystem\Object</Filter>
     </ClInclude>
@@ -716,12 +584,6 @@
     </ClInclude>
     <ClInclude Include="src\BaseSystem\ObjectTag.h">
       <Filter>ソース ファイル\BaseSystem\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CollisionLayer.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderSphere.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CSceneBase.h">
       <Filter>ソース ファイル\BaseSystem\Scene</Filter>
@@ -780,32 +642,11 @@
     <ClInclude Include="src\BaseSystem\Primitive.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
     </ClInclude>
-    <ClInclude Include="src\Test\CCollisionTestScene.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
     <ClInclude Include="src\Test\CBootMenuScene.h">
       <Filter>ソース ファイル\Test\BootMenu</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\System.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColTriangle.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColQuad.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CMeasure.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColBase.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColLine.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColSphere.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CDebugCamera.h">
       <Filter>ソース ファイル\BaseSystem\Debug</Filter>
@@ -837,9 +678,6 @@
     <ClInclude Include="src\BaseSystem\CTrailEffect.h">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CBullet.h">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CGameMenuBase.h">
       <Filter>ソース ファイル\Game\UI\Menu</Filter>
     </ClInclude>
@@ -861,20 +699,8 @@
     <ClInclude Include="src\BaseSystem\BGMData.h">
       <Filter>ソース ファイル\BaseSystem\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderCapsule.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColCapsule.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\Easing.h">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CFlame.h">
-      <Filter>ソース ファイル\Game\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CFlamethrower.h">
-      <Filter>ソース ファイル\Game\Effect</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\CBounds.h">
       <Filter>ソース ファイル\BaseSystem\Math</Filter>
@@ -906,41 +732,17 @@
     <ClInclude Include="src\Game\CInteractUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
     </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderBox.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CColliderRectangle.h">
-      <Filter>ソース ファイル\BaseSystem\Collider</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColRectangle.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CWeapon.h">
-      <Filter>ソース ファイル\Game\Weapon</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CSword.h">
       <Filter>ソース ファイル\Game\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CCharaStatusBase.h">
       <Filter>ソース ファイル\Game\Character\CharacterStatus</Filter>
     </ClInclude>
-    <ClInclude Include="src\Test\CColMesh.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Test\CColBox.h">
-      <Filter>ソース ファイル\Test\CollisionTest</Filter>
-    </ClInclude>
     <ClInclude Include="src\BaseSystem\CImage3D.h">
       <Filter>ソース ファイル\BaseSystem\Effect</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CInteractObject.h">
-      <Filter>ソース ファイル\Game\Field\Object\InteractObject</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CGaugeUI3D.h">
       <Filter>ソース ファイル\Game\UI\UI3D</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CEnemyBase.h">
-      <Filter>ソース ファイル\Game\Character</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CDebugFieldOfView.h">
       <Filter>ソース ファイル\Game\Debug</Filter>
@@ -1011,9 +813,6 @@
     <ClInclude Include="src\Game\CSwitchObject.h">
       <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Game\CDoor.h">
-      <Filter>ソース ファイル\Game\Field\Object\SwitchObject</Filter>
-    </ClInclude>
     <ClInclude Include="src\Game\CWeight.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
     </ClInclude>
@@ -1022,9 +821,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\ConnectObjectTag.h">
       <Filter>ソース ファイル\Game\Field\Object\ConnectObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CRespawnArea.h">
-      <Filter>ソース ファイル\Game\System</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\FadeType.h">
       <Filter>ソース ファイル\BaseSystem\System</Filter>
@@ -1040,21 +836,6 @@
     </ClInclude>
     <ClInclude Include="src\Game\CWater.h">
       <Filter>ソース ファイル\Game\Field</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CItemBase.h">
-      <Filter>ソース ファイル\Game\Field\Object\ItemObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CItemDrop.h">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Game\CDropItem.h">
-      <Filter>ソース ファイル\Game\System</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CNavManager.h">
-      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BaseSystem\CNavNode.h">
-      <Filter>ソース ファイル\BaseSystem\Navigation</Filter>
     </ClInclude>
     <ClInclude Include="src\Game\CRoom1.h">
       <Filter>ソース ファイル\Game\Field\Room</Filter>
@@ -1150,6 +931,9 @@
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
     <ClInclude Include="src\BaseSystem\PhysicsMaterial.h">
+      <Filter>ソース ファイル\BaseSystem\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BaseSystem\CollisionLayer.h">
       <Filter>ソース ファイル\BaseSystem\Physics</Filter>
     </ClInclude>
   </ItemGroup>
