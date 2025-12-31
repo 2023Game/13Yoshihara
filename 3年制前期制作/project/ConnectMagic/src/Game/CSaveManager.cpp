@@ -174,9 +174,9 @@ void CSaveManager::AllPhysicsOn()
 	for (auto it : mSavableInstanceMap)
 	{
 		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
-		btRigidBody* objBody = obj->GetRigidBody();
-
 		if (!obj)continue;
+
+		btRigidBody* objBody = obj->GetRigidBody();
 		if (!objBody) continue;
 
 		// 物理オン
@@ -200,9 +200,9 @@ void CSaveManager::AllPhysicsOff()
 	for (auto it : mSavableInstanceMap)
 	{
 		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
-		btRigidBody* objBody = obj->GetRigidBody();
-
 		if (!obj)continue;
+
+		btRigidBody* objBody = obj->GetRigidBody();
 		if (!objBody) continue;
 
 		// 力をリセット

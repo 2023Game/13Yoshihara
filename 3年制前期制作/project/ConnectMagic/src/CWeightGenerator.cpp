@@ -64,7 +64,7 @@ CWeightGenerator::~CWeightGenerator()
 void CWeightGenerator::SetEnable(bool enable)
 {
 	CSaveManager* saveMgr = CSaveManager::Instance();
-	CTask::SetEnable(enable);
+	CObjectBase::SetEnable(enable);
 	if (enable)
 	{
 		saveMgr->AddSavableObj(mpWeight);

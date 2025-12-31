@@ -121,7 +121,7 @@ void CSwitchWater::UpdateOn()
 
 void CSwitchWater::SetEnable(bool enable)
 {
-	CTask::SetEnable(enable);
+	CObjectBase::SetEnable(enable);
 	mpWater->SetEnable(enable);
 }
 

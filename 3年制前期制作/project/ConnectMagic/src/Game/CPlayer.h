@@ -70,6 +70,11 @@ public:
 	// 状態切り替え
 	void ChangeState(EState state);
 
+	// 衝突処理
+	void OnCollision(const CollisionData& data) override;
+	// センサーの接触処理
+	void OnSensorEnter(const CollisionData& data) override;
+
 private:
 	// コライダ―を生成
 	void CreateCol() override;
@@ -77,12 +82,8 @@ private:
 	// 射程内にあるコネクトオブジェクトのリスト
 	std::list<CConnectObject*> mConnectObjs;
 
-	// 衝突処理
-	void OnCollision(const CollisionData& data) override;
-	// 実体のあるコライダーの衝突処理
-	void PhysicalCollision(const CollisionData& data);
-	// センサーの衝突処理
-	void SensorCollision(const CollisionData& data);
+	// 地面に接触しているかを判断して設定
+	void CheckGrounded();
 	/*
 	アクションのキー入力
 	回収員がついていないときのみ入力可能
@@ -159,8 +160,6 @@ private:
 
 	// 1フレーム前の接地状態
 	bool mWasGrounded;
-	// 前方に地面があるか
-	bool mIsFront;
 	// ジャンプしているか
 	bool mIsJump;
 	// 杖を持っているか

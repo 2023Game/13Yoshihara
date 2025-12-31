@@ -22,6 +22,10 @@ CObjectBase::CObjectBase(ETag tag,
 	, mHalfHeightY(0.0f)
 	, mpIndexVertexArray(nullptr)
 	, mpSensorCol(nullptr)
+	, mBodyLayer(ELayer::eNone)
+	, mBodyCollisionLayers({ ELayer::eNone })
+	, mSensorLayer(ELayer::eNone)
+	, mSensorCollisionLayers({ ELayer::eNone })
 {
 }
 
@@ -71,10 +75,46 @@ void CObjectBase::SetTag(ETag tag)
 	mTag = tag;
 }
 
+void CObjectBase::SetEnable(bool enable)
+{
+	CTask::SetEnable(enable);
+	SetEnableCol(enable);
+}
+
 // 衝突判定を行うか設定
 void CObjectBase::SetEnableCol(bool isEnable)
 {
 	mIsEnableCol = isEnable;
+	if (!mpRigidBody) return;
+
+	if (mIsEnableCol) {
+		// 有効化
+		// フラグを動的に戻す
+		int flags = mpRigidBody->getCollisionFlags();
+		flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
+		flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE; // 押し返しを有効化
+		mpRigidBody->setCollisionFlags(flags);
+
+		// 重力計算を復活させる
+		mpRigidBody->setActivationState(ACTIVE_TAG);
+
+		// 強制的に起こす
+		mpRigidBody->activate(true);
+	}
+	else {
+		// 無効化
+		// Kinematicに設定
+		// 押し返しを無効化
+		int flags = mpRigidBody->getCollisionFlags();
+		flags |= btCollisionObject::CF_KINEMATIC_OBJECT;
+		flags |= btCollisionObject::CF_NO_CONTACT_RESPONSE;
+		mpRigidBody->setCollisionFlags(flags);
+
+		// 速度を完全に殺す
+		mpRigidBody->setLinearVelocity(btVector3(0, 0, 0));
+		mpRigidBody->setAngularVelocity(btVector3(0, 0, 0));
+		mpRigidBody->clearForces();
+	}
 }
 
 // 衝突判定を行うかどうか
@@ -264,6 +304,18 @@ void CObjectBase::SetBodyRot(const CQuaternion& rot)
 	body->setWorldTransform(trans);
 }
 
+void CObjectBase::SaveBodyLayer(ELayer myLayer, Layers collisionLayers)
+{
+	mBodyLayer = myLayer;
+	mBodyCollisionLayers = collisionLayers;
+}
+
+void CObjectBase::SaveSensorLayer(ELayer myLayer, Layers collisionLayers)
+{
+	mSensorLayer = myLayer;
+	mSensorCollisionLayers = collisionLayers;
+}
+
 void CObjectBase::Position(const CVector& pos)
 {
 	btRigidBody* body = GetRigidBody();
@@ -302,25 +354,11 @@ void CObjectBase::SetHalfHeight(float halfHeight)
 	mHalfHeightY = halfHeight;
 }
 
-void CObjectBase::DispatchCollisionEvents()
+void CObjectBase::OnCollision(const CollisionData& data)
 {
-	btRigidBody* body = GetRigidBody();
-	if (body == nullptr)
-	{
-		return;
-	}
-
-	// 全オブジェクトの衝突リスト
-	const std::list<CollisionData>& collisions = CPhysicsManager::Instance()->GetCollisionDataList();
-
-	for (const CollisionData& data : collisions)
-	{
-		// 衝突処理
-		OnCollision(data);
-	}
 }
 
-void CObjectBase::OnCollision(const CollisionData& data)
+void CObjectBase::OnSensorEnter(const CollisionData& data)
 {
 }
 

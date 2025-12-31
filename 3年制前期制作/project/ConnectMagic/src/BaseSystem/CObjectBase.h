@@ -3,6 +3,7 @@
 #include "CTransform.h"
 #include "ObjectTag.h"
 #include "CColor.h"
+#include "CollisionLayer.h"
 
 struct CollisionData;
 // Bullet関連
@@ -44,6 +45,8 @@ public:
 	// オブジェクトタグを設定
 	void SetTag(ETag tag);
 
+	// 有効フラグを設定
+	void SetEnable(bool enable) override;
 	// 衝突判定を行うか設定
 	void SetEnableCol(bool isEnable);
 	// 衝突判定を行うかどうか
@@ -117,6 +120,15 @@ public:
 	// 回転を設定
 	void Rotation(const CQuaternion& rot) override;
 
+	// 衝突処理
+	virtual void OnCollision(const CollisionData& data);
+	// センサーの接触
+	virtual void OnSensorEnter(const CollisionData& data);
+
+	// 剛体のレイヤーを保存しておく
+	void SaveBodyLayer(ELayer myLayer, Layers collisionLayers);
+	// センサーのレイヤーを保存しておく
+	void SaveSensorLayer(ELayer myLayer, Layers collisionLayers);
 
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
@@ -137,14 +149,19 @@ private:
 
 protected:
 
-	// 衝突イベントのチェックと配布
-	void DispatchCollisionEvents();
-	// 衝突処理
-	virtual void OnCollision(const CollisionData& data);
 	// すべて削除
 	virtual void Delete();
 	// コライダーを作成
 	virtual void CreateCol();
+	// 自分のレイヤー
+	ELayer mBodyLayer;
+	// 衝突相手のレイヤー
+	Layers mBodyCollisionLayers;
+	// センサーのレイヤー
+	ELayer mSensorLayer;
+	// センサーの衝突相手のレイヤー
+	Layers mSensorCollisionLayers;
+
 	/// <summary>
 	/// 攻撃がヒットしたオブジェクトを追加
 	/// </summary>

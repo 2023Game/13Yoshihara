@@ -64,28 +64,24 @@ void CSwitchButton::CreateCol()
 	);
 }
 
-void CSwitchButton::OnCollision(const CollisionData& data)
+void CSwitchButton::OnSensorEnter(const CollisionData& data)
 {
-	// 押しているかの判定コライダーとの衝突判定
-	if (data.selfBody == GetSensor())
+	ChangeState(EState::ePush);
+
+	// 重りを貼り付ける
+	if (mIsAttach)
 	{
-		ChangeState(EState::ePush);
+		// 重りなら
+		CWeight* weight = dynamic_cast<CWeight*>(data.otherObj);
 
-		// 重りを貼り付ける
-		if (mIsAttach)
+		if (weight)
 		{
-			// 重りなら
-			CWeight* weight = static_cast<CWeight*>(data.otherBody->getUserPointer());
-
-			if (weight)
-			{
-				// 重りを貼り付ける
-				CVector pos = Position();
-				pos.Y(weight->Position().Y());
-				weight->Position(pos);
-				// 重りが張り付いている
-				weight->SetIsAttach(true);
-			}
+			// 重りを貼り付ける
+			CVector pos = Position();
+			pos.Y(weight->Position().Y());
+			weight->Position(pos);
+			// 重りが張り付いている
+			weight->SetIsAttach(true);
 		}
 	}
 }

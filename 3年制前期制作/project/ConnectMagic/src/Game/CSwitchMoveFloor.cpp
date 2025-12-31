@@ -8,8 +8,8 @@
 constexpr float STOP_TIME =			0.5f;
 
 constexpr float MASS =				0.0f;
-const CVector HALF_EXTENTS =		CVector(5.0f, 10.0f, 5.0f);
-const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 10.0f, 5.0f);
+const CVector HALF_EXTENTS =		CVector(20.0f, 5.0f, 40.0f);
+const CVector SENSOR_HALF_EXTENTS = CVector(4.0f, 4.0f, 4.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造

@@ -13,6 +13,11 @@
 #include "CWand.h"
 #include "CTestField.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
+
+const CVector PLAYER_POS = CVector(0.0f, 0.0f, 0.0f);
+const CVector CAMERA_CENTER_POS = CVector(0.0f, 20.0f, 0.0f);
+const CVector CAMERA_EYE_POS = CVector(0.0f, 0.0f, 20.0f);
 
 //コンストラクタ
 CTestScene::CTestScene()
@@ -78,7 +83,7 @@ void CTestScene::Load()
 	CBGMManager::Instance()->Play(EBGMType::eGame);
 
 	// プレイヤー生成
-	CPlayer* player = new CPlayer(CVector::zero);
+	CPlayer* player = new CPlayer(PLAYER_POS);
 
 	// CGameCameraのテスト
 	//CGameCamera* mainCamera = new CGameCamera
@@ -89,10 +94,10 @@ void CTestScene::Load()
 	//);
 	// 
 	// CGameCamera2のテスト
-	CVector atPos = player->Position() + CVector(0.0f, 20.0f, 0.0f);
+	CVector atPos = player->Position() + CAMERA_CENTER_POS;
 	CGameCamera2* mainCamera = new CGameCamera2
 	(
-		atPos + CVector(0.0f, 0.0f, 20.0f),
+		atPos + CAMERA_EYE_POS,
 		atPos
 	);
 

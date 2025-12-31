@@ -216,5 +216,11 @@ float Times::DeltaTime()
 		gIsFirst = false;
 		return 0.0f;
 	}
+	// 時間がかかりすぎている場合（10FPS以上の時間)
+	// ロードやフリーズとみなして計算上の経過時間に設定
+	if (gDeltaTime > 1.0f / 10.0f)
+	{
+		gDeltaTime = CalcDeltaTime();
+	}
 	return gDeltaTime;
 }

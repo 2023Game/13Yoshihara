@@ -81,11 +81,15 @@ CPhysicsManager::~CPhysicsManager()
 // 剛体をワールドから削除
 void CPhysicsManager::RemoveRigidBody(btRigidBody* body)
 {
+	if (!body) return;
+
 	mpDynamicsWorld->removeRigidBody(body);
 }
 
 void CPhysicsManager::RemoveSensor(btCollisionObject* sensor)
 {
+	if (!sensor) return;
+
 	// リストから削除
 	auto it = std::find(mSensorList.begin(), mSensorList.end(), sensor);
 	if (it != mSensorList.end())
@@ -103,7 +107,7 @@ void CPhysicsManager::Update()
 	mpDynamicsWorld->stepSimulation(Times::DeltaTime(), MAX_SUB_STEPS);
 
 	// 衝突データを更新
-	UpdateCollisionDataList();
+	UpdateCollisionData();
 
 	// センサーの座標を更新
 	UpdateSensorPos();
@@ -136,14 +140,14 @@ void CPhysicsManager::LateUpdate()
 
 			// 位置
 			btVector3 btPos = btTrans.getOrigin();
-			CVector pos = CVector(btPos.getX(), btPos.getY(), btPos.getZ());
+			CVector pos = CVector(ToCVector(btPos));
 			pos.Y(pos.Y() - obj->GetHalfHeight());
 
 			// 回転
 			btQuaternion btRot = btTrans.getRotation();
 			// 逆回転に設定
 			btRot = btRot.inverse();
-			CQuaternion rot = CQuaternion(btRot.getX(), btRot.getY(), btRot.getZ(), btRot.getW());
+			CQuaternion rot = CQuaternion(ToCQuaternion(btRot));
 
 			// 位置を設定
 			obj->CTransform::Position(pos);
@@ -190,11 +194,38 @@ int CPhysicsManager::ToMask(Layers layers)
 	return mask;
 }
 
-void CPhysicsManager::UpdateCollisionDataList()
+btCollisionDispatcher* CPhysicsManager::GetDispatcher() const
 {
-	// 衝突リストをクリア
-	mCollisionDataList.clear();
+	return mpDispatcher;
+}
 
+btDiscreteDynamicsWorld* CPhysicsManager::GetDynamicsWorld() const
+{
+	return mpDynamicsWorld;
+}
+
+CVector CPhysicsManager::ToCVector(const btVector3& vec)
+{
+	return CVector(vec.x(), vec.y(), vec.z());
+}
+
+btVector3 CPhysicsManager::ToBtVector(const CVector& vec)
+{
+	return btVector3(vec.X(), vec.Y(), vec.Z());
+}
+
+CQuaternion CPhysicsManager::ToCQuaternion(const btQuaternion& rot)
+{
+	return CQuaternion(rot.x(), rot.y(), rot.z(), rot.w());
+}
+
+btQuaternion CPhysicsManager::ToBtQuaternion(const CQuaternion& rot)
+{
+	return btQuaternion(rot.X(), rot.Y(), rot.Z(), rot.W());
+}
+
+void CPhysicsManager::UpdateCollisionData()
+{
 	// 接触情報を取得
 	btDispatcher* dispatcher = mpDynamicsWorld->getDispatcher();
 	int numManifolds = dispatcher->getNumManifolds();
@@ -204,8 +235,17 @@ void CPhysicsManager::UpdateCollisionDataList()
 		// 2つの剛体間の接触を保持する構造体
 		btPersistentManifold* contactManifold = dispatcher->getManifoldByIndexInternal(i);
 
+		// ユーザポインタからオブジェクトを取得
 		const btCollisionObject* objA = contactManifold->getBody0();
 		const btCollisionObject* objB = contactManifold->getBody1();
+
+		CObjectBase* ownerA = static_cast<CObjectBase*>(objA->getUserPointer());
+		CObjectBase* ownerB = static_cast<CObjectBase*>(objB->getUserPointer());
+
+		// どちらかがNULLなら判定不能なので次へ
+		if (!ownerA || !ownerB) continue;
+		// 衝突判定を行わないなら次へ
+		if (!ownerA->IsEnableCol() || !ownerB->IsEnableCol()) continue;
 
 		int numContacts = contactManifold->getNumContacts();
 		for (int j = 0; j < numContacts; j++)
@@ -215,36 +255,44 @@ void CPhysicsManager::UpdateCollisionDataList()
 			// 接触距離が許容範囲内の場合
 			if (pt.getDistance() <= CONTACT_DISTANCE_THRESHOLD)
 			{
-				// A → BのCollisionDataを作成
-				mCollisionDataList.push_back(
-					CreateCollisionData(objA, objB, pt)
-				);
+				// CollisionDataの作成
+				CollisionData dataA;
+				dataA.selfBody = (btCollisionObject*)objA;
+				dataA.otherBody = (btCollisionObject*)objB;
+				dataA.otherObj = ownerB;
+				dataA.hitPoint = ToCVector(pt.getPositionWorldOnA());
+				dataA.contactNormal = ToCVector(pt.m_normalWorldOnB);
 
-				// B → AのCollisionDataを作成
-				mCollisionDataList.push_back(
-					CreateCollisionData(objB, objA, pt)
-				);
+				CollisionData dataB;
+				dataB.selfBody = (btCollisionObject*)objB;
+				dataB.otherBody = (btCollisionObject*)objA;
+				dataB.otherObj = ownerA;
+				dataB.hitPoint = ToCVector(pt.getPositionWorldOnB());
+				dataB.contactNormal = ToCVector(-pt.m_normalWorldOnB);
+
+				// センサーかどうかの判定
+				bool isSensorA = objA->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE;
+				bool isSensorB = objB->getCollisionFlags() & btCollisionObject::CF_NO_CONTACT_RESPONSE;
+
+				// 通知の実行
+				if (isSensorA) {
+					ownerA->OnSensorEnter(dataA); // AがセンサーならAに通知
+				}
+				else {
+					ownerA->OnCollision(dataA);   // Aが剛体ならAに通知
+				}
+
+				if (isSensorB) {
+					ownerB->OnSensorEnter(dataB); // BがセンサーならBに通知
+				}
+				else {
+					ownerB->OnCollision(dataB);   // Bが剛体ならBに通知
+				}
+
+				break;
 			}
 		}
 	}
-}
-
-std::list<CollisionData> CPhysicsManager::GetCollisionDataList() const
-{
-	return mCollisionDataList;
-}
-
-CollisionData CPhysicsManager::CreateCollisionData(const btCollisionObject* objA, const btCollisionObject* objB, const btManifoldPoint& pt)
-{
-	CollisionData data;
-	// 自身の剛体
-	data.selfBody = (btCollisionObject*)objA;
-	// 相手の剛体
-	data.otherBody = (btCollisionObject*)objB;
-	// 法線ベクトル
-	data.contactNormal = pt.m_normalWorldOnB;
-
-	return data;
 }
 
 btRigidBody* CPhysicsManager::CreateBoxRigidBody(
@@ -256,18 +304,20 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 	ELayer myLayer,
 	Layers collisionLayers)
 {
+	owner->SaveBodyLayer(myLayer, collisionLayers);
+
 	// 衝突形状の作成
 	btCollisionShape* shape = new btBoxShape(
-		btVector3(halfExtents.X(), halfExtents.Y(), halfExtents.Z()));
+		btVector3(ToBtVector(halfExtents)));
 
 	// 初期トランスフォーム
 	btTransform startTrans;
 	// 回転
 	startTrans.setRotation(
-		btQuaternion(initialRot.X(), initialRot.Y(), initialRot.Z(), initialRot.W()));
+		btQuaternion(ToBtQuaternion(initialRot)));
 	// 座標(高さの半分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(initialPos.X(), initialPos.Y() + halfExtents.Y(), initialPos.Z()));
+		btVector3(ToBtVector(initialPos+CVector(0.0f,halfExtents.Y(),0.0f))));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
@@ -329,6 +379,8 @@ btRigidBody* CPhysicsManager::CreateSphereRigidBody(
 	ELayer myLayer,
 	Layers collisionLayers)
 {
+	owner->SaveBodyLayer(myLayer, collisionLayers);
+
 	// 衝突形状の作成
 	btCollisionShape* shape = new btSphereShape(radius);
 
@@ -337,7 +389,7 @@ btRigidBody* CPhysicsManager::CreateSphereRigidBody(
 	startTrans.setIdentity();
 	// 座標(半径分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(initPos.X(), initPos.Y() + radius, initPos.Z()));
+		btVector3(ToBtVector(initPos + CVector(0.0f, radius, 0.0f))));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
@@ -399,6 +451,8 @@ btRigidBody* CPhysicsManager::CreateCapsuleRigidBody(
 	ELayer myLayer,
 	Layers collisionLayers)
 {
+	owner->SaveBodyLayer(myLayer, collisionLayers);
+
 	// 衝突形状の作成
 	btCollisionShape* shape = new btCapsuleShape(radius, height);
 
@@ -408,10 +462,10 @@ btRigidBody* CPhysicsManager::CreateCapsuleRigidBody(
 	btTransform startTrans;
 	// 回転
 	startTrans.setRotation(
-		btQuaternion(initRot.X(), initRot.Y(), initRot.Z(), initRot.W()));
+		btQuaternion(ToBtQuaternion(initRot)));
 	// 座標(高さの半分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(initPos.X(), initPos.Y() + halfHeight, initPos.Z()));
+		btVector3(ToBtVector(initPos + CVector(0.0f, halfHeight, 0.0f))));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
@@ -473,6 +527,8 @@ btRigidBody* CPhysicsManager::CreateMeshRigidBody(
 	ELayer myLayer,
 	Layers collisionLayers)
 {
+	owner->SaveBodyLayer(myLayer, collisionLayers);
+
 	btTriangleIndexVertexArray* indexVertexArray = new btTriangleIndexVertexArray(
 		numTriangles,
 		(int*)indexArray,
@@ -495,7 +551,7 @@ btRigidBody* CPhysicsManager::CreateMeshRigidBody(
 	// トランスフォームの設定
 	btTransform startTrans;
 	startTrans.setIdentity();
-	startTrans.setOrigin(btVector3(initialPos.X(), initialPos.Y(), initialPos.Z()));
+	startTrans.setOrigin(ToBtVector(initialPos));
 
 	// モーションステートの作成
 	btDefaultMotionState* motionState = new btDefaultMotionState(startTrans);
@@ -528,10 +584,14 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	ELayer myLayer, 
 	Layers collisionLayers)
 {
+	owner->SaveSensorLayer(myLayer, collisionLayers);
+
 	btCollisionObject* colObj = new btCollisionObject();
 	// 形をボックスに設定
-	colObj->setCollisionShape(new btBoxShape(btVector3(halfExtents.X(), halfExtents.Y(), halfExtents.Z())));
+	colObj->setCollisionShape(new btBoxShape(ToBtVector(halfExtents)));
 	// 押し戻しをしないフラグ設定
+	colObj->setCollisionFlags(colObj->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+	// オブジェクトにユーザポインタを設定
 	colObj->setUserPointer(owner);
 	// スリープさせない
 	colObj->setActivationState(DISABLE_DEACTIVATION);
@@ -558,6 +618,8 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	ELayer myLayer,
 	Layers collisionLayers)
 {
+	owner->SaveSensorLayer(myLayer, collisionLayers);
+
 	btCollisionObject* colObj = new btCollisionObject();
 	// 形を球に設定
 	colObj->setCollisionShape(new btSphereShape(radius));
@@ -582,6 +644,37 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	mSensorList.push_back(colObj);
 
 	return colObj;
+}
+
+bool CPhysicsManager::Raycast(const CVector& start, const CVector& end, 
+	CVector* hitPos,
+	Layers collisionLayers)
+{
+	btVector3 btStart = ToBtVector(start);
+	btVector3 btEnd = ToBtVector(end);
+
+	btCollisionWorld::ClosestRayResultCallback rayCallback(btStart, btEnd);
+	
+	// すべてのグループから発射
+	rayCallback.m_collisionFilterGroup = -1; 
+	// 衝突相手を設定
+	int mask = ToMask(collisionLayers);
+	rayCallback.m_collisionFilterMask = mask; 
+
+	// レイテスト実行
+	mpDynamicsWorld->rayTest(btStart, btEnd, rayCallback);
+
+	if (rayCallback.hasHit()) {
+		// ポインタがNULLでなければ、当たった座標を設定
+		if (hitPos) {
+			*hitPos = ToCVector(rayCallback.m_hitPointWorld);
+		}
+		// 当たった
+		return true;
+	}
+
+	// 当たらなかった
+	return false;
 }
 
 void CPhysicsManager::SetFriction(btRigidBody* body, float friction)

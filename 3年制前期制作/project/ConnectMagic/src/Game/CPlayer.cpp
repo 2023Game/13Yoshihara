@@ -22,11 +22,11 @@ constexpr float BODY_RADIUS =				2.5f;
 constexpr float BODY_HEIGHT =				12.5f;
 // 物理設定
 constexpr float MASS =						1.0f;
-constexpr float MAX_SPEED =					150.0f;	// 最高速度
+constexpr float MAX_SPEED =					50.0f;	// 最高速度
 constexpr float ACCELERATION_FORCE =		500.0f;	// 加速度の強さ
 constexpr float TURN_RATE =					0.1f;	// 回転速度
-constexpr float FRICTION =					0.5f;	// 摩擦（値が高いと停止まで早くなる）
-constexpr float LIN_DAMPING =				0.5f;	// 線形減衰(値が高いと滑りが小さくなる)
+constexpr float FRICTION =					0.8f;	// 摩擦（値が高いと停止まで早くなる）
+constexpr float LIN_DAMPING =				0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
 constexpr float ANG_DAMPING =				0.8f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
 // 接地とみなすための、接触点の最低限のY軸法線成分
@@ -55,6 +55,13 @@ constexpr float TARGET_MAX_DISTANCE =		(WINDOW_HEIGHT / 2);
 
 // ターゲット場所の画像のスケール
 constexpr float TARGET_POINT_IMG_SCALE =	0.1f;
+
+// レイのベクトル
+const CVector RAY_VEC =						CVector(0, 2.0f, 0);
+// レイの開始のoffset
+const CVector RAY_START_OFFSET =			CVector(0.0f, 0.5f, 0.0f);
+// 接地している距離
+constexpr float GROUNDED_DIST =				1.0f;
 
 // アニメーションのパス
 const std::string ANIM_PATH =				"Character\\Adventurer\\AdventurerAnim\\";
@@ -108,7 +115,6 @@ CPlayer::CPlayer(const CVector& pos)
 	, mpCenterTarget(nullptr)
 	, mWasGrounded(false)
 	, mIsJump(false)
-	, mIsFront(false)
 	, mTarzanMoveSpeed(CVector::zero)
 {
 	Position(pos);
@@ -186,6 +192,9 @@ void CPlayer::TakeDamage(int damage, CObjectBase* causer)
 // 更新
 void CPlayer::Update()
 {
+	// 接地しているかを判定
+	CheckGrounded();
+
 	// 待機中、ターザン開始は、移動処理を行う
 	if (mState == EState::eIdle ||
 		mState == EState::eTarzanStart ||
@@ -214,12 +223,11 @@ void CPlayer::Update()
 		ChangeState(EState::eTarzan);
 	}
 
-	// 正面から落ちるときならジャンプする
-	if (mWasGrounded && !mIsGrounded && !mIsFront) {
+	// 落ちるときならジャンプする
+	if (mWasGrounded && !mIsGrounded) {
 		ChangeState(EState::eEdgeJumpStart);
 	}
 	mWasGrounded = mIsGrounded;
-	mIsFront = false;
 
 
 	switch (mState)
@@ -242,8 +250,6 @@ void CPlayer::Update()
 	
 	// 基底プレイヤークラスの更新
 	CPlayerBase::Update();
-	// 衝突イベントのチェック
-	DispatchCollisionEvents();
 
 	// 中心に一番近いオブジェクトを求める
 	CenterTarget();
@@ -254,6 +260,7 @@ void CPlayer::Update()
 	mpWand->UpdateMtx();
 
 #if _DEBUG
+	CDebugPrint::Print("WasGrounded:%s\n", mWasGrounded ? "true" : "false");
 	CDebugPrint::Print("PlayerState:%s\n", GetStateStr(mState).c_str());
 	CDebugPrint::Print("IsWand:%s\n", mIsWand ? "持っている" : "持っていない");
 	CDebugPrint::Print("ConnectObj:%d\n", mConnectObjs.size());
@@ -291,7 +298,7 @@ void CPlayer::CreateCol()
 		ELayer::ePlayer,
 		{ ELayer::eField,ELayer::ePortal,
 		ELayer::eConnectObj,ELayer::eObject,ELayer::eCrushed,
-		ELayer::eSwitch}
+		ELayer::eSwitch,ELayer::eShield}
 	);
 
 	// 探知用コライダー
@@ -306,39 +313,16 @@ void CPlayer::CreateCol()
 
 void CPlayer::OnCollision(const CollisionData& data)
 {
-	// 本体コライダーが衝突
-	if (data.selfBody == GetRigidBody())
-	{
-		PhysicalCollision(data);
-	}
-	// センサーコライダーが衝突
-	else if (data.selfBody == GetSensor())
-	{
-		SensorCollision(data);
-	}
-}
-
-void CPlayer::PhysicalCollision(const CollisionData& data)
-{
-	// 相手のOBJのポインタを取得
-	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
-
-	if (otherObj == nullptr) return;
-
 	// 接地判定
-	if (otherObj->Tag() == ETag::eField)
+	if (data.otherObj->Tag() == ETag::eField)
 	{
-		if (data.contactNormal.getY() > GROUND_NORMAL_THRESHOLD)
+		if (data.contactNormal.Y() > GROUND_NORMAL_THRESHOLD)
 		{
-			SetGrounded(true);
-			mGroundNormal = CVector(
-				data.contactNormal.getX(),
-				data.contactNormal.getY(),
-				data.contactNormal.getZ());
+			mGroundNormal = data.contactNormal;
 		}
 	}
 	// 水
-	else if (otherObj->Tag() == ETag::eWater)
+	else if (data.otherObj->Tag() == ETag::eWater)
 	{
 		// 保存管理クラスをロード状態へ
 		CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
@@ -348,20 +332,42 @@ void CPlayer::PhysicalCollision(const CollisionData& data)
 	}
 }
 
-void CPlayer::SensorCollision(const CollisionData& data)
+void CPlayer::OnSensorEnter(const CollisionData& data)
 {
-	// 相手のOBJのポインタを取得
-	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
-
-	if (otherObj == nullptr) return;
-
 	// コネクトオブジェクト
-	if (otherObj->Tag() == ETag::eConnectObject)
+	if (data.otherObj->Tag() == ETag::eConnectObject)
 	{
 		// コネクトオブジェクトクラスを取得
-		CConnectObject* obj = dynamic_cast<CConnectObject*>(otherObj);
+		CConnectObject* obj = dynamic_cast<CConnectObject*>(data.otherObj);
 		// 射程内にあるコネクトオブジェクトに追加
 		mConnectObjs.push_back(obj);
+	}
+}
+
+void CPlayer::CheckGrounded()
+{
+	// 足元からレイを飛ばす
+	CVector pos = Position();
+	CVector rayStart = pos + RAY_START_OFFSET;
+	CVector rayEnd = pos - RAY_VEC;
+
+	CVector hitPos;
+
+	if (CPhysicsManager::Instance()->Raycast(rayStart, rayEnd, &hitPos,
+		{ELayer::eField})) {
+		// 地面が見つかった
+		float distance = pos.Y() - hitPos.Y();
+
+		// 設置している距離より低いなら
+		if (distance < GROUNDED_DIST) 
+		{
+			// 接地中とみなす
+			SetGrounded(true);
+		}
+	}
+	else {
+		// 空中にいる
+		SetGrounded(false);
 	}
 }
 
@@ -482,6 +488,42 @@ void CPlayer::UpdateMove()
 			CVector force = move * ACCELERATION_FORCE;
 			AddForce(force);
 		}
+		// 待機状態であれば、移動アニメーションに切り替え
+		if (mState == EState::eIdle)
+		{
+			// 杖を持っている場合
+			if (mIsWand)
+			{
+				// 杖持ち移動アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eMove_Wand);
+			}
+			// 杖を持っていない場合
+			else
+			{
+				// 移動アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eMove);
+			}
+		}
+	}
+	// 入力していない
+	else
+	{
+		// 待機状態であれば、待機アニメーションに切り替え
+		if (mState == EState::eIdle)
+		{
+			// 杖を持っている場合
+			if (mIsWand)
+			{
+				// 杖持ち待機アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eIdle_Wand);
+			}
+			// 杖を持っていない場合
+			else
+			{
+				// 待機アニメーションに切り替え
+				ChangeAnimation((int)EAnimType::eIdle);
+			}
+		}
 	}
 
 	// 攻撃を受けていない時かつ
@@ -505,47 +547,6 @@ void CPlayer::UpdateMove()
 		CQuaternion newRot = CQuaternion(newRotation.getX(), newRotation.getY(), newRotation.getZ(), newRotation.getW());
 		// 回転設定
 		Rotation(newRot);
-	}
-
-	// 移動している
-	if (currentVelocity.length2() > MOVE_THRESHOLD)
-	{
-		// 待機状態であれば、移動アニメーションに切り替え
-		if (mState == EState::eIdle)
-		{
-			// 杖を持っている場合
-			if (mIsWand)
-			{
-				// 杖持ち移動アニメーションに切り替え
-				ChangeAnimation((int)EAnimType::eMove_Wand);
-			}
-			// 杖を持っていない場合
-			else
-			{
-				// 移動アニメーションに切り替え
-				ChangeAnimation((int)EAnimType::eMove);
-			}
-		}
-	}
-	// 移動していない
-	else
-	{
-		// 待機状態であれば、待機アニメーションに切り替え
-		if (mState == EState::eIdle)
-		{
-			// 杖を持っている場合
-			if (mIsWand)
-			{
-				// 杖持ち待機アニメーションに切り替え
-				ChangeAnimation((int)EAnimType::eIdle_Wand);
-			}
-			// 杖を持っていない場合
-			else
-			{
-				// 待機アニメーションに切り替え
-				ChangeAnimation((int)EAnimType::eIdle);
-			}
-		}
 	}
 }
 

@@ -24,14 +24,15 @@ public:
 	// 重りがスイッチに張り付いているか
 	bool GetIsAttach() const;
 
+	// 衝突処理
+	void OnCollision(const CollisionData& data) override;
+
 private:
 	// データ保存で使用
 	unsigned int mUniqueID;
 	void SetElapsedTime(float time);
 	float GetElapsedTime() const;
 
-	// 衝突処理
-	void OnCollision(const CollisionData& data) override;
 
 	// コライダーを生成
 	void CreateCol() override;

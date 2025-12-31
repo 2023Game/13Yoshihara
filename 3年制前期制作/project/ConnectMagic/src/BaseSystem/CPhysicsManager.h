@@ -14,6 +14,8 @@ class btCollisionDispatcher;
 class btBroadphaseInterface;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
+class btVector3;
+class btQuaternion;
 
 class CPhysicsManager : public CTask
 {
@@ -40,9 +42,6 @@ public:
 	// 描画
 	void Render() override;
 #endif
-
-	// 衝突データを取得する
-	std::list<CollisionData> GetCollisionDataList() const;
 
 	/// <summary>
 	/// ボックス剛体を生成、ワールドへ追加
@@ -160,6 +159,10 @@ public:
 		Layers collisionLayers
 	);
 
+	// レイキャスト
+	bool Raycast(const CVector& start, const CVector& end, 
+		CVector* hitPos, Layers collisionLayers);
+
 	// 摩擦を設定
 	void SetFriction(btRigidBody* body, float friction);
 	// 反発係数を設定
@@ -167,24 +170,30 @@ public:
 	// 減衰を設定
 	void SetDamping(btRigidBody* body, float linDamping, float angDamping);
 
-private:
-	// インスタンス
-	static CPhysicsManager* spInstance;
-
 	// ELayerをビットフラグに変換
 	int ToBit(ELayer layer);
 	// 複数のレイヤーをまとめてビットマスクにする
 	int ToMask(Layers layers);
+	// ワールドを取得
+	btDiscreteDynamicsWorld* GetDynamicsWorld() const;
+	// ディスパッチャーを取得
+	btCollisionDispatcher* GetDispatcher() const;
+	// 
+private:
+	// インスタンス
+	static CPhysicsManager* spInstance;
+
+	// btVector3をCVectorにする
+	CVector ToCVector(const btVector3& vec);
+	// CVectorをbtVector3にする
+	btVector3 ToBtVector(const CVector& vec);
+	// btQuaternionをCQuaternionにする
+	CQuaternion ToCQuaternion(const btQuaternion& rot);
+	// CQuaternionをbtQuaternionにする
+	btQuaternion ToBtQuaternion(const CQuaternion& rot);
 
 	// 衝突データを更新
-	void UpdateCollisionDataList();
-	// 衝突データ作成
-	CollisionData CreateCollisionData(
-		const btCollisionObject* objA,
-		const btCollisionObject* objB,
-		const btManifoldPoint& pt);
-	// 衝突データのリスト
-	std::list<CollisionData> mCollisionDataList;
+	void UpdateCollisionData();
 
 	// センサーの座標更新
 	void UpdateSensorPos();

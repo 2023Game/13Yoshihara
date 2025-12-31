@@ -106,11 +106,6 @@ CWeight::~CWeight()
 // 更新
 void CWeight::Update()
 {
-	if (CInput::PushKey(VK_SPACE))
-	{
-		AddImpulse(CVector(0.0f, 500.0f, 0.0f));
-	}
-
 	// リスポーンするなら
 	if (mIsRespawn)
 	{
@@ -134,8 +129,6 @@ void CWeight::Update()
 	}
 
 	CConnectObject::Update();
-	// 衝突イベントのチェック
-	DispatchCollisionEvents();
 
 	// 重りが張り付いていない
 	SetIsAttach(false);
@@ -165,24 +158,16 @@ float CWeight::GetElapsedTime() const
 
 void CWeight::OnCollision(const CollisionData& data)
 {	
-	// 本体コライダーでなければ処理しない
-	if (data.selfBody != GetRigidBody()) return;
-
-	// 相手のOBJのポインタを取得
-	CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
-
-	if (otherObj == nullptr) return;
-
 	// 水
-	if (otherObj->Tag() == ETag::eWater)
+	if (data.otherObj->Tag() == ETag::eWater)
 	{
 		mIsRespawn = true;
 	}
 	// 相手が乗れるオブジェクトなら
-	else if (otherObj->Tag() == ETag::eRideableObject)
+	else if (data.otherObj->Tag() == ETag::eRideableObject)
 	{
 		// 乗っているオブジェクトに設定する
-		mpRideObject = otherObj;
+		mpRideObject = data.otherObj;
 	}
 }
 
@@ -205,8 +190,10 @@ void CWeight::CreateCol()
 		Position(),
 		Rotation(),
 		ELayer::eConnectObj,
-		{ ELayer::eField,ELayer::ePlayer,
-		ELayer::eConnectObj,ELayer::eConnectSearch,ELayer::eSwitch,
-		ELayer::eCrushed }
+		{ ELayer::eField,ELayer::ePlayer,ELayer::eObject,
+		ELayer::eConnectObj,ELayer::eConnectSearch,
+		ELayer::eSwitch,
+		ELayer::eCrushed,
+		ELayer::eShield}
 	);
 }

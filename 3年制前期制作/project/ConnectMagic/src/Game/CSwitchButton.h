@@ -18,11 +18,12 @@ public:
 	// 描画
 	void Render() override;
 
+	// 衝突処理
+	void OnSensorEnter(const CollisionData& data) override;
+
 private:
 	// コライダーを生成
 	void CreateCol();
-	// 衝突処理
-	void OnCollision(const CollisionData& data) override;
 
 	enum class EState
 	{

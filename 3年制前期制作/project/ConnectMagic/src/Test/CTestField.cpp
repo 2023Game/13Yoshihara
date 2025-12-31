@@ -11,6 +11,7 @@
 #include "CSwitchPushWall.h"
 #include "CSwitchMoveWall.h"
 #include "CSwitchShield.h"
+#include "CShield.h"
 #include "CPhysicsManager.h"
 
 // 水の座標
@@ -47,12 +48,6 @@ constexpr float SWITCH_MOVE_WALL_MOVE_TIME =	12.0f;
 // シールド
 const CVector SHIELD_SCALE =					CVector( 1.0f,  1.0f, 1.0f);
 const CVector SHIELD_POS =						CVector(-40.0f, 0.0f, 10.0f);
-
-// 地面の物理設定
-constexpr float GROUND_MASS =					0.0f;
-const CVector GROUND_HALF_EXTENTS =				CVector( 50.0f, 0.5f, 50.0f);
-const CVector GROUND_POS =						CVector::zero;
-const CQuaternion GROUND_ROT =					CQuaternion(0.0f, 0.0f, 0.0f, 1.0f);
 
 // コンストラクタ
 CTestField::CTestField()
@@ -110,9 +105,12 @@ void CTestField::CreateFieldObjects()
 			SWITCH_MOVE_WALL_SCALE, SWITCH_MOVE_WALL_MOVE, SWITCH_MOVE_WALL_MOVE_TIME);
 	crystal2->SetActionObj(switchMoveWall);
 
-	// シールド
-	CSwitchShield* switchShield =
-		new CSwitchShield(SHIELD_SCALE);
-	switchShield->Position(SHIELD_POS);
-	crystal3->SetActionObj(switchShield);
+	//// シールド
+	//CSwitchShield* switchShield =
+	//	new CSwitchShield(SHIELD_SCALE);
+	//switchShield->Position(SHIELD_POS);
+	//crystal3->SetActionObj(switchShield);
+
+	CShield* shield = new CShield();
+	shield->Position(SHIELD_POS);
 }

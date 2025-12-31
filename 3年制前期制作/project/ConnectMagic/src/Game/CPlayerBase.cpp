@@ -208,8 +208,6 @@ void CPlayerBase::Update()
 	CDebugPrint::Print("Pos:%f,%f,%f\n", Position().X(), Position().Y(), Position().Z());
 	CDebugPrint::ForcePrint("FPS:%f\n", Times::FPS());
 #endif
-
-	mIsGrounded = false;
 }
 
 // •`‰æ

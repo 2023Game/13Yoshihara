@@ -5,5 +5,7 @@ struct CollisionData
 {
 	btCollisionObject* selfBody;	// 衝突した自身の剛体
 	btCollisionObject* otherBody;	// 衝突した相手の剛体
-	btVector3 contactNormal;		// 剛体Bから剛体Aへ向かう法線ベクトル
+	CObjectBase* otherObj;			// 相手オブジェクト
+	CVector hitPoint;				// 衝突位置
+	CVector contactNormal;		// 相手から自分へ向かう法線ベクトル
 };

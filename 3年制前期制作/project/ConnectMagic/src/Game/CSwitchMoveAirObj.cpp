@@ -119,7 +119,7 @@ CAirConnectObj* CSwitchMoveAirObj::GetAirConnectObj()
 // —LŒø–³Œø‚ÌØ‚è‘Ö‚¦
 void CSwitchMoveAirObj::SetEnable(bool enable)
 {
-	CTask::SetEnable(enable);
+	CObjectBase::SetEnable(enable);
 	mpConnectObj->SetEnable(enable);
 }
 

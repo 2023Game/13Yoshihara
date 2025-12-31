@@ -82,11 +82,11 @@ void CFieldBase::CreateCol(std::string fieldCol)
 	// 空じゃなければ
 	if (fieldCol != "")
 	{
-		CModel* model = CResourceManager::Get<CModel>(fieldCol);
+		//CModel* model = CResourceManager::Get<CModel>(fieldCol);
 
 		// 物理用データの取得
-		mMeshVertices = model->GetPhysicsVertexPositions();
-		mMeshIndices = model->GetPhysicsIndices();
+		mMeshVertices = mpModel->GetPhysicsVertexPositions();
+		mMeshIndices = mpModel->GetPhysicsIndices();
 
 		// 剛体の作成
 		CPhysicsManager::Instance()->CreateMeshRigidBody(

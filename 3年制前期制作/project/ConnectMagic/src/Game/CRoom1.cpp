@@ -9,12 +9,12 @@
 constexpr float ROOM_LENGTH =			170.0f;
 
 // 重りの座標
-const CVector WEIGHT_OFFSET_POS =		CVector(25.0f, 0.0f, -150.0f);
+const CVector WEIGHT_OFFSET_POS =		CVector(25.0f, 20.0f, -150.0f);
 // スイッチの座標
 const CVector SWITCH_OFFSET_POS =		CVector(25.0f, 0.0f, -35.0f);
 
 // 動く床のオフセット座標
-const CVector MOVE_FLOOR_OFFSET_POS =	CVector(-60.0f, -10.0f, -50.0f);
+const CVector MOVE_FLOOR_OFFSET_POS =	CVector(-60.0f, -10.0f, -90.0f);
 // 動く床のスケール
 const CVector MOVE_FLOOR_SCALE =		CVector(4.0f, 1.0f, 8.0f);
 // 動く床の移動
