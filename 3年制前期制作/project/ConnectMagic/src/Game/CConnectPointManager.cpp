@@ -6,9 +6,13 @@
 #include "CConnectObject.h"
 #include "CConnectTarget.h"
 #include "Maths.h"
+#include "CPhysicsManager.h"
+#include "CollisionData.h"
 
 // レイを伸ばせる距離の最大
 constexpr float RAY_MAX_DISTANCE =		75.0f;
+// レイの太さ
+constexpr float RAY_WIDTH =				0.5f;
 
 // ターザンの最短距離
 constexpr float TARZAN_MIN_DISTANCE =	30.0f;
@@ -113,7 +117,7 @@ void CConnectPointManager::Render()
 		(
 			mpConnectPoint1->Position(), mpConnectPoint2->Position(),
 			CColor::yellow,
-			5.0f
+			RAY_WIDTH
 		);
 	}
 }
@@ -140,49 +144,34 @@ void CConnectPointManager::Connect()
 	}
 }
 
-// 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
+// 視点からターゲットまでのレイと地形の衝突判定を行う
 bool CConnectPointManager::RayTarget(CVector targetPos)
 {
-	//CHitInfo hit;
-	//// プレイヤーを取得
-	//CPlayerBase* player = CPlayerBase::Instance();
-	//// プレイヤーの座標
-	//CVector playerPos = player->Position();
-	//// カメラを取得
-	//CCamera* camera = CCamera::CurrentCamera();
-	//// プレイヤーからターゲットへの方向
-	//CVector dir = targetPos - playerPos;
-	//dir.Y(0.0f);
-	//dir.Normalize();
-	//// レイの開始と終了地点
-	//CVector rayStart = camera->GetEye();
-	//CVector rayEnd = targetPos;
-	//// 設定されているコライダーを順番に調べる
-	//for (CCollider* c : mColliders)
-	//{
-	//	if (c == nullptr)
-	//		continue;
-	//	// 無効なら次へ
-	//	if (c->Owner() != nullptr && !c->Owner()->IsEnableCol())
-	//		continue;
-	//	// レイとコライダーの衝突判定を行う
-	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-	//	{
-	//		// プレイヤーから衝突点への方向
-	//		CVector playerCrossDir = hit.cross - playerPos;
-	//		playerCrossDir.Y(0.0f);
-	//		playerCrossDir.Normalize();
-	//		// 二つの方向の内積を求める
-	//		float dot = playerCrossDir.Dot(dir);
-	//		
-	//		// 内積が負の値なら反対方向（プレイヤーの後ろ）にあるので衝突を無視
-	//		if (dot < 0.0f)
-	//			continue;
+	// プレイヤー
+	CPlayerBase* player = CPlayerBase::Instance();
+	// プレイヤー座標
+	CVector playerPos = player->Position();
+	// カメラ
+	CCamera* camera = CCamera::CurrentCamera();
+	// レイの開始と終了地点
+	CVector rayStart = camera->GetEye();
+	CVector rayEnd = targetPos;
+	// 衝突情報
+	CollisionData data;
+	// 衝突相手
+	Layers collisionLayers{ ELayer::eField,
+		ELayer::eObject,
+		ELayer::eSwitch };
+	// 衝突したか
+	bool isHit = false;
 
-	//		// 衝突した
-	//		return true;
-	//	}
-	//}
+	isHit = CPhysicsManager::Instance()->Raycast(rayStart, rayEnd, &data, collisionLayers);
+
+	// 衝突していたら
+	if (isHit)
+	{
+		return true;
+	}
 
 	// 衝突していない
 	return false;
@@ -192,26 +181,23 @@ bool CConnectPointManager::RayTarget(CVector targetPos)
 // 衝突していたら接続解除
 void CConnectPointManager::RayPoint()
 {
-	//CHitInfo hit;
-	//// レイの開始と終了地点
-	//CVector rayStart = mpWandPoint->Position();
-	//CVector rayEnd = mpConnectPoint1->Position();
+	CollisionData data;
+	CVector rayStart = mpWandPoint->Position();
+	CVector rayEnd = mpConnectPoint1->Position();
 
-	//// 設定されているコライダーを順番に調べる
-	//for (CCollider* c : mColliders)
-	//{
-	//	if (c == nullptr)
-	//		continue;
-	//	// 無効なら次へ
-	//	if (c->Owner()!= nullptr && !c->Owner()->IsEnableCol())
-	//		continue;
-	//	// レイとコライダーの衝突判定を行う
-	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-	//	{
-	//		// 接続を無効
-	//		DisableConnect(GetConnectWandTarget());
-	//	}
-	//}
+	bool isHit = false;
+	// 衝突相手
+	Layers collisionLayers{ ELayer::eField,
+		ELayer::eObject,
+		ELayer::eSwitch };
+	
+	isHit = CPhysicsManager::Instance()->Raycast(rayStart, rayEnd, &data, collisionLayers);
+
+	if (isHit)
+	{
+		// 接続を無効
+		DisableConnect(GetConnectWandTarget());
+	}
 }
 
 // 接続部との距離が最大値より遠ければ接続を無効にする
@@ -443,6 +429,11 @@ bool CConnectPointManager::IsWandConnectAirObject()
 	}
 
 	return false;
+}
+
+CVector CConnectPointManager::GetWandPointPos() const
+{
+	return mpWandPoint->Position();
 }
 
 // 杖の先の接続部の位置を特定

@@ -5,7 +5,6 @@ class CWeight;
 class CSwitch;
 class CSwitchMoveFloor;
 class CWater;
-class CRespawnArea;
 
 // •”‰®1
 class CRoom1 : public CRoomBase
@@ -28,5 +27,4 @@ private:
 	CSwitch* mpSwitch;
 	CSwitchMoveFloor* mpMoveFloor;
 	CWater* mpWater;
-	CRespawnArea* mpRespawnArea;
 };

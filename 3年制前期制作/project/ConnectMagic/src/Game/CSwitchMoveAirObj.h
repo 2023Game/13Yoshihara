@@ -24,9 +24,7 @@ public:
 	float GetElapsedTime() const;
 
 	// コンストラクタ
-	CSwitchMoveAirObj(
-		const CVector& pos,
-		std::vector<CVector> movePos);
+	CSwitchMoveAirObj(const CVector& pos);
 	// デストラクタ
 	~CSwitchMoveAirObj();
 
@@ -35,6 +33,9 @@ public:
 
 	// 有効無効の切り替え
 	void SetEnable(bool enable) override;
+
+	// 移動先を追加
+	void AddTargetPos(const CVector& pos);
 
 private:
 	// データ保存に使用

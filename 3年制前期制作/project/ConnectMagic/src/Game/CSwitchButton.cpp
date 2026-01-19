@@ -16,7 +16,8 @@ constexpr float COL_RADIUS = 5.0f;
 const CVector HALF_EXTENTS = CVector(5.0f, 1.0f, 5.0f);
 
 // コンストラクタ
-CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)
+CSwitchButton::CSwitchButton(const CVector& pos, const CVector& scale,
+	CSwitch* owner, bool isAttach)
 	: CObjectBase(ETag::eSwitch, ETaskPriority::eDefault, 0, ETaskPauseType::eGame)
 	, mState(EState::eDefault)
 	, mDefaultY(pos.Y())
@@ -26,6 +27,7 @@ CSwitchButton::CSwitchButton(CVector pos, CSwitch* owner, bool isAttach)
 	mpModel = CResourceManager::Get<CModel>("SwitchButton");
 	// 座標を設定
 	Position(pos);
+	Scale(scale);
 	// コライダーを生成
 	CreateCol();
 }
@@ -56,9 +58,12 @@ void CSwitchButton::Render()
 // コライダーを生成
 void CSwitchButton::CreateCol()
 {
+	// スケール適用したサイズ
+	CVector halfExtents = HALF_EXTENTS * Scale();
+
 	CPhysicsManager::Instance()->CreateBoxSensor(
 		this,
-		HALF_EXTENTS,
+		halfExtents,
 		ELayer::eSwitch,
 		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
 	);

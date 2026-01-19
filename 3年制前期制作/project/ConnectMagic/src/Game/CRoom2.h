@@ -4,7 +4,6 @@
 class CWeight;
 class CMoveObj;
 class CWater;
-class CRespawnArea;
 
 // •”‰®2
 class CRoom2 : public CRoomBase
@@ -26,5 +25,4 @@ private:
 	CWeight* mpWeight;
 	CMoveObj* mpMoveFloor;
 	CWater* mpWater;
-	CRespawnArea* mpRespawnArea;
 };

@@ -151,8 +151,8 @@ void CRoom3::CreateFieldObjects()
 	// スイッチを設定
 	mpSwitch1->SetActionObj(mpSwitchMoveFloor1);
 	mpSwitch2->SetActionObj(mpSwitchMoveFloor2);
-	mpSwitchMoveFloor1->SetSwitchs({ mpSwitch1 });
-	mpSwitchMoveFloor2->SetSwitchs({ mpSwitch2 });
+	mpSwitchMoveFloor1->SetSwitches({ mpSwitch1 });
+	mpSwitchMoveFloor2->SetSwitches({ mpSwitch2 });
 
 	// 動く床を生成
 	mpMoveFloor1 = new CMoveObj(model, colModel,

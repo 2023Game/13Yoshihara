@@ -139,7 +139,7 @@ void CRoom5::CreateFieldObjects()
 	// 作用するオブジェクトに設定
 	mpSwitch->SetActionObj(mpMoveWall);
 	// 作用するスイッチに設定
-	mpMoveWall->SetSwitchs({ mpSwitch });
+	mpMoveWall->SetSwitches({ mpSwitch });
 	// リストに追加
 	mObjs.push_back(mpMoveWall);
 

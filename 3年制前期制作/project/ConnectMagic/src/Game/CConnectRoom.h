@@ -46,4 +46,7 @@ private:
 
 	// オブジェクトを通さないシールド
 	CShield* mpShield;
+
+	// センサーに触れるのが一回目か
+	bool mIsTouchSensorFirst;
 };

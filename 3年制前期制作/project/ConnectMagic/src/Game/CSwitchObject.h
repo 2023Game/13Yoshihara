@@ -27,7 +27,7 @@ public:
 	bool GetOnOff() const;
 
 	// 作用するスイッチを設定する
-	void SetSwitchs(std::vector<CSwitch*> switchs);
+	void SetSwitches(std::vector<CSwitch*> switchs);
 
 	// オンオフの状態
 	enum class EState

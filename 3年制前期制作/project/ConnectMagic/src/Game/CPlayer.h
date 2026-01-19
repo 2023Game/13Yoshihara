@@ -9,6 +9,8 @@ class CConnectObject;
 class CConnectTarget;
 class CImage;
 struct PlayerData;
+// bullet
+class btPoint2PointConstraint;
 
 /*
 ゲームのプレイヤークラス
@@ -168,7 +170,6 @@ private:
 	bool mIsAttacking;
 
 	CWand* mpWand;			// 杖
-	CConnectPoint* mpWandPoint;	// 接続部
 
 	// 視点の中心に一番近いターゲットを求める
 	void CenterTarget();
@@ -180,6 +181,6 @@ private:
 	// ターゲット中の画像の位置や有効無効の更新
 	void UpdatePointImg();
 
-	// ターザン中の移動速度
-	CVector mTarzanMoveSpeed;
+	// ジョイント
+	btPoint2PointConstraint* mpJoint;
 };

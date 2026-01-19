@@ -88,14 +88,11 @@ float CSwitchMoveAirObj::GetElapsedTime() const
 }
 
 // コンストラクタ
-CSwitchMoveAirObj::CSwitchMoveAirObj(
-	const CVector& pos,
-	std::vector<CVector> targets)
+CSwitchMoveAirObj::CSwitchMoveAirObj(const CVector& pos)
 	: CSwitchObject()
 	, mMoveState(EMoveState::eStop)
 	, mElapsedTime(0.0f)
 	, mpConnectObj(nullptr)
-	, mTargetPos(targets)
 	, mTargetPosNum(0)
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
@@ -121,6 +118,11 @@ void CSwitchMoveAirObj::SetEnable(bool enable)
 {
 	CObjectBase::SetEnable(enable);
 	mpConnectObj->SetEnable(enable);
+}
+
+void CSwitchMoveAirObj::AddTargetPos(const CVector& pos)
+{
+	mTargetPos.push_back(pos);
 }
 
 // 作用していないときの処理

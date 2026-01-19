@@ -24,7 +24,10 @@ public:
 	unsigned int GetUniqueInstanceID() const override;
 
 	// コンストラクタ
-	CSwitch(CVector pos, bool isAttach = false, ESwitchType type = ESwitchType::eButton);
+	CSwitch(const CVector& pos,
+		const CVector& scale = CVector::one,
+		bool isAttach = false,
+		ESwitchType type = ESwitchType::eButton);
 	// デストラクタ
 	~CSwitch();
 
@@ -45,6 +48,11 @@ public:
 
 	// スイッチの有効無効を切り替え
 	void SetEnableSwitch(bool enable);
+
+#if _DEBUG
+	// スイッチと作用するオブジェクトの間に線を描画
+	void Render();
+#endif
 
 private:
 	// データ保存に使用

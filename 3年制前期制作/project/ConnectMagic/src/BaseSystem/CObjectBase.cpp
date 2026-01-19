@@ -90,9 +90,10 @@ void CObjectBase::SetEnableCol(bool isEnable)
 	if (mIsEnableCol) {
 		// 有効化
 		// フラグを動的に戻す
+		// 押し返しを有効化
 		int flags = mpRigidBody->getCollisionFlags();
 		flags &= ~btCollisionObject::CF_KINEMATIC_OBJECT;
-		flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE; // 押し返しを有効化
+		flags &= ~btCollisionObject::CF_NO_CONTACT_RESPONSE;
 		mpRigidBody->setCollisionFlags(flags);
 
 		// 重力計算を復活させる

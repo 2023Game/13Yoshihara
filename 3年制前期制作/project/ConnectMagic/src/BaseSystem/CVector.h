@@ -44,6 +44,10 @@ public:
 	CVector operator * (const float& f) const;
 	// CVector *= float ‚Å‰‰ZŒ‹‰Ê‚ğ©g‚É‘ã“ü
 	void operator *= (const float& f);
+	// CVector * CVector‚Ì‰‰ZŒ‹‰Ê‚ğ•Ô‚·
+	CVector operator * (const CVector& v) const;
+	// CVector *= CVector‚Å‰‰ZŒ‹‰Ê‚ğ©g‚É‘ã“ü
+	void operator *= (const CVector& v);
 	// CVector * CMatrix‚ÌŒ‹‰Ê‚ğCVector‚Å•Ô‚·
 	CVector operator * (const CMatrix& m) const;
 

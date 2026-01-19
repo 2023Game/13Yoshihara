@@ -9,6 +9,7 @@
 #include "CFade.h"
 #include "FadeType.h"
 #include "CConnectPointManager.h"
+#include "CPhysicsManager.h"
 
 CApplication::~CApplication()
 {
@@ -31,6 +32,8 @@ void CApplication::Start()
 	CBGMManager::Instance();
 	// 接続部管理クラスを生成
 	CConnectPointManager::Instance();
+	// 物理管理クラスを生成
+	CPhysicsManager::Instance();
 
 #if _DEBUG
 	// デバッグモードでは、ブートメニューを最初に開く
@@ -43,20 +46,30 @@ void CApplication::Start()
 
 void CApplication::End()
 {
+	// ジョイントをすべて削除する
+	CPhysicsManager::Instance()->RemoveAllJoint();
 	CSceneManager::ClearInstance();
 	CTaskManager::ClearInstance();
 	CResourceManager::ClearInstance();
 	CBGMManager::ClearInstance();
 	CSoundManager::ClearInstance();
+	CPhysicsManager::ClearInstance();
 }
 
 void CApplication::Update()
 {
-	CTaskManager::Instance()->Delete();
+	CTaskManager* taskMgr = CTaskManager::Instance();
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+
+	taskMgr->Delete();
+	// 物理の更新処理
+	physicsMgr->Update();
 	// タスクの更新処理
-	CTaskManager::Instance()->Update();
+	taskMgr->Update();
+	// 物理の後更新処理
+	physicsMgr->LateUpdate();
 	// タスクの後更新処理
-	CTaskManager::Instance()->LateUpdate();
+	taskMgr->LateUpdate();
 
 	// サウンドの更新
 	CSoundManager::Instance()->Update();
@@ -65,5 +78,10 @@ void CApplication::Update()
 	CSceneManager::Instance()->Update();
 
 	// タスクの描画処理
-	CTaskManager::Instance()->Render();
+	taskMgr->Render();
+
+#if _DEBUG
+	// 物理の描画
+	physicsMgr->Render();
+#endif
 }

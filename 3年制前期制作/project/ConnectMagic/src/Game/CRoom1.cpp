@@ -9,7 +9,7 @@
 constexpr float ROOM_LENGTH =			170.0f;
 
 // 重りの座標
-const CVector WEIGHT_OFFSET_POS =		CVector(25.0f, 20.0f, -150.0f);
+const CVector WEIGHT_OFFSET_POS =		CVector(25.0f, 0.0f, -150.0f);
 // スイッチの座標
 const CVector SWITCH_OFFSET_POS =		CVector(25.0f, 0.0f, -35.0f);
 
@@ -104,7 +104,7 @@ void CRoom1::CreateFieldObjects()
 		MOVE_FLOOR_MOVE,
 		MOVE_FLOOR_MOVE_TIME);
 	// 作用するスイッチに設定
-	mpMoveFloor->SetSwitchs({ mpSwitch });
+	mpMoveFloor->SetSwitches({ mpSwitch });
 	// 作用するオブジェクトに設定
 	mpSwitch->SetActionObj(mpMoveFloor);
 	// リストに追加

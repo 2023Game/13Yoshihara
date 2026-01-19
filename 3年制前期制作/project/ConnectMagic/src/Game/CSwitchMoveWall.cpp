@@ -12,7 +12,7 @@ constexpr float FRICTION =		0.1f;	// 摩擦（値が高いと停止まで早くなる）
 constexpr float LIN_DAMPING =	0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
 constexpr float ANG_DAMPING =	0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
-const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 10.0f, 5.0f);
+const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 5.0f, 5.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -64,7 +64,7 @@ unsigned int CSwitchMoveWall::GetUniqueInstanceID() const
 
 // コンストラクタ
 CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
-	const CVector& pos, const CVector& scale, const CVector& move, float moveTime, bool isCrushed)
+	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: mDefaultPos(pos)
 	, mMoveVec(move)
 	, mMoveTime(moveTime)
@@ -80,16 +80,6 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 
 	// コライダーを生成
 	CreateCol();
-	// プレイヤーを壊すなら
-	if (isCrushed)
-	{
-		CPhysicsManager::Instance()->CreateBoxSensor(
-			this,
-			SENSOR_HALF_EXTENTS,
-			ELayer::eCrushed,
-			{ ELayer::ePlayer }
-		);
-	}
 }
 
 // デストラクタ

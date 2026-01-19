@@ -1,7 +1,6 @@
 #pragma once
 #include "CollisionLayer.h"
 
-class CTask;
 class CPhysicsDebugDraw;
 struct CollisionData;
 struct PhysicsMaterial;
@@ -16,12 +15,17 @@ class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
 class btVector3;
 class btQuaternion;
+class btTransform;
+class btPoint2PointConstraint;
+class btTypedConstraint;
 
-class CPhysicsManager : public CTask
+class CPhysicsManager
 {
 public:
 	// インスタンスを取得
 	static CPhysicsManager* Instance();
+	// インスタンスを破棄
+	static void ClearInstance();
 
 	// コンストラクタ
 	CPhysicsManager();
@@ -34,13 +38,13 @@ public:
 	void RemoveSensor(btCollisionObject* sensor);
 
 	// 更新
-	void Update() override;
+	void Update();
 	// 後更新
-	void LateUpdate() override;
+	void LateUpdate();
 
 #if _DEBUG
 	// 描画
-	void Render() override;
+	void Render();
 #endif
 
 	/// <summary>
@@ -132,16 +136,18 @@ public:
 	/// <summary>
 	/// 検知用のボックスセンサーを生成、ワールドへ追加
 	/// </summary>
-	/// <param name="owner"></param>
-	/// <param name="halfExtents"></param>
-	/// <param name="myLayer"></param>
-	/// <param name="collisionLayers"></param>
+	/// <param name="owner">持ち主</param>
+	/// <param name="halfExtents">半分の大きさ</param>
+	/// <param name="myLayer">自分の所属レイヤー</param>
+	/// <param name="collisionLayers">衝突判定をするレイヤー</param>
+	/// <param name="isUpdatePos">座標を更新するか</param>
 	/// <returns></returns>
 	btCollisionObject* CreateBoxSensor(
 		CObjectBase* owner,
 		const CVector& halfExtents,
 		ELayer myLayer,
-		Layers collisionLayers
+		Layers collisionLayers,
+		bool isUpdatePos = true
 	);
 
 	/// <summary>
@@ -151,17 +157,33 @@ public:
 	/// <param name="radius">半径</param>
 	/// <param name="myLayer">自分の所属レイヤー</param>
 	/// <param name="collisionLayers">衝突判定をするレイヤー</param>
+	/// <param name="isUpdatePos">座標を更新するか</param>
 	/// <returns></returns>
 	btCollisionObject* CreateSphereSensor(
 		CObjectBase* owner,
 		float radius,
 		ELayer myLayer,
-		Layers collisionLayers
+		Layers collisionLayers,
+		bool isUpdatePos = true
 	);
 
 	// レイキャスト
 	bool Raycast(const CVector& start, const CVector& end, 
-		CVector* hitPos, Layers collisionLayers);
+		CollisionData* collisionData, Layers collisionLayers);
+	// スフィアキャスト
+	bool SphereCast(const CVector& start, const CVector& end,
+		float radius, CollisionData* collisionData, Layers collisionLayers);
+
+	// 支点と剛体を繋ぐジョイントを作成
+	btPoint2PointConstraint* CreateJoint(
+		btRigidBody* myBody,
+		btRigidBody* otherBody,
+		const CVector& myPos,
+		const CVector& anchorPos);
+	// ジョイントを削除
+	void RemoveJoint(btTypedConstraint* joint, btRigidBody* body);
+	// ジョイントをすべて削除
+	void RemoveAllJoint();
 
 	// 摩擦を設定
 	void SetFriction(btRigidBody* body, float friction);
@@ -169,19 +191,13 @@ public:
 	void SetRestitution(btRigidBody* body, float restitution);
 	// 減衰を設定
 	void SetDamping(btRigidBody* body, float linDamping, float angDamping);
+	// センサーの座標を設定
+	void SetSensorPos(btCollisionObject* sensor, const CVector& pos);
 
 	// ELayerをビットフラグに変換
 	int ToBit(ELayer layer);
 	// 複数のレイヤーをまとめてビットマスクにする
 	int ToMask(Layers layers);
-	// ワールドを取得
-	btDiscreteDynamicsWorld* GetDynamicsWorld() const;
-	// ディスパッチャーを取得
-	btCollisionDispatcher* GetDispatcher() const;
-	// 
-private:
-	// インスタンス
-	static CPhysicsManager* spInstance;
 
 	// btVector3をCVectorにする
 	CVector ToCVector(const btVector3& vec);
@@ -191,6 +207,19 @@ private:
 	CQuaternion ToCQuaternion(const btQuaternion& rot);
 	// CQuaternionをbtQuaternionにする
 	btQuaternion ToBtQuaternion(const CQuaternion& rot);
+	// 座標と回転をbtTransformにする
+	btTransform ToBtTransform(const CVector& pos, const CQuaternion& rot);
+	// 座標をbtTransformにする
+	btTransform ToBtTransform(const CVector& pos);
+
+	// ワールドを取得
+	btDiscreteDynamicsWorld* GetDynamicsWorld() const;
+	// ディスパッチャーを取得
+	btCollisionDispatcher* GetDispatcher() const; 
+
+private:
+	// インスタンス
+	static CPhysicsManager* spInstance;
 
 	// 衝突データを更新
 	void UpdateCollisionData();
@@ -199,6 +228,9 @@ private:
 	void UpdateSensorPos();
 	// センサーのリスト
 	std::list<btCollisionObject*> mSensorList;
+
+	// ジョイントのリスト
+	std::list<btTypedConstraint*> mJointList;
 
 	// デバッグ描画
 	CPhysicsDebugDraw* mpDebugDraw;

@@ -14,8 +14,8 @@ const CVector SWITCH_OFFSET_POS_NEXT =		CVector(-25.0f,	0.0f, -40.0f);
 constexpr float ROOM_LENGTH =				80.0f;
 
 // 動く壁のオフセット座標
-const CVector MOVE_WALL_OFFSET_POS_NEXT =	CVector( 0.0f,	0.0f, -70.0f);
-const CVector MOVE_WALL_OFFSET_POS_PRE =	CVector( 0.0f,	0.0f,  0.0f);
+const CVector MOVE_WALL_OFFSET_POS_NEXT =	CVector( 0.0f,	0.0f, -75.0f);
+const CVector MOVE_WALL_OFFSET_POS_PRE =	CVector( 0.0f,	0.0f, -5.0f);
 // 動く壁のスケール
 const CVector MOVE_WALL_SCALE =				CVector( 2.0f,	4.0f,  1.0f);
 // 動く壁の移動
@@ -32,13 +32,16 @@ const CVector COL_POS =						CVector( 0.0f,	0.0f, -45.0f);
 const CVector SHIELD_OFFSET_POS =			CVector( 0.0f,	0.0f, -75.0f);
 
 // センサーの範囲
-const CVector HALF_EXTENTS =				CVector( 5.0f, 10.0f,  1.0f);
+const CVector HALF_EXTENTS =				CVector( 10.0f, 27.0f, 5.0f);
+// 座標
+const CVector SENSOR_POS =					CVector(0.0f, HALF_EXTENTS.Y() / 2, -5.0f);
 
 // コンストラクタ
 CConnectRoom::CConnectRoom(const CVector& pos)
 	: CRoomBase(ROOM_LENGTH)
 	, mpNextRoom(nullptr)
 	, mpPreRoom(nullptr)
+	, mIsTouchSensorFirst(true)
 {
 	mpModel = CResourceManager::Get<CModel>("ConnectRoom");
 	// 座標を設定
@@ -113,12 +116,15 @@ void CConnectRoom::CreateCol()
 	// コライダーを生成
 	CFieldBase::CreateCol("ConnectRoom_Col");
 
-	CPhysicsManager::Instance()->CreateBoxSensor(
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	physicsMgr->CreateBoxSensor(
 		this,
 		HALF_EXTENTS,
-		ELayer::eSwitch,
-		{ ELayer::ePlayer }
+		ELayer::eSensor,
+		{ ELayer::ePlayer },
+		false
 	);
+	physicsMgr->SetSensorPos(GetSensor(), Position() + SENSOR_POS);
 }
 
 // フィールドオブジェクトを生成
@@ -133,16 +139,16 @@ void CConnectRoom::CreateFieldObjects()
 		Position() + MOVE_WALL_OFFSET_POS_NEXT, 
 		MOVE_WALL_SCALE, 
 		MOVE_WALL_MOVE,
-		MOVE_WALL_MOVE_TIME, true);
+		MOVE_WALL_MOVE_TIME);
 	mpPreWall = new CSwitchMoveWall(model, colModel,
 		Position() + MOVE_WALL_OFFSET_POS_PRE,
 		MOVE_WALL_SCALE,
 		MOVE_WALL_MOVE,
-		MOVE_WALL_MOVE_TIME, true);
+		MOVE_WALL_MOVE_TIME);
 	// 最初から開いている
 	mpPreWall->SetIsOpen(true);
 	// 作用するスイッチに設定
-	mpNextWall->SetSwitchs({ mpNextSwitch });
+	mpNextWall->SetSwitches({ mpNextSwitch });
 	// 作用するオブジェクトに設定
 	mpNextSwitch->SetActionObj(mpNextWall);
 	// リストに追加
@@ -171,6 +177,12 @@ void CConnectRoom::OnCollision(const CollisionData& data)
 		{
 			// 前の部屋に繋がる壁を閉じる
 			mpPreWall->SetOnOff(false);
+			// 初回の接触なら
+			if (mIsTouchSensorFirst)
+			{
+				// 前の部屋をオフ
+				CRoomManager::Instance()->RoomOff();
+			}
 		}
 	}
 }

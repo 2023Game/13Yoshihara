@@ -142,6 +142,9 @@ public:
 	// 3D用のカメラ行列へ戻す
 	static void End2DCamera();
 
+	// 衝突判定するレイヤーを設定
+	void SetLayers(const Layers& collisionLayers);
+
 protected:
 	// 設定されているコライダーとの衝突結果を反映する
 	void ApplyCollision();
@@ -154,6 +157,7 @@ protected:
 
 	CTransform* mFollowTargetTf;	// 追従するターゲットのCTransfrom
 	CVector mFollowOffsetPos;		// 追従ターゲットの位置から視点までのオフセット値
+	Layers mCollisionLayers;		// 衝突判定するレイヤー
 
 private:
 	// カメラを削除

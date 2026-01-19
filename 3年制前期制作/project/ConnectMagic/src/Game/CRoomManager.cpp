@@ -9,6 +9,8 @@
 #include "CLastRoom.h"
 #include "CSaveManager.h"
 
+constexpr float DEFAULT_ON_NUM = 2;
+
 CRoomManager* CRoomManager::spInstance = nullptr;
 
 // インスタンスを取得
@@ -19,7 +21,7 @@ CRoomManager* CRoomManager::Instance()
 
 // コンストラクタ
 CRoomManager::CRoomManager()
-	: mOnNum(2)
+	: mOnNum(DEFAULT_ON_NUM)
 	, mOffNum(0)
 {
 	spInstance = this;
@@ -45,7 +47,7 @@ std::vector<CRoomBase*> CRoomManager::GetRooms() const
 void CRoomManager::RoomOn()
 {
 	// 部屋を有効
-	// 2回処理する
+	// 2回処理する(接続部屋と次のステージ）
 	for (int i = 0; i < 2; i++)
 	{
 		// サイズ以上なら処理を終了
@@ -61,7 +63,7 @@ void CRoomManager::RoomOff()
 {
 	// 処理回数
 	int num = 2;
-	// 初回なら1回だけw
+	// 初回なら1回だけ
 	if (mOffNum == 0) num = 1;
 
 	// 部屋を無効

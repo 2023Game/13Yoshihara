@@ -3,7 +3,13 @@
 #include "CSwitchButton.h"
 #include "CSwitchObject.h"
 #include "CCrystal.h"
+#include "Primitive.h"
 #include <typeinfo>
+
+#if _DEBUG
+// 作用相手との線の太さ
+constexpr float LINE_WIDTH = 2.5f;
+#endif
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -44,8 +50,10 @@ unsigned int CSwitch::GetUniqueInstanceID() const
 }
 
 // コンストラクタ
-CSwitch::CSwitch(CVector pos, bool isAttach, ESwitchType type)
-	: mIsOn(false)
+CSwitch::CSwitch(const CVector& pos, const CVector& scale,
+	bool isAttach, ESwitchType type)
+	: CSavable()
+	, mIsOn(false)
 	, mpFrame(nullptr)
 	, mpButton(nullptr)
 	, mpCrystal(nullptr)
@@ -55,11 +63,11 @@ CSwitch::CSwitch(CVector pos, bool isAttach, ESwitchType type)
 	switch (mSwitchType)
 	{
 	case ESwitchType::eButton:
-		mpFrame = new CSwitchFrame(pos, this);
-		mpButton = new CSwitchButton(pos, this, isAttach);
+		mpFrame = new CSwitchFrame(pos, scale, this);
+		mpButton = new CSwitchButton(pos, scale, this, isAttach);
 		break;
 	case ESwitchType::eBatteries:
-		mpCrystal = new CCrystal(pos, this);
+		mpCrystal = new CCrystal(pos, scale, this);
 		break;
 	}
 }
@@ -127,3 +135,32 @@ void CSwitch::SetEnableSwitch(bool enable)
 		break;
 	}
 }
+
+#if _DEBUG
+// デバッグ時だけ
+// スイッチと作用するオブジェクトの間に線を描画
+void CSwitch::Render()
+{		
+	CVector pos = CVector::zero;
+	switch (mSwitchType)
+	{
+	case ESwitchType::eButton:
+		pos = mpFrame->Position();
+		break;
+	case ESwitchType::eBatteries:
+		pos = mpCrystal->Position();
+		break;
+	}
+
+	for (CObjectBase* obj : mActionObjs)
+	{
+		// 線を描画
+		Primitive::DrawLine
+		(
+			pos, obj->Position(),
+			CColor::black,
+			LINE_WIDTH
+		);
+	}
+}
+#endif

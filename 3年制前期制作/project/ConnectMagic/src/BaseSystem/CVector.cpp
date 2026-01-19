@@ -117,6 +117,20 @@ void CVector::operator*=(const float& f)
 	mZ *= f;
 }
 
+// CVector * CVector‚Ì‰‰ZŒ‹‰Ê‚ğ•Ô‚·
+CVector CVector::operator*(const CVector& v) const
+{
+	return CVector(mX * v.X(), mY * v.Y(), mZ * v.Z());
+}
+
+// CVector *= CVector‚Å‰‰ZŒ‹‰Ê‚ğ©g‚É‘ã“ü
+void CVector::operator*=(const CVector& v)
+{
+	mX *= v.X();
+	mY *= v.Y();
+	mZ *= v.Z();
+}
+
 // CVector * CMatrix‚ÌŒ‹‰Ê‚ğCVector‚Å•Ô‚·
 CVector CVector::operator*(const CMatrix& m) const
 {

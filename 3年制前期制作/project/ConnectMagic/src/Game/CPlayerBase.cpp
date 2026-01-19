@@ -23,7 +23,6 @@ constexpr float MOTION_BLUR_COUNT = 5;
 CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mIsGrounded(false)
-	, mIsGravity(true)
 	, mIsMoveDir(true)
 	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)

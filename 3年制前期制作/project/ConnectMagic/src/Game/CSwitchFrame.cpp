@@ -3,13 +3,14 @@
 #include "CModel.h"
 
 // コンストラクタ
-CSwitchFrame::CSwitchFrame(CVector pos, CSwitch* owner)
+CSwitchFrame::CSwitchFrame(const CVector& pos, const CVector& scale, CSwitch* owner)
 	: CObjectBase(ETag::eSwitch, ETaskPriority::eDefault, 0, ETaskPauseType::eGame)
 	, mpOwner(owner)
 {
 	mpModel = CResourceManager::Get<CModel>("SwitchFrame");
 	// 座標設定
 	Position(pos);
+	Scale(scale);
 }
 
 // デストラクタ

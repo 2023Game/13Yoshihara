@@ -26,7 +26,7 @@ public:
 	void Connect();
 
 	/// <summary>
-	/// 視点からターゲットまでのレイと設定されているコライダーとの衝突判定を行う
+	/// 視点からターゲットまでのレイと地形の衝突判定を行う
 	/// </summary>
 	/// <param name="targetPos">ターゲットの座標</param>
 	/// <returns>衝突したか</returns>
@@ -59,6 +59,9 @@ public:
 
 	// 杖と接続しているオブジェクトが空中の接続オブジェクトか
 	bool IsWandConnectAirObject();
+
+	// 杖の先端の座標を取得
+	CVector GetWandPointPos() const;
 
 private:
 	// 杖の接続部の有効無効を設定

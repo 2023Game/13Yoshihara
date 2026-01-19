@@ -28,10 +28,14 @@ CPhysicsManager* CPhysicsManager::Instance()
 	return spInstance;
 }
 
+void CPhysicsManager::ClearInstance()
+{
+	SAFE_DELETE(spInstance);
+}
+
 // コンストラクタ
 CPhysicsManager::CPhysicsManager()
-	: CTask(ETaskPriority::eNone, 0, ETaskPauseType::eGame)
-	, mIsShowCollider(false)
+	: mIsShowCollider(false)
 {
 	// 基礎コンポーネントの作成
 	mpCollisionConfiguration = new btDefaultCollisionConfiguration();
@@ -53,9 +57,9 @@ CPhysicsManager::CPhysicsManager()
 // デストラクタ
 CPhysicsManager::~CPhysicsManager()
 {
-	// ワールド内のすべての剛体
 	if (mpDynamicsWorld != nullptr)
 	{
+		// ワールド内のすべての剛体
 		for (int i = mpDynamicsWorld->getNumCollisionObjects() - 1; i >= 0; i--)
 		{
 			btCollisionObject* obj = mpDynamicsWorld->getCollisionObjectArray()[i];
@@ -63,6 +67,9 @@ CPhysicsManager::~CPhysicsManager()
 			// ワールドから削除
 			mpDynamicsWorld->removeCollisionObject(obj);
 		}
+		mSensorList.clear();
+		// すべてのジョイントを削除
+		RemoveAllJoint();
 	}
 
 	SAFE_DELETE(mpDynamicsWorld);
@@ -71,11 +78,6 @@ CPhysicsManager::~CPhysicsManager()
 	SAFE_DELETE(mpDispatcher);
 	SAFE_DELETE(mpCollisionConfiguration);
 	SAFE_DELETE(mpDebugDraw);
-
-	if (spInstance != nullptr)
-	{
-		spInstance = nullptr;
-	}
 }
 
 // 剛体をワールドから削除
@@ -222,6 +224,25 @@ CQuaternion CPhysicsManager::ToCQuaternion(const btQuaternion& rot)
 btQuaternion CPhysicsManager::ToBtQuaternion(const CQuaternion& rot)
 {
 	return btQuaternion(rot.X(), rot.Y(), rot.Z(), rot.W());
+}
+
+btTransform CPhysicsManager::ToBtTransform(const CVector& pos, const CQuaternion& rot)
+{
+	btTransform trans;
+	trans.setIdentity();
+	// 回転をセット
+	trans.setRotation(ToBtQuaternion(rot));
+	// 位置をセット
+	trans.setOrigin(ToBtVector(pos));
+	return trans;
+}
+
+btTransform CPhysicsManager::ToBtTransform(const CVector& pos)
+{
+	btTransform trans;
+	trans.setIdentity();
+	trans.setOrigin(ToBtVector(pos));
+	return trans;
 }
 
 void CPhysicsManager::UpdateCollisionData()
@@ -582,7 +603,8 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	CObjectBase* owner,
 	const CVector& halfExtents, 
 	ELayer myLayer, 
-	Layers collisionLayers)
+	Layers collisionLayers,
+	bool isUpdatePos)
 {
 	owner->SaveSensorLayer(myLayer, collisionLayers);
 
@@ -606,8 +628,12 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	// ワールド追加（衝突相手を設定）
 	mpDynamicsWorld->addCollisionObject(colObj, group, mask);
 
-	// リストに追加
-	mSensorList.push_back(colObj);
+	// 座標を更新するなら
+	if (isUpdatePos)
+	{
+		// リストに追加
+		mSensorList.push_back(colObj);
+	}
 
 	return colObj;
 }
@@ -616,7 +642,8 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	CObjectBase* owner,
 	float radius,
 	ELayer myLayer,
-	Layers collisionLayers)
+	Layers collisionLayers,
+	bool isUpdatePos)
 {
 	owner->SaveSensorLayer(myLayer, collisionLayers);
 
@@ -640,16 +667,25 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	// ワールド追加(衝突相手を設定)
 	mpDynamicsWorld->addCollisionObject(colObj, group, mask);
 
-	// リストに追加
-	mSensorList.push_back(colObj);
+	// 座標を更新するなら
+	if (isUpdatePos)
+	{
+		// リストに追加
+		mSensorList.push_back(colObj);
+	}
 
 	return colObj;
 }
 
-bool CPhysicsManager::Raycast(const CVector& start, const CVector& end, 
-	CVector* hitPos,
+bool CPhysicsManager::Raycast(
+	const CVector& start, 
+	const CVector& end,
+	CollisionData* collisionData,
 	Layers collisionLayers)
 {
+	// 同じ座標なら衝突していない
+	if (start == end) return false;
+
 	btVector3 btStart = ToBtVector(start);
 	btVector3 btEnd = ToBtVector(end);
 
@@ -665,9 +701,12 @@ bool CPhysicsManager::Raycast(const CVector& start, const CVector& end,
 	mpDynamicsWorld->rayTest(btStart, btEnd, rayCallback);
 
 	if (rayCallback.hasHit()) {
-		// ポインタがNULLでなければ、当たった座標を設定
-		if (hitPos) {
-			*hitPos = ToCVector(rayCallback.m_hitPointWorld);
+		// ポインタがNULLでなければデータを保存
+		if (collisionData) {
+			// 衝突位置
+			collisionData->hitPoint = ToCVector(rayCallback.m_hitPointWorld);
+			// 法線
+			collisionData->contactNormal = ToCVector(rayCallback.m_hitNormalWorld);
 		}
 		// 当たった
 		return true;
@@ -675,6 +714,121 @@ bool CPhysicsManager::Raycast(const CVector& start, const CVector& end,
 
 	// 当たらなかった
 	return false;
+}
+
+bool CPhysicsManager::SphereCast(
+	const CVector& start,
+	const CVector& end, 
+	float radius, 
+	CollisionData* collisionData,
+	Layers collisionLayers)
+{
+	btVector3 btStart = ToBtVector(start);
+	btVector3 btEnd = ToBtVector(end);
+
+	btTransform from;
+	from.setIdentity();
+	from.setOrigin(btStart);
+	btTransform to;
+	to.setIdentity();
+	to.setOrigin(btEnd);
+
+	btSphereShape sphere(radius);
+
+	btCollisionWorld::ClosestConvexResultCallback rayCallback(btStart, btEnd);
+
+	// すべてのグループから発射
+	rayCallback.m_collisionFilterGroup = -1;
+	// 衝突相手を設定
+	int mask = ToMask(collisionLayers);
+	rayCallback.m_collisionFilterMask = mask;
+
+	// スイープテスト実行
+	mpDynamicsWorld->convexSweepTest(&sphere,
+		from, to, rayCallback);
+
+	if (rayCallback.hasHit()) {
+		// ポインタがNULLでなければデータを保存
+		if (collisionData) {
+			// 衝突位置
+			collisionData->hitPoint= ToCVector(rayCallback.m_hitPointWorld);
+			// 法線
+			collisionData->contactNormal = ToCVector(rayCallback.m_hitNormalWorld);
+		}
+		// 当たった
+		return true;
+	}
+
+	// 当たらなかった
+	return false;
+}
+
+btPoint2PointConstraint* CPhysicsManager::CreateJoint(
+	btRigidBody* myBody,
+	btRigidBody* otherBody,
+	const CVector& myPos,
+	const CVector& anchorPos)
+{
+	// XZ軸回転を有効
+	myBody->setAngularFactor(btVector3(1.0f, 1.0f, 1.0f));
+
+	// 紐の長さを計算
+	btVector3 btMyPos = ToBtVector(myPos);
+	btVector3 btAnchor = ToBtVector(anchorPos);
+	float length = (btAnchor - btMyPos).length();
+
+	// プレイヤーから見た相対座標
+	btVector3 pivotInA(0, length, 0);
+
+	// 相手側のピボット位置
+	btVector3 pivotInB = otherBody->getCenterOfMassTransform().inverse() * btAnchor;
+
+	// ジョイント作成
+	btPoint2PointConstraint* p2p = new btPoint2PointConstraint(*myBody, *otherBody, pivotInA, pivotInB);
+
+	// ワールドに追加
+	mpDynamicsWorld->addConstraint(p2p, true);
+
+	// 剛体を起こす
+	myBody->setActivationState(DISABLE_DEACTIVATION);
+	myBody->activate(true);
+
+	mJointList.push_back(p2p);
+
+	return p2p;
+}
+
+void CPhysicsManager::RemoveJoint(btTypedConstraint* joint, btRigidBody* body)
+{
+	if (joint)
+	{
+		// リストから削除
+		auto it = std::find(mJointList.begin(), mJointList.end(), joint);
+		if (it != mJointList.end())
+		{
+			mJointList.erase(it);
+		}
+
+		// 物理世界から削除
+		mpDynamicsWorld->removeConstraint(joint);
+		delete joint;
+	}
+	if (body)
+	{
+		// XZ軸回転を無効
+		body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+	}
+}
+
+void CPhysicsManager::RemoveAllJoint()
+{
+	// すべてのジョイントを削除
+	for (auto* joint : mJointList)
+	{
+		mpDynamicsWorld->removeConstraint(joint);
+		delete joint;
+	}
+	mJointList.clear();
 }
 
 void CPhysicsManager::SetFriction(btRigidBody* body, float friction)
@@ -704,6 +858,16 @@ void CPhysicsManager::SetDamping(btRigidBody* body, float linDamping, float angD
 	}
 }
 
+void CPhysicsManager::SetSensorPos(btCollisionObject* sensor, const CVector& pos)
+{
+	// 現在のトランスフォームを取得
+	btTransform trans = sensor->getWorldTransform();
+	// 座標を設定
+	trans.setOrigin(ToBtVector(pos));
+	// 適用
+	sensor->setWorldTransform(trans);
+}
+
 void CPhysicsManager::UpdateSensorPos()
 {
 	for (auto* sensor : mSensorList)
@@ -716,7 +880,7 @@ void CPhysicsManager::UpdateSensorPos()
 			// 親の位置と同期
 			btTransform trans = sensor->getWorldTransform();
 			CVector pos = parentObj->Position();
-			trans.setOrigin(btVector3(pos.X(), pos.Y(), pos.Z()));
+			trans.setOrigin(ToBtVector(pos));
 
 			sensor->setWorldTransform(trans);
 		}

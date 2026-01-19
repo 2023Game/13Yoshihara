@@ -6,7 +6,6 @@ class CMoveObj;
 class CSwitch;
 class CSwitchMoveWall;
 class CWater;
-class CRespawnArea;
 
 // •”‰®5
 class CRoom5 : public CRoomBase
@@ -31,5 +30,4 @@ private:
 	CSwitch* mpSwitch;
 	CSwitchMoveWall* mpMoveWall;
 	CWater* mpWater;
-	CRespawnArea* mpRespawnArea;
 };

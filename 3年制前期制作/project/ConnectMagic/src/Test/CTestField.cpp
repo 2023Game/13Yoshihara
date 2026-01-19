@@ -84,13 +84,15 @@ void CTestField::CreateFieldObjects()
 	portal->Position(PORTAL_POS);
 
 	// クリスタル
-	CSwitch* crystal1 = new CSwitch(CRYSTAL_POS1, false, ESwitchType::eBatteries);
+	CSwitch* crystal1 = new CSwitch(CRYSTAL_POS1, CVector::one, false, ESwitchType::eBatteries);
 	crystal1->SetOnOff(true);
-	CSwitch* crystal2 = new CSwitch(CRYSTAL_POS2, false, ESwitchType::eBatteries);
-	CSwitch* crystal3 = new CSwitch(CRYSTAL_POS3, false, ESwitchType::eBatteries);
+	CSwitch* crystal2 = new CSwitch(CRYSTAL_POS2, CVector::one, false, ESwitchType::eBatteries);
+	CSwitch* crystal3 = new CSwitch(CRYSTAL_POS3, CVector::one, false, ESwitchType::eBatteries);
 
 	CSwitchMoveAirObj* switchAirObj =
-		new CSwitchMoveAirObj(SWITCH_AIR_OBJ_POS, { SWITCH_AIR_OBJ_MOVE_POS1, SWITCH_AIR_OBJ_MOVE_POS2 });
+		new CSwitchMoveAirObj(SWITCH_AIR_OBJ_POS);
+	switchAirObj->AddTargetPos(SWITCH_AIR_OBJ_MOVE_POS1);
+	switchAirObj->AddTargetPos(SWITCH_AIR_OBJ_MOVE_POS2);
 	crystal1->SetActionObj(switchAirObj);
 
 	// 押し出す壁

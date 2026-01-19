@@ -9,7 +9,7 @@ class CSwitchFrame : public CObjectBase
 {
 public:
 	// コンストラクタ
-	CSwitchFrame(CVector pos, CSwitch* owner);
+	CSwitchFrame(const CVector& pos, const CVector& scale, CSwitch* owner);
 	// デストラクタ
 	~CSwitchFrame();
 

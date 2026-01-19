@@ -85,7 +85,7 @@ bool CSwitchObject::GetOnOff() const
 }
 
 // 作用するスイッチを設定する
-void CSwitchObject::SetSwitchs(std::vector<CSwitch*> switchs)
+void CSwitchObject::SetSwitches(std::vector<CSwitch*> switchs)
 {
 	mSwitchs = switchs;
 }

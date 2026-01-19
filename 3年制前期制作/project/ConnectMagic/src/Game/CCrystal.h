@@ -9,7 +9,7 @@ class CCrystal : public CConnectObject
 {
 public:
 	// コンストラクタ
-	CCrystal(CVector pos, CSwitch* owner);
+	CCrystal(const CVector& pos, const CVector& scale, CSwitch* owner);
 	// デストラクタ
 	~CCrystal();
 

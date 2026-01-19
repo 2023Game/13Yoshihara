@@ -58,7 +58,6 @@ protected:
 	static CPlayerBase* spInstance;
 
 	bool mIsGrounded;	// 接地しているかどうか
-	bool mIsGravity;	// 重力を掛けるかどうか
 	bool mIsMoveDir;	// 移動方向を向くかどうか
 
 	CVector mGroundNormal;	// 接地している地面の法線

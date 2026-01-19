@@ -3,18 +3,22 @@
 #include "Maths.h"
 #include "CDebugCamera.h"
 #include <algorithm>
+#include "CPhysicsManager.h"
+#include "CollisionData.h"
 
 std::list<CCamera*> CCamera::spCameraList;
 CCamera* CCamera::spMainCamera = nullptr;
 CCamera* CCamera::spCurrentCamera = nullptr;
 
 // カメラが衝突したときの調整値
-constexpr float Camera_HIT_POSY =	1.0f;
-constexpr float Camera_HIT_POSXZ =	0.0f;
+constexpr float CAMERA_HIT_POSY =	0.0f;
+constexpr float CAMERA_HIT_POSXZ =	1.0f;
+// カメラの衝突の球体の半径
+constexpr float CAMERA_RADIUS =		1.0f;
 
 // コンストラクタ
 CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)
-	: CObjectBase(ETag::eCamera, ETaskPriority::eCamera,0,ETaskPauseType::eGame)
+	: CObjectBase(ETag::eCamera, ETaskPriority::eCamera, 0, ETaskPauseType::eGame)
 	, mIsMainCamera(isMainCamera)
 	, mFollowTargetTf(nullptr)
 	, mFollowOffsetPos(CVector::zero)
@@ -22,6 +26,7 @@ CCamera::CCamera(const CVector& eye, const CVector& center, bool isMainCamera)
 	, mZNear(CAMERA_ZNEAR)
 	, mZFar(CAMERA_ZFAR)
 	, mHitColRatio(1.0f)
+	, mCollisionLayers({ ELayer::eNone })
 {
 	mTargetEye = eye;
 	LookAt(eye, center, CVector::up);
@@ -315,39 +320,20 @@ void CCamera::SetHitColliderRatio(float ratio)
 // 設定されているコライダーとの衝突結果を反映する
 void CCamera::ApplyCollision()
 {
-	//// 注視点から視点までレイを飛ばして、
-	//// 間に障害物があれば、視点を障害物より手前にズラす
-	//CHitInfo hit;
-	//CVector rayStart = mAt;
-	//CVector rayEnd = mEye;
-	//float nearDist = 0.0f;
-	//bool isHit = false;
-	//// 設定されているコライダーを順番に調べる
-	//for (CCollider* c : mColliders)
-	//{
-	//	// レイとコライダーの衝突判定を行う
-	//	if (CCollider::CollisionRay(c, rayStart, rayEnd, &hit))
-	//	{
-	//		// 交点が不整値でなければ、
-	//		if (hit.cross.LengthSqr() != 0.0f)
-	//		{
-	//			// 衝突位置までの距離で一番近い距離を求める
-	//			if (!isHit) nearDist = hit.dist;
-	//			else nearDist = std::min(hit.dist, nearDist);
-	//			isHit = true;
-	//		}
-	//	}
-	//}
+	CVector rayStart = mAt;			// レイの開始地点
+	CVector rayEnd = mEye;			// レイの終了地点
+	CollisionData collisionData;	// 衝突情報;
+	bool isHit = false;				// 衝突したか
 
-	//// レイが衝突していたら、
-	//// 視点を衝突地点より手前に押し戻す
-	//if (isHit)
-	//{
-	//	mEye = rayStart + (rayEnd - rayStart).Normalized() * 
-	//		(nearDist+ Camera_HIT_POSXZ) * mHitColRatio;
-	//	// 少し上に上げる
-	//	mEye += CVector(0.0f, Camera_HIT_POSY, 0.0f);
-	//}
+	isHit = CPhysicsManager::Instance()->SphereCast(rayStart, rayEnd, 0.5f, &collisionData, mCollisionLayers);
+
+	// 衝突していたら
+	// 手前に押し戻す
+	if (isHit)
+	{
+		mEye = collisionData.hitPoint + (collisionData.contactNormal * CAMERA_HIT_POSXZ);
+		mEye += CVector(0.0f, CAMERA_HIT_POSY, 0.0f);
+	}
 }
 
 // 後更新
@@ -425,4 +411,9 @@ void CCamera::End2DCamera()
 	// こちらも退避した行列へ戻す
 	glMatrixMode(GL_MODELVIEW);
 	glPopMatrix();
+}
+
+void CCamera::SetLayers(const Layers& collisionLayers)
+{
+	mCollisionLayers = collisionLayers;
 }

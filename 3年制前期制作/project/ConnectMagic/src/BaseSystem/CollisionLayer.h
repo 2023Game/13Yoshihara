@@ -1,5 +1,5 @@
 #pragma once
-#include <initializer_list>
+#include <vector>
 
 // 衝突判定レイヤー
 enum class ELayer
@@ -11,6 +11,7 @@ enum class ELayer
 	ePortal,		// ポータル
 	eCrushed,		// クラッシュさせられるオブジェクト
 	eShield,		// シールド
+	eSensor,		// センサー
 
 	eConnectObj,	// 接続できるオブジェクト
 	eConnectSearch,	// 接続できるオブジェクト探知用
@@ -27,4 +28,4 @@ enum class ELayer
 	eAttackCol,		// 攻撃判定
 };
 // 衝突判定レイヤーの初期化リスト
-using Layers = std::initializer_list<ELayer>;
+using Layers = std::vector<ELayer>;

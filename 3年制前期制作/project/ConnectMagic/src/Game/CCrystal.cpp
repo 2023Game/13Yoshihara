@@ -13,7 +13,7 @@ constexpr float MASS =			0.0f;
 const CVector HALF_EXTENTS =	CVector(2.0f, 5.0f, 2.0f);
 
 // コンストラクタ
-CCrystal::CCrystal(CVector pos, CSwitch* owner)
+CCrystal::CCrystal(const CVector& pos, const CVector& scale, CSwitch* owner)
 	: CConnectObject()
 	, mpOwner(owner)
 {
@@ -23,6 +23,7 @@ CCrystal::CCrystal(CVector pos, CSwitch* owner)
 	mpModelOff = CResourceManager::Get<CModel>("CrystalOff");
 	// 座標を設定
 	Position(pos);
+	Scale(scale);
 	// コライダーを生成
 	CreateCol();
 
@@ -53,6 +54,11 @@ void CCrystal::Render()
 	else {
 		mpModelOff->Render(Matrix());
 	}
+
+#if _DEBUG
+	// デバッグ時だけ、どれに作用するのか描画
+	mpOwner->Render();
+#endif
 }
 
 // 繋がった時の処理
@@ -91,12 +97,15 @@ void CCrystal::CreateCol()
 	PhysicsMaterial material;
 	material.mass = MASS;
 
+	// スケールが適用されたサイズ
+	CVector halfExtents = HALF_EXTENTS * Scale();
+
 	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
 	// 本体コライダー
 	physicsMgr->CreateBoxRigidBody(
 		this,
 		material,
-		HALF_EXTENTS,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eConnectObj,

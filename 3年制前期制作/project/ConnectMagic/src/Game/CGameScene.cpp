@@ -87,6 +87,7 @@ void CGameScene::Load()
 		atPos + CVector(0.0f, 0.0f, 20.0f),
 		atPos
 	);
+	mainCamera->SetLayers({ ELayer::eField,ELayer::eObject,ELayer::eConnectObj,ELayer::eSwitch });
 	// ƒJƒƒ‰‚ÌˆÊ’u‚ð”½‘Î‚Ö
 	//mainCamera->SetRotateAngle(CVector(0.0f, 180.0f, 0.0f));
 
