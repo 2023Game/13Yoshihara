@@ -26,6 +26,9 @@ public:
 	// 開いているかを設定
 	void SetIsOpen(bool enable);
 
+	// センサーが衝突した時の処理
+	void OnSensorEnter(const CollisionData& data) override;
+
 private:
 	// データ保存で使用
 	unsigned int mUniqueID;

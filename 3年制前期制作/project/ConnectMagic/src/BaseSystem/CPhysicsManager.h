@@ -147,7 +147,8 @@ public:
 		const CVector& halfExtents,
 		ELayer myLayer,
 		Layers collisionLayers,
-		bool isUpdatePos = true
+		bool isUpdatePos = true,
+		float heightOffset = 0.0f
 	);
 
 	/// <summary>
@@ -164,7 +165,8 @@ public:
 		float radius,
 		ELayer myLayer,
 		Layers collisionLayers,
-		bool isUpdatePos = true
+		bool isUpdatePos = true,
+		float heightOffset = 0.0f
 	);
 
 	// レイキャスト
@@ -193,24 +195,28 @@ public:
 	void SetDamping(btRigidBody* body, float linDamping, float angDamping);
 	// センサーの座標を設定
 	void SetSensorPos(btCollisionObject* sensor, const CVector& pos);
+	// キネマティックに設定する
+	void SetKinematic(btRigidBody* body);
+	// キネマティックの剛体を動かす
+	void MoveKinematic(CObjectBase* owner, CVector moveVec, float moveTime);
 
 	// ELayerをビットフラグに変換
-	int ToBit(ELayer layer);
+	static int ToBit(ELayer layer);
 	// 複数のレイヤーをまとめてビットマスクにする
-	int ToMask(Layers layers);
+	static int ToMask(Layers layers);
 
 	// btVector3をCVectorにする
-	CVector ToCVector(const btVector3& vec);
+	static CVector ToCVector(const btVector3& vec);
 	// CVectorをbtVector3にする
-	btVector3 ToBtVector(const CVector& vec);
+	static btVector3 ToBtVector(const CVector& vec);
 	// btQuaternionをCQuaternionにする
-	CQuaternion ToCQuaternion(const btQuaternion& rot);
+	static CQuaternion ToCQuaternion(const btQuaternion& rot);
 	// CQuaternionをbtQuaternionにする
-	btQuaternion ToBtQuaternion(const CQuaternion& rot);
+	static btQuaternion ToBtQuaternion(const CQuaternion& rot);
 	// 座標と回転をbtTransformにする
-	btTransform ToBtTransform(const CVector& pos, const CQuaternion& rot);
+	static btTransform ToBtTransform(const CVector& pos, const CQuaternion& rot);
 	// 座標をbtTransformにする
-	btTransform ToBtTransform(const CVector& pos);
+	static btTransform ToBtTransform(const CVector& pos);
 
 	// ワールドを取得
 	btDiscreteDynamicsWorld* GetDynamicsWorld() const;
@@ -226,8 +232,13 @@ private:
 
 	// センサーの座標更新
 	void UpdateSensorPos();
+	// センサー情報
+	struct SensorInfo {
+		btCollisionObject* sensor;
+		float heightOffset;
+	};
 	// センサーのリスト
-	std::list<btCollisionObject*> mSensorList;
+	std::list<SensorInfo> mSensorList;
 
 	// ジョイントのリスト
 	std::list<btTypedConstraint*> mJointList;

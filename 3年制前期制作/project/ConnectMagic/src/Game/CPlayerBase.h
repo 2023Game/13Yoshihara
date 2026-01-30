@@ -62,8 +62,6 @@ protected:
 
 	CVector mGroundNormal;	// 接地している地面の法線
 
-	CTransform* mpRideObject;
-
 	// モーションブラーを掛ける残り時間
 	float mMotionBlurRemainTime;
 

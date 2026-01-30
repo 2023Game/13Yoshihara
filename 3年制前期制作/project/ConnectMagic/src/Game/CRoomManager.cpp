@@ -113,10 +113,11 @@ void CRoomManager::CreateRoom()
 		//case 4:
 		//	room = new CRoom4(pos + offsetPos);
 		//	break;
-		//	// •”‰®5
-		//case 5:
-		//	room = new CRoom5(pos + offsetPos);
-		//	break;
+			// •”‰®5
+		case 5:
+			room = new CRoom5(pos + offsetPos);
+			break;
+			// •”‰®6
 		case 2:
 			room = new CRoom6(pos + offsetPos);
 			break;

@@ -93,7 +93,10 @@ void CPhysicsManager::RemoveSensor(btCollisionObject* sensor)
 	if (!sensor) return;
 
 	// リストから削除
-	auto it = std::find(mSensorList.begin(), mSensorList.end(), sensor);
+	auto it = std::find_if(mSensorList.begin(), mSensorList.end(),
+		[sensor](const SensorInfo& info) {
+			return info.sensor == sensor; 
+		});
 	if (it != mSensorList.end())
 	{
 		mSensorList.erase(it);
@@ -127,10 +130,7 @@ void CPhysicsManager::LateUpdate()
 		CObjectBase* obj = dynamic_cast<CObjectBase*>(task);
 
 		// オブジェクトでなければ次へ
-		if (obj == nullptr)
-		{
-			continue;
-		}
+		if (!obj) continue;
 
 		// objがBulletの剛体を持っているか
 		btRigidBody* rigidBody = obj->GetRigidBody();
@@ -338,7 +338,7 @@ btRigidBody* CPhysicsManager::CreateBoxRigidBody(
 		btQuaternion(ToBtQuaternion(initialRot)));
 	// 座標(高さの半分上に位置調整)
 	startTrans.setOrigin(
-		btVector3(ToBtVector(initialPos+CVector(0.0f,halfExtents.Y(),0.0f))));
+		btVector3(ToBtVector(initialPos + CVector(0.0f, halfExtents.Y(), 0.0f))));
 
 	// 慣性の計算
 	btVector3 localInertia(0.0f, 0.0f, 0.0f);
@@ -604,7 +604,8 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	const CVector& halfExtents, 
 	ELayer myLayer, 
 	Layers collisionLayers,
-	bool isUpdatePos)
+	bool isUpdatePos,
+	float heightOffset)
 {
 	owner->SaveSensorLayer(myLayer, collisionLayers);
 
@@ -617,7 +618,6 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	colObj->setUserPointer(owner);
 	// スリープさせない
 	colObj->setActivationState(DISABLE_DEACTIVATION);
-
 	// センサーの設定
 	owner->SetSensor(colObj);
 
@@ -632,7 +632,7 @@ btCollisionObject* CPhysicsManager::CreateBoxSensor(
 	if (isUpdatePos)
 	{
 		// リストに追加
-		mSensorList.push_back(colObj);
+		mSensorList.push_back({ colObj, heightOffset});
 	}
 
 	return colObj;
@@ -643,7 +643,8 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	float radius,
 	ELayer myLayer,
 	Layers collisionLayers,
-	bool isUpdatePos)
+	bool isUpdatePos,
+	float heightOffset)
 {
 	owner->SaveSensorLayer(myLayer, collisionLayers);
 
@@ -671,7 +672,7 @@ btCollisionObject* CPhysicsManager::CreateSphereSensor(
 	if (isUpdatePos)
 	{
 		// リストに追加
-		mSensorList.push_back(colObj);
+		mSensorList.push_back({ colObj, heightOffset });
 	}
 
 	return colObj;
@@ -817,6 +818,7 @@ void CPhysicsManager::RemoveJoint(btTypedConstraint* joint, btRigidBody* body)
 	{
 		// XZ軸回転を無効
 		body->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+		body->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -868,10 +870,39 @@ void CPhysicsManager::SetSensorPos(btCollisionObject* sensor, const CVector& pos
 	sensor->setWorldTransform(trans);
 }
 
+void CPhysicsManager::SetKinematic(btRigidBody* body)
+{
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	body->setActivationState(DISABLE_DEACTIVATION);
+}
+
+void CPhysicsManager::MoveKinematic(CObjectBase* owner, CVector moveVec, float moveTime)
+{
+	btRigidBody* body = owner->GetRigidBody();	
+	btVector3 velocity = CPhysicsManager::ToBtVector(moveVec / moveTime);
+	body->setLinearVelocity(velocity);
+
+	// 次の座標を計算
+	btTransform trans;
+	body->getMotionState()->getWorldTransform(trans); // 現在の場所
+
+	// 次の場所 = 現在地 + 速度 * 時間
+	btVector3 nextPos = trans.getOrigin() + velocity * Times::DeltaTime();
+	trans.setOrigin(nextPos);
+
+	// 物理エンジンに新しい座標を教える
+	body->getMotionState()->setWorldTransform(trans);
+	body->setWorldTransform(trans);
+
+	// 座標更新
+	owner->Position(CPhysicsManager::ToCVector(nextPos) - CVector(0, owner->GetHalfHeight(), 0));
+}
+
 void CPhysicsManager::UpdateSensorPos()
 {
-	for (auto* sensor : mSensorList)
+	for (auto& info : mSensorList)
 	{
+		btCollisionObject* sensor = info.sensor;
 		// 親のオブジェクト
 		CObjectBase* parentObj = static_cast<CObjectBase*>(sensor->getUserPointer());
 
@@ -880,6 +911,7 @@ void CPhysicsManager::UpdateSensorPos()
 			// 親の位置と同期
 			btTransform trans = sensor->getWorldTransform();
 			CVector pos = parentObj->Position();
+			pos.Y(pos.Y() + info.heightOffset);
 			trans.setOrigin(ToBtVector(pos));
 
 			sensor->setWorldTransform(trans);

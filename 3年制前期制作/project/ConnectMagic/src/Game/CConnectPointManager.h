@@ -54,6 +54,7 @@ public:
 
 	// Ú‘±‚µ‚Ä‚¢‚é‚à‚Ì“¯m‚Ì‹——£‚ğİ’è
 	void SetConnectDistance();
+	void SetConnectDistance(const float& dist);
 	// Ú‘±‚µ‚Ä‚¢‚é‚à‚Ì“¯m‚Ì‹——£‚ğæ“¾
 	float GetConnectDistance();
 

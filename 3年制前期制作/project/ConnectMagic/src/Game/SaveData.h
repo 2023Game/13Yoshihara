@@ -1,19 +1,28 @@
 #pragma once
+#include "CPlayer.h"
 
 class CConnectTarget;
 
 // プレイヤーのデータ
 struct PlayerData {
 	CVector pos;			// 座標
-	CQuaternion vec;		// 向き
+	CQuaternion rot;		// 向き
 	CConnectTarget* target;	// 接続中のターゲット
 	int animationType;		// アニメーションの番号
 	float animationFrame;	// アニメーションの進行時間
+	CPlayer::EState state;	// プレイヤーの状態
+	CVector linearVelocity;	// 移動速度
+	CVector angularVelocity;// 回転速度
+	float connectDist;
 
 	// コンストラクタ
 	PlayerData() = default;
-	PlayerData(const CVector& p, const CQuaternion& v, CConnectTarget* t, int type, float frame)
-		: pos(p), vec(v), target(t), animationType(type), animationFrame(frame) {}
+	PlayerData(const CVector& p, const CQuaternion& r, CConnectTarget* t, int type, float frame,
+		CPlayer::EState pState,
+		const CVector& l, const CVector& a,
+		float dist)
+		: pos(p), rot(r), target(t), animationType(type), animationFrame(frame), state(pState),
+	linearVelocity(l), angularVelocity(a), connectDist(dist){}
 };
 
 // オブジェクトのデータ

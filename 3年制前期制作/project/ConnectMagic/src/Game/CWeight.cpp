@@ -25,11 +25,11 @@ constexpr float RETURN_TIME =	0.5f;
 constexpr float DELETE_POS_Y = -50.0f;
 
 // 物理設定
-constexpr float MASS =			1.0f;
+constexpr float MASS =			100.0f;
 const CVector HALF_EXTENTS =	CVector(5.0f, 5.0f, 5.0f);
 constexpr float FRICTION =		0.1f;	// 摩擦（値が高いと停止まで早くなる）
-constexpr float LIN_DAMPING =	0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
-constexpr float ANG_DAMPING =	0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
+constexpr float LIN_DAMPING =	0.1f;	// 線形減衰(値が高いと滑りが小さくなる)
+constexpr float ANG_DAMPING =	0.1f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -106,6 +106,10 @@ CWeight::~CWeight()
 // 更新
 void CWeight::Update()
 {
+	// 親の移動を適用
+	ApplyParent(mpRideObject);
+	SetRideObject(nullptr);
+
 	// リスポーンするなら
 	if (mIsRespawn)
 	{
@@ -113,12 +117,15 @@ void CWeight::Update()
 		mElapsedTime += Times::DeltaTime();
 		if (mElapsedTime >= RETURN_TIME)
 		{
+			// 力をリセット
+			ResetForce();
 			// リスポーン無効
 			mIsRespawn = false;
 			// 経過時間リセット
 			mElapsedTime = 0.0f;
-			// 初期座標に戻す
+			// 初期に戻す
 			Position(mDefaultPos);
+			Rotation(CVector::zero);
 		}
 	}
 
@@ -167,7 +174,7 @@ void CWeight::OnCollision(const CollisionData& data)
 	else if (data.otherObj->Tag() == ETag::eRideableObject)
 	{
 		// 乗っているオブジェクトに設定する
-		mpRideObject = data.otherObj;
+		SetRideObject(data.otherObj);
 	}
 }
 

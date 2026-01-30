@@ -32,7 +32,7 @@ public:
 	~CTransform();
 
 	// ワールド位置を取得
-	const CVector& Position() const;
+	virtual const CVector& Position() const;
 	/// <summary>
 	/// ワールド位置を設定
 	/// </summary>

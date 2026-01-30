@@ -6,19 +6,11 @@
 #include "CConnectPoint.h"
 #include "CWand.h"
 #include "CollisionLayer.h"
+#include "CPhysicsManager.h"
 #include "btBulletDynamicsCommon.h"
 
-constexpr float THRESHOLD =			0.1f;
-
-// 移動前後のレイが衝突したときのマージン
-constexpr float MARGIN =			50.0f;
-
-// 減速する速度
-constexpr float DECREASE_SPEED =	1.0f;
-// 加速する速度
-constexpr float INCREASE_SPEED =	0.5f;
 // 加速度の強さ
-constexpr float ACCELERATION_FORCE = 100.0f;
+constexpr float ACCELERATION_FORCE = 10000.0f;
 
 // コンストラクタ
 CConnectObject::CConnectObject(float weight, ETaskPriority prio,
@@ -28,14 +20,12 @@ CConnectObject::CConnectObject(float weight, ETaskPriority prio,
 	, mpModel(nullptr)
 	, mMoveSpeed(CVector::zero)
 	, mMoveSpeedY(0.0f)
-	, mIsGravity(true)
 	, mConnectObjTag(EConnectObjTag::eWeight)
 	, mIsGrounded(false)
-	, mpRideObject(nullptr)
 	, mPreOtherPointPos(CVector::zero)
-	, mIsConnectAir(false)
 	, mIsMove(true)
 	, mpTarget(nullptr)
+	, mpJoint(nullptr)
 {
 }
 
@@ -79,62 +69,7 @@ void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 		}
 	}
 
-	if (otherIsAir)
-	{
-		CConnectObject* otherObj = otherPoint->GetConnectObj();
-		CVector selfPos = Position();
-		CVector otherPos = otherObj->Position();
-
-		mIsConnectAir = true;
-		// 相手から自身への方向
-		CVector dir = selfPos - otherPos;
-		dir.Normalize();
-
-		// 重力の方向
-		CVector gravity = CVector(0.0f, -GRAVITY, 0.0f);
-		// 線を引っ張る重力を除外
-		gravity = gravity - dir * gravity.Dot(dir);
-
-		// 移動
-		CVector moveDir = otherPos - mPreOtherPointPos;
-		float moveDist = moveDir.Length();
-
-		if (moveDist > 0.0001f)
-		{
-			// 移動を線の垂直面に投影
-			moveDir = dir.Cross(moveDir.Cross(dir));
-			moveDir.Normalize();
-
-			// 移動速度
-			mMoveSpeed += moveDir * INCREASE_SPEED * Times::DeltaTime();
-		}
-		// 重力を加える
-		// 振り切る時の減速と戻る時の加速のため
-		mMoveSpeed += gravity;
-
-		// 少しずつ減速していく
-		mMoveSpeed *= (1.0f - DECREASE_SPEED * Times::DeltaTime());
-
-		// 線方向の速度を削除
-		// ターゲットの真下での急な減速を防ぐため
-		mMoveSpeed -= dir * mMoveSpeed.Dot(dir);
-		// 座標に追加
-		selfPos += mMoveSpeed;
-
-		// 新しいプレイヤー座標への方向
-		dir = selfPos - otherPos;
-		dir.Normalize();
-		// プレイヤーの座標を線から一定の距離に保つ
-		selfPos = otherPos +
-			dir * pointMgr->GetConnectDistance();
-
-		// 座標を設定
-		Position(selfPos);
-
-		// 相手の接続部の座標を前回座標に保存
-		mPreOtherPointPos = otherPos;
-	}
-	else if (isWand && mIsMove)
+	if (isWand && mIsMove)
 	{
 		// カメラの方向
 		CVector cameraDir = -CCamera::CurrentCamera()->VectorZ();
@@ -149,24 +84,24 @@ void CConnectObject::Connect(CConnectPoint* otherPoint, bool isWand)
 }
 
 // 繋げた瞬間の処理
-void CConnectObject::JustConnect(CVector otherPointPos)
+void CConnectObject::JustConnect(CConnectPoint* otherPoint)
 {
-	// 重りなら重力オフ
-	if (mConnectObjTag == EConnectObjTag::eWeight)
+	if (!otherPoint) return;
+
+	mPreOtherPointPos = otherPoint->Position();
+	// 相手が空中オブジェクトならジョイントを作成
+	CConnectObject* otherObj = otherPoint->GetConnectObj();
+	if (!otherObj) return;
+	if (otherObj->GetConnectObjTag() == EConnectObjTag::eAir)
 	{
-		SetGravity(false);
+		CreateJoint(otherObj);
 	}
-	mPreOtherPointPos = otherPointPos;
 }
 
 // 接続解除の処理
-void CConnectObject::Disconnect()
+void CConnectObject::Disconnect(CConnectPoint* otherPoint)
 {
-	if (mConnectObjTag == EConnectObjTag::eWeight)
-	{
-		SetGravity(true);
-		mIsConnectAir = false;
-	}
+	DeleteJoint();
 }
 
 // 接続ターゲットの作成
@@ -192,12 +127,6 @@ float CConnectObject::GetWeight()
 	return mWeight;
 }
 
-// 重力を掛けるかを設定
-void CConnectObject::SetGravity(bool isGravity)
-{
-	mIsGravity = isGravity;
-}
-
 // 接続オブジェクトのタグを設定
 void CConnectObject::SetConnectObjTag(EConnectObjTag tag)
 {
@@ -214,4 +143,37 @@ EConnectObjTag CConnectObject::GetConnectObjTag()
 void CConnectObject::SetMove(bool enable)
 {
 	mIsMove = enable;
+}
+
+void CConnectObject::CreateJoint(CConnectObject* otherObj)
+{
+	// 空じゃなければ処理しない
+	if (mpJoint != nullptr) return;
+
+	// 接続部管理クラス
+	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+	// 物理管理クラス
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// 接続線の長さを設定
+	connectPointMgr->SetConnectDistance();
+	// 相手の剛体
+	btRigidBody* targetObjBody = otherObj->GetRigidBody();
+	// 相手の座標
+	CVector targetPos = otherObj->Position();
+	// ジョイントを作成
+	mpJoint = physicsMgr->CreateJoint(GetRigidBody(), targetObjBody, Position(), targetPos);
+	// XZ軸回転を無効
+	GetRigidBody()->setAngularFactor(btVector3(0.0f, 1.0f, 0.0f));
+}
+
+void CConnectObject::DeleteJoint()
+{
+	// 既に空なら処理しない
+	if (mpJoint == nullptr) return;
+
+	// 物理管理クラス
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// ジョイントを削除
+	physicsMgr->RemoveJoint(mpJoint, GetRigidBody());
+	mpJoint = nullptr;
 }

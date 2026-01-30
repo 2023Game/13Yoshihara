@@ -10,8 +10,6 @@
 // プレイヤーのインスタンス
 CPlayerBase* CPlayerBase::spInstance = nullptr;
 
-constexpr float THRESHOLD =			0.1f;
-
 // モーションブラーを掛ける時間
 constexpr float MOTION_BLUR_TIME =	3.0f;
 // モーションブラーの幅
@@ -24,7 +22,6 @@ CPlayerBase::CPlayerBase()
 	: CXCharacter(ETag::ePlayer, ETaskPriority::ePlayer)
 	, mIsGrounded(false)
 	, mIsMoveDir(true)
-	, mpRideObject(nullptr)
 	, mMotionBlurRemainTime(0.0f)
 	, mpHpGauge(nullptr)
 	, mIsGameEnd(false)
@@ -174,8 +171,9 @@ void CPlayerBase::DeleteObject(CObjectBase* obj)
 // 更新
 void CPlayerBase::Update()
 {
-	SetParent(mpRideObject);
-	mpRideObject = nullptr;
+	// 親の移動を適用
+	ApplyParent(mpRideObject);
+	SetRideObject(nullptr);
 
 	// 「P」キーを押したら、ゲームを終了
 	if (CInput::PushKey('P'))

@@ -18,16 +18,16 @@ const CVector SWITCH_OFFSET_POS1 =				CVector( 10.0f,		 0.0f,	-30.0f);
 const CVector SWITCH_OFFSET_POS2 =				CVector( 120.0f,	 60.0f,	-60.0f);
 
 // スイッチで動く床のオフセット座標
-const CVector SWITCH_MOVE_FLOOR_OFFSET_POS1 =	CVector( 80.0f,		 50.0f,	-40.0f);
-const CVector SWITCH_MOVE_FLOOR_OFFSET_POS2 =	CVector( 0.0f,		-10.0f,	-40.0f);
+const CVector SWITCH_MOVE_FLOOR_OFFSET_POS1 =	CVector( 80.0f,		 50.0f,	-60.0f);
+const CVector SWITCH_MOVE_FLOOR_OFFSET_POS2 =	CVector( 0.0f,		-10.0f,	-60.0f);
 // スイッチで動く床の移動
 const CVector SWITCH_MOVE_FLOOR_MOVE1 =			CVector( 0.0f,		-60.0f,	 0.0f);
 const CVector SWITCH_MOVE_FLOOR_MOVE2 =			CVector( 0.0f,		 0.0f,	-120.0f);
 
 // 動く床のオフセット座標
-const CVector MOVE_FLOOR_OFFSET_POS1 =			CVector( 120.0f,	-10.0f,	 0.0f);
-const CVector MOVE_FLOOR_OFFSET_POS2 =			CVector( 160.0f,	-10.0f,	 0.0f);
-const CVector MOVE_FLOOR_OFFSET_POS3 =			CVector( 160.0f,	 50.0f,	-160.0f);
+const CVector MOVE_FLOOR_OFFSET_POS1 =			CVector( 120.0f,	-10.0f,	-20.0f);
+const CVector MOVE_FLOOR_OFFSET_POS2 =			CVector( 160.0f,	-10.0f, -20.0f);
+const CVector MOVE_FLOOR_OFFSET_POS3 =			CVector( 160.0f,	 50.0f,	-180.0f);
 // 動く床のスケール
 const CVector MOVE_FLOOR_SCALE =				CVector( 4.0f,		 1.0f,	 4.0f);
 // 動く床の移動

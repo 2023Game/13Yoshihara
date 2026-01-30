@@ -83,5 +83,9 @@ void CWeightGenerator::UpdateOff()
 // ì—p‚µ‚Ä‚¢‚é‚Æ‚«‚Ìˆ—
 void CWeightGenerator::UpdateOn()
 {
+	if (!mpWeight->IsEnable())
+	{
+		mpWeight->Position(Position());
+	}
 	mpWeight->SetEnable(true);
 }

@@ -9,6 +9,8 @@ constexpr float PULL_POWER = 60.0f;
 class CConnectPoint;
 class CConnectTarget;
 class CModel;
+// bullet
+class btPoint2PointConstraint;
 
 // 繋げれるオブジェクトのベースクラス
 class CConnectObject : public CObjectBase
@@ -34,9 +36,9 @@ public:
 	virtual void Connect(CConnectPoint* otherPoint, bool isWand);
 
 	// 繋げた瞬間の処理
-	void JustConnect(CVector otherPointPos);
+	void JustConnect(CConnectPoint* otherPoint);
 	// 接続解除の処理
-	void Disconnect();
+	void Disconnect(CConnectPoint* otherPoint);
 
 	// 接続ターゲットの作成
 	void CreateTarget(CVector pos);
@@ -47,9 +49,6 @@ public:
 	// 重さを取得
 	float GetWeight();
 
-	// 重力を掛けるかを設定
-	void SetGravity(bool isGravity);
-
 	// 接続オブジェクトのタグを設定
 	void SetConnectObjTag(EConnectObjTag tag);
 	// 接続オブジェクトのタグを取得
@@ -59,6 +58,14 @@ public:
 	void SetMove(bool enable);
 
 protected:
+	// ジョイントを作成
+	void CreateJoint(CConnectObject* otherObj);
+	// ジョイントを削除
+	void DeleteJoint();
+
+	// ジョイント
+	btPoint2PointConstraint* mpJoint;
+
 	// 接続ターゲット
 	CConnectTarget* mpTarget;
 
@@ -71,15 +78,10 @@ protected:
 	float mMoveSpeedY;	// 上下方向の移動速度
 
 	bool mIsGrounded;	// 接地しているか
-	bool mIsGravity;	// 重力を掛けるか
 	bool mIsMove;		// 接続によって移動するか
-
-	bool mIsConnectAir;	// 空中オブジェクトとつながっているか
 
 	CVector mPreOtherPointPos;	// 前回の接続相手の座標
 
 	// 接続オブジェクトのタグ
 	EConnectObjTag mConnectObjTag;
-
-	CTransform* mpRideObject;
 };

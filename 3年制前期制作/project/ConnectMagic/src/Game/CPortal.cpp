@@ -52,34 +52,25 @@ void CPortal::CreateCol()
 	);
 }
 
-void CPortal::OnCollision(const CollisionData& data)
+void CPortal::OnSensorEnter(const CollisionData& data)
 {
-	// センサー
-	if (data.selfBody == GetSensor())
-	{
-		// 相手のobj
-		CObjectBase* otherObj = static_cast<CObjectBase*>(data.otherBody->getUserPointer());
-
-		if (otherObj == nullptr) return;
-
-		// プレイヤーの場合
-		if (otherObj->Tag() == ETag::ePlayer)
+	// 相手がプレイヤー
+	if (data.otherObj->Tag() == ETag::ePlayer)
+	{			
+		// シーン管理クラス
+		CSceneManager* SceneMgr = CSceneManager::Instance();
+		// 現在のシーン
+		EScene CurrentScene = SceneMgr->GetCurrentScene();
+		// 次のシーン
+		EScene NextScene = EScene::eClear;
+		// 現在のシーンから次のシーンを決定
+		switch (CurrentScene)
 		{
-			// シーン管理クラス
-			CSceneManager* SceneMgr = CSceneManager::Instance();
-			// 現在のシーン
-			EScene CurrentScene = SceneMgr->GetCurrentScene();
-			// 次のシーン
-			EScene NextScene = EScene::eClear;
-			// 現在のシーンから次のシーンを決定
-			switch (CurrentScene)
-			{
-			case EScene::eGame:		NextScene = EScene::eClear;	break;
-			case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
-			}
-
-			// 次のステージへ
-			CSceneManager::Instance()->LoadScene(NextScene);
+		case EScene::eGame:		NextScene = EScene::eClear;	break;
+		case EScene::eGameTest:	NextScene = EScene::eGameTest;	break;
 		}
+
+		// 次のステージへ
+		CSceneManager::Instance()->LoadScene(NextScene);
 	}
 }

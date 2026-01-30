@@ -9,7 +9,6 @@ enum class ETag
 	eField,	// フィールドを構成するオブジェクト
 	eWater,	// 水
 	eRideableObject,	// 乗ることができるオブジェクト
-	eInteractObject,	// 調べるオブジェクト
 	eConnectObject,		// 繋げれるオブジェクト
 	eItem,				// アイテムのオブジェクト
 	ePortal,			// ポータル

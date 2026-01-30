@@ -21,16 +21,17 @@
 constexpr float BODY_RADIUS =				2.5f;
 constexpr float BODY_HEIGHT =				12.5f;
 // 物理設定
-constexpr float MASS =						1.0f;
-constexpr float MAX_SPEED =					50.0f;	// 最高速度
-constexpr float ACCELERATION_FORCE =		500.0f;	// 加速度の強さ
-constexpr float TARZAN_ACCELERATION_FORCE = 10.0f;	// ターザン中の加速度の強さ
+constexpr float MASS =						70.0f;
+constexpr float MAX_SPEED =					75.0f;	// 最高速度
+constexpr float ACCELERATION_FORCE =		4000.0f;// 移動時の加わる力
+constexpr float JUMP_IMPULSE =				2500.0f;// ジャンプ時の加わる力
+constexpr float TARZAN_ACCELERATION_FORCE = 4500.0f;// ターザン中の加速度の強さ
 constexpr float TURN_RATE =					0.1f;	// 回転速度
-constexpr float FRICTION =					0.8f;	// 摩擦（値が高いと停止まで早くなる）
-constexpr float LIN_DAMPING =				0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
-constexpr float ANG_DAMPING =				0.8f;	// 角減衰(値が高いと微細な回転振動を吸収する）
-constexpr float TARZAN_LIN_DAMPING =		0.1f;	// ターザン中の線形減衰
-constexpr float TARZAN_ANG_DAMPING =		0.1f;	// ターザン中の角減衰
+constexpr float FRICTION =					0.7f;	// 摩擦（値が高いと停止まで早くなる）
+constexpr float LIN_DAMPING =				0.3f;	// 線形減衰(値が高いと滑りが小さくなる)
+constexpr float ANG_DAMPING =				0.3f;	// 角減衰(値が高いと微細な回転振動を吸収する）
+constexpr float TARZAN_LIN_DAMPING =		0.7f;	// ターザン中の線形減衰
+constexpr float TARZAN_ANG_DAMPING =		0.7f;	// ターザン中の角減衰
 
 // 接地とみなすための、接触点の最低限のY軸法線成分
 constexpr float GROUND_NORMAL_THRESHOLD =	0.7f;
@@ -48,11 +49,6 @@ const CVector WAND_OFFSET_POS =				CVector(-90.0f,8.0f,4.0f);
 const CVector WAND_OFFSET_ROT =				CVector(0.0f,0.0f,90.0f);
 constexpr float WAND_SCALE =				3.0f;
 
-// 減速する速度
-constexpr float DECREASE_SPEED =			0.1f;
-// 加速する速度
-constexpr float INCREASE_SPEED =			0.5f;
-
 // ターゲットするときの視点とオブジェクトの画面距離の最大
 constexpr float TARGET_MAX_DISTANCE =		(WINDOW_HEIGHT / 2);
 
@@ -60,11 +56,11 @@ constexpr float TARGET_MAX_DISTANCE =		(WINDOW_HEIGHT / 2);
 constexpr float TARGET_POINT_IMG_SCALE =	0.1f;
 
 // レイのベクトル
-const CVector RAY_VEC =						CVector(0, 2.0f, 0);
+const CVector RAY_VEC =						CVector(0, 5.0f, 0);
 // レイの開始のoffset
 const CVector RAY_START_OFFSET =			CVector(0.0f, 0.5f, 0.0f);
-// 接地している距離
-constexpr float GROUNDED_DIST =				1.0f;
+// 接地と判断される距離
+constexpr float GROUNDED_DIST =				2.0f;
 
 // アニメーションのパス
 const std::string ANIM_PATH =				"Character\\Adventurer\\AdventurerAnim\\";
@@ -93,7 +89,11 @@ PlayerData CPlayer::SaveState()
 		Rotation(),
 		CConnectPointManager::Instance()->GetConnectWandTarget(),
 		AnimationIndex(),
-		GetAnimationFrame());
+		GetAnimationFrame(),
+		mState,
+		CPhysicsManager::ToCVector(GetRigidBody()->getLinearVelocity()),
+		CPhysicsManager::ToCVector(GetRigidBody()->getAngularVelocity()),
+		CConnectPointManager::Instance()->GetConnectDistance());
 
 	return data;
 }
@@ -101,10 +101,17 @@ PlayerData CPlayer::SaveState()
 void CPlayer::LoadState(const PlayerData& data)
 {
 	Position(data.pos);
-	Rotation(data.vec);
+	Rotation(data.rot.Inverse());
+	CTransform::Position(data.pos);
+	CTransform::Rotation(data.rot.Inverse());
 	CConnectPointManager::Instance()->EnableConnect(data.target);
+	CConnectPointManager::Instance()->SetConnectDistance(data.connectDist);
 	ChangeAnimation(data.animationType);
 	SetAnimationFrame(data.animationFrame);
+	ChangeState(data.state);
+	// かかっている力をリセット
+	ResetForce();
+	SetVelocity(data.linearVelocity, data.angularVelocity);
 }
 
 // コンストラクタ
@@ -208,27 +215,16 @@ void CPlayer::Update()
 		UpdateMove();
 	}
 
+	// 落ちるときならジャンプする
+	if (mWasGrounded && !mIsGrounded) {
+		ChangeState(EState::eEdgeJumpStart);
+	}
+
 	// 死亡状態以外なら
 	if (mState != EState::eDeath)
 	{
 		// キー入力
 		ActionInput();
-	}
-
-	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-
-	if (!mIsGrounded &&
-		mState != EState::eTarzanStart &&
-		mState != EState::eTarzan &&
-		mState != EState::eTarzanEnd &&
-		connectPointMgr->IsWandConnectAirObject())
-	{
-		ChangeState(EState::eTarzan);
-	}
-
-	// 落ちるときならジャンプする
-	if (mWasGrounded && !mIsGrounded) {
-		ChangeState(EState::eEdgeJumpStart);
 	}
 	mWasGrounded = mIsGrounded;
 
@@ -268,12 +264,7 @@ void CPlayer::Update()
 	CDebugPrint::Print("IsWand:%s\n", mIsWand ? "持っている" : "持っていない");
 	CDebugPrint::Print("ConnectObj:%d\n", mConnectObjs.size());
 	btRigidBody* body = GetRigidBody();
-	CDebugPrint::Print("speed:%f\n", body->getLinearVelocity().y());
-	int flags = body->getCollisionFlags();
-	float invMass = body->getInvMass();
-	bool isActive = body->isActive();
-
-	CDebugPrint::Print("Flags: %d, invMass: %f, Active: %d\n", flags, invMass, (int)isActive);
+	CDebugPrint::Print("speed:%f,%f,%f\n", body->getLinearVelocity());
 #endif
 
 	// コネクトオブジェクトのリストをクリア
@@ -321,11 +312,61 @@ void CPlayer::CreateCol()
 	);
 }
 
+// ターザン用のジョイントを作成
+void CPlayer::CreateJoint()
+{
+	// 空じゃなければ処理しない
+	if (mpJoint != nullptr) return;
+	if (!GetRigidBody()) return;
+
+	// 接続部管理クラス
+	CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
+	// 物理管理クラス
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// 杖の接続線の長さを設定
+	connectPointMgr->SetConnectDistance();
+	// 自身の座標
+	CVector myPos = PhysicsPosition();
+
+	// 接続相手
+	CConnectTarget* target = connectPointMgr->GetConnectWandTarget();
+	if (!target) return;
+	CConnectObject* targetObj = target->GetConnectObj();
+	if (!targetObj) return;
+	if (!targetObj->GetRigidBody()) return;
+	// 相手の座標
+	CVector targetPos = targetObj->PhysicsPosition();
+	// ジョイントを作成
+	mpJoint = physicsMgr->CreateJoint(GetRigidBody(), targetObj->GetRigidBody(), myPos, targetPos);
+	// 減衰をターザン用に設定
+	physicsMgr->SetDamping(GetRigidBody(), TARZAN_LIN_DAMPING, TARZAN_ANG_DAMPING);
+}
+
+// ターザン用のジョイントを削除
+void CPlayer::DeleteJoint()
+{		
+	// 既に空なら処理しない
+	if (mpJoint == nullptr) return;
+
+	// 物理管理クラス
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	// ターザンからのジャンプアニメーションに切り替え
+	ChangeAnimation((int)EAnimType::eSwing_End_Start);
+	// ジャンプ速度を設定
+	AddImpulse(VectorY() * GetJumpSpeed());
+	// ジョイントを削除
+	physicsMgr->RemoveJoint(mpJoint, GetRigidBody());
+	mpJoint = nullptr;
+	// 減衰を通常用に設定
+	physicsMgr->SetDamping(GetRigidBody(), LIN_DAMPING, ANG_DAMPING);
+}
+
 void CPlayer::OnCollision(const CollisionData& data)
 {
 	// 接地判定
 	if (data.otherObj->Tag() == ETag::eField)
 	{
+		// 地面か？
 		if (data.contactNormal.Y() > GROUND_NORMAL_THRESHOLD)
 		{
 			mGroundNormal = data.contactNormal;
@@ -334,11 +375,17 @@ void CPlayer::OnCollision(const CollisionData& data)
 	// 水
 	else if (data.otherObj->Tag() == ETag::eWater)
 	{
-		// 保存管理クラスをロード状態へ
-		CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
-		// 死亡状態にする
-		ChangeState(EState::eDeath);
-		return;
+		PlayerDeath();
+	}
+	// 乗れるオブジェクト
+	else if (data.otherObj->Tag() == ETag::eRideableObject)
+	{
+		// 地面か？
+		if (data.contactNormal.Y() > GROUND_NORMAL_THRESHOLD)
+		{
+			mGroundNormal = data.contactNormal;
+		}
+		SetRideObject(data.otherObj);
 	}
 }
 
@@ -352,6 +399,14 @@ void CPlayer::OnSensorEnter(const CollisionData& data)
 		// 射程内にあるコネクトオブジェクトに追加
 		mConnectObjs.push_back(obj);
 	}
+}
+
+void CPlayer::PlayerDeath()
+{
+	// 保存管理クラスをロード状態へ
+	CSaveManager::Instance()->ChangeState(CSaveManager::EState::eLoad);
+	// 死亡状態にする
+	ChangeState(EState::eDeath);
 }
 
 void CPlayer::CheckGrounded()
@@ -368,7 +423,7 @@ void CPlayer::CheckGrounded()
 		// 地面が見つかった
 		float distance = pos.Y() - collisionData.hitPoint.Y();
 
-		// 設置している距離より低いなら
+		// 接地と判断される距離より短いなら
 		if (distance < GROUNDED_DIST) 
 		{
 			// 接地中とみなす
@@ -401,8 +456,8 @@ void CPlayer::ActionInput()
 				{
 					// 接続部を有効
 					connectPointMgr->EnableConnect(mpCenterTarget);
-					// ターザン開始状態へ
-					ChangeState(EState::eTarzanStart);
+					// ターザン中状態へ
+					ChangeState(EState::eTarzan);
 				}
 				// 空中でないなら
 				else
@@ -451,13 +506,24 @@ void CPlayer::ActionInput()
 			// 接続部管理クラス
 			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
 			// 相手が空中オブジェクト
-			// 地面から離れたなら
+			// 地面から離れているなら
 			if (connectPointMgr->IsWandConnectAirObject() &&
-				!mIsGrounded &&
-				mWasGrounded)
+				!mIsGrounded&&
+				mState!=EState::eTarzanStart&&
+				mState!=EState::eTarzan&&
+				mState != EState::eTarzanEnd)
 			{
-				// ターザン開始状態へ
-				ChangeState(EState::eTarzanStart);
+				// 前回フレーム時に接地しているなら
+				if (mWasGrounded)
+				{
+					// ターザン開始
+					ChangeState(EState::eTarzanStart);
+				}
+				else
+				{
+					// ターザン状態へ
+					ChangeState(EState::eTarzan);
+				}
 			}
 		}
 		// 左クリックが押されていないなら
@@ -492,6 +558,10 @@ void CPlayer::UpdateIdle()
 // 移動処理
 void CPlayer::UpdateMove()
 {
+	CSaveManager* saveMgr = CSaveManager::Instance();
+	if (!saveMgr) return;
+	if (saveMgr->GetState() == CSaveManager::EState::eLoad) return;
+
 	btRigidBody* playerBody = GetRigidBody();
 	// 現在のXZ平面の速度
 	btVector3 currentMove = playerBody->getLinearVelocity();
@@ -526,6 +596,28 @@ void CPlayer::UpdateMove()
 				ChangeAnimation((int)EAnimType::eMove);
 			}
 		}
+
+
+		// 攻撃を受けていない時かつ
+		// 移動方向を向く設定がオンの時
+		if (!mIsDamage &&
+			mIsMoveDir)
+		{
+			// 移動方向ベクトルから回転角度を計算する
+			float angle = atan2(currentMove.getX(), currentMove.getZ());
+
+			// 目標回転を作成
+			btQuaternion targetRotation(btVector3(0.0f, 1.0f, 0.0f), angle);
+
+			// 現在の回転を取得
+			btQuaternion currentRotation = playerBody->getWorldTransform().getRotation();
+			// 目標回転まで補間
+			btQuaternion newRotation = currentRotation.slerp(targetRotation, TURN_RATE);
+			// 変換
+			CQuaternion newRot = CPhysicsManager::Instance()->ToCQuaternion(newRotation);
+			// 回転設定
+			Rotation(newRot);
+		}
 	}
 	// 入力していない
 	else
@@ -546,29 +638,6 @@ void CPlayer::UpdateMove()
 				ChangeAnimation((int)EAnimType::eIdle);
 			}
 		}
-	}
-
-	// 攻撃を受けていない時かつ
-	// 移動方向を向く設定がオンの時
-	// 速度が小さすぎない
-	if (!mIsDamage &&
-		mIsMoveDir &&
-		currentMove.length2() > MOVE_THRESHOLD)
-	{
-		// 移動方向ベクトルから回転角度を計算する
-		float angle = atan2(currentMove.getX(), currentMove.getZ());
-
-		// 目標回転を作成
-		btQuaternion targetRotation(btVector3(0.0f, 1.0f, 0.0f), angle);
-
-		// 現在の回転を取得
-		btQuaternion currentRotation = playerBody->getWorldTransform().getRotation();
-		// 目標回転まで補間
-		btQuaternion newRotation = currentRotation.slerp(targetRotation, TURN_RATE);
-		// 変換
-		CQuaternion newRot = CQuaternion(newRotation.getX(), newRotation.getY(), newRotation.getZ(), newRotation.getW());
-		// 回転設定
-		Rotation(newRot);
 	}
 }
 
@@ -604,10 +673,19 @@ void CPlayer::UpdateAttackStart()
 	case 1:
 	{
 		CCamera* camera = CCamera::CurrentCamera();
-		// 向く方向を求める
-		CVector vec = camera->GetEyeVec();
-		vec.Y(0.0f);
-		Rotation(CQuaternion::LookRotation(vec.Normalized()));
+		// カメラ方向
+		CVector dir = camera->GetEyeVec();
+		dir.Y(0.0f);
+
+		// カメラ方向ベクトルから回転角度を計算する
+		float angle = atan2(dir.X(), dir.Z());
+
+		// 目標回転を作成
+		btQuaternion targetRot(btVector3(0.0f, 1.0f, 0.0f), angle);
+		// 変換
+		CQuaternion newRot = CPhysicsManager::Instance()->ToCQuaternion(targetRot);
+
+		Rotation(newRot);
 
 		mStateStep++;
 		break;
@@ -692,34 +770,15 @@ void CPlayer::UpdateTarzanStart()
 	}
 	switch (mStateStep)
 	{
-		// 20フレーム進行したら
+		// ジャンプ開始
 	case 0:
-		mElapsedTime++;
-		if (mElapsedTime > 20.0f)
-		{
-			// 接続部管理クラス
-			CConnectPointManager* connectPointMgr = CConnectPointManager::Instance();
-			// 物理管理クラス
-			CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
-			// 杖の接続線の長さを設定
-			connectPointMgr->SetConnectDistance();
-			// 接続相手
-			CConnectTarget* target = connectPointMgr->GetConnectWandTarget();
-			// 相手の剛体
-			btRigidBody* targetObjBody = target->GetConnectObj()->GetRigidBody();
-			// 相手の座標
-			CVector targetPos = target->Position();
-			// ジョイントを作成
-			mpJoint = physicsMgr->CreateJoint(GetRigidBody(), targetObjBody, Position(), targetPos);
-			// 減衰をターザン用に設定
-			physicsMgr->SetDamping(GetRigidBody(), TARZAN_LIN_DAMPING, TARZAN_ANG_DAMPING);
-			mStateStep++;
-		}
+		JumpStart();
+		mStateStep++;
 		break;
-		// ターザン中へ
+		// ジャンプのアニメーションが終わればターザン中へ
 	case 1:
-
-		ChangeState(EState::eTarzan);
+		if(IsAnimationFinished())
+			ChangeState(EState::eTarzan);
 		break;
 	}
 }
@@ -745,8 +804,6 @@ void CPlayer::UpdateTarzan()
 
 		// スイングの移動入力
 	case 1:
-		// 物理管理クラス
-		CPhysicsManager * physicsMgr = CPhysicsManager::Instance();
 		// プレイヤーの剛体
 		btRigidBody * playerBody = GetRigidBody();
 		// 入力方向
@@ -756,7 +813,7 @@ void CPlayer::UpdateTarzan()
 		// 現在の速度ベクトルを取得
 		btVector3 currentMove = playerBody->getLinearVelocity();
 		// 移動方向
-		CVector currentDir = physicsMgr->ToCVector(currentMove);
+		CVector currentDir = CPhysicsManager::ToCVector(currentMove);
 		currentDir.Normalize();
 
 		// 入力方向と移動方向の親和性を確認
@@ -777,26 +834,8 @@ void CPlayer::UpdateTarzanEnd()
 {
 	switch (mStateStep)
 	{
-		// 接続を解除し飛ぶ
-	case 0:
-	{
-		// 物理管理クラス
-		CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
-		// ターザンからのジャンプアニメーションに切り替え
-		ChangeAnimation((int)EAnimType::eSwing_End_Start);
-		// ジャンプ速度を設定
-		AddImpulse(VectorY() * GetJumpSpeed());
-		// ジョイントを削除
-		physicsMgr->RemoveJoint(mpJoint, GetRigidBody());
-		mpJoint = nullptr;
-		// 減衰を通常用に設定
-		physicsMgr->SetDamping(GetRigidBody(), LIN_DAMPING, ANG_DAMPING);
-
-		mStateStep++;
-		break;
-	}
 	// ターザンからのジャンプ中アニメーションに切り替え
-	case 1:
+	case 0:
 		// アニメーションが終了したら
 		if (IsAnimationFinished())
 		{
@@ -810,7 +849,7 @@ void CPlayer::UpdateTarzanEnd()
 		}
 		break;
 		// ターザン終了アニメーションに切り替え
-	case 2:
+	case 1:
 		if (mIsGrounded)
 		{
 			ChangeAnimation((int)EAnimType::eSwing_End_End);
@@ -818,7 +857,7 @@ void CPlayer::UpdateTarzanEnd()
 		}
 		break;
 		// アニメーションが終了したら待機へ
-	case 3:
+	case 2:
 		if (IsAnimationFinished())
 		{
 			ChangeState(EState::eIdle);
@@ -832,12 +871,9 @@ void CPlayer::UpdateEdgeJumpStart()
 {
 	switch (mStateStep)
 	{
-		// アニメーション変更
+		// ジャンプ開始
 	case 0:
-		AddForce(VectorZ() * GetBaseMoveSpeed());
-		AddImpulse(VectorY() * GetJumpSpeed());
-		// ジャンプ開始アニメーション
-		ChangeAnimation((int)EAnimType::eJump_Start);
+		JumpStart();
 		mStateStep++;
 		break;
 
@@ -917,10 +953,24 @@ void CPlayer::ChangeState(EState state)
 	mState = state;
 	mStateStep = 0;
 	mElapsedTime = 0.0f;
+
+	// ターザン中ならジョイントを作成
+	if (mState == EState::eTarzan)
+		CreateJoint();
+	// ターザン中でないならジョイントを削除
+	else
+		DeleteJoint();
+}
+
+void CPlayer::JumpStart()
+{
+	AddForce(VectorZ() * ACCELERATION_FORCE);
+	AddImpulse(VectorY() * JUMP_IMPULSE);
+	// ジャンプ開始アニメーション
+	ChangeAnimation((int)EAnimType::eJump_Start);
 }
 
 #if _DEBUG
-
 // 状態の文字列を取得
 std::string CPlayer::GetStateStr(EState state) const
 {

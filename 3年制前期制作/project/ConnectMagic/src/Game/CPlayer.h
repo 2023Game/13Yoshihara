@@ -77,9 +77,16 @@ public:
 	// センサーの接触処理
 	void OnSensorEnter(const CollisionData& data) override;
 
+	// プレイヤーを死亡させる
+	void PlayerDeath();
+
 private:
 	// コライダ―を生成
 	void CreateCol() override;
+	// ターザン用のジョイントを作成
+	void CreateJoint();
+	// ターザン用のジョイントを削除
+	void DeleteJoint();
 
 	// 射程内にあるコネクトオブジェクトのリスト
 	std::list<CConnectObject*> mConnectObjs;
@@ -154,6 +161,9 @@ private:
 	EState mState;	// プレイヤーの状態
 	int mStateStep;				// 状態内のステップ管理用
 	float mElapsedTime;			// 経過時間計測用
+
+	// ジャンプ開始の処理
+	void JumpStart();
 
 #if _DEBUG
 	// 状態の文字列を取得

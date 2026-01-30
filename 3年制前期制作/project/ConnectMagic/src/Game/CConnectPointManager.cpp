@@ -232,7 +232,7 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 		// 接続オブジェクトを設定
 		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
-		mpConnectPoint1->GetConnectObj()->JustConnect(CVector::zero);
+		mpConnectPoint1->GetConnectObj()->JustConnect(mpWandPoint);
 
 		// 杖に接続
 		SetWandConnect(true, connectTarget);
@@ -256,8 +256,8 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 		// 接続オブジェクトを設定
 		mpConnectPoint2->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
-		mpConnectPoint1->GetConnectObj()->JustConnect(mpConnectPoint2->Position());
-		mpConnectPoint2->GetConnectObj()->JustConnect(mpConnectPoint1->Position());
+		mpConnectPoint1->GetConnectObj()->JustConnect(mpConnectPoint2);
+		mpConnectPoint2->GetConnectObj()->JustConnect(mpConnectPoint1);
 
 		// 杖の接続を解除
 		SetWandConnect(false, nullptr);
@@ -274,9 +274,9 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 	{
 		// 切断
 		CConnectObject* obj1 = mpConnectPoint1->GetConnectObj();
-		if (obj1) obj1->Disconnect();
+		if (obj1) obj1->Disconnect(mpConnectPoint2);
 		CConnectObject* obj2 = mpConnectPoint2->GetConnectObj();
-		if (obj2) obj2->Disconnect();
+		if (obj2) obj2->Disconnect(mpConnectPoint1);
 		// 無効
 		mpConnectPoint2->SetEnable(false);
 		mpConnectPoint2->SetShow(false);
@@ -287,7 +287,7 @@ void CConnectPointManager::EnableConnect(CConnectTarget* connectTarget)
 		// 接続オブジェクトを設定
 		mpConnectPoint1->SetConnectObj(connectTarget->GetConnectObj());
 		// 接続した瞬間の処理
-		mpConnectPoint1->GetConnectObj()->JustConnect(CVector::zero);
+		mpConnectPoint1->GetConnectObj()->JustConnect(mpWandPoint);
 
 		// 杖に接続
 		SetWandConnect(true, connectTarget);
@@ -315,9 +315,9 @@ void CConnectPointManager::DisableConnect(CConnectTarget* connectTarget)
 	mpConnectPoint2->SetShow(false);
 	// 切断処理
 	CConnectObject* obj1 = mpConnectPoint1->GetConnectObj();
-	if (obj1) obj1->Disconnect();
+	if (obj1) obj1->Disconnect(mpConnectPoint2);
 	CConnectObject* obj2 = mpConnectPoint2->GetConnectObj();
-	if (obj2) obj2->Disconnect();
+	if (obj2) obj2->Disconnect(mpConnectPoint1);
 }
 
 // 杖の接続部の有効無効を設定
@@ -384,6 +384,11 @@ void CConnectPointManager::SetConnectDistance()
 		// 不整値を設定
 		mConnectDistance = -1.0f;
 	}
+}
+
+void CConnectPointManager::SetConnectDistance(const float& dist)
+{
+	mConnectDistance = dist;
 }
 
 // 接続しているもの同士の距離を取得

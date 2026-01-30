@@ -30,8 +30,6 @@ CAirConnectObj::CAirConnectObj(const CVector& pos)
 
 	mpModel = CResourceManager::Get<CModel>("AirConnectObj");
 
-	SetGravity(false);
-
 	// コライダーを生成
 	CreateCol();
 

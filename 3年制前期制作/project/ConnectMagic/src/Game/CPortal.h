@@ -14,5 +14,5 @@ private:
 	// コライダーを生成
 	void CreateCol() override;
 	// 衝突処理
-	void OnCollision(const CollisionData& data) override;
+	void OnSensorEnter(const CollisionData& data) override;
 };

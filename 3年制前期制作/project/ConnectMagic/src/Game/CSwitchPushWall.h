@@ -21,12 +21,11 @@ public:
 	/// <param name="scale">スケール</param>
 	/// <param name="move">移動ベクトル</param>
 	/// <param name="moveTime">移動時間</param>
-	/// <param name="isCrushed">プレイヤーが挟まれたときに死ぬか</param>
 	CSwitchPushWall(CModel* model, CModel* col,
 		const CVector& pos,
 		const CVector& scale,
 		const CVector& move,
-		float moveTime, bool isCrushed = false);
+		float moveTime);
 	// デストラクタ
 	~CSwitchPushWall();
 

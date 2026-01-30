@@ -14,7 +14,7 @@ const CVector weight_OFFSET_POS1 =		CVector( 30.0f, 0.0f, -110.0f);
 const CVector weight_OFFSET_POS2 =		CVector( 30.0f, 0.0f, -200.0f);
 
 // 動く床のオフセット座標
-const CVector MOVE_FLOOR_OFFSET_POS =	CVector( 0.0f, -10.0f, -40.0f);
+const CVector MOVE_FLOOR_OFFSET_POS =	CVector( 0.0f, -10.0f, -60.0f);
 // 動く床のスケール
 const CVector MOVE_FLOOR_SCALE =		CVector( 4.0f,  1.0f,   4.0f);
 // 動く床の移動
@@ -26,7 +26,7 @@ constexpr float MOVE_FLOOR_MOVE_TIME =	2.5f;
 const CVector SWITCH_OFFSET_POS =		CVector(-30.0f, 0.0f,  -110.0f);
 
 // 動く壁のオフセット座標
-const CVector MOVE_WALL_OFFSET_POS =	CVector( 0.0f,  0.0f,  -150.0f);
+const CVector MOVE_WALL_OFFSET_POS =	CVector( 0.0f,  0.0f,  -155.0f);
 // 動く壁のスケール
 const CVector MOVE_WALL_SCALE =			CVector( 8.0f,  4.0f,   1.0f);
 // 動く壁の移動

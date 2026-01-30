@@ -3,6 +3,8 @@
 #include "CConnectPointManager.h"
 #include "CPhysicsManager.h"
 #include "PhysicsMaterial.h"
+#include "CollisionData.h"
+#include "CPlayer.h"
 #include <typeinfo>
 
 // 物理設定
@@ -11,8 +13,7 @@ const CVector HALF_EXTENTS =	CVector(5.0f, 5.0f, 5.0f);
 constexpr float FRICTION =		0.1f;	// 摩擦（値が高いと停止まで早くなる）
 constexpr float LIN_DAMPING =	0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
 constexpr float ANG_DAMPING =	0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
-
-const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 5.0f, 5.0f);
+const CVector SENSOR_HALF_EXTENTS = CVector(0.9f, 1.1f, 0.9f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -65,7 +66,8 @@ unsigned int CSwitchMoveWall::GetUniqueInstanceID() const
 // コンストラクタ
 CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
-	: mDefaultPos(pos)
+	: CSwitchObject()
+	, mDefaultPos(pos)
 	, mMoveVec(move)
 	, mMoveTime(moveTime)
 	, mElapsedTime(0.0f)
@@ -73,6 +75,7 @@ CSwitchMoveWall::CSwitchMoveWall(CModel* model, CModel* col,
 	, mUniqueID(CUIDManager::GenerateNewID())
 {
 	mpModel = model;
+	SetTag(ETag::eRideableObject);
 
 	// 初期座標を設定
 	Position(mDefaultPos);
@@ -101,6 +104,17 @@ void CSwitchMoveWall::SetIsOpen(bool enable)
 	SetOnOff(enable);
 }
 
+void CSwitchMoveWall::OnSensorEnter(const CollisionData& data)
+{
+	// プレイヤー
+	if (data.otherObj->Tag() == ETag::ePlayer)
+	{
+		// プレイヤー死亡
+		CPlayer* player = dynamic_cast<CPlayer*>(CPlayer::Instance());
+		player->PlayerDeath();
+	}
+}
+
 // コライダーを生成
 void CSwitchMoveWall::CreateCol()
 {
@@ -111,19 +125,25 @@ void CSwitchMoveWall::CreateCol()
 	material.linDamping = LIN_DAMPING;
 	material.angDamping = ANG_DAMPING;
 	// サイズ計算
-	CVector size = CVector(
-		HALF_EXTENTS.X() * Scale().X(),
-		HALF_EXTENTS.Y() * Scale().Y(),
-		HALF_EXTENTS.Z() * Scale().Z());
+	CVector halfExtents = HALF_EXTENTS * Scale();
 
 	CPhysicsManager::Instance()->CreateBoxRigidBody(
 		this,
 		material,
-		size,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eObject,
 		{ ELayer::eField,ELayer::ePlayer,ELayer::eConnectObj }
+	);
+
+	CPhysicsManager::Instance()->CreateBoxSensor(
+		this,
+		halfExtents * SENSOR_HALF_EXTENTS,
+		ELayer::eCrushed,
+		{ ELayer::ePlayer,ELayer::eConnectObj },
+		true,
+		halfExtents.Y()
 	);
 }
 

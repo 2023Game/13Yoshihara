@@ -10,7 +10,6 @@ constexpr float STOP_TIME = 0.5f;
 
 constexpr float MASS = 0.0f;
 const CVector HALF_EXTENTS = CVector(5.0f, 5.0f, 5.0f);
-const CVector SENSOR_HALF_EXTENTS = CVector(4.0f, 4.0f, 4.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -64,7 +63,7 @@ unsigned int CMoveObj::GetUniqueInstanceID() const
 CMoveObj::CMoveObj(CModel* model, CModel* col,
 	const CVector& pos, const CVector& scale,
 	const CVector& move, float moveTime,
-	ELayer layer, bool isCrushed)
+	ELayer layer)
 	: mpModel(model)
 	, mDefaultPos(pos)
 	, mMoveVec(move)
@@ -79,16 +78,6 @@ CMoveObj::CMoveObj(CModel* model, CModel* col,
 
 	// コライダーを生成
 	CreateCol();
-	// プレイヤーを壊すなら
-	if (isCrushed)
-	{
-		CPhysicsManager::Instance()->CreateBoxSensor(
-			this,
-			SENSOR_HALF_EXTENTS,
-			ELayer::eCrushed,
-			{ ELayer::ePlayer }
-		);
-	}
 }
 
 CMoveObj::~CMoveObj()
@@ -122,16 +111,19 @@ void CMoveObj::CreateCol()
 {
 	PhysicsMaterial material;
 	material.mass = MASS;
+	CVector halfExtents = HALF_EXTENTS * Scale();
 
-	CPhysicsManager::Instance()->CreateBoxRigidBody(
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	physicsMgr->CreateBoxRigidBody(
 		this,
 		material,
-		HALF_EXTENTS,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eField,
 		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
 	);
+	physicsMgr->SetKinematic(GetRigidBody());
 }
 
 // 状態を変更
@@ -206,8 +198,7 @@ void CMoveObj::UpdateStop()
 // 進んでいるときの更新
 void CMoveObj::UpdateGo()
 {
-	float per = mElapsedTime / mMoveTime;
-	Position(mDefaultPos + mMoveVec * per);
+	CPhysicsManager::Instance()->MoveKinematic(this, mMoveVec, mMoveTime);
 
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
@@ -219,12 +210,12 @@ void CMoveObj::UpdateGo()
 // 戻っているときの更新
 void CMoveObj::UpdateBack()
 {
-	float per = (mMoveTime - mElapsedTime) / mMoveTime;
-	Position(mDefaultPos + mMoveVec * per);
+	CPhysicsManager::Instance()->MoveKinematic(this, -mMoveVec, mMoveTime);
 
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
 	{
+		Position(mDefaultPos);
 		ChangeMoveState(EMoveState::eStop);
 	}
 }

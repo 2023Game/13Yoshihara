@@ -3,6 +3,7 @@
 #include "CInput.h"
 #include "CRewindUI.h"
 #include "CPlayer.h"
+#include "CPhysicsManager.h"
 #include "btBulletDynamicsCommon.h"
 
 // 保存するフレーム数
@@ -36,6 +37,10 @@ CSaveManager::CSaveManager()
 // デストラクタ
 CSaveManager::~CSaveManager()
 {
+	if (spInstance == this)
+	{
+		spInstance = nullptr;
+	}
 }
 
 // 更新
@@ -174,7 +179,8 @@ void CSaveManager::AllPhysicsOn()
 	for (auto it : mSavableInstanceMap)
 	{
 		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
-		if (!obj)continue;
+		if (!obj) continue;
+		if (!obj->IsEnable()) continue;
 
 		btRigidBody* objBody = obj->GetRigidBody();
 		if (!objBody) continue;
@@ -201,6 +207,7 @@ void CSaveManager::AllPhysicsOff()
 	{
 		CObjectBase* obj = dynamic_cast<CObjectBase*>(it.second);
 		if (!obj)continue;
+		if (!obj->IsEnable())continue;
 
 		btRigidBody* objBody = obj->GetRigidBody();
 		if (!objBody) continue;
@@ -214,17 +221,34 @@ void CSaveManager::AllPhysicsOff()
 
 void CSaveManager::PhysicsOn(btRigidBody* body)
 {
-	// 移動開始
-	body->setCollisionFlags(body->getCollisionFlags() & ~btCollisionObject::CF_KINEMATIC_OBJECT);
-	// 再び動くようにアクティブ化
-	body->forceActivationState(ACTIVE_TAG);
+	if (!body) return;
+
+	// 保存しておいた本来のフラグに戻す
+	if (mOriginalFlags.find(body) != mOriginalFlags.end()) {
+		body->setCollisionFlags(mOriginalFlags[body]);
+		// 使い終わったら消す
+		mOriginalFlags.erase(body);
+	}
+
+	body->activate(true);
 }
 
 void CSaveManager::PhysicsOff(btRigidBody* body)
 {
-	// 物理演算による移動を停止
-	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-	// スリープ防止
+	if (!body) return;
+
+	// 現在のフラグを保存
+	if (mOriginalFlags.find(body) == mOriginalFlags.end()) {
+		mOriginalFlags[body] = body->getCollisionFlags();
+	}
+
+	// 物理演算停止と衝突応答オフ
+	body->setCollisionFlags(body->getCollisionFlags() |
+		btCollisionObject::CF_KINEMATIC_OBJECT |
+		btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	body->setLinearVelocity(btVector3(0, 0, 0));
+	body->setAngularVelocity(btVector3(0, 0, 0));
 	body->setActivationState(DISABLE_DEACTIVATION);
 }
 
@@ -280,4 +304,9 @@ void CSaveManager::ChangeState(EState state)
 	}
 
 	mState = state;
+}
+
+CSaveManager::EState CSaveManager::GetState() const
+{
+	return mState;
 }

@@ -36,6 +36,8 @@ public:
 	};
 	// 状態切り替え
 	void ChangeState(EState state);
+	// 状態を取得
+	EState GetState() const;
 
 private:
 	// 状態を保存する
@@ -71,4 +73,6 @@ private:
 
 	// 保存するオブジェクト
 	std::unordered_map<unsigned int, CSavable*> mSavableInstanceMap;
+	// 本来のフラグを保存する用
+	std::map<btRigidBody*, int> mOriginalFlags;
 };

@@ -22,10 +22,8 @@ CObjectBase::CObjectBase(ETag tag,
 	, mHalfHeightY(0.0f)
 	, mpIndexVertexArray(nullptr)
 	, mpSensorCol(nullptr)
-	, mBodyLayer(ELayer::eNone)
-	, mBodyCollisionLayers({ ELayer::eNone })
-	, mSensorLayer(ELayer::eNone)
-	, mSensorCollisionLayers({ ELayer::eNone })
+	, mPrevParentPos(CVector::zero)
+	, mpRideObject(nullptr)
 {
 }
 
@@ -264,11 +262,30 @@ void CObjectBase::ResetForce()
 	{
 		// 加わっている力と回転力をゼロにする
 		mpRigidBody->clearForces();
+
 		// 現在の移動速度をゼロにする
 		mpRigidBody->setLinearVelocity(btVector3(0.0f, 0.0f, 0.0f));
 		// 現在の回転速度をゼロにする
 		mpRigidBody->setAngularVelocity(btVector3(0.0f, 0.0f, 0.0f));
 	}
+}
+
+// 速度を設定
+void CObjectBase::SetVelocity(
+	const CVector& linear,
+	const CVector& angular)
+{
+	// 移動速度
+	mpRigidBody->setLinearVelocity(CPhysicsManager::ToBtVector(linear));
+	// 回転速度
+	mpRigidBody->setAngularVelocity(CPhysicsManager::ToBtVector(angular));
+	mpRigidBody->activate(true);
+}
+
+void CObjectBase::SetLinearVelocity(const CVector& linear)
+{
+	// 移動速度
+	mpRigidBody->setLinearVelocity(CPhysicsManager::ToBtVector(linear));
 }
 
 void CObjectBase::SetBodyPos(const CVector& pos)
@@ -305,22 +322,75 @@ void CObjectBase::SetBodyRot(const CQuaternion& rot)
 	body->setWorldTransform(trans);
 }
 
-void CObjectBase::SaveBodyLayer(ELayer myLayer, Layers collisionLayers)
+// 親の移動を適用
+void CObjectBase::ApplyParent(CObjectBase* parentObj)
 {
-	mBodyLayer = myLayer;
+	if (!parentObj || !parentObj->GetRigidBody()) return;
+
+	btRigidBody* myBody = GetRigidBody();
+	btRigidBody* parentBody = parentObj->GetRigidBody();
+	if (!myBody) return;
+
+	// 今の物理座標と1フレーム前の物理座標の差分を出す
+	btTransform parentTrans;
+	parentBody->getMotionState()->getWorldTransform(parentTrans);
+	btVector3 currentParentPos = parentTrans.getOrigin();
+
+	btVector3 moveDiff = currentParentPos - CPhysicsManager::ToBtVector(mPrevParentPos);
+
+	// プレイヤーの現在の物理座標を取得
+	btTransform myTrans = myBody->getWorldTransform();
+	btVector3 myCurrentPos = myTrans.getOrigin();
+
+	// 床が動いた分だけ、プレイヤーの座標をワープさせる
+	myTrans.setOrigin(myCurrentPos + moveDiff);
+	myBody->setWorldTransform(myTrans);
+	myBody->getMotionState()->setWorldTransform(myTrans);
+
+	// 今の親の座標を保存
+	mPrevParentPos = CPhysicsManager::ToCVector(currentParentPos);
+}
+
+void CObjectBase::SetPrevParentPos(const CVector& pos)
+{
+	mPrevParentPos = pos;
+}
+
+void CObjectBase::SaveBodyLayer(const ELayer& layer, const Layers& collisionLayers)
+{
+	mBodyLayer = layer;
 	mBodyCollisionLayers = collisionLayers;
 }
 
-void CObjectBase::SaveSensorLayer(ELayer myLayer, Layers collisionLayers)
+void CObjectBase::SaveSensorLayer(const ELayer& layer, const Layers& collisionLayers)
 {
-	mSensorLayer = myLayer;
+	mSensorLayer = layer;
 	mSensorCollisionLayers = collisionLayers;
 }
 
-void CObjectBase::Position(const CVector& pos)
+const ELayer& CObjectBase::GetBodyLayer() const
+{
+	return mBodyLayer;
+}
+
+const ELayer& CObjectBase::GetSensorLayer() const
+{
+	return mSensorLayer;
+}
+
+const CVector& CObjectBase::PhysicsPosition() const
 {
 	btRigidBody* body = GetRigidBody();
-	if (body)
+	if (!body) return mPosition;
+
+	return CPhysicsManager::ToCVector(
+		body->getWorldTransform().getOrigin());
+}
+
+// 座標を設定
+void CObjectBase::Position(const CVector& pos)
+{
+	if (GetRigidBody())
 	{
 		SetBodyPos(pos);
 	}
@@ -330,10 +400,10 @@ void CObjectBase::Position(const CVector& pos)
 	}
 }
 
+// 回転を設定
 void CObjectBase::Rotation(const CQuaternion& rot)
 {
-	btRigidBody* body = GetRigidBody();
-	if (body)
+	if (GetRigidBody())
 	{
 		SetBodyRot(rot);
 	}
@@ -361,6 +431,15 @@ void CObjectBase::OnCollision(const CollisionData& data)
 
 void CObjectBase::OnSensorEnter(const CollisionData& data)
 {
+}
+
+void CObjectBase::SetRideObject(CObjectBase* obj)
+{
+	mpRideObject = obj;
+	// nullであればこれ以降は処理しない
+	if (!obj) return;
+	SetPrevParentPos(CPhysicsManager::ToCVector(
+		obj->GetRigidBody()->getWorldTransform().getOrigin()));
 }
 
 // すべて削除

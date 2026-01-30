@@ -15,8 +15,6 @@ constexpr float FRICTION = 0.1f;	// 摩擦（値が高いと停止まで早くなる）
 constexpr float LIN_DAMPING = 0.8f;	// 線形減衰(値が高いと滑りが小さくなる)
 constexpr float ANG_DAMPING = 0.9f;	// 角減衰(値が高いと微細な回転振動を吸収する）
 
-const CVector SENSOR_HALF_EXTENTS = CVector(5.0f, 10.0f, 5.0f);
-
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
 struct SwitchPushWallSaveData {
@@ -77,7 +75,7 @@ float CSwitchPushWall::GetElapsedTime() const
 }
 
 CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
-	const CVector& pos, const CVector& scale, const CVector& move, float moveTime, bool isCrushed)
+	const CVector& pos, const CVector& scale, const CVector& move, float moveTime)
 	: CSwitchObject(ETaskPriority::eBackground)
 	, mDefaultPos(pos)
 	, mMoveVec(move)
@@ -94,16 +92,6 @@ CSwitchPushWall::CSwitchPushWall(CModel* model, CModel* col,
 
 	// コライダー生成
 	CreateCol();
-	// プレイヤーを壊すなら
-	if (isCrushed)
-	{
-		CPhysicsManager::Instance()->CreateBoxSensor(
-			this,
-			SENSOR_HALF_EXTENTS,
-			ELayer::eCrushed,
-			{ ELayer::ePlayer }
-		);
-	}
 }
 
 CSwitchPushWall::~CSwitchPushWall()
@@ -145,15 +133,12 @@ void CSwitchPushWall::CreateCol()
 	material.linDamping = LIN_DAMPING;
 	material.angDamping = ANG_DAMPING;
 	// サイズ計算
-	CVector size = CVector(
-		HALF_EXTENTS.X() * Scale().X(),
-		HALF_EXTENTS.Y() * Scale().Y(),
-		HALF_EXTENTS.Z() * Scale().Z());
+	CVector halfExtents = HALF_EXTENTS * Scale();
 
 	CPhysicsManager::Instance()->CreateBoxRigidBody(
 		this,
 		material,
-		size,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eObject,

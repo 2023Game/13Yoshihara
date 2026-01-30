@@ -32,7 +32,7 @@ public:
 		const CVector& scale,
 		const CVector& move,
 		float moveTime,
-		ELayer layer, bool isCrushed = false);
+		ELayer layer);
 	~CMoveObj();
 
 	void Update();

@@ -109,12 +109,18 @@ public:
 	void AddImpulse(const CVector& impulse);
 	// 力をリセット
 	void ResetForce();
+	// 速度を設定
+	void SetVelocity(const CVector& linear, const CVector& angular);
+	// 移動の速度を設定
+	void SetLinearVelocity(const CVector& linear);
 
 	// 剛体の半分の高さを取得
 	float GetHalfHeight() const;
 	// 剛体の半分の高さを設定
 	void SetHalfHeight(float halfHeight);
 
+	// 物理座標を取得
+	const CVector& PhysicsPosition() const;
 	// 座標を設定
 	void Position(const CVector& pos) override;
 	// 回転を設定
@@ -125,10 +131,20 @@ public:
 	// センサーの接触
 	virtual void OnSensorEnter(const CollisionData& data);
 
-	// 剛体のレイヤーを保存しておく
-	void SaveBodyLayer(ELayer myLayer, Layers collisionLayers);
-	// センサーのレイヤーを保存しておく
-	void SaveSensorLayer(ELayer myLayer, Layers collisionLayers);
+	// 乗っているオブジェクトに設定
+	void SetRideObject(CObjectBase* obj);
+
+	// 親の移動を適用
+	void ApplyParent(CObjectBase* parentObj);
+	// 前回の親座標を設定
+	void SetPrevParentPos(const CVector& pos);
+
+	// 衝突レイヤーの保存
+	void SaveBodyLayer(const ELayer& layer, const Layers& collisionLayers);
+	void SaveSensorLayer(const ELayer& layer, const Layers& collisionLayers);
+	// 自身のレイヤー取得
+	const ELayer& GetBodyLayer() const;
+	const ELayer& GetSensorLayer() const;
 
 private:
 	ETag mTag;			// オブジェクト識別用のタグ
@@ -142,25 +158,28 @@ private:
 	btTriangleIndexVertexArray* mpIndexVertexArray;	// メッシュデータ
 	btCollisionObject* mpSensorCol;					// 探知用のコライダー
 
+	// 前回の親座標
+	CVector mPrevParentPos;
+
 	// 剛体の座標を設定
 	void SetBodyPos(const CVector& pos);
 	// 剛体の回転を設定
 	void SetBodyRot(const CQuaternion& rot);
 
 protected:
+	// 衝突レイヤー
+	ELayer mBodyLayer;
+	Layers mBodyCollisionLayers;
+	ELayer mSensorLayer;
+	Layers mSensorCollisionLayers;
+
+	// 乗っているオブジェクト
+	CObjectBase* mpRideObject;
 
 	// すべて削除
 	virtual void Delete();
 	// コライダーを作成
 	virtual void CreateCol();
-	// 自分のレイヤー
-	ELayer mBodyLayer;
-	// 衝突相手のレイヤー
-	Layers mBodyCollisionLayers;
-	// センサーのレイヤー
-	ELayer mSensorLayer;
-	// センサーの衝突相手のレイヤー
-	Layers mSensorCollisionLayers;
 
 	/// <summary>
 	/// 攻撃がヒットしたオブジェクトを追加

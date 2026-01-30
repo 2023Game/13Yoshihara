@@ -141,10 +141,12 @@ void CSwitchShield::CreateCol()
 	PhysicsMaterial material;
 	material.mass = MASS;
 
+	CVector halfExtents = HALF_EXTENTS * Scale();
+
 	CPhysicsManager::Instance()->CreateBoxRigidBody(
 		this,
 		material,
-		HALF_EXTENTS,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eShield,

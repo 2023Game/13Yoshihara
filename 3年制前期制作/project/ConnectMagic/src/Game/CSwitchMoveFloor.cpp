@@ -2,14 +2,14 @@
 #include "CConnectPointManager.h"
 #include "CPhysicsManager.h"
 #include "PhysicsMaterial.h"
+#include "btBulletDynamicsCommon.h"
 #include <typeinfo>
 
 // 一時停止の時間
 constexpr float STOP_TIME =			0.5f;
 
 constexpr float MASS =				0.0f;
-const CVector HALF_EXTENTS =		CVector(20.0f, 5.0f, 40.0f);
-const CVector SENSOR_HALF_EXTENTS = CVector(4.0f, 4.0f, 4.0f);
+const CVector HALF_EXTENTS =		CVector(5.0f, 5.0f, 5.0f);
 
 #pragma pack(push,1)// パディング無効化
 // 保存するデータ構造
@@ -84,16 +84,6 @@ CSwitchMoveFloor::CSwitchMoveFloor(CModel* model, CModel* col,
 
 	// コライダーを生成
 	CreateCol();
-	// プレイヤーを壊すなら
-	if (isCrushed)
-	{
-		CPhysicsManager::Instance()->CreateBoxSensor(
-			this,
-			SENSOR_HALF_EXTENTS,
-			ELayer::eCrushed,
-			{ ELayer::ePlayer }
-		);
-	}
 }
 
 // デストラクタ
@@ -133,15 +123,19 @@ void CSwitchMoveFloor::CreateCol()
 	PhysicsMaterial material;
 	material.mass = MASS;
 
-	CPhysicsManager::Instance()->CreateBoxRigidBody(
+	CVector halfExtents = HALF_EXTENTS * Scale();
+
+	CPhysicsManager* physicsMgr = CPhysicsManager::Instance();
+	physicsMgr->CreateBoxRigidBody(
 		this,
 		material,
-		HALF_EXTENTS,
+		halfExtents,
 		Position(),
 		Rotation(),
 		ELayer::eField,
 		{ ELayer::ePlayer,ELayer::eObject,ELayer::eConnectObj }
 	);
+	physicsMgr->SetKinematic(GetRigidBody());
 }
 
 // 作用している時の処理
@@ -199,9 +193,7 @@ void CSwitchMoveFloor::UpdateStop()
 // 進んでいるときの更新
 void CSwitchMoveFloor::UpdateGo()
 {
-	float per = mElapsedTime / mMoveTime;
-	Position(mDefaultPos + mMoveVec * per);
-
+	CPhysicsManager::Instance()->MoveKinematic(this, mMoveVec, mMoveTime);
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
 	{
@@ -212,12 +204,12 @@ void CSwitchMoveFloor::UpdateGo()
 // 戻っているときの更新
 void CSwitchMoveFloor::UpdateBack()
 {
-	float per = (mMoveTime - mElapsedTime) / mMoveTime;
-	Position(mDefaultPos + mMoveVec * per);
+	CPhysicsManager::Instance()->MoveKinematic(this, -mMoveVec, mMoveTime);
 
 	// 時間が経過したら一時停止状態へ
 	if (mElapsedTime >= mMoveTime)
 	{
+		Position(mDefaultPos);
 		ChangeMoveState(EMoveState::eStop);
 	}
 }

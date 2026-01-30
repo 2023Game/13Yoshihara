@@ -143,6 +143,20 @@ CVector CVector::operator*(const CMatrix& m) const
 	);
 }
 
+// CVector / float ‚Ì‰‰ZŒ‹‰Ê‚ğ•Ô‚·
+CVector CVector::operator/(const float& f) const
+{
+	return CVector(mX / f, mY / f, mZ / f);
+}
+
+// CVector /= float ‚Å‰‰ZŒ‹‰Ê‚ğ©g‚É‘ã“ü
+void CVector::operator/=(const float& f)
+{
+	mX /= f;
+	mY /= f;
+	mZ /= f;
+}
+
 // Še²‚Ì’l‚ğİ’è
 void CVector::Set(float x, float y, float z)
 {

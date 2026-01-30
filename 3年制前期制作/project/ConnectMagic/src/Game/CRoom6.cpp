@@ -74,13 +74,15 @@ constexpr float PUSH_WALL_MOVE_TIME = 1.0f;
 // 空中オブジェクト
 const std::vector<std::vector<CVector>> AIR_OBJ_MOVE_TARGET_POS =
 {
+	// 1
 	{
 		CVector(-67.5f,	 35.0f, -25.0f),
-		CVector(-145.0f, 35.0f, -25.0f),
+		CVector(-122.5f, 35.0f, -25.0f),
 	},
+	// 2
 	{
 		CVector( 67.5f,	 35.0f, -25.0f),
-		CVector( 145.0f, 35.0f, -25.0f),
+		CVector( 122.5f, 35.0f, -25.0f),
 	}
 };
 
@@ -136,7 +138,7 @@ const std::vector<CrystalSetting> CRYSTAL_SETTING =
 const CVector CRYSTAL_SCALE_BIG = CVector::one * 2.0f;
 
 // 水
-const CVector WATER_OFFSET_POS = CVector(0.0f,  -15.0f, -100.0f);
+const CVector WATER_OFFSET_POS = CVector(0.0f,  -25.0f, -100.0f);
 const CVector WATER_MOVE_POS =	 CVector(0.0f,  -45.0f, -100.0f);
 const CVector WATER_SCALE =		 CVector(200.0f, 0.0f,   100.0f);
 
